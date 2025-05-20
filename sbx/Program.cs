@@ -1,0 +1,193 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using sbx.core.Interfaces;
+using sbx.core.Interfaces.ActividadEconomica;
+using sbx.core.Interfaces.Categoria;
+using sbx.core.Interfaces.Ciudad;
+using sbx.core.Interfaces.Cliente;
+using sbx.core.Interfaces.CodigoPostal;
+using sbx.core.Interfaces.Departamento;
+using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.IdentificationType;
+using sbx.core.Interfaces.Marca;
+using sbx.core.Interfaces.Pais;
+using sbx.core.Interfaces.PrecioCliente;
+using sbx.core.Interfaces.Producto;
+using sbx.core.Interfaces.Proveedor;
+using sbx.core.Interfaces.RangoNumeracion;
+using sbx.core.Interfaces.ResponsabilidadTributaria;
+using sbx.core.Interfaces.SalidaInventario;
+using sbx.core.Interfaces.Tienda;
+using sbx.core.Interfaces.TipoCliente;
+using sbx.core.Interfaces.TipoContribuyente;
+using sbx.core.Interfaces.TipoDocumentoRangoNumeracion;
+using sbx.core.Interfaces.TipoEntrada;
+using sbx.core.Interfaces.TipoResponsabilidad;
+using sbx.core.Interfaces.TipoSalida;
+using sbx.core.Interfaces.UnidadMedida;
+using sbx.repositories.ActividadEconomica;
+using sbx.repositories.Categorias;
+using sbx.repositories.Ciudad;
+using sbx.repositories.Cliente;
+using sbx.repositories.CodigoPostal;
+using sbx.repositories.Departamento;
+using sbx.repositories.EntradaInventario;
+using sbx.repositories.IdentificationType;
+using sbx.repositories.LoginRepository;
+using sbx.repositories.Marca;
+using sbx.repositories.Pais;
+using sbx.repositories.PrecioCliente;
+using sbx.repositories.Producto;
+using sbx.repositories.Proveedor;
+using sbx.repositories.RangoNumeracion;
+using sbx.repositories.ResponsabilidadTributaria;
+using sbx.repositories.SalidaInventario;
+using sbx.repositories.TiendaRepository;
+using sbx.repositories.TipoCliente;
+using sbx.repositories.TipoContribuyente;
+using sbx.repositories.TipoDocumentoRangoNumeracion;
+using sbx.repositories.TipoEntrada;
+using sbx.repositories.TipoResponsabilidad;
+using sbx.repositories.TipoSalida;
+using sbx.repositories.UnidadMedida;
+using System.Configuration;
+
+namespace sbx
+{
+    internal static class Program
+    {
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["SbxConnectionString"].ConnectionString;
+
+            var host = Host.CreateDefaultBuilder()
+            .ConfigureServices((context, services) =>
+            {
+                services.AddTransient<ILogin>(provider =>
+                    new LoginRepository(connectionString));
+                services.AddTransient<Login>();
+
+                services.AddTransient<Inicio>(sp =>
+                     new Inicio(sp));
+
+                services.AddTransient<ITienda>(provider =>
+                   new TiendaRepository(connectionString));
+                services.AddTransient<Tienda>();
+
+                services.AddTransient<Ajustes>();
+
+                services.AddTransient<IRangoNumeracion>(provider =>
+                new RangoNumeracionRepository(connectionString));
+
+                services.AddTransient<Ajustes>(sp =>
+                     new Ajustes(sp, sp.GetService<IRangoNumeracion>()));
+
+                services.AddTransient<ITipoDocumentoRangoNumeracion>(provider =>
+                new TipoDocumentoRangoNumeracionRepository(connectionString));
+
+                services.AddTransient<AgregaRna>();
+
+                services.AddTransient<Productos>();
+
+                services.AddTransient<AgregarProducto>();
+
+                services.AddTransient<Proveedores>();
+
+                services.AddTransient<AgregaProveedor>();
+
+                services.AddTransient<Clientes>();
+
+                services.AddTransient<AgregarCliente>();
+
+                services.AddTransient<Inventario>();
+
+                services.AddTransient<Entradas>();
+
+                services.AddTransient<AgregaDetalleEntrada>();
+
+                services.AddTransient<Buscador>();
+
+                services.AddTransient<Salidas>();
+
+                services.AddTransient<AgregaDetalleSalida>();
+
+                services.AddTransient<PreciosClientes>();
+
+                services.AddTransient<IIdentificationType>(provider =>
+                   new IdentificationTypeRepository(connectionString));
+
+                services.AddTransient<ITipoResponsabilidad>(provider =>
+                   new TipoResponsabilidadRepository(connectionString));
+
+                services.AddTransient<IResponsabilidadTributaria>(provider =>
+                   new ResponsabilidadTributariaRepository(connectionString));
+
+                services.AddTransient<ITipoContribuyente>(provider =>
+                   new TipoContribuyenteRepository(connectionString));
+
+                services.AddTransient<IPais>(provider =>
+                   new PaisRepository(connectionString));
+
+                services.AddTransient<IDepartamento>(provider =>
+                  new DepartamentoRepository(connectionString));
+
+                services.AddTransient<ICiudad>(provider =>
+                  new CiudadRepository(connectionString));
+
+                services.AddTransient<ICodigoPostal>(provider =>
+                  new CodigoPostalRepository(connectionString));
+
+                services.AddTransient<ICodigoPostal>(provider =>
+                  new CodigoPostalRepository(connectionString));
+
+                services.AddTransient<IActividadEconomica>(provider =>
+                  new ActividadEconomicaRepository(connectionString));
+
+                services.AddTransient<IProducto>(provider =>
+                 new ProductoRepository(connectionString));
+
+                services.AddTransient<ICategoria>(provider =>
+                  new CategoriaRepository(connectionString));
+
+                services.AddTransient<IMarca>(provider =>
+                  new MarcaRepository(connectionString));
+
+                services.AddTransient<IUnidadMedida>(provider =>
+                  new UnidadMedidaRepository(connectionString));
+
+                services.AddTransient<IProveedor>(provider =>
+                  new ProveedorRepository(connectionString));
+
+                services.AddTransient<ICliente>(provider =>
+                 new ClienteRepository(connectionString));
+
+                services.AddTransient<ITipoCliente>(provider =>
+                  new TipoClienteRepository(connectionString));
+
+                services.AddTransient<ITipoEntrada>(provider =>
+                  new TipoEntradaRepository(connectionString));
+
+                services.AddTransient<IEntradaInventario>(provider =>
+                  new EntradaInventarioRepository(connectionString));
+
+                services.AddTransient<ITipoSalida>(provider =>
+                 new TipoSalidaRepository(connectionString));
+
+                services.AddTransient<ISalidaInventario>(provider =>
+                  new SalidaInventarioRepository(connectionString));
+
+                services.AddTransient<IPrecioCliente>(provider =>
+                 new PrecioClienteRepository(connectionString));
+            })
+            .Build();
+
+            ApplicationConfiguration.Initialize();
+            var loginForm = host.Services.GetRequiredService<Login>();
+            Application.Run(loginForm);
+        }
+    }
+}

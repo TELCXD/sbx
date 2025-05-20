@@ -1,0 +1,188 @@
+﻿
+using Microsoft.Extensions.DependencyInjection;
+
+namespace sbx
+{
+    public partial class Inicio : Form
+    {
+        private dynamic? _Permisos;
+        private readonly IServiceProvider _serviceProvider;
+        private Tienda? _Tienda;
+        private Ajustes? _Ajustes;
+        private Productos? _Productos;
+        private Proveedores? _Proveedores;
+        private Clientes? _Clientes;
+        private Inventario? _Inventario;
+
+        public Inicio(IServiceProvider serviceProvider)
+        {
+            InitializeComponent();
+            _serviceProvider = serviceProvider;
+        }
+
+        public dynamic? Permisos
+        {
+            get => _Permisos;
+            set => _Permisos = value;
+        }
+
+        private void Inicio_Load(object sender, EventArgs e)
+        {
+            ValidaPermisos();
+        }
+
+        private void btn_ajustes_Click(object sender, EventArgs e)
+        {
+            if (_Ajustes != null && !_Ajustes.IsDisposed)
+            {
+                _Ajustes.BringToFront();
+                _Ajustes.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Ajustes = _serviceProvider.GetRequiredService<Ajustes>();
+            _Ajustes.Permisos = _Permisos;
+            _Ajustes.FormClosed += (s, args) => _Ajustes = null;
+            _Ajustes.Show();
+        }
+
+        private void ValidaPermisos()
+        {
+            if (_Permisos != null)
+            {
+                lbl_usuario.Text += _Permisos[0].UserName;
+
+                foreach (var item in _Permisos)
+                {
+                    switch (item.MenuUrl)
+                    {
+                        case "ventas":
+                            if (item.ToRead == 1)
+                            {
+                                btn_venta.Visible = true;
+                            }
+                            break;
+                        case "ajustes":
+                            if (item.ToRead == 1)
+                            {
+                                btn_ajustes.Visible = true;
+                            }
+                            break;
+                        case "tienda":
+                            if (item.ToRead == 1)
+                            {
+                                btn_tienda.Visible = true;
+                            }
+                            break;
+                        case "productos":
+                            if (item.ToRead == 1)
+                            {
+                                btn_producto.Visible = true;
+                            }
+                            break;
+                        case "proveedor":
+                            if (item.ToRead == 1)
+                            {
+                                btn_proveedor.Visible = true;
+                            }
+                            break;
+                        case "clientes":
+                            if (item.ToRead == 1)
+                            {
+                                btn_cliente.Visible = true;
+                            }
+                            break;
+                        case "inventario":
+                            if (item.ToRead == 1)
+                            {
+                                btn_inventario.Visible = true;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void btn_tienda_Click(object sender, EventArgs e)
+        {
+            if (_Tienda != null && !_Tienda.IsDisposed)
+            {
+                _Tienda.BringToFront();
+                _Tienda.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Tienda = _serviceProvider.GetRequiredService<Tienda>();
+            _Tienda.Permisos = _Permisos;
+            _Tienda.FormClosed += (s, args) => _Tienda = null;
+            _Tienda.Show();
+        }
+
+        private void btn_producto_Click(object sender, EventArgs e)
+        {
+            if (_Productos != null && !_Productos.IsDisposed)
+            {
+                _Productos.BringToFront();
+                _Productos.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Productos = _serviceProvider.GetRequiredService<Productos>();
+            _Productos.Permisos = _Permisos;
+            _Productos.FormClosed += (s, args) => _Productos = null;
+            _Productos.Show();
+        }
+
+        private void Inicio_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
+        private void btn_proveedor_Click(object sender, EventArgs e)
+        {
+            if (_Proveedores != null && !_Proveedores.IsDisposed)
+            {
+                _Proveedores.BringToFront();
+                _Proveedores.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Proveedores = _serviceProvider.GetRequiredService<Proveedores>();
+            _Proveedores.Permisos = _Permisos;
+            _Proveedores.FormClosed += (s, args) => _Proveedores = null;
+            _Proveedores.Show();
+        }
+
+        private void btn_cliente_Click(object sender, EventArgs e)
+        {
+            if (_Clientes != null && !_Clientes.IsDisposed)
+            {
+                _Clientes.BringToFront();
+                _Clientes.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Clientes = _serviceProvider.GetRequiredService<Clientes>();
+            _Clientes.Permisos = _Permisos;
+            _Clientes.FormClosed += (s, args) => _Clientes = null;
+            _Clientes.Show();
+        }
+
+        private void btn_inventario_Click(object sender, EventArgs e)
+        {
+            if (_Inventario != null && !_Inventario.IsDisposed)
+            {
+                _Inventario.BringToFront();
+                _Inventario.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Inventario = _serviceProvider.GetRequiredService<Inventario>();
+            _Inventario.Permisos = _Permisos;
+            _Inventario.FormClosed += (s, args) => _Inventario = null;
+            _Inventario.Show();
+        }
+    }
+}
