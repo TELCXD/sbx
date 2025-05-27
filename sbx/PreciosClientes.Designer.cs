@@ -76,7 +76,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1134, 68);
+            panel1.Size = new Size(1134, 58);
             panel1.TabIndex = 0;
             // 
             // cbx_client_producto
@@ -85,7 +85,7 @@
             cbx_client_producto.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_client_producto.FormattingEnabled = true;
             cbx_client_producto.Items.AddRange(new object[] { "Cliente", "Producto" });
-            cbx_client_producto.Location = new Point(577, 24);
+            cbx_client_producto.Location = new Point(570, 16);
             cbx_client_producto.Name = "cbx_client_producto";
             cbx_client_producto.Size = new Size(87, 23);
             cbx_client_producto.TabIndex = 34;
@@ -97,7 +97,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(790, 24);
+            cbx_tipo_filtro.Location = new Point(783, 16);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 33;
@@ -107,7 +107,7 @@
             cbx_campo_filtro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
-            cbx_campo_filtro.Location = new Point(670, 24);
+            cbx_campo_filtro.Location = new Point(663, 16);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 32;
@@ -119,7 +119,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1080, 13);
+            btn_buscar.Location = new Point(1073, 5);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(42, 45);
             btn_buscar.TabIndex = 31;
@@ -130,7 +130,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(883, 24);
+            txt_buscar.Location = new Point(876, 16);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 30;
@@ -141,7 +141,7 @@
             btn_eliminar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar.FlatStyle = FlatStyle.Flat;
             btn_eliminar.Image = (Image)resources.GetObject("btn_eliminar.Image");
-            btn_eliminar.Location = new Point(226, 12);
+            btn_eliminar.Location = new Point(219, 4);
             btn_eliminar.Name = "btn_eliminar";
             btn_eliminar.Size = new Size(101, 45);
             btn_eliminar.TabIndex = 17;
@@ -155,13 +155,14 @@
             btn_editar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar.FlatStyle = FlatStyle.Flat;
             btn_editar.Image = (Image)resources.GetObject("btn_editar.Image");
-            btn_editar.Location = new Point(119, 12);
+            btn_editar.Location = new Point(112, 4);
             btn_editar.Name = "btn_editar";
             btn_editar.Size = new Size(101, 45);
             btn_editar.TabIndex = 16;
             btn_editar.Text = "Editar";
             btn_editar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_editar.UseVisualStyleBackColor = true;
+            btn_editar.Click += btn_editar_Click;
             // 
             // btn_agregar
             // 
@@ -169,13 +170,14 @@
             btn_agregar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar.FlatStyle = FlatStyle.Flat;
             btn_agregar.Image = (Image)resources.GetObject("btn_agregar.Image");
-            btn_agregar.Location = new Point(12, 12);
+            btn_agregar.Location = new Point(5, 4);
             btn_agregar.Name = "btn_agregar";
             btn_agregar.Size = new Size(101, 45);
             btn_agregar.TabIndex = 15;
             btn_agregar.Text = "Agregar";
             btn_agregar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_agregar.UseVisualStyleBackColor = true;
+            btn_agregar.Click += btn_agregar_Click;
             // 
             // dtg_cliente_precio
             // 
@@ -202,7 +204,7 @@
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dtg_cliente_precio.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_cliente_precio.Dock = DockStyle.Fill;
-            dtg_cliente_precio.Location = new Point(0, 68);
+            dtg_cliente_precio.Location = new Point(0, 58);
             dtg_cliente_precio.Name = "dtg_cliente_precio";
             dtg_cliente_precio.ReadOnly = true;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -214,7 +216,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_cliente_precio.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_cliente_precio.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_cliente_precio.Size = new Size(1134, 382);
+            dtg_cliente_precio.Size = new Size(1134, 392);
             dtg_cliente_precio.TabIndex = 5;
             // 
             // cl_id_precio_cliente

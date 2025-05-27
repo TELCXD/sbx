@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Productos));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Productos));
             panel1 = new Panel();
+            btn_lista_precios = new Button();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
             btn_buscar = new Button();
@@ -57,6 +58,7 @@
             cl_marca = new DataGridViewTextBoxColumn();
             cl_categoria = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
+            btn_promociones = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -66,6 +68,8 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_promociones);
+            panel1.Controls.Add(btn_lista_precios);
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
             panel1.Controls.Add(btn_buscar);
@@ -80,6 +84,21 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1243, 56);
             panel1.TabIndex = 1;
+            // 
+            // btn_lista_precios
+            // 
+            btn_lista_precios.Enabled = false;
+            btn_lista_precios.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_lista_precios.FlatStyle = FlatStyle.Flat;
+            btn_lista_precios.Image = (Image)resources.GetObject("btn_lista_precios.Image");
+            btn_lista_precios.Location = new Point(324, 3);
+            btn_lista_precios.Name = "btn_lista_precios";
+            btn_lista_precios.Size = new Size(106, 45);
+            btn_lista_precios.TabIndex = 11;
+            btn_lista_precios.Text = "Lista precios";
+            btn_lista_precios.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_lista_precios.UseVisualStyleBackColor = true;
+            btn_lista_precios.Click += btn_lista_precios_Click;
             // 
             // cbx_tipo_filtro
             // 
@@ -255,12 +274,14 @@
             cl_nombre.HeaderText = "Nombre";
             cl_nombre.Name = "cl_nombre";
             cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 200;
             // 
             // cl_stock
             // 
             cl_stock.HeaderText = "Stock";
             cl_stock.Name = "cl_stock";
             cl_stock.ReadOnly = true;
+            cl_stock.Visible = false;
             // 
             // cl_costo
             // 
@@ -308,6 +329,21 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // btn_promociones
+            // 
+            btn_promociones.Enabled = false;
+            btn_promociones.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_promociones.FlatStyle = FlatStyle.Flat;
+            btn_promociones.Image = (Image)resources.GetObject("btn_promociones.Image");
+            btn_promociones.Location = new Point(436, 3);
+            btn_promociones.Name = "btn_promociones";
+            btn_promociones.Size = new Size(111, 45);
+            btn_promociones.TabIndex = 12;
+            btn_promociones.Text = "Promociones";
+            btn_promociones.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_promociones.UseVisualStyleBackColor = true;
+            btn_promociones.Click += btn_promociones_Click;
+            // 
             // Productos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -339,6 +375,10 @@
         private DataGridView dtg_producto;
         private Button btn_buscar;
         private TextBox txt_buscar;
+        private ComboBox cbx_campo_filtro;
+        private ComboBox cbx_tipo_filtro;
+        private ErrorProvider errorProvider1;
+        private Button btn_lista_precios;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -351,8 +391,6 @@
         private DataGridViewTextBoxColumn cl_unidadMedida;
         private DataGridViewTextBoxColumn cl_marca;
         private DataGridViewTextBoxColumn cl_categoria;
-        private ComboBox cbx_campo_filtro;
-        private ComboBox cbx_tipo_filtro;
-        private ErrorProvider errorProvider1;
+        private Button btn_promociones;
     }
 }

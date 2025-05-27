@@ -9,10 +9,14 @@ using sbx.core.Interfaces.CodigoPostal;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.IdentificationType;
+using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.Marca;
 using sbx.core.Interfaces.Pais;
 using sbx.core.Interfaces.PrecioCliente;
+using sbx.core.Interfaces.PrecioProducto;
 using sbx.core.Interfaces.Producto;
+using sbx.core.Interfaces.Promociones;
+using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.ResponsabilidadTributaria;
@@ -22,6 +26,7 @@ using sbx.core.Interfaces.TipoCliente;
 using sbx.core.Interfaces.TipoContribuyente;
 using sbx.core.Interfaces.TipoDocumentoRangoNumeracion;
 using sbx.core.Interfaces.TipoEntrada;
+using sbx.core.Interfaces.TipoPromocion;
 using sbx.core.Interfaces.TipoResponsabilidad;
 using sbx.core.Interfaces.TipoSalida;
 using sbx.core.Interfaces.UnidadMedida;
@@ -33,11 +38,15 @@ using sbx.repositories.CodigoPostal;
 using sbx.repositories.Departamento;
 using sbx.repositories.EntradaInventario;
 using sbx.repositories.IdentificationType;
+using sbx.repositories.ListaPrecios;
 using sbx.repositories.LoginRepository;
 using sbx.repositories.Marca;
 using sbx.repositories.Pais;
 using sbx.repositories.PrecioCliente;
+using sbx.repositories.PrecioProducto;
 using sbx.repositories.Producto;
+using sbx.repositories.Promociones;
+using sbx.repositories.PromocionProducto;
 using sbx.repositories.Proveedor;
 using sbx.repositories.RangoNumeracion;
 using sbx.repositories.ResponsabilidadTributaria;
@@ -47,6 +56,7 @@ using sbx.repositories.TipoCliente;
 using sbx.repositories.TipoContribuyente;
 using sbx.repositories.TipoDocumentoRangoNumeracion;
 using sbx.repositories.TipoEntrada;
+using sbx.repositories.TipoPromocion;
 using sbx.repositories.TipoResponsabilidad;
 using sbx.repositories.TipoSalida;
 using sbx.repositories.UnidadMedida;
@@ -117,6 +127,20 @@ namespace sbx
 
                 services.AddTransient<PreciosClientes>();
 
+                services.AddTransient<AgregaPreciosCliente>();
+
+                services.AddTransient<ListaPrecios>();
+
+                services.AddTransient<AgregaListaPrecios>();
+                
+                services.AddTransient<AddProductoListaPrecio>();
+
+                services.AddTransient<Promociones>();
+
+                services.AddTransient<AgregaPromocion>();
+
+                services.AddTransient<AddProductoPromocion>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -182,6 +206,21 @@ namespace sbx
 
                 services.AddTransient<IPrecioCliente>(provider =>
                  new PrecioClienteRepository(connectionString));
+
+                services.AddTransient<IListaPrecios>(provider =>
+                 new ListaPreciosRepository(connectionString));
+
+                services.AddTransient<IPrecioProducto>(provider =>
+                 new PrecioProductoRepository(connectionString));
+
+                services.AddTransient<IPromociones>(provider =>
+                 new PromocionesRepository(connectionString));
+
+                services.AddTransient<IPromocionProducto>(provider =>
+                 new PromocionProductoRepository(connectionString));
+
+                services.AddTransient<ITipoPromocion>(provider =>
+                 new TipoPromocionRepository(connectionString));
             })
             .Build();
 

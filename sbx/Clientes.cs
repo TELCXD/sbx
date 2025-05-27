@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.Cliente;
-using sbx.core.Interfaces.Proveedor;
-using System.Windows.Forms;
 
 namespace sbx
 {

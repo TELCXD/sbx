@@ -1,4 +1,5 @@
-﻿using sbx.core.Interfaces.PrecioCliente;
+﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.PrecioCliente;
 using sbx.core.Interfaces.Producto;
 using System.Globalization;
 
@@ -9,11 +10,15 @@ namespace sbx
         private dynamic? _Permisos;
         private int Id_precios_cliente = 0;
         private readonly IPrecioCliente _IPrecioCliente;
+        private AgregaPreciosCliente? _AgregaPreciosCliente;
+        private readonly IServiceProvider _serviceProvider;
+        private long llavePrimaria;
 
-        public PreciosClientes(IPrecioCliente precioCliente)
+        public PreciosClientes(IPrecioCliente precioCliente, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _IPrecioCliente = precioCliente;
+            _serviceProvider = serviceProvider;
         }
 
         private void PreciosClientes_Load(object sender, EventArgs e)
@@ -113,6 +118,45 @@ namespace sbx
                             item.FechaFin);
                     }
                 }
+            }
+        }
+
+        private void btn_agregar_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _AgregaPreciosCliente = _serviceProvider.GetRequiredService<AgregaPreciosCliente>();
+                _AgregaPreciosCliente.Permisos = _Permisos;
+                _AgregaPreciosCliente.llavePrimaria = 0;
+                _AgregaPreciosCliente.FormClosed += (s, args) => _AgregaPreciosCliente = null;
+                _AgregaPreciosCliente.ShowDialog();
+            }
+        }
+
+        private void btn_editar_Click(object sender, EventArgs e)
+        {
+            if (dtg_cliente_precio.Rows.Count > 0)
+            {
+                if (dtg_cliente_precio.SelectedRows.Count > 0)
+                {
+                    var row = dtg_cliente_precio.SelectedRows[0];
+                    if (row.Cells["cl_id_precio_cliente"].Value != null)
+                    {
+                        llavePrimaria = Convert.ToInt32(row.Cells["cl_id_precio_cliente"].Value);
+                        if (_Permisos != null)
+                        {
+                            _AgregaPreciosCliente = _serviceProvider.GetRequiredService<AgregaPreciosCliente>();
+                            _AgregaPreciosCliente.Permisos = _Permisos;
+                            _AgregaPreciosCliente.llavePrimaria = llavePrimaria;
+                            _AgregaPreciosCliente.FormClosed += (s, args) => _AgregaPreciosCliente = null;
+                            _AgregaPreciosCliente.ShowDialog();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }
