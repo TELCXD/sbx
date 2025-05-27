@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.Producto;
-using sbx.core.Interfaces.RangoNumeracion;
 using System.Globalization;
 
 namespace sbx
@@ -12,6 +11,8 @@ namespace sbx
         private readonly IServiceProvider _serviceProvider;
         private readonly IProducto _IProducto;
         private int Id_Producto = 0;
+        private ListaPrecios? _ListaPrecios;
+        private Promociones? _Promociones;
 
         public Productos(IServiceProvider serviceProvider, IProducto producto)
         {
@@ -63,6 +64,12 @@ namespace sbx
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
                             //btn_eliminar.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
+                        case "listaPrecios":
+                            btn_lista_precios.Enabled = item.ToRead == 1 ? true : false;
+                            break;
+                        case "promociones":
+                            btn_promociones.Enabled = item.ToRead == 1 ? true : false;
+                            break;
                         default:
                             break;
                     }
@@ -77,10 +84,10 @@ namespace sbx
         private async Task ConsultaProductos()
         {
             errorProvider1.Clear();
-            if (cbx_campo_filtro.Text == "Id") 
+            if (cbx_campo_filtro.Text == "Id")
             {
                 bool esNumerico = int.TryParse(txt_buscar.Text, out int valor);
-                if (!esNumerico) 
+                if (!esNumerico)
                 {
                     errorProvider1.SetError(txt_buscar, "Ingrese un valor numerico");
                     return;
@@ -91,7 +98,7 @@ namespace sbx
 
             dtg_producto.Rows.Clear();
 
-            if (resp.Data != null) 
+            if (resp.Data != null)
             {
                 if (resp.Data.Count > 0)
                 {
@@ -139,6 +146,28 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btn_lista_precios_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _ListaPrecios = _serviceProvider.GetRequiredService<ListaPrecios>();
+                _ListaPrecios.Permisos = _Permisos;
+                _ListaPrecios.FormClosed += (s, args) => _ListaPrecios = null;
+                _ListaPrecios.ShowDialog();
+            }
+        }
+
+        private void btn_promociones_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _Promociones = _serviceProvider.GetRequiredService<Promociones>();
+                _Promociones.Permisos = _Permisos;
+                _Promociones.FormClosed += (s, args) => _Promociones = null;
+                _Promociones.ShowDialog();
             }
         }
     }

@@ -118,7 +118,8 @@ INSERT INTO T_Menu (MenuName,OrderNumber,MenuURL,Active,IdUserAction)
 VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'productos',1,1), ('Inventario',4,'inventario',1,1), 
 ('Clientes',5,'clientes',1,1), ('Proveedor',6,'proveedor',1,1),('Caja',7,'caja',1,1), ('Separados',8,'separados',1,1), 
 ('Domicilios',9,'domicilios',1,1), ('Reportes',10,'reportes',1,1), ('Ajustes',11,'ajustes',1,1), ('Tienda',12,'tienda',1,1), 
-('Entrada',13,'entradas',1,1), ('Salida',14,'salidas',1,1),('PreciosClientes',15,'preciosClientes',1,1)
+('Entrada',13,'entradas',1,1), ('Salida',14,'salidas',1,1),('PreciosClientes',15,'preciosClientes',1,1),
+('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1)
 GO
 CREATE TABLE TR_Role_Menu
 (
@@ -142,7 +143,8 @@ INSERT INTO TR_Role_Menu (IdMenu, IdRole, ToRead, ToCreate, ToUpdate, ToDelete, 
 VALUES(1,1,1,1,1,1,1,GETDATE(),1), (2,1,1,1,1,1,1,GETDATE(),1), (3,1,1,1,1,1,1,GETDATE(),1), (4,1,1,1,1,1,1,GETDATE(),1), 
 (5,1,1,1,1,1,1,GETDATE(),1), (6,1,1,1,1,1,1,GETDATE(),1), (7,1,1,1,1,1,1,GETDATE(),1),
 (8,1,1,1,1,1,1,GETDATE(),1), (9,1,1,1,1,1,1,GETDATE(),1), (10,1,1,1,1,1,1,GETDATE(),1), (11,1,1,1,1,1,1,GETDATE(),1), 
-(12,1,1,1,1,1,1,GETDATE(),1), (13,1,1,1,1,1,1,GETDATE(),1), (14,1,1,1,1,1,1,GETDATE(),1), (15,1,1,1,1,1,1,GETDATE(),1)
+(12,1,1,1,1,1,1,GETDATE(),1), (13,1,1,1,1,1,1,GETDATE(),1), (14,1,1,1,1,1,1,GETDATE(),1), (15,1,1,1,1,1,1,GETDATE(),1),
+(16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1)
 GO
 CREATE TABLE T_TipoResponsabilidad(
 IdTipoResponsabilidad INT PRIMARY KEY,
@@ -374,16 +376,24 @@ NombreLista VARCHAR(100) UNIQUE,
 IdTipoCliente INT,
 FechaInicio DATE,
 FechaFin DATE NULL,
-FOREIGN KEY (IdTipoCliente) REFERENCES T_TipoCliente(IdTipoCliente)
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdTipoCliente) REFERENCES T_TipoCliente(IdTipoCliente),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
 CREATE TABLE T_PreciosProducto (
 IdListaPrecio INT,
 IdProducto INT,
 Precio DECIMAL(10,2),
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
 PRIMARY KEY (IdListaPrecio, IdProducto),
 FOREIGN KEY (IdListaPrecio) REFERENCES T_ListasPrecios(IdListaPrecio),
-FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto)
+FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
 CREATE TABLE T_PreciosCliente (
@@ -401,21 +411,37 @@ FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
-CREATE TABLE T_Promociones (
-IdPromocion INT PRIMARY KEY,
-NombrePromocion VARCHAR(100),
-TipoPromocion VARCHAR(20),       -- 'Porcentaje', 'ValorFijo', '2x1', etc.
-Porcentaje DECIMAL(10,2),        -- Ej: 10% de descuento => 10.00
-FechaInicio DATE,
-FechaFin DATE
+CREATE TABLE T_TipoPromocion(
+IdTipoPromocion INT IDENTITY(1,1) PRIMARY KEY,
+Nombre VARCHAR(50) UNIQUE
 )
 GO
-CREATE TABLE PromocionesProductos (
+INSERT INTO T_TipoPromocion VALUES('Porcentaje') 
+GO
+CREATE TABLE T_Promociones (
+IdPromocion INT IDENTITY(1,1) PRIMARY KEY,
+NombrePromocion VARCHAR(100) UNIQUE,
+IdTipoPromocion INT,       -- 'Porcentaje', 'ValorFijo', '2x1', etc.
+Porcentaje DECIMAL(10,2),        -- Ej: 10% de descuento => 10.00
+FechaInicio DATE,
+FechaFin DATE,
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
+FOREIGN KEY(IdTipoPromocion) REFERENCES T_TipoPromocion(IdTipoPromocion)
+)
+GO
+CREATE TABLE T_PromocionesProductos (
 IdPromocion INT,
 IdProducto INT,
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
 PRIMARY KEY (IdPromocion, IdProducto),
 FOREIGN KEY (IdPromocion) REFERENCES T_Promociones(IdPromocion),
-FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto)
+FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 ---Lógica de priorización (en consultas o lógica de negocio) 
 ---1. ¿Tiene precio personalizado? => usar PreciosCliente

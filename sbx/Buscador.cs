@@ -1,5 +1,6 @@
 ﻿
 using Newtonsoft.Json;
+using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
 using System.Data;
@@ -12,16 +13,18 @@ namespace sbx
         private string? _Origen;
         private readonly IProveedor _IProveedor;
         private readonly IProducto _IProducto;
+        private readonly ICliente _ICliente;
         public delegate void EnviarId(int id);
         public event EnviarId EnviaId;
         int fila = 0;
         int Id = 0;
 
-        public Buscador(IProveedor proveedor, IProducto producto)
+        public Buscador(IProveedor proveedor, IProducto producto, ICliente cliente)
         {
             InitializeComponent();
             _IProveedor = proveedor;
             _IProducto = producto;
+            _ICliente = cliente;
         }
 
         public string? Origen
@@ -50,7 +53,16 @@ namespace sbx
                     break;
                 case "Salidas_busca_producto":
                     await ConsultaProducto();
+                    break; 
+                case "AgregaPrecios_busca_producto":
+                    await ConsultaProducto();
                     break;
+                case "AgregaPrecios_busca_cliente":
+                    await ConsultaCliente();
+                    break;
+                case "Add_listaPrecio_busca_producto":
+                    await ConsultaProducto();
+                    break; 
                 default:
                     break; 
             }
@@ -72,6 +84,15 @@ namespace sbx
                     opciones = new List<string> { "Nombre", "Num Doc" };
                     break;
                 case "Salidas_busca_producto":
+                    opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
+                    break;
+                case "AgregaPrecios_busca_producto":
+                    opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
+                    break;
+                case "AgregaPrecios_busca_cliente":
+                    opciones = new List<string> { "Nombre", "Num Doc" };
+                    break;
+                case "Add_listaPrecio_busca_producto":
                     opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
                     break;
                 default:
@@ -152,6 +173,45 @@ namespace sbx
                     dtg_buscador.Columns["CreationDate"].Visible = false;
                     dtg_buscador.Columns["UpdateDate"].Visible = false;
                     dtg_buscador.Columns["IdUserAction"].Visible = false;
+                }
+            }
+        }
+
+        private async Task ConsultaCliente()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _ICliente.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dataTable.Columns.Add("Activo", typeof(string));
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        if (row["Estado"] != DBNull.Value)
+                        {
+                            bool valor = Convert.ToBoolean(row["Estado"]);
+                            row["Activo"] = valor ? "Sí" : "No";
+                        }
+                        else
+                        {
+                            row["Activo"] = "No";
+                        }
+                    }
+
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["IdCliente"].Visible = false;
+                    dtg_buscador.Columns["IdIdentificationType"].Visible = false;
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    dtg_buscador.Columns["Estado"].Visible = false;
                 }
             }
         }
