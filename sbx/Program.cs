@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using sbx.core.Interfaces;
 using sbx.core.Interfaces.ActividadEconomica;
+using sbx.core.Interfaces.Banco;
 using sbx.core.Interfaces.Categoria;
 using sbx.core.Interfaces.Ciudad;
 using sbx.core.Interfaces.Cliente;
@@ -11,6 +12,7 @@ using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.IdentificationType;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.Marca;
+using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.Pais;
 using sbx.core.Interfaces.PrecioCliente;
 using sbx.core.Interfaces.PrecioProducto;
@@ -30,7 +32,9 @@ using sbx.core.Interfaces.TipoPromocion;
 using sbx.core.Interfaces.TipoResponsabilidad;
 using sbx.core.Interfaces.TipoSalida;
 using sbx.core.Interfaces.UnidadMedida;
+using sbx.core.Interfaces.Vendedor;
 using sbx.repositories.ActividadEconomica;
+using sbx.repositories.Banco;
 using sbx.repositories.Categorias;
 using sbx.repositories.Ciudad;
 using sbx.repositories.Cliente;
@@ -41,6 +45,7 @@ using sbx.repositories.IdentificationType;
 using sbx.repositories.ListaPrecios;
 using sbx.repositories.LoginRepository;
 using sbx.repositories.Marca;
+using sbx.repositories.MedioPago;
 using sbx.repositories.Pais;
 using sbx.repositories.PrecioCliente;
 using sbx.repositories.PrecioProducto;
@@ -60,6 +65,7 @@ using sbx.repositories.TipoPromocion;
 using sbx.repositories.TipoResponsabilidad;
 using sbx.repositories.TipoSalida;
 using sbx.repositories.UnidadMedida;
+using sbx.repositories.Vendedor;
 using System.Configuration;
 
 namespace sbx
@@ -141,6 +147,8 @@ namespace sbx
 
                 services.AddTransient<AddProductoPromocion>();
 
+                services.AddTransient<AgregarVentas>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -221,6 +229,15 @@ namespace sbx
 
                 services.AddTransient<ITipoPromocion>(provider =>
                  new TipoPromocionRepository(connectionString));
+
+                services.AddTransient<IMedioPago>(provider =>
+                new MedioPagoRepository(connectionString));
+
+                services.AddTransient<IVendedor>(provider =>
+                 new VendedorRepository(connectionString));
+
+                services.AddTransient<IBanco>(provider =>
+                 new BancoRepository(connectionString));
             })
             .Build();
 

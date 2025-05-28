@@ -158,5 +158,40 @@ namespace sbx.repositories.PrecioProducto
                 }
             }
         }
+
+        public async Task<Response<dynamic>> PrecioListaPreciosTipoCliente(int IdProducto, int IdListaPrecio)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd"));
+
+                    string sql = $@"SELECT A.NombreLista,A.IdTipoCliente,C.Nombre TipoCliente,A.FechaInicio, A.FechaFin, B.Precio 
+                                    FROM T_ListasPrecios A
+                                    INNER JOIN T_PreciosProducto B ON A.IdListaPrecio = B.IdListaPrecio
+                                    INNER JOIN T_TipoCliente C ON A.IdTipoCliente = C.IdTipoCliente
+                                    WHERE B.IdListaPrecio = {IdListaPrecio} AND IdProducto = {IdProducto} AND FechaInicio >= '{FechaActual}' AND FechaFin <= '{FechaActual}' ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

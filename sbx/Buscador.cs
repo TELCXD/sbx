@@ -1,10 +1,8 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
 using System.Data;
-using System.Windows.Forms;
 
 namespace sbx
 {
@@ -63,6 +61,12 @@ namespace sbx
                 case "Add_listaPrecio_busca_producto":
                     await ConsultaProducto();
                     break; 
+                case "Add_AgregaVenta_busca_producto":
+                    await ConsultaProducto();
+                    break;
+                case "Add_AgregaVenta_busca_cliente":
+                    await ConsultaCliente();
+                    break;
                 default:
                     break; 
             }
@@ -94,6 +98,12 @@ namespace sbx
                     break;
                 case "Add_listaPrecio_busca_producto":
                     opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
+                    break;
+                case "Add_AgregaVenta_busca_producto":
+                    opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
+                    break;
+                case "Add_AgregaVenta_busca_cliente":
+                    opciones = new List<string> { "Nombre", "Num Doc" };
                     break;
                 default:
                     break;

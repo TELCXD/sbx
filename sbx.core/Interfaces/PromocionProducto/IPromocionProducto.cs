@@ -8,5 +8,6 @@ namespace sbx.core.Interfaces.PromocionProducto
         Task<Response<dynamic>> List(int Id);
         Task<Response<dynamic>> CreateUpdate(PromocionProductoEntitie promocionProductoEntitie, int IdUser);
         Task<Response<dynamic>> RemoveProducto(PromocionProductoEntitie promocionProductoEntitie);
+        Task<Response<dynamic>> PromocionActiva(int IdProducto);
     }
 }

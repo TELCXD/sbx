@@ -8,5 +8,7 @@ namespace sbx.core.Interfaces.PrecioCliente
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, string clientProducto);
         Task<Response<dynamic>> CreateUpdate(PrecioClienteEntitie precioCliente, int IdUser);
         Task<Response<dynamic>> List(long Id);
+        Task<Response<dynamic>> PrecioClientePersonalizado(int IdProducto, int IdCliente); 
+
     }
 }

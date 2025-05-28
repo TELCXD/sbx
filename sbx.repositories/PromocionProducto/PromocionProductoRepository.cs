@@ -155,5 +155,40 @@ namespace sbx.repositories.PromocionProducto
                 }
             }
         }
+
+        public async Task<Response<dynamic>> PromocionActiva(int IdProducto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd"));
+
+                    string sql = $@"SELECT A.IdPromocion,B.IdProducto, A.IdTipoPromocion, C.Nombre TipoPromocion, A.FechaInicio, A.FechaFin, A.Porcentaje
+                                            FROM T_Promociones A
+                                            INNER JOIN T_PromocionesProductos B ON A.IdPromocion = B.IdPromocion
+                                            INNER JOIN T_TipoPromocion C ON A.IdTipoPromocion = C.IdTipoPromocion
+                                    WHERE   IdProducto = {IdProducto} AND FechaInicio >= '{FechaActual}' AND FechaFin <= '{FechaActual}' ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

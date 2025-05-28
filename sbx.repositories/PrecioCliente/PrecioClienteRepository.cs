@@ -275,5 +275,38 @@ namespace sbx.repositories.PrecioCliente
                 }
             }
         }
+
+        public async Task<Response<dynamic>> PrecioClientePersonalizado(int IdProducto, int IdCliente)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd"));
+
+                    string sql = $@"SELECT IdCliente, IdProducto,PrecioEspecial,FechaInicio,FechaFin 
+                                    FROM T_PreciosCliente
+                                    WHERE IdProducto = {IdProducto} AND IdCliente = {IdCliente} AND FechaInicio >= '{FechaActual}' AND FechaFin <= '{FechaActual}' ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }
