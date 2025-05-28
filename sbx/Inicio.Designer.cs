@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inicio));
             panel1 = new Panel();
+            btn_inventario = new Button();
             btn_ajustes = new Button();
             btn_producto = new Button();
             btn_proveedor = new Button();
@@ -40,7 +41,6 @@
             lbl_usuario = new Label();
             pictureBox1 = new PictureBox();
             panel3 = new Panel();
-            btn_inventario = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -63,6 +63,27 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(815, 66);
             panel1.TabIndex = 0;
+            // 
+            // btn_inventario
+            // 
+            btn_inventario.BackColor = Color.Transparent;
+            btn_inventario.Dock = DockStyle.Left;
+            btn_inventario.FlatAppearance.BorderSize = 0;
+            btn_inventario.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_inventario.FlatStyle = FlatStyle.Flat;
+            btn_inventario.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_inventario.ForeColor = SystemColors.ControlText;
+            btn_inventario.Image = (Image)resources.GetObject("btn_inventario.Image");
+            btn_inventario.Location = new Point(504, 0);
+            btn_inventario.Name = "btn_inventario";
+            btn_inventario.Size = new Size(84, 62);
+            btn_inventario.TabIndex = 6;
+            btn_inventario.Text = "Inventario";
+            btn_inventario.TextAlign = ContentAlignment.BottomCenter;
+            btn_inventario.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_inventario.UseVisualStyleBackColor = false;
+            btn_inventario.Visible = false;
+            btn_inventario.Click += btn_inventario_Click;
             // 
             // btn_ajustes
             // 
@@ -188,6 +209,7 @@
             btn_venta.TextImageRelation = TextImageRelation.ImageAboveText;
             btn_venta.UseVisualStyleBackColor = false;
             btn_venta.Visible = false;
+            btn_venta.Click += btn_venta_Click;
             // 
             // panel2
             // 
@@ -230,27 +252,6 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(815, 170);
             panel3.TabIndex = 3;
-            // 
-            // btn_inventario
-            // 
-            btn_inventario.BackColor = Color.Transparent;
-            btn_inventario.Dock = DockStyle.Left;
-            btn_inventario.FlatAppearance.BorderSize = 0;
-            btn_inventario.FlatAppearance.MouseDownBackColor = Color.DimGray;
-            btn_inventario.FlatStyle = FlatStyle.Flat;
-            btn_inventario.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btn_inventario.ForeColor = SystemColors.ControlText;
-            btn_inventario.Image = (Image)resources.GetObject("btn_inventario.Image");
-            btn_inventario.Location = new Point(504, 0);
-            btn_inventario.Name = "btn_inventario";
-            btn_inventario.Size = new Size(84, 62);
-            btn_inventario.TabIndex = 6;
-            btn_inventario.Text = "Inventario";
-            btn_inventario.TextAlign = ContentAlignment.BottomCenter;
-            btn_inventario.TextImageRelation = TextImageRelation.ImageAboveText;
-            btn_inventario.UseVisualStyleBackColor = false;
-            btn_inventario.Visible = false;
-            btn_inventario.Click += btn_inventario_Click;
             // 
             // Inicio
             // 

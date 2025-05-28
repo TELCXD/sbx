@@ -1,20 +1,20 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
-using sbx.core.Interfaces.Categoria;
+using sbx.core.Interfaces.Banco;
 
-namespace sbx.repositories.Categorias
+namespace sbx.repositories.Banco
 {
-    public class CategoriaRepository : ICategoria
+    public class BancoRepository: IBanco
     {
         private readonly string _connectionString;
 
-        public CategoriaRepository(string connectionString)
+        public BancoRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public async Task<Response<dynamic>> ListCategoria()
+        public async Task<Response<dynamic>> List()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -24,7 +24,13 @@ namespace sbx.repositories.Categorias
                 {
                     await connection.OpenAsync();
 
-                    string sql = "SELECT IdCategoria, Nombre FROM T_Categorias ORDER BY IdCategoria ";
+                    string sql = @"SELECT 
+                                    IdBanco,
+                                    Codigo,
+                                    Nombre,
+                                    Estado  
+                                    FROM T_Bancos 
+                                    ORDER BY IdBanco ";
 
                     dynamic resultado = await connection.QueryAsync(sql);
 

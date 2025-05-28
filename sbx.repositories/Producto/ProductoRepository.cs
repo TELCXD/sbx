@@ -363,5 +363,121 @@ namespace sbx.repositories.Producto
                 }
             }
         }
+
+        public async Task<Response<dynamic>> ListSku(string sku)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdProducto
+                                  ,A.Sku
+                                  ,A.CodigoBarras
+                                  ,A.Nombre
+                                  ,A.CostoBase
+                                  ,A.PrecioBase
+                                  ,A.EsInventariable
+                                  ,A.Iva
+                                  ,A.IdCategoria
+								  ,B.Nombre NombreCategoria
+                                  ,A.IdMarca
+								  ,C.Nombre NombreMarca
+                                  ,A.UpdateDate
+                                  ,A.IdUnidadMedida
+								  ,D.Nombre NombreUnidadMedida
+                                  ,A.CreationDate
+                                  ,A.UpdateDate
+                                  ,A.IdUserAction 
+                                  FROM T_Productos A
+								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
+								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+
+                    string Where = "";
+
+                    if (!string.IsNullOrEmpty(sku))
+                    {
+                        Where = $"WHERE A.Sku = {sku}";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListCodigoBarras(string CodigoBarras)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdProducto
+                                  ,A.Sku
+                                  ,A.CodigoBarras
+                                  ,A.Nombre
+                                  ,A.CostoBase
+                                  ,A.PrecioBase
+                                  ,A.EsInventariable
+                                  ,A.Iva
+                                  ,A.IdCategoria
+								  ,B.Nombre NombreCategoria
+                                  ,A.IdMarca
+								  ,C.Nombre NombreMarca
+                                  ,A.UpdateDate
+                                  ,A.IdUnidadMedida
+								  ,D.Nombre NombreUnidadMedida
+                                  ,A.CreationDate
+                                  ,A.UpdateDate
+                                  ,A.IdUserAction 
+                                  FROM T_Productos A
+								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
+								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+
+                    string Where = "";
+
+                    if (!string.IsNullOrEmpty(CodigoBarras))
+                    {
+                        Where = $"WHERE A.CodigoBarras = {CodigoBarras}";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

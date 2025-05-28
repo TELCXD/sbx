@@ -342,13 +342,13 @@ Nombre VARCHAR(50) UNIQUE
 )
 GO
 INSERT INTO T_TipoCliente (Nombre)
-VALUES('Minorista'),('Mayorista'),('Cliente Frecuente / VIP'),('Distribuidor'),('Institucional / Corporativo')
+VALUES('Minorista'),('Mayorista'),('Cliente Frecuente / VIP'),('Distribuidor'),('Institucional / Corporativo'),('N/A')
 GO
 CREATE TABLE T_Cliente (
 IdCliente INT IDENTITY(1,1) PRIMARY KEY,
 IdIdentificationType INT,
 NumeroDocumento VARCHAR(11) UNIQUE,
-NombreRazonSocial VARCHAR(100) UNIQUE,
+NombreRazonSocial VARCHAR(100),
 Direccion VARCHAR(150),
 Telefono VARCHAR(20) UNIQUE,
 Email VARCHAR(100),
@@ -382,6 +382,8 @@ IdUserAction INT,
 FOREIGN KEY (IdTipoCliente) REFERENCES T_TipoCliente(IdTipoCliente),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
+GO
+INSERT INTO T_ListasPrecios(NombreLista,IdTipoCliente) VALUES('N/A',6)
 GO
 CREATE TABLE T_PreciosProducto (
 IdListaPrecio INT,
@@ -525,3 +527,113 @@ FOREIGN KEY (IdSalidasInventario) REFERENCES T_SalidasInventario(IdSalidasInvent
 FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
+GO
+CREATE TABLE T_Vendedor (
+IdVendedor INT IDENTITY(1,1) PRIMARY KEY,
+IdIdentificationType INT,
+NumeroDocumento VARCHAR(11) UNIQUE,
+Nombre VARCHAR(100),
+Apellido VARCHAR(100),
+Direccion VARCHAR(150),
+Telefono VARCHAR(20) UNIQUE,
+Email VARCHAR(100),
+Estado BIT,
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY(IdIdentificationType) REFERENCES T_IdentificationType(IdIdentificationType),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)
+GO
+INSERT INTO T_Vendedor (IdIdentificationType,NumeroDocumento,Nombre, Estado)
+VALUES(1,'333','Usuario Pos',1)
+GO
+CREATE TABLE T_Bancos (
+    IdBanco INT IDENTITY(1,1) PRIMARY KEY,
+    Codigo VARCHAR(10),
+    Nombre NVARCHAR(100) NOT NULL,
+    Estado BIT
+)
+GO
+INSERT INTO T_Bancos (Nombre,Estado) 
+VALUES
+	('Bancolombia',1),
+	('Banco Mundo Mujer',1),
+	('BBVA Colombia',1),
+	('Banco AV Villas',1),
+	('Banco Agrario',1),
+	('Banco Caja Social BCSC SA',1),
+	('Banco Davivienda SA',1),
+	('Banco Falabella SA',1),
+	('Banco Pichincha',1),
+	('Banco Popular',1),
+	('Banco W S.A.',1),
+	('Banco de Bogota',1),
+	('Banco de Occidente',1),
+	('Banco CITIBACK',1),
+	('Itau',1),
+	('RappiPay',1),
+	('Scotiabank Colpatria S.A.',1)
+GO
+CREATE TABLE T_MetodoPago (
+IdMetodoPago INT IDENTITY(1,1) PRIMARY KEY,
+Codigo VARCHAR(10) NOT NULL UNIQUE,
+Nombre VARCHAR(50) NOT NULL,
+RequiereReferencia BIT, -- Para tarjetas, transferencias
+PermiteVuelto BIT, -- Solo efectivo
+TieneComision BIT,
+PorcentajeComision DECIMAL(5,2),
+Activo BIT
+)
+GO
+INSERT INTO T_MetodoPago 
+VALUES
+	('EF','Efectivo',0,1,0,0,1),
+	('NQ','Nequi',1,0,1,0,1),
+	('DV','DaviPlata',1,0,1,0,1),
+	('BN','Bancolombia QR',1,0,1,0,1),
+	('TR','Transferencia',1,0,0,0,1),
+	('TC','Tarjeta Crédito',1,0,1,0,1),
+	('TD','Tarjeta Débito',1,0,1,0,1)
+GO
+CREATE TABLE T_Ventas(
+IdVenta INT IDENTITY(1,1) PRIMARY KEY,
+Prefijo VARCHAR(5),
+Consecutivo VARCHAR(50),
+IdCliente INT,
+IdVendedor INT,
+IdMetodoPago INT,
+CreationDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdCliente) REFERENCES T_Cliente(IdCliente),
+FOREIGN KEY (IdVendedor) REFERENCES T_Vendedor(IdVendedor),
+FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)
+GO
+CREATE TABLE T_DetalleVenta(
+IdDetalleVenta INT IDENTITY(1,1) PRIMARY KEY,
+IdVenta INT,
+IdProducto INT,
+Sku VARCHAR(50),
+CodigoBarras VARCHAR(50),
+NombreProducto VARCHAR(100) NOT NULL,
+Cantidad DECIMAL(10,2) NOT NULL,
+PrecioUnitario DECIMAL(10,2) NOT NULL,
+Descuento DECIMAL(10,2),
+SubTotal DECIMAL(10,2) NOT NULL,
+Impuesto DECIMAL(10,2) NOT NULL,
+Total DECIMAL(10,2) NOT NULL,
+FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
+FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
+)
+GO
+CREATE TABLE T_PagosVenta (
+IdPagoVenta INT IDENTITY(1,1) PRIMARY KEY,
+IdVenta INT NOT NULL,
+IdMetodoPago INT NOT NULL,
+Monto DECIMAL(10,2) NOT NULL,
+Referencia VARCHAR(50) NULL, -- Número autorización, comprobante
+FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
+FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago)
+);

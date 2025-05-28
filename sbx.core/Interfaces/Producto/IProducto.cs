@@ -11,5 +11,7 @@ namespace sbx.core.Interfaces.Producto
         Task<bool> ExisteCodigoBarras(string codigoBarras, int Id_Producto);
         Task<bool> ExisteNombre(string nombre, int Id_Producto);
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> ListSku(string sku);
+        Task<Response<dynamic>> ListCodigoBarras(string CodigoBarras);
     }
 }

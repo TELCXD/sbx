@@ -13,6 +13,7 @@ namespace sbx
         private Proveedores? _Proveedores;
         private Clientes? _Clientes;
         private Inventario? _Inventario;
+        private AgregarVentas? _AgregarVentas;
 
         public Inicio(IServiceProvider serviceProvider)
         {
@@ -183,6 +184,21 @@ namespace sbx
             _Inventario.Permisos = _Permisos;
             _Inventario.FormClosed += (s, args) => _Inventario = null;
             _Inventario.Show();
+        }
+
+        private void btn_venta_Click(object sender, EventArgs e)
+        {
+            if (_AgregarVentas != null && !_AgregarVentas.IsDisposed)
+            {
+                _AgregarVentas.BringToFront();
+                _AgregarVentas.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _AgregarVentas = _serviceProvider.GetRequiredService<AgregarVentas>();
+            _AgregarVentas.Permisos = _Permisos;
+            _AgregarVentas.FormClosed += (s, args) => _Clientes = null;
+            _AgregarVentas.Show();
         }
     }
 }

@@ -120,17 +120,17 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btn_inventario.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAALAAAACwARRqq2kAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwa
-        AAAB2ElEQVRIS83VTUsVUQDG8ZtFIdkrYYEuKsreBXcuQnrbm1C60RZBUrRwpa6CFkEuRIlECXJRWloL
-        V9YiI1z7FfoEogs3tvb/v3eOHIcZmasSPvDj3jn33nmYc87MLe2HPMQnvEKdA6mcQX3lbfGcwiDe4U1y
-        fBdTCGnECD5jGu9xCZk5gHY8TnjySTQjzjFcQDjxdZg2zGMB/u4atuQ4fiEueIt0jmIdv+FV3cYMXuNk
-        ws/+Je83Y8FE5W05LfiDocgt+L1xDGANf3EFrsEcljGGDziNzaQLnDKn4mLkCEJBA7yCfqxiBZaG+J1t
-        C/ISCq7iG7ownIiz64KQGuxpgdPk2jyCJzdxgWN+tohaB0KyCsKX0zmMJ/iJXozCbevuc6wPW05u4gIX
-        17vTbdrhQE4OoRvuJPUkY5mJC85jCe5t424J90dwDyFeqZrKRzlJT9EN+CNvfRdru4KQr8lrZuIC5+8g
-        OhGuokgKF7TC238WXsVZuJhZnsJFN4ULjLvEMQt8pjzIcR9hYasqMDfhc6VoChfcwUv8wAmcQ9b06BnC
-        ni9c4IPuIy6XjyqP6KzpkX9CbghT9RRVE9fKf7Xc7KbAk7ubnpePcuJW+4LvO+DUvIBF/zul0gb7G2M6
-        cMvclgAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
+        rwAAAK8BK7AVuQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAHYSURBVEhLzdVN
+        SxVRAMbxm0Uh2SthgS4qyt4Fdy5CetubULrRFkFStHClroIWQS5EiUQJclFaWgtX1iIjXPsV+gSiCze2
+        9v+/d44chxmZqxI+8OPeOffeeZhzzswt7Yc8xCe8Qp0DqZxBfeVt8ZzCIN7hTXJ8F1MIacQIPmMa73EJ
+        mTmAdjxOePJJNCPOMVxAOPF1mDbMYwH+7hq25Dh+IS54i3SOYh2/4VXdxgxe42TCz/4l7zdjwUTlbTkt
+        +IOhyC34vXEMYA1/cQWuwRyWMYYPOI3NpAucMqfiYuQIQkEDvIJ+rGIFlob4nW0L8hIKruIbujCciLPr
+        gpAa7GmB0+TaPIInN3GBY362iFoHQrIKwpfTOYwn+IlejMJt6+5zrA9bTm7iAhfXu9Nt2uFATg6hG+4k
+        9SRjmYkLzmMJ7m3jbgn3R3APIV6pmspHOUlP0Q34I299F2u7gpCvyWtm4gLn7yA6Ea6iSAoXtMLbfxZe
+        xVm4mFmewkU3hQuMu8QxC3ymPMhxH2FhqyowN+FzpWgKF9zBS/zACZxD1vToGcKeL1zgg+4jLpePKo/o
+        rOmRf0JuCFP1FFUT18p/tdzspsCTu5uel49y4lb7gu874NS8gEX/O6XSBvsbYzpwy9yWAAAAAElFTkSu
+        QmCC
 </value>
   </data>
   <data name="btn_ajustes.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
