@@ -234,8 +234,8 @@ CREATE TABLE T_RangoNumeracion(
 Id_RangoNumeracion INT IDENTITY(1,1) PRIMARY KEY,
 Id_TipoDocumentoRangoNumeracion INT,
 Prefijo VARCHAR(10) UNIQUE,
-NumeroDesde VARCHAR(50),
-NumeroHasta VARCHAR(50),
+NumeroDesde BIGINT,
+NumeroHasta BIGINT,
 NumeroAutorizacion VARCHAR(50) UNIQUE,
 FechaVencimiento DATE,
 Active BIT,
@@ -248,7 +248,7 @@ FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
 INSERT INTO T_RangoNumeracion (Id_TipoDocumentoRangoNumeracion, Prefijo, NumeroDesde,NumeroHasta,FechaVencimiento,Active,CreationDate,IdUserAction)
-VALUES(1,'FV','1','9999999','2030-01-01',1,GETDATE(),1)
+VALUES(1,'FV',1,9999999,'2030-01-01',1,GETDATE(),1)
 GO
 CREATE TABLE T_Categorias(
 IdCategoria INT IDENTITY(1,1) PRIMARY KEY,
@@ -557,6 +557,7 @@ CREATE TABLE T_Bancos (
 GO
 INSERT INTO T_Bancos (Nombre,Estado) 
 VALUES
+	('N/A',1),
 	('Bancolombia',1),
 	('Banco Mundo Mujer',1),
 	('BBVA Colombia',1),
@@ -599,7 +600,7 @@ GO
 CREATE TABLE T_Ventas(
 IdVenta INT IDENTITY(1,1) PRIMARY KEY,
 Prefijo VARCHAR(5),
-Consecutivo VARCHAR(50),
+Consecutivo BIGINT,
 IdCliente INT,
 IdVendedor INT,
 IdMetodoPago INT,
@@ -621,9 +622,7 @@ NombreProducto VARCHAR(100) NOT NULL,
 Cantidad DECIMAL(10,2) NOT NULL,
 PrecioUnitario DECIMAL(10,2) NOT NULL,
 Descuento DECIMAL(10,2),
-SubTotal DECIMAL(10,2) NOT NULL,
 Impuesto DECIMAL(10,2) NOT NULL,
-Total DECIMAL(10,2) NOT NULL,
 FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
 FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
 )
@@ -634,6 +633,8 @@ IdVenta INT NOT NULL,
 IdMetodoPago INT NOT NULL,
 Monto DECIMAL(10,2) NOT NULL,
 Referencia VARCHAR(50) NULL, -- Número autorización, comprobante
+IdBanco INT NOT NULL,
 FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
-FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago)
+FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
+FOREIGN KEY (IdBanco) REFERENCES T_Bancos(IdBanco)
 );

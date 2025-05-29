@@ -291,9 +291,9 @@ namespace sbx.repositories.PrecioCliente
 
                     string sql = $@"SELECT IdCliente, IdProducto,PrecioEspecial,FechaInicio,FechaFin 
                                     FROM T_PreciosCliente
-                                    WHERE IdProducto = {IdProducto} AND IdCliente = {IdCliente} AND FechaInicio >= '{FechaActual}' AND FechaFin <= '{FechaActual}' ";
+                                    WHERE IdProducto = {IdProducto} AND IdCliente = {IdCliente} AND (@FechaActual >= FechaInicio  AND @FechaActual <= FechaFin) ";
 
-                    dynamic resultado = await connection.QueryAsync(sql);
+                    dynamic resultado = await connection.QueryAsync(sql, new { FechaActual });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

@@ -173,9 +173,9 @@ namespace sbx.repositories.PromocionProducto
                                             FROM T_Promociones A
                                             INNER JOIN T_PromocionesProductos B ON A.IdPromocion = B.IdPromocion
                                             INNER JOIN T_TipoPromocion C ON A.IdTipoPromocion = C.IdTipoPromocion
-                                    WHERE   IdProducto = {IdProducto} AND FechaInicio >= '{FechaActual}' AND FechaFin <= '{FechaActual}' ";
+                                    WHERE   IdProducto = {IdProducto} AND @FechaActual >= FechaInicio AND @FechaActual <= FechaFin ";
 
-                    dynamic resultado = await connection.QueryAsync(sql);
+                    dynamic resultado = await connection.QueryAsync(sql, new { FechaActual });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

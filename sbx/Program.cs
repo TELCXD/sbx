@@ -33,6 +33,7 @@ using sbx.core.Interfaces.TipoResponsabilidad;
 using sbx.core.Interfaces.TipoSalida;
 using sbx.core.Interfaces.UnidadMedida;
 using sbx.core.Interfaces.Vendedor;
+using sbx.core.Interfaces.Venta;
 using sbx.repositories.ActividadEconomica;
 using sbx.repositories.Banco;
 using sbx.repositories.Categorias;
@@ -66,6 +67,7 @@ using sbx.repositories.TipoResponsabilidad;
 using sbx.repositories.TipoSalida;
 using sbx.repositories.UnidadMedida;
 using sbx.repositories.Vendedor;
+using sbx.repositories.Venta;
 using System.Configuration;
 
 namespace sbx
@@ -238,6 +240,9 @@ namespace sbx
 
                 services.AddTransient<IBanco>(provider =>
                  new BancoRepository(connectionString));
+
+                services.AddTransient<IVenta>(provider =>
+                new VentaRepository(connectionString));
             })
             .Build();
 
