@@ -159,7 +159,7 @@ namespace sbx.repositories.PrecioProducto
             }
         }
 
-        public async Task<Response<dynamic>> PrecioListaPreciosTipoCliente(int IdProducto, int IdListaPrecio)
+        public async Task<Response<dynamic>> PrecioListaPreciosTipoCliente(int IdProducto, int IdListaPrecio, int IdTipoCliente)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -176,9 +176,12 @@ namespace sbx.repositories.PrecioProducto
                                     FROM T_ListasPrecios A
                                     INNER JOIN T_PreciosProducto B ON A.IdListaPrecio = B.IdListaPrecio
                                     INNER JOIN T_TipoCliente C ON A.IdTipoCliente = C.IdTipoCliente
-                                    WHERE B.IdListaPrecio = {IdListaPrecio} AND IdProducto = {IdProducto} AND FechaInicio >= '{FechaActual}' AND FechaFin <= '{FechaActual}' ";
+                                    WHERE B.IdListaPrecio = {IdListaPrecio} 
+                                    AND IdProducto = {IdProducto} 
+                                    AND A.IdTipoCliente = {IdTipoCliente}
+                                    AND (@FechaActual >= FechaInicio AND @FechaActual <= FechaFin) ";
 
-                    dynamic resultado = await connection.QueryAsync(sql);
+                    dynamic resultado = await connection.QueryAsync(sql, new { FechaActual });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

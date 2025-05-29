@@ -40,8 +40,8 @@ namespace sbx
                     switch (item.MenuUrl)
                     {
                         case "ajustes":
-                            btn_agregar_ra.Enabled = item.ToCreate == 1 ? true : false;
-                            btn_editar_ra.Enabled = item.ToUpdate == 1 ? true : false;
+                            //btn_agregar_ra.Enabled = item.ToCreate == 1 ? true : false;
+                            //btn_editar_ra.Enabled = item.ToUpdate == 1 ? true : false;
                             //btn_eliminar_ra.Enabled = item.ToDelete == 1 ? true : false;
                             break;
                         default:

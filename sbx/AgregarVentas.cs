@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.AgregaVenta;
+using sbx.core.Entities.PagosVenta;
+using sbx.core.Entities.Venta;
 using sbx.core.Interfaces.Banco;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.ListaPrecios;
@@ -8,9 +10,10 @@ using sbx.core.Interfaces.PrecioCliente;
 using sbx.core.Interfaces.PrecioProducto;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.PromocionProducto;
+using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Vendedor;
+using sbx.core.Interfaces.Venta;
 using System.Globalization;
-using System.Windows.Forms;
 
 namespace sbx
 {
@@ -28,8 +31,11 @@ namespace sbx
         private readonly IPrecioCliente _IPrecioCliente;
         private readonly IPrecioProducto _IPrecioProducto;
         private readonly IPromocionProducto _IPromocionProducto;
+        private readonly IRangoNumeracion _IRangoNumeracion;
+        private readonly IVenta _IVenta;
         string busqueda = "";
         AgregaVentaEntitie agregaVentaEntitie = new AgregaVentaEntitie();
+        VentaEntitie venta = new VentaEntitie();
         char decimalSeparator = ',';
         private AgregarProducto? _AgregarProducto;
         decimal Cantidad = 0;
@@ -40,9 +46,12 @@ namespace sbx
         decimal Total = 0;
         decimal DescuentoLinea = 0;
         private AgregarCliente? _AgregarCliente;
+        int IdTipoCliente = 0;
+        bool CargaListaPrecio = false;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
-            IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente, IPrecioProducto precioProducto, IPromocionProducto promocionProducto)
+            IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente, 
+            IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -55,6 +64,9 @@ namespace sbx
             _IPrecioCliente = precioCliente;
             _IPrecioProducto = precioProducto;
             _IPromocionProducto = promocionProducto;
+            _IRangoNumeracion = iRangoNumeracion;
+            _IRangoNumeracion = iRangoNumeracion;
+            _IVenta = venta;
         }
 
         public dynamic? Permisos
@@ -77,17 +89,25 @@ namespace sbx
             cbx_lista_precio.DisplayMember = "NombreLista";
             cbx_lista_precio.SelectedIndex = 0;
 
-            resp = await _IVendedor.List(0);
-            cbx_vendedor.DataSource = resp.Data;
-            cbx_vendedor.ValueMember = "IdVendedor";
-            cbx_vendedor.DisplayMember = "NombreCompleto";
-            cbx_vendedor.SelectedIndex = 0;
+            CargaListaPrecio = true;
 
             resp = await _IVendedor.List(0);
             cbx_vendedor.DataSource = resp.Data;
             cbx_vendedor.ValueMember = "IdVendedor";
             cbx_vendedor.DisplayMember = "NombreCompleto";
             cbx_vendedor.SelectedIndex = 0;
+
+            resp = await _ICliente.List(1);
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 0)
+                {
+                    agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                    txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                    lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                    IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
+                }
+            }
 
             resp = await _IMedioPago.List();
             cbx_medio_pago.DataSource = resp.Data;
@@ -102,6 +122,8 @@ namespace sbx
             cbx_banco.SelectedIndex = 0;
 
             cbx_busca_por.SelectedIndex = 0;
+
+            pnl_pagos.Enabled = false;
         }
 
         private void ValidaPermisos()
@@ -119,7 +141,6 @@ namespace sbx
                             btn_ventas_suspendidas.Enabled = item.ToRead == 1 ? true : false;
                             btn_suspender.Enabled = item.ToCreate == 1 ? true : false;
                             btn_cancelar.Enabled = item.ToUpdate == 1 ? true : false;
-                            txt_busca_cliente.Enabled = item.ToRead == 1 ? true : false;
                             btn_busca_cliente.Enabled = item.ToRead == 1 ? true : false;
                             btn_nuevo_cliente.Enabled = item.ToCreate == 1 ? true : false;
                             txt_valor_pago.Enabled = item.ToCreate == 1 ? true : false;
@@ -138,16 +159,29 @@ namespace sbx
 
         private void cbx_medio_pago_SelectedValueChanged(object sender, EventArgs e)
         {
+            ValidarModoPagos();
+        }
+
+        private void ValidarModoPagos()
+        {
             if (cbx_medio_pago.Text == "Transferencia" || cbx_medio_pago.Text == "Tarjeta Crédito" || cbx_medio_pago.Text == "Tarjeta Débito")
             {
                 txt_referencia_pago.Enabled = true;
                 cbx_banco.Enabled = true;
+                if (cbx_banco.DataSource != null) { cbx_banco.SelectedIndex = 1; }
+                txt_valor_pago.Text = lbl_total.Text;
+                txt_valor_pago.Enabled = false;
+                lbl_cambio.Text = "0";
             }
 
             if (cbx_medio_pago.Text == "Nequi" || cbx_medio_pago.Text == "DaviPlata" || cbx_medio_pago.Text == "Bancolombia QR")
             {
                 txt_referencia_pago.Enabled = true;
                 cbx_banco.Enabled = false;
+                if (cbx_banco.DataSource != null) { cbx_banco.SelectedIndex = 0; }
+                txt_valor_pago.Text = lbl_total.Text;
+                txt_valor_pago.Enabled = false;
+                lbl_cambio.Text = "0";
             }
 
             if (cbx_medio_pago.Text == "Efectivo")
@@ -155,7 +189,10 @@ namespace sbx
                 txt_referencia_pago.Enabled = false;
                 txt_referencia_pago.Text = "";
                 cbx_banco.Enabled = false;
-
+                if (cbx_banco.DataSource != null) { cbx_banco.SelectedIndex = 0; }
+                txt_valor_pago.Text = "";
+                txt_valor_pago.Enabled = true;
+                lbl_cambio.Text = "_";
             }
 
             lbl_metodo_pago.Text = cbx_medio_pago.Text;
@@ -275,9 +312,29 @@ namespace sbx
                 var resp = await _ICliente.List(id);
                 if (resp.Data != null)
                 {
-                    agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                    txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
-                    lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                    if (resp.Data.Count > 0)
+                    {
+                        agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                        txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                        lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                        IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
+
+                        if (Convert.ToInt32(cbx_lista_precio.SelectedValue) > 1)
+                        {
+                            resp = await _IListaPrecios.List(Convert.ToInt32(cbx_lista_precio.SelectedValue));
+                            if (resp.Data != null)
+                            {
+                                if (resp.Data.Count > 0)
+                                {
+                                    if (IdTipoCliente != Convert.ToInt32(resp.Data[0].IdTipoCliente))
+                                    {
+                                        MessageBox.Show($"La lista de precios {cbx_lista_precio.Text} no está disponible para el tipo de cliente asignado a {lbl_nombre_cliente.Text}.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        cbx_lista_precio.SelectedIndex = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             else if (busqueda == "Add_AgregaVenta_busca_producto")
@@ -346,45 +403,53 @@ namespace sbx
                 var resp1 = await _IPrecioCliente.PrecioClientePersonalizado(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdCliente);
                 if (resp1.Data != null)
                 {
-                    decimal Total = CalcularTotal(resp1.Data[0].PrecioEspecial, DataProducto.Data[0].Iva, 0);
+                    if (resp1.Data.Count > 0)
+                    {
+                        decimal Total = CalcularTotal(resp1.Data[0].PrecioEspecial, DataProducto.Data[0].Iva, 0);
 
-                    dtg_producto.Rows.Add(
-                         DataProducto.Data[0].IdProducto,
-                         DataProducto.Data[0].Sku,
-                         DataProducto.Data[0].CodigoBarras,
-                         DataProducto.Data[0].Nombre,
-                         resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
-                         1,
-                         0,
-                         DataProducto.Data[0].Iva,
-                         Total.ToString("N2", new CultureInfo("es-CO"))
-                        );
+                        dtg_producto.Rows.Add(
+                             DataProducto.Data[0].IdProducto,
+                             DataProducto.Data[0].Sku,
+                             DataProducto.Data[0].CodigoBarras,
+                             DataProducto.Data[0].Nombre,
+                             resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
+                             1,
+                             0,
+                             DataProducto.Data[0].Iva,
+                             Total.ToString("N2", new CultureInfo("es-CO"))
+                            );
 
-                    Continuar = false;
+                        Continuar = false;
+                        cbx_lista_precio.SelectedIndex = 0;
+                        cbx_lista_precio.Enabled = false;
+                    }
                 }
             }
             //2. ¿Pertenece a una lista de precios por tipo de cliente?
             agregaVentaEntitie.IdListaPrecio = Convert.ToInt32(cbx_lista_precio.SelectedValue);
             if (agregaVentaEntitie.IdListaPrecio > 1 && Continuar == true)
             {
-                var resp2 = await _IPrecioProducto.PrecioListaPreciosTipoCliente(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdListaPrecio);
+                var resp2 = await _IPrecioProducto.PrecioListaPreciosTipoCliente(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdListaPrecio, IdTipoCliente);
                 if (resp2.Data != null)
                 {
-                    decimal Total = CalcularTotal(resp2.Data[0].Precio, DataProducto.Data[0].Iva, 0);
+                    if (resp2.Data.Count > 0)
+                    {
+                        decimal Total = CalcularTotal(resp2.Data[0].Precio, DataProducto.Data[0].Iva, 0);
 
-                    dtg_producto.Rows.Add(
-                         DataProducto.Data[0].IdProducto,
-                         DataProducto.Data[0].Sku,
-                         DataProducto.Data[0].CodigoBarras,
-                         DataProducto.Data[0].Nombre,
-                         resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
-                         1,
-                         0,
-                         DataProducto.Data[0].Iva,
-                         Total.ToString("N2", new CultureInfo("es-CO"))
-                        );
+                        dtg_producto.Rows.Add(
+                             DataProducto.Data[0].IdProducto,
+                             DataProducto.Data[0].Sku,
+                             DataProducto.Data[0].CodigoBarras,
+                             DataProducto.Data[0].Nombre,
+                             resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
+                             1,
+                             0,
+                             DataProducto.Data[0].Iva,
+                             Total.ToString("N2", new CultureInfo("es-CO"))
+                            );
 
-                    Continuar = false;
+                        Continuar = false;
+                    }
                 }
             }
             //3. ¿Hay promociones activas? => aplicar sobre el precio base
@@ -393,21 +458,24 @@ namespace sbx
                 var resp3 = await _IPromocionProducto.PromocionActiva(Convert.ToInt32(DataProducto.Data[0].IdProducto));
                 if (resp3.Data != null)
                 {
-                    decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, resp3.Data[0].Porcentaje);
+                    if (resp3.Data.Count > 0)
+                    {
+                        decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, resp3.Data[0].Porcentaje);
 
-                    dtg_producto.Rows.Add(
-                         DataProducto.Data[0].IdProducto,
-                         DataProducto.Data[0].Sku,
-                         DataProducto.Data[0].CodigoBarras,
-                         DataProducto.Data[0].Nombre,
-                         DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
-                         1,
-                         resp3.Data[0].Porcentaje,
-                         DataProducto.Data[0].Iva,
-                         Total.ToString("N2", new CultureInfo("es-CO"))
-                        );
+                        dtg_producto.Rows.Add(
+                             DataProducto.Data[0].IdProducto,
+                             DataProducto.Data[0].Sku,
+                             DataProducto.Data[0].CodigoBarras,
+                             DataProducto.Data[0].Nombre,
+                             DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
+                             1,
+                             resp3.Data[0].Porcentaje,
+                             DataProducto.Data[0].Iva,
+                             Total.ToString("N2", new CultureInfo("es-CO"))
+                            );
 
-                    Continuar = false;
+                        Continuar = false;
+                    }
                 }
             }
             //4. Si nada aplica => usar PrecioBase por defecto
@@ -450,11 +518,30 @@ namespace sbx
                 lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                 lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                 lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+
+                cbx_lista_precio.Enabled = false;
+                btn_busca_cliente.Enabled = false;
+                pnl_pagos.Enabled = true;
+                ValidarModoPagos();
+            }
+            else
+            {
+                cbx_lista_precio.Enabled = true;
+                btn_busca_cliente.Enabled = true;
+                pnl_pagos.Enabled = false;
+                cbx_lista_precio.Enabled = true;
             }
         }
 
         private void txt_valor_pago_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (e.KeyChar == (char)Keys.Enter) // o (char)13
+            {
+                GuardarVenta();
+                e.Handled = true; // opcional: evita beep
+                return;
+            }
+
             if (char.IsControl(e.KeyChar))
                 return;
 
@@ -521,7 +608,6 @@ namespace sbx
             // Remover eventos anteriores para evitar duplicados
             e.Control.KeyPress -= new KeyPressEventHandler(dtg_producto_KeyPress);
 
-            // Solo agregar el evento si estamos en las columnas 5 o 6
             if (dtg_producto.CurrentCell.ColumnIndex == 5 || dtg_producto.CurrentCell.ColumnIndex == 6)
             {
                 e.Control.KeyPress += new KeyPressEventHandler(dtg_producto_KeyPress);
@@ -540,6 +626,287 @@ namespace sbx
                 return;
 
             e.Handled = true;
+        }
+
+        private void dtg_producto_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 5 || e.ColumnIndex == 6)
+            {
+                var celda = dtg_producto[e.ColumnIndex, e.RowIndex];
+
+                if (celda.Value == null || string.IsNullOrWhiteSpace(celda.Value.ToString()))
+                {
+                    if (e.ColumnIndex == 5)
+                    {
+                        celda.Value = 1;
+                    }
+                    else if (e.ColumnIndex == 6)
+                    {
+                        celda.Value = 0;
+                    }
+
+                    decimal precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    decimal cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    decimal desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    decimal iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                    decimal total = CalcularTotal(precio, iva, desc);
+                    total = total * cantidad;
+
+                    dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
+                    RecalcularTotal();
+                }
+                else
+                {
+                    decimal precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    decimal cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    decimal desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    decimal iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                    decimal total = CalcularTotal(precio, iva, desc);
+                    total = total * cantidad;
+
+                    dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
+                    RecalcularTotal();
+                }
+            }
+        }
+
+        private void RecalcularTotal()
+        {
+            Cantidad = 0;
+            Subtotal = 0;
+            Descuento = 0;
+            Impuesto = 0;
+
+            if (dtg_producto.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow fila in dtg_producto.Rows)
+                {
+                    Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
+                    Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
+                    SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
+                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
+                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
+                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value));
+                }
+                Total = (Subtotal - Descuento) + Impuesto;
+
+                lbl_cantidadProductos.Text = Cantidad.ToString();
+                lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
+                lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
+                lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+
+                btn_busca_cliente.Enabled = false;
+                pnl_pagos.Enabled = true;
+                ValidarModoPagos();
+            }
+            else
+            {
+                btn_busca_cliente.Enabled = true;
+                pnl_pagos.Enabled = false;
+            }
+        }
+
+        private void btn_cancelar_Click(object sender, EventArgs e)
+        {
+            if (dtg_producto.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro de cancelar la venta?",
+                             "Confirmar cancelacion",
+                             MessageBoxButtons.YesNo,
+                             MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    Limpiar();
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se encontro informacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void Limpiar()
+        {
+            cbx_lista_precio.Enabled = true;
+            cbx_lista_precio.SelectedIndex = 0;
+            cbx_vendedor.SelectedIndex = 0;
+
+            var resp = await _ICliente.List(1);
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 0)
+                {
+                    agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                    txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                    lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                }
+            }
+
+            cbx_lista_precio.Enabled = true;
+            btn_busca_cliente.Enabled = true;
+
+            dtg_producto.Rows.Clear();
+
+            cbx_medio_pago.SelectedIndex = 0;
+            txt_referencia_pago.Text = "";
+            cbx_banco.SelectedIndex = 0;
+            txt_valor_pago.Text = "";
+            lbl_cambio.Text = "_";
+
+            lbl_cantidadProductos.Text = "_";
+            lbl_subtotal.Text = "_";
+            lbl_descuento.Text = "_";
+            lbl_impuesto.Text = "_";
+            lbl_total.Text = "_";
+
+            cbx_busca_por.SelectedIndex = 0;
+
+            pnl_pagos.Enabled = false;
+
+            errorProvider1.Clear();
+        }
+
+        private async void cbx_lista_precio_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (CargaListaPrecio)
+            {
+                if (Convert.ToInt32(cbx_lista_precio.SelectedValue) > 1)
+                {
+                    var resp = await _IListaPrecios.List(Convert.ToInt32(cbx_lista_precio.SelectedValue));
+                    if (resp.Data != null)
+                    {
+                        if (resp.Data.Count > 0)
+                        {
+                            if (IdTipoCliente != Convert.ToInt32(resp.Data[0].IdTipoCliente))
+                            {
+                                MessageBox.Show($"La lista de precios {cbx_lista_precio.Text} no está disponible para el tipo de cliente asignado a {lbl_nombre_cliente.Text}.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                cbx_lista_precio.SelectedIndex = 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btn_suspender_Click(object sender, EventArgs e)
+        {
+            if (dtg_producto.Rows.Count > 0)
+            {
+
+            }
+            else
+            {
+                MessageBox.Show($"No hay productos agregados para suspender la venta", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btn_completar_venta_Click(object sender, EventArgs e)
+        {
+            GuardarVenta();
+        }
+
+        private async void GuardarVenta()
+        {
+            bool continuar = true;
+            errorProvider1.Clear();
+
+            if (txt_valor_pago.Text.Trim() != "")
+            {
+                if (cbx_medio_pago.Text == "Efectivo")
+                {
+                    if (Convert.ToDecimal(lbl_cambio.Text, new CultureInfo("es-CO")) < 0)
+                    {
+                        continuar = false;
+                    }
+                }
+
+                if (continuar)
+                {
+                    DateTime FechaVencimiento = DateTime.Now;
+                    venta.IdCliente = agregaVentaEntitie.IdCliente;
+                    venta.IdVendedor = Convert.ToInt32(cbx_vendedor.SelectedValue);
+                    venta.IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue);
+                    var resp = await _IRangoNumeracion.List(0);
+                    if (resp.Data != null)
+                    {
+                        if (resp.Data.Count > 0)
+                        {
+                            venta.Prefijo = resp.Data[0].Prefijo;
+                            FechaVencimiento = Convert.ToDateTime(resp.Data[0].FechaVencimiento);
+                        }
+
+                        DateTime FechaActual = DateTime.Now;
+                        FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd"));
+
+                        if (FechaVencimiento >= FechaActual)
+                        {
+                            List<DetalleVentaEntitie> detalleVentas = new List<DetalleVentaEntitie>();
+
+                            foreach (DataGridViewRow fila in dtg_producto.Rows)
+                            {
+                                DetalleVentaEntitie Detalle = new DetalleVentaEntitie
+                                {
+                                    IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
+                                    Sku = fila.Cells["cl_sku"].Value?.ToString() ?? "",
+                                    CodigoBarras = fila.Cells["cl_codigo_barras"].Value?.ToString() ?? "",
+                                    NombreProducto = fila.Cells["cl_nombre"].Value?.ToString() ?? "",
+                                    Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
+                                    PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
+                                    Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
+                                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"))
+                                };
+
+                                detalleVentas.Add(Detalle);
+                            }
+
+                            venta.detalleVentas = detalleVentas;
+
+                            List<PagosVentaEntitie> pagosVentaEntities = new List<PagosVentaEntitie>();
+                            PagosVentaEntitie pagosVentaEntitie = new PagosVentaEntitie
+                            {
+                                IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue),
+                                Monto = Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
+                                Referencia = txt_referencia_pago.Text,
+                                IdBanco = Convert.ToInt32(cbx_banco.SelectedValue)
+                            };
+                            pagosVentaEntities.Add(pagosVentaEntitie);
+                            venta.pagosVenta = pagosVentaEntities;
+
+                            var respGuardado = await _IVenta.Create(venta, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                            if (respGuardado != null)
+                            {
+                                if (respGuardado.Flag == true)
+                                {
+                                    MessageBox.Show(respGuardado.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    Limpiar();
+                                }
+                                else
+                                {
+                                    MessageBox.Show(respGuardado.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Rango de numeracion vencido, fecha de vencimiento: {FechaVencimiento}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+                else
+                {
+                    errorProvider1.SetError(lbl_cambio, "Valor debe ser mayor o igual a cero");
+                }
+            }
+            else
+            {
+                errorProvider1.SetError(txt_valor_pago, "Debe ingresar el valor a pagar");
+            }
         }
     }
 }
