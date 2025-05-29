@@ -402,7 +402,7 @@ namespace sbx.repositories.Producto
 
                     if (!string.IsNullOrEmpty(sku))
                     {
-                        Where = $"WHERE A.Sku = {sku}";
+                        Where = $"WHERE A.Sku = '{sku}'";
                         sql += Where;
                     }
 
@@ -460,7 +460,7 @@ namespace sbx.repositories.Producto
 
                     if (!string.IsNullOrEmpty(CodigoBarras))
                     {
-                        Where = $"WHERE A.CodigoBarras = {CodigoBarras}";
+                        Where = $"WHERE A.CodigoBarras = '{CodigoBarras}'";
                         sql += Where;
                     }
 

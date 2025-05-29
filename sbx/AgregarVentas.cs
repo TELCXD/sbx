@@ -10,6 +10,7 @@ using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.Vendedor;
 using System.Globalization;
+using System.Windows.Forms;
 
 namespace sbx
 {
@@ -38,6 +39,7 @@ namespace sbx
         decimal Impuesto = 0;
         decimal Total = 0;
         decimal DescuentoLinea = 0;
+        private AgregarCliente? _AgregarCliente;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente, IPrecioProducto precioProducto, IPromocionProducto promocionProducto)
@@ -172,6 +174,7 @@ namespace sbx
         private async void txt_buscar_producto_KeyPress(object sender, KeyPressEventArgs e)
         {
             errorProvider1.Clear();
+
             if (cbx_busca_por.Text == "Id")
             {
                 if (!char.IsDigit(e.KeyChar) && e.KeyChar != 8 && e.KeyChar != 13)
@@ -186,6 +189,18 @@ namespace sbx
                         if (txt_buscar_producto.Text.Trim() != "")
                         {
                             var DataProducto = await _IProducto.List(Convert.ToInt32(txt_buscar_producto.Text));
+
+                            if (DataProducto.Data != null)
+                            {
+                                if (DataProducto.Data.Count > 0)
+                                {
+                                    IdentificarPrecio(DataProducto);
+                                }
+                                else
+                                {
+                                    errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                }
+                            }
                         }
                         else
                         {
@@ -204,10 +219,34 @@ namespace sbx
                         if (cbx_busca_por.Text == "Sku")
                         {
                             var DataProducto = await _IProducto.ListSku(txt_buscar_producto.Text);
+
+                            if (DataProducto.Data != null)
+                            {
+                                if (DataProducto.Data.Count > 0)
+                                {
+                                    IdentificarPrecio(DataProducto);
+                                }
+                                else
+                                {
+                                    errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                }
+                            }
                         }
-                        else
+                        else if (cbx_busca_por.Text == "Codigo barras")
                         {
                             var DataProducto = await _IProducto.ListCodigoBarras(txt_buscar_producto.Text);
+
+                            if (DataProducto.Data != null)
+                            {
+                                if (DataProducto.Data.Count > 0)
+                                {
+                                    IdentificarPrecio(DataProducto);
+                                }
+                                else
+                                {
+                                    errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                }
+                            }
                         }
                     }
                     else
@@ -243,122 +282,17 @@ namespace sbx
             }
             else if (busqueda == "Add_AgregaVenta_busca_producto")
             {
-                bool Continuar = true;
-
                 var DataProducto = await _IProducto.List(id);
                 if (DataProducto.Data != null)
                 {
-                    Cantidad = 0;
-                    Subtotal = 0;
-                    Descuento = 0;
-                    Impuesto = 0;
-                    SubtotalLinea = 0;
-                    DescuentoLinea = 0;
-
-                    //1. ¿Tiene precio personalizado? => usar PreciosCliente
-                    if (agregaVentaEntitie.IdCliente > 0)
+                    if (DataProducto.Data.Count > 0)
                     {
-                        var resp1 = await _IPrecioCliente.PrecioClientePersonalizado(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdCliente);
-                        if (resp1.Data != null)
-                        {
-                            decimal Total = CalcularTotal(resp1.Data[0].PrecioEspecial, DataProducto.Data[0].Iva, 0);
-
-                            dtg_producto.Rows.Add(
-                                 DataProducto.Data[0].IdProducto,
-                                 DataProducto.Data[0].Sku,
-                                 DataProducto.Data[0].CodigoBarras,
-                                 DataProducto.Data[0].Nombre,
-                                 resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
-                                 1,
-                                 0,
-                                 DataProducto.Data[0].Iva,
-                                 Total.ToString("N2", new CultureInfo("es-CO"))
-                                );
-                            Continuar = false;
-                        }
+                        IdentificarPrecio(DataProducto);
                     }
-                    //2. ¿Pertenece a una lista de precios por tipo de cliente?
-                    agregaVentaEntitie.IdListaPrecio = Convert.ToInt32(cbx_lista_precio.SelectedValue);
-                    if (agregaVentaEntitie.IdListaPrecio > 1 && Continuar == true)
-                    {
-                        var resp2 = await _IPrecioProducto.PrecioListaPreciosTipoCliente(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdListaPrecio);
-                        if (resp2.Data != null)
-                        {
-                            decimal Total = CalcularTotal(resp2.Data[0].Precio, DataProducto.Data[0].Iva, 0);
-
-                            dtg_producto.Rows.Add(
-                                 DataProducto.Data[0].IdProducto,
-                                 DataProducto.Data[0].Sku,
-                                 DataProducto.Data[0].CodigoBarras,
-                                 DataProducto.Data[0].Nombre,
-                                 resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
-                                 1,
-                                 0,
-                                 DataProducto.Data[0].Iva,
-                                 Total.ToString("N2", new CultureInfo("es-CO"))
-                                );
-                            Continuar = false;
-                        }
-                    }
-                    //3. ¿Hay promociones activas? => aplicar sobre el precio base
-                    if (Continuar == true)
-                    {
-                        var resp3 = await _IPromocionProducto.PromocionActiva(Convert.ToInt32(DataProducto.Data[0].IdProducto));
-                        if (resp3.Data != null)
-                        {
-                            decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, resp3.Data[0].Porcentaje);
-
-                            dtg_producto.Rows.Add(
-                                 DataProducto.Data[0].IdProducto,
-                                 DataProducto.Data[0].Sku,
-                                 DataProducto.Data[0].CodigoBarras,
-                                 DataProducto.Data[0].Nombre,
-                                 DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
-                                 1,
-                                 resp3.Data[0].Porcentaje,
-                                 DataProducto.Data[0].Iva,
-                                 Total.ToString("N2", new CultureInfo("es-CO"))
-                                );
-                            Continuar = false;
-                        }
-                    }
-                    //4. Si nada aplica => usar PrecioBase por defecto
-                    if (Continuar == true)
-                    {
-                        decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, 0);
-
-                        dtg_producto.Rows.Add(
-                             DataProducto.Data[0].IdProducto,
-                             DataProducto.Data[0].Sku,
-                             DataProducto.Data[0].CodigoBarras,
-                             DataProducto.Data[0].Nombre,
-                             DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
-                             1,
-                             0,
-                             DataProducto.Data[0].Iva,
-                             Total.ToString("N2", new CultureInfo("es-CO"))
-                            );
-                    }
-
-                    if (dtg_producto.Rows.Count > 0)
-                    {
-                        foreach (DataGridViewRow fila in dtg_producto.Rows)
-                        {
-                            Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                            Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                            SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                            Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
-                            DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
-                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value));
-                        }
-                        Total = (Subtotal - Descuento) + Impuesto;
-
-                        lbl_cantidadProductos.Text = Cantidad.ToString();
-                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
-                        lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
-                        lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
-                        lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
-                    }
+                }
+                else
+                {
+                    MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -395,6 +329,130 @@ namespace sbx
             return valor + iva;
         }
 
+        private async void IdentificarPrecio(dynamic DataProducto)
+        {
+            bool Continuar = true;
+
+            Cantidad = 0;
+            Subtotal = 0;
+            Descuento = 0;
+            Impuesto = 0;
+            SubtotalLinea = 0;
+            DescuentoLinea = 0;
+
+            //1. ¿Tiene precio personalizado? => usar PreciosCliente
+            if (agregaVentaEntitie.IdCliente > 0)
+            {
+                var resp1 = await _IPrecioCliente.PrecioClientePersonalizado(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdCliente);
+                if (resp1.Data != null)
+                {
+                    decimal Total = CalcularTotal(resp1.Data[0].PrecioEspecial, DataProducto.Data[0].Iva, 0);
+
+                    dtg_producto.Rows.Add(
+                         DataProducto.Data[0].IdProducto,
+                         DataProducto.Data[0].Sku,
+                         DataProducto.Data[0].CodigoBarras,
+                         DataProducto.Data[0].Nombre,
+                         resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
+                         1,
+                         0,
+                         DataProducto.Data[0].Iva,
+                         Total.ToString("N2", new CultureInfo("es-CO"))
+                        );
+
+                    Continuar = false;
+                }
+            }
+            //2. ¿Pertenece a una lista de precios por tipo de cliente?
+            agregaVentaEntitie.IdListaPrecio = Convert.ToInt32(cbx_lista_precio.SelectedValue);
+            if (agregaVentaEntitie.IdListaPrecio > 1 && Continuar == true)
+            {
+                var resp2 = await _IPrecioProducto.PrecioListaPreciosTipoCliente(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdListaPrecio);
+                if (resp2.Data != null)
+                {
+                    decimal Total = CalcularTotal(resp2.Data[0].Precio, DataProducto.Data[0].Iva, 0);
+
+                    dtg_producto.Rows.Add(
+                         DataProducto.Data[0].IdProducto,
+                         DataProducto.Data[0].Sku,
+                         DataProducto.Data[0].CodigoBarras,
+                         DataProducto.Data[0].Nombre,
+                         resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
+                         1,
+                         0,
+                         DataProducto.Data[0].Iva,
+                         Total.ToString("N2", new CultureInfo("es-CO"))
+                        );
+
+                    Continuar = false;
+                }
+            }
+            //3. ¿Hay promociones activas? => aplicar sobre el precio base
+            if (Continuar == true)
+            {
+                var resp3 = await _IPromocionProducto.PromocionActiva(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+                if (resp3.Data != null)
+                {
+                    decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, resp3.Data[0].Porcentaje);
+
+                    dtg_producto.Rows.Add(
+                         DataProducto.Data[0].IdProducto,
+                         DataProducto.Data[0].Sku,
+                         DataProducto.Data[0].CodigoBarras,
+                         DataProducto.Data[0].Nombre,
+                         DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
+                         1,
+                         resp3.Data[0].Porcentaje,
+                         DataProducto.Data[0].Iva,
+                         Total.ToString("N2", new CultureInfo("es-CO"))
+                        );
+
+                    Continuar = false;
+                }
+            }
+            //4. Si nada aplica => usar PrecioBase por defecto
+            if (Continuar == true)
+            {
+                decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, 0);
+
+                dtg_producto.Rows.Add(
+                     DataProducto.Data[0].IdProducto,
+                     DataProducto.Data[0].Sku,
+                     DataProducto.Data[0].CodigoBarras,
+                     DataProducto.Data[0].Nombre,
+                     DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
+                     1,
+                     0,
+                     DataProducto.Data[0].Iva,
+                     Total.ToString("N2", new CultureInfo("es-CO"))
+                    );
+
+                Continuar = false;
+            }
+
+            if (Continuar == false) { txt_buscar_producto.Text = ""; }
+
+            if (dtg_producto.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow fila in dtg_producto.Rows)
+                {
+                    Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
+                    Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
+                    SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
+                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
+                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
+                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value));
+                }
+                Total = (Subtotal - Descuento) + Impuesto;
+
+                lbl_cantidadProductos.Text = Cantidad.ToString();
+                lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
+                lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
+                lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+            }
+        }
+
         private void txt_valor_pago_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (char.IsControl(e.KeyChar))
@@ -426,14 +484,14 @@ namespace sbx
             decimal Cambio = 0;
             lbl_cambio.Text = "_";
             lbl_cambio.ForeColor = Color.Black;
-            if (txt_valor_pago.Text.Trim() != "" && lbl_total.Text != "_") 
+            if (txt_valor_pago.Text.Trim() != "" && lbl_total.Text != "_")
             {
                 Cambio = Convert.ToDecimal(txt_valor_pago.Text.Trim()) - Convert.ToDecimal(lbl_total.Text.Trim(), new CultureInfo("es-CO"));
-                if (Cambio < 0) 
+                if (Cambio < 0)
                 {
                     lbl_cambio.ForeColor = Color.Red;
                 }
-                else if(Cambio > 0)
+                else if (Cambio > 0)
                 {
                     lbl_cambio.ForeColor = Color.SeaGreen;
                 }
@@ -444,6 +502,44 @@ namespace sbx
 
                 lbl_cambio.Text = Cambio.ToString("N2", new CultureInfo("es-CO"));
             }
+        }
+
+        private void btn_nuevo_cliente_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _AgregarCliente = _serviceProvider.GetRequiredService<AgregarCliente>();
+                _AgregarCliente.Permisos = _Permisos;
+                _AgregarCliente.Id_Cliente = 0;
+                _AgregarCliente.FormClosed += (s, args) => _AgregarCliente = null;
+                _AgregarCliente.ShowDialog();
+            }
+        }
+
+        private void dtg_producto_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            // Remover eventos anteriores para evitar duplicados
+            e.Control.KeyPress -= new KeyPressEventHandler(dtg_producto_KeyPress);
+
+            // Solo agregar el evento si estamos en las columnas 5 o 6
+            if (dtg_producto.CurrentCell.ColumnIndex == 5 || dtg_producto.CurrentCell.ColumnIndex == 6)
+            {
+                e.Control.KeyPress += new KeyPressEventHandler(dtg_producto_KeyPress);
+            }
+        }
+
+        private void dtg_producto_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsControl(e.KeyChar))
+                return;
+
+            if (char.IsDigit(e.KeyChar))
+                return;
+
+            if (e.KeyChar == decimalSeparator && !((TextBox)sender).Text.Contains(decimalSeparator))
+                return;
+
+            e.Handled = true;
         }
     }
 }

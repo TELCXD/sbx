@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarVentas));
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
             label1 = new Label();
             cbx_vendedor = new ComboBox();
@@ -206,38 +206,39 @@
             dtg_producto.AllowUserToDeleteRows = false;
             dtg_producto.AllowUserToOrderColumns = true;
             dtg_producto.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total });
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Window;
-            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dtg_producto.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dtg_producto.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_producto.Location = new Point(11, 113);
             dtg_producto.Name = "dtg_producto";
-            dtg_producto.ReadOnly = true;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_producto.Size = new Size(1083, 310);
             dtg_producto.TabIndex = 6;
+            dtg_producto.EditingControlShowing += dtg_producto_EditingControlShowing;
+            dtg_producto.KeyPress += dtg_producto_KeyPress;
             // 
             // cl_idProducto
             // 
@@ -277,13 +278,11 @@
             // 
             cl_cantidad.HeaderText = "Cantidad";
             cl_cantidad.Name = "cl_cantidad";
-            cl_cantidad.ReadOnly = true;
             // 
             // cl_descuento
             // 
             cl_descuento.HeaderText = "Desc %";
             cl_descuento.Name = "cl_descuento";
-            cl_descuento.ReadOnly = true;
             cl_descuento.Width = 60;
             // 
             // cl_iva
@@ -327,6 +326,7 @@
             btn_nuevo_cliente.TextAlign = ContentAlignment.BottomCenter;
             btn_nuevo_cliente.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_nuevo_cliente.UseVisualStyleBackColor = true;
+            btn_nuevo_cliente.Click += btn_nuevo_cliente_Click;
             // 
             // lbl_nombre_cliente
             // 
@@ -786,6 +786,7 @@
         private Button btn_completar_venta;
         private ComboBox cbx_busca_por;
         private Label label20;
+        private ErrorProvider errorProvider1;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -795,6 +796,5 @@
         private DataGridViewTextBoxColumn cl_descuento;
         private DataGridViewTextBoxColumn cl_iva;
         private DataGridViewTextBoxColumn cl_total;
-        private ErrorProvider errorProvider1;
     }
 }
