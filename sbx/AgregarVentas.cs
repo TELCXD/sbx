@@ -11,9 +11,11 @@ using sbx.core.Interfaces.PrecioProducto;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.RangoNumeracion;
+using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
 using System.Globalization;
+using System.Text;
 
 namespace sbx
 {
@@ -33,6 +35,7 @@ namespace sbx
         private readonly IPromocionProducto _IPromocionProducto;
         private readonly IRangoNumeracion _IRangoNumeracion;
         private readonly IVenta _IVenta;
+        private readonly ITienda _ITienda;
         string busqueda = "";
         AgregaVentaEntitie agregaVentaEntitie = new AgregaVentaEntitie();
         VentaEntitie venta = new VentaEntitie();
@@ -48,10 +51,11 @@ namespace sbx
         private AgregarCliente? _AgregarCliente;
         int IdTipoCliente = 0;
         bool CargaListaPrecio = false;
+        private Ventas? _Ventas;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
-            IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente, 
-            IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta)
+            IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
+            IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta, ITienda tienda)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -67,6 +71,7 @@ namespace sbx
             _IRangoNumeracion = iRangoNumeracion;
             _IRangoNumeracion = iRangoNumeracion;
             _IVenta = venta;
+            _ITienda = tienda;
         }
 
         public dynamic? Permisos
@@ -103,6 +108,8 @@ namespace sbx
                 if (resp.Data.Count > 0)
                 {
                     agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                    agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
+                    agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                     txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                     lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                     IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
@@ -138,8 +145,10 @@ namespace sbx
                             txt_buscar_producto.Enabled = item.ToRead == 1 ? true : false;
                             btn_busca_producto.Enabled = item.ToRead == 1 ? true : false;
                             btn_nuevo_producto.Enabled = item.ToCreate == 1 ? true : false;
-                            btn_ventas_suspendidas.Enabled = item.ToRead == 1 ? true : false;
-                            btn_suspender.Enabled = item.ToCreate == 1 ? true : false;
+                            txt_busca_cliente.Enabled = item.ToRead == 1 ? true : false;
+                            //btn_ventas_suspendidas.Enabled = item.ToRead == 1 ? true : false;
+                            //btn_suspender.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_ver_ventas.Enabled = item.ToRead == 1 ? true : false;
                             btn_cancelar.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_busca_cliente.Enabled = item.ToRead == 1 ? true : false;
                             btn_nuevo_cliente.Enabled = item.ToCreate == 1 ? true : false;
@@ -212,6 +221,8 @@ namespace sbx
         {
             errorProvider1.Clear();
 
+            bool continuar = true;
+
             if (cbx_busca_por.Text == "Id")
             {
                 if (!char.IsDigit(e.KeyChar) && e.KeyChar != 8 && e.KeyChar != 13)
@@ -223,25 +234,59 @@ namespace sbx
                     //Enter
                     if (e.KeyChar == (char)13)
                     {
-                        if (txt_buscar_producto.Text.Trim() != "")
+                        if (txt_busca_cliente.Text.Trim() != "")
                         {
-                            var DataProducto = await _IProducto.List(Convert.ToInt32(txt_buscar_producto.Text));
+                            var resp = await _ICliente.ListNumDoc(txt_busca_cliente.Text);
 
-                            if (DataProducto.Data != null)
+                            if (resp.Data != null)
                             {
-                                if (DataProducto.Data.Count > 0)
+                                if (resp.Data.Count == 0)
                                 {
-                                    IdentificarPrecio(DataProducto);
-                                }
-                                else
-                                {
-                                    errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                    errorProvider1.SetError(txt_busca_cliente, $"Numero documento {txt_busca_cliente.Text} no encontrado");
+                                    lbl_nombre_cliente.Text = "_";
+                                    continuar = false;
                                 }
                             }
                         }
                         else
                         {
-                            errorProvider1.SetError(txt_buscar_producto, $"Debe ingresar un {cbx_busca_por.Text}");
+                            var resp = await _ICliente.List(1);
+                            if (resp.Data != null)
+                            {
+                                if (resp.Data.Count > 0)
+                                {
+                                    agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                                    agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
+                                    agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
+                                    txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                                    lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                                    IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
+                                }
+                            }
+                        }
+
+                        if (continuar)
+                        {
+                            if (txt_buscar_producto.Text.Trim() != "")
+                            {
+                                var DataProducto = await _IProducto.List(Convert.ToInt32(txt_buscar_producto.Text));
+
+                                if (DataProducto.Data != null)
+                                {
+                                    if (DataProducto.Data.Count > 0)
+                                    {
+                                        IdentificarPrecio(DataProducto);
+                                    }
+                                    else
+                                    {
+                                        errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                errorProvider1.SetError(txt_buscar_producto, $"Debe ingresar un {cbx_busca_por.Text}");
+                            }
                         }
                     }
                 }
@@ -251,46 +296,79 @@ namespace sbx
                 //Enter
                 if (e.KeyChar == (char)13)
                 {
-                    if (txt_buscar_producto.Text.Trim() != "")
+                    if (txt_busca_cliente.Text.Trim() != "")
                     {
-                        if (cbx_busca_por.Text == "Sku")
-                        {
-                            var DataProducto = await _IProducto.ListSku(txt_buscar_producto.Text);
+                        var resp = await _ICliente.ListNumDoc(txt_busca_cliente.Text);
 
-                            if (DataProducto.Data != null)
-                            {
-                                if (DataProducto.Data.Count > 0)
-                                {
-                                    IdentificarPrecio(DataProducto);
-                                }
-                                else
-                                {
-                                    errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
-                                }
-                            }
-                        }
-                        else if (cbx_busca_por.Text == "Codigo barras")
+                        if (resp.Data != null)
                         {
-                            var DataProducto = await _IProducto.ListCodigoBarras(txt_buscar_producto.Text);
-
-                            if (DataProducto.Data != null)
+                            if (resp.Data.Count == 0)
                             {
-                                if (DataProducto.Data.Count > 0)
-                                {
-                                    IdentificarPrecio(DataProducto);
-                                }
-                                else
-                                {
-                                    errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
-                                }
+                                errorProvider1.SetError(txt_busca_cliente, $"Numero documento {txt_busca_cliente.Text} no encontrado");
+                                lbl_nombre_cliente.Text = "_";
+                                continuar = false;
                             }
                         }
                     }
                     else
                     {
-                        errorProvider1.SetError(txt_buscar_producto, $"Debe ingresar un {cbx_busca_por.Text}");
+                        var resp = await _ICliente.List(1);
+                        if (resp.Data != null)
+                        {
+                            if (resp.Data.Count > 0)
+                            {
+                                agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                                agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
+                                agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
+                                txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                                lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                                IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
+                            }
+                        }
                     }
 
+                    if (continuar)
+                    {
+                        if (txt_buscar_producto.Text.Trim() != "")
+                        {
+                            if (cbx_busca_por.Text == "Sku")
+                            {
+                                var DataProducto = await _IProducto.ListSku(txt_buscar_producto.Text);
+
+                                if (DataProducto.Data != null)
+                                {
+                                    if (DataProducto.Data.Count > 0)
+                                    {
+                                        IdentificarPrecio(DataProducto);
+                                    }
+                                    else
+                                    {
+                                        errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                    }
+                                }
+                            }
+                            else if (cbx_busca_por.Text == "Codigo barras")
+                            {
+                                var DataProducto = await _IProducto.ListCodigoBarras(txt_buscar_producto.Text);
+
+                                if (DataProducto.Data != null)
+                                {
+                                    if (DataProducto.Data.Count > 0)
+                                    {
+                                        IdentificarPrecio(DataProducto);
+                                    }
+                                    else
+                                    {
+                                        errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            errorProvider1.SetError(txt_buscar_producto, $"Debe ingresar un {cbx_busca_por.Text}");
+                        }
+                    }
                 }
             }
         }
@@ -307,6 +385,8 @@ namespace sbx
 
         private async void _Buscador_EnviaId(int id)
         {
+            errorProvider1.Clear();
+
             if (busqueda == "Add_AgregaVenta_busca_cliente")
             {
                 var resp = await _ICliente.List(id);
@@ -315,6 +395,8 @@ namespace sbx
                     if (resp.Data.Count > 0)
                     {
                         agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                        agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
+                        agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                         txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                         lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                         IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
@@ -339,17 +421,53 @@ namespace sbx
             }
             else if (busqueda == "Add_AgregaVenta_busca_producto")
             {
-                var DataProducto = await _IProducto.List(id);
-                if (DataProducto.Data != null)
+                bool continuar = true;
+
+                if (txt_busca_cliente.Text.Trim() != "")
                 {
-                    if (DataProducto.Data.Count > 0)
+                    var resp = await _ICliente.ListNumDoc(txt_busca_cliente.Text);
+
+                    if (resp.Data != null)
                     {
-                        IdentificarPrecio(DataProducto);
+                        if (resp.Data.Count == 0)
+                        {
+                            errorProvider1.SetError(txt_busca_cliente, $"Numero documento {txt_busca_cliente.Text} no encontrado");
+                            lbl_nombre_cliente.Text = "_";
+                            continuar = false;
+                        }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    var resp = await _ICliente.List(1);
+                    if (resp.Data != null)
+                    {
+                        if (resp.Data.Count > 0)
+                        {
+                            agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                            agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
+                            agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
+                            txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                            lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                            IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
+                        }
+                    }
+                }
+
+                if (continuar)
+                {
+                    var DataProducto = await _IProducto.List(id);
+                    if (DataProducto.Data != null)
+                    {
+                        if (DataProducto.Data.Count > 0)
+                        {
+                            IdentificarPrecio(DataProducto);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
         }
@@ -504,22 +622,23 @@ namespace sbx
             {
                 foreach (DataGridViewRow fila in dtg_producto.Rows)
                 {
-                    Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                    Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                    SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
-                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
-                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value));
+                    Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                    Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                    SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
                 }
                 Total = (Subtotal - Descuento) + Impuesto;
 
-                lbl_cantidadProductos.Text = Cantidad.ToString();
+                lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
                 lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
                 lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                 lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                 lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
 
                 cbx_lista_precio.Enabled = false;
+                txt_busca_cliente.Enabled = false;
                 btn_busca_cliente.Enabled = false;
                 pnl_pagos.Enabled = true;
                 ValidarModoPagos();
@@ -527,6 +646,7 @@ namespace sbx
             else
             {
                 cbx_lista_precio.Enabled = true;
+                txt_busca_cliente.Enabled = true;
                 btn_busca_cliente.Enabled = true;
                 pnl_pagos.Enabled = false;
                 cbx_lista_precio.Enabled = true;
@@ -685,16 +805,16 @@ namespace sbx
             {
                 foreach (DataGridViewRow fila in dtg_producto.Rows)
                 {
-                    Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                    Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                    SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value);
-                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
-                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
-                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value));
+                    Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                    Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                    SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
                 }
                 Total = (Subtotal - Descuento) + Impuesto;
 
-                lbl_cantidadProductos.Text = Cantidad.ToString();
+                lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
                 lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
                 lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                 lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
@@ -742,12 +862,15 @@ namespace sbx
                 if (resp.Data.Count > 0)
                 {
                     agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                    agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
+                    agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                     txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                     lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                 }
             }
 
             cbx_lista_precio.Enabled = true;
+            txt_busca_cliente.Enabled = true;
             btn_busca_cliente.Enabled = true;
 
             dtg_producto.Rows.Clear();
@@ -830,6 +953,16 @@ namespace sbx
                     DateTime FechaVencimiento = DateTime.Now;
                     venta.IdCliente = agregaVentaEntitie.IdCliente;
                     venta.IdVendedor = Convert.ToInt32(cbx_vendedor.SelectedValue);
+                    agregaVentaEntitie.IdVendedor = venta.IdVendedor;
+                    var respDataVendedor = await _IVendedor.List(venta.IdVendedor);
+                    if (respDataVendedor.Data != null) 
+                    {
+                        if (respDataVendedor.Data.Count > 0)
+                        {
+                            agregaVentaEntitie.IdenticacionVendedor = respDataVendedor.Data[0].NumeroDocumento;
+                            agregaVentaEntitie.NombreVendedor = respDataVendedor.Data[0].Nombre;
+                        }
+                    }
                     venta.IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue);
                     var resp = await _IRangoNumeracion.List(0);
                     if (resp.Data != null)
@@ -885,6 +1018,50 @@ namespace sbx
                                 {
                                     MessageBox.Show(respGuardado.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     Limpiar();
+
+                                    var respTienda = await _ITienda.List();
+                                    if (respTienda.Data != null) 
+                                    {
+                                        if (respTienda.Data.Count > 0) 
+                                        {
+                                            var DataCliente = await _ICliente.List(venta.IdCliente);
+                                            if (DataCliente.Data != null)
+                                            {
+                                                if (DataCliente.Data.Count > 0)
+                                                {
+                                                    var DataFactura = new FacturaPOSEntitie
+                                                    {
+                                                        NumeroFactura = venta.Prefijo + "-" + venta.Consecutivo,
+                                                        NombreEmpresa = respTienda.Data[0].NombreRazonSocial,
+                                                        DireccionEmpresa = respTienda.Data[0].Direccion,
+                                                        TelefonoEmpresa = respTienda.Data[0].Telefono,
+                                                        NIT = respTienda.Data[0].NumeroDocumento,
+                                                        NombreCliente = DataCliente.Data[0].NumeroDocumento + " - " + DataCliente.Data[0].NombreRazonSocial,
+                                                        FormaPago = venta.IdMetodoPago
+                                                    };
+
+                                                    string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura);
+                                                    File.WriteAllText("factura.txt", tirilla, Encoding.UTF8);
+                                                }
+                                                else
+                                                {
+                                                    MessageBox.Show("No se encuentra informacion de Cliente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("No se encuentra informacion de Cliente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
                                 }
                                 else
                                 {
@@ -906,6 +1083,59 @@ namespace sbx
             else
             {
                 errorProvider1.SetError(txt_valor_pago, "Debe ingresar el valor a pagar");
+            }
+        }
+
+        private async void txt_busca_cliente_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            errorProvider1.Clear();
+
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != 8 && e.KeyChar != 13)
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                //Enter
+                if (e.KeyChar == (char)13)
+                {
+                    if (txt_busca_cliente.Text.Trim() != "")
+                    {
+                        var resp = await _ICliente.ListNumDoc(txt_busca_cliente.Text);
+
+                        if (resp.Data != null)
+                        {
+                            if (resp.Data.Count > 0)
+                            {
+                                agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                                txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                                lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                                IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
+                            }
+                            else
+                            {
+                                lbl_nombre_cliente.Text = "_";
+                                errorProvider1.SetError(txt_busca_cliente, $"Numero documento {txt_busca_cliente.Text} no encontrado");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lbl_nombre_cliente.Text = "_";
+                        errorProvider1.SetError(txt_busca_cliente, $"Debe ingresar un numero de documento");
+                    }
+                }
+            }
+        }
+
+        private void btn_ver_ventas_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _Ventas = _serviceProvider.GetRequiredService<Ventas>();
+                _Ventas.Permisos = _Permisos;
+                _Ventas.FormClosed += (s, args) => _Ventas = null;
+                _Ventas.ShowDialog();
             }
         }
     }

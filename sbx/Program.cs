@@ -151,6 +151,10 @@ namespace sbx
 
                 services.AddTransient<AgregarVentas>();
 
+                services.AddTransient<Ventas>();
+
+                services.AddTransient<DetalleVenta>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 

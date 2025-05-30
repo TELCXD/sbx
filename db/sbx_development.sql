@@ -623,8 +623,11 @@ Cantidad DECIMAL(10,2) NOT NULL,
 PrecioUnitario DECIMAL(10,2) NOT NULL,
 Descuento DECIMAL(10,2),
 Impuesto DECIMAL(10,2) NOT NULL,
+CreationDate DATETIME,
+IdUserAction INT,
 FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
 FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
 CREATE TABLE T_PagosVenta (
@@ -634,7 +637,10 @@ IdMetodoPago INT NOT NULL,
 Monto DECIMAL(10,2) NOT NULL,
 Referencia VARCHAR(50) NULL, -- Número autorización, comprobante
 IdBanco INT NOT NULL,
+CreationDate DATETIME,
+IdUserAction INT,
 FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
 FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
-FOREIGN KEY (IdBanco) REFERENCES T_Bancos(IdBanco)
+FOREIGN KEY (IdBanco) REFERENCES T_Bancos(IdBanco),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 );

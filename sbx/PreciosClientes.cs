@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.PrecioCliente;
-using sbx.core.Interfaces.Producto;
 using System.Globalization;
 
 namespace sbx
