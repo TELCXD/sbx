@@ -349,5 +349,52 @@ namespace sbx.repositories.Cliente
                 }
             }
         }
+
+        public async Task<Response<dynamic>> ListNumDoc(string NumDoc)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdCliente
+                                  ,A.IdIdentificationType
+                                  ,B.IdentificationType
+                                  ,A.NumeroDocumento
+                                  ,A.NombreRazonSocial
+                                  ,C.IdTipoCliente
+                                  ,C.Nombre
+                                  ,A.Direccion
+                                  ,A.Telefono
+                                  ,A.Email
+                                  ,A.Estado
+                                  ,A.CreationDate
+                                  ,A.UpdateDate
+                                  ,A.IdUserAction 
+                                  FROM T_Cliente A
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
+                                  INNER JOIN T_TipoCliente C ON A.IdTipoCliente = C.IdTipoCliente 
+                                  WHERE A.NumeroDocumento = @NumDoc";
+
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { NumDoc });
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

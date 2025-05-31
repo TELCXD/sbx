@@ -34,6 +34,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            btn_ver_ventas = new Button();
             btn_nuevo_cliente = new Button();
             label1 = new Label();
             lbl_nombre_cliente = new Label();
@@ -51,6 +52,7 @@
             cl_idProducto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
+            cl_unidad_medida = new DataGridViewTextBoxColumn();
             cl_nombre = new DataGridViewTextBoxColumn();
             cl_precio = new DataGridViewTextBoxColumn();
             cl_cantidad = new DataGridViewTextBoxColumn();
@@ -98,6 +100,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(btn_ver_ventas);
             panel1.Controls.Add(btn_nuevo_cliente);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(lbl_nombre_cliente);
@@ -110,8 +113,24 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1106, 73);
+            panel1.Size = new Size(1123, 73);
             panel1.TabIndex = 0;
+            // 
+            // btn_ver_ventas
+            // 
+            btn_ver_ventas.Enabled = false;
+            btn_ver_ventas.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_ver_ventas.FlatStyle = FlatStyle.Flat;
+            btn_ver_ventas.Image = (Image)resources.GetObject("btn_ver_ventas.Image");
+            btn_ver_ventas.Location = new Point(837, 23);
+            btn_ver_ventas.Name = "btn_ver_ventas";
+            btn_ver_ventas.Size = new Size(136, 26);
+            btn_ver_ventas.TabIndex = 135;
+            btn_ver_ventas.Text = "Ver ventas";
+            btn_ver_ventas.TextAlign = ContentAlignment.BottomCenter;
+            btn_ver_ventas.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_ver_ventas.UseVisualStyleBackColor = true;
+            btn_ver_ventas.Click += btn_ver_ventas_Click;
             // 
             // btn_nuevo_cliente
             // 
@@ -119,7 +138,7 @@
             btn_nuevo_cliente.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_nuevo_cliente.FlatStyle = FlatStyle.Flat;
             btn_nuevo_cliente.Image = (Image)resources.GetObject("btn_nuevo_cliente.Image");
-            btn_nuevo_cliente.Location = new Point(673, 23);
+            btn_nuevo_cliente.Location = new Point(695, 23);
             btn_nuevo_cliente.Name = "btn_nuevo_cliente";
             btn_nuevo_cliente.Size = new Size(136, 26);
             btn_nuevo_cliente.TabIndex = 11;
@@ -179,10 +198,11 @@
             // 
             txt_busca_cliente.Anchor = AnchorStyles.Top;
             txt_busca_cliente.Enabled = false;
-            txt_busca_cliente.Location = new Point(445, 26);
+            txt_busca_cliente.Location = new Point(453, 26);
             txt_busca_cliente.Name = "txt_busca_cliente";
             txt_busca_cliente.Size = new Size(184, 23);
             txt_busca_cliente.TabIndex = 9;
+            txt_busca_cliente.KeyPress += txt_busca_cliente_KeyPress;
             // 
             // btn_busca_cliente
             // 
@@ -190,7 +210,7 @@
             btn_busca_cliente.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_busca_cliente.FlatStyle = FlatStyle.Flat;
             btn_busca_cliente.Image = (Image)resources.GetObject("btn_busca_cliente.Image");
-            btn_busca_cliente.Location = new Point(635, 23);
+            btn_busca_cliente.Location = new Point(657, 23);
             btn_busca_cliente.Name = "btn_busca_cliente";
             btn_busca_cliente.Size = new Size(26, 26);
             btn_busca_cliente.TabIndex = 10;
@@ -214,7 +234,7 @@
             btn_ventas_suspendidas.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_ventas_suspendidas.FlatStyle = FlatStyle.Flat;
             btn_ventas_suspendidas.Image = (Image)resources.GetObject("btn_ventas_suspendidas.Image");
-            btn_ventas_suspendidas.Location = new Point(674, 95);
+            btn_ventas_suspendidas.Location = new Point(684, 95);
             btn_ventas_suspendidas.Name = "btn_ventas_suspendidas";
             btn_ventas_suspendidas.Size = new Size(136, 26);
             btn_ventas_suspendidas.TabIndex = 3;
@@ -226,7 +246,7 @@
             // 
             txt_buscar_producto.Anchor = AnchorStyles.Top;
             txt_buscar_producto.Enabled = false;
-            txt_buscar_producto.Location = new Point(12, 96);
+            txt_buscar_producto.Location = new Point(20, 96);
             txt_buscar_producto.Name = "txt_buscar_producto";
             txt_buscar_producto.Size = new Size(312, 23);
             txt_buscar_producto.TabIndex = 0;
@@ -238,7 +258,7 @@
             btn_busca_producto.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_busca_producto.FlatStyle = FlatStyle.Flat;
             btn_busca_producto.Image = (Image)resources.GetObject("btn_busca_producto.Image");
-            btn_busca_producto.Location = new Point(341, 93);
+            btn_busca_producto.Location = new Point(351, 93);
             btn_busca_producto.Name = "btn_busca_producto";
             btn_busca_producto.Size = new Size(26, 26);
             btn_busca_producto.TabIndex = 1;
@@ -252,7 +272,7 @@
             btn_nuevo_producto.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_nuevo_producto.FlatStyle = FlatStyle.Flat;
             btn_nuevo_producto.Image = (Image)resources.GetObject("btn_nuevo_producto.Image");
-            btn_nuevo_producto.Location = new Point(526, 95);
+            btn_nuevo_producto.Location = new Point(536, 95);
             btn_nuevo_producto.Name = "btn_nuevo_producto";
             btn_nuevo_producto.Size = new Size(136, 26);
             btn_nuevo_producto.TabIndex = 2;
@@ -277,7 +297,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total });
+            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_unidad_medida, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -297,7 +317,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_producto.Size = new Size(1083, 388);
+            dtg_producto.Size = new Size(1107, 388);
             dtg_producto.TabIndex = 6;
             dtg_producto.CellEndEdit += dtg_producto_CellEndEdit;
             dtg_producto.EditingControlShowing += dtg_producto_EditingControlShowing;
@@ -323,6 +343,12 @@
             cl_codigo_barras.ReadOnly = true;
             cl_codigo_barras.Width = 150;
             // 
+            // cl_unidad_medida
+            // 
+            cl_unidad_medida.HeaderText = "UM";
+            cl_unidad_medida.Name = "cl_unidad_medida";
+            cl_unidad_medida.Visible = false;
+            // 
             // cl_nombre
             // 
             cl_nombre.HeaderText = "Nombre";
@@ -346,7 +372,7 @@
             // 
             cl_descuento.HeaderText = "Desc %";
             cl_descuento.Name = "cl_descuento";
-            cl_descuento.Width = 60;
+            cl_descuento.Width = 80;
             // 
             // cl_iva
             // 
@@ -368,7 +394,7 @@
             btn_suspender.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_suspender.FlatStyle = FlatStyle.Flat;
             btn_suspender.Image = (Image)resources.GetObject("btn_suspender.Image");
-            btn_suspender.Location = new Point(816, 95);
+            btn_suspender.Location = new Point(826, 95);
             btn_suspender.Name = "btn_suspender";
             btn_suspender.Size = new Size(136, 26);
             btn_suspender.TabIndex = 4;
@@ -383,7 +409,7 @@
             btn_cancelar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_cancelar.FlatStyle = FlatStyle.Flat;
             btn_cancelar.Image = (Image)resources.GetObject("btn_cancelar.Image");
-            btn_cancelar.Location = new Point(958, 95);
+            btn_cancelar.Location = new Point(968, 95);
             btn_cancelar.Name = "btn_cancelar";
             btn_cancelar.Size = new Size(136, 26);
             btn_cancelar.TabIndex = 5;
@@ -416,7 +442,7 @@
             panel3.Controls.Add(label4);
             panel3.Location = new Point(637, 521);
             panel3.Name = "panel3";
-            panel3.Size = new Size(457, 244);
+            panel3.Size = new Size(481, 244);
             panel3.TabIndex = 141;
             // 
             // lbl_total
@@ -687,7 +713,7 @@
             cbx_busca_por.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_busca_por.FormattingEnabled = true;
             cbx_busca_por.Items.AddRange(new object[] { "Id", "Sku", "Codigo barras" });
-            cbx_busca_por.Location = new Point(373, 96);
+            cbx_busca_por.Location = new Point(383, 96);
             cbx_busca_por.Name = "cbx_busca_por";
             cbx_busca_por.Size = new Size(147, 23);
             cbx_busca_por.TabIndex = 143;
@@ -695,7 +721,7 @@
             // label20
             // 
             label20.AutoSize = true;
-            label20.Location = new Point(373, 78);
+            label20.Location = new Point(383, 78);
             label20.Name = "label20";
             label20.Size = new Size(59, 15);
             label20.TabIndex = 144;
@@ -710,7 +736,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(1106, 771);
+            ClientSize = new Size(1123, 771);
             Controls.Add(label20);
             Controls.Add(cbx_busca_por);
             Controls.Add(btn_ventas_suspendidas);
@@ -788,9 +814,11 @@
         private ComboBox cbx_busca_por;
         private Label label20;
         private ErrorProvider errorProvider1;
+        private Button btn_ver_ventas;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
+        private DataGridViewTextBoxColumn cl_unidad_medida;
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_precio;
         private DataGridViewTextBoxColumn cl_cantidad;

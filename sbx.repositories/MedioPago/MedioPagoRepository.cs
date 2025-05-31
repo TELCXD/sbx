@@ -14,7 +14,7 @@ namespace sbx.repositories.MedioPago
             _connectionString = connectionString;
         }
 
-        public async Task<Response<dynamic>> List()
+        public async Task<Response<dynamic>> List(int Id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -33,8 +33,16 @@ namespace sbx.repositories.MedioPago
                                     TieneComision,
                                     PorcentajeComision,
                                     Activo  
-                                    FROM T_MetodoPago 
-                                    ORDER BY IdMetodoPago ";
+                                    FROM T_MetodoPago ";
+
+                    string Where = "";
+
+                    if (Id > 0)
+                    {
+                        Where = $"WHERE IdMetodoPago = {Id}";
+                    }
+
+                    sql += Where + " ORDER BY IdMetodoPago ";
 
                     dynamic resultado = await connection.QueryAsync(sql);
 

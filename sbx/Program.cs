@@ -89,12 +89,12 @@ namespace sbx
                     new LoginRepository(connectionString));
                 services.AddTransient<Login>();
 
-                services.AddTransient<Inicio>(sp =>
-                     new Inicio(sp));
-
                 services.AddTransient<ITienda>(provider =>
                    new TiendaRepository(connectionString));
+
                 services.AddTransient<Tienda>();
+
+                services.AddTransient<Inicio>();
 
                 services.AddTransient<Ajustes>();
 
@@ -150,6 +150,10 @@ namespace sbx
                 services.AddTransient<AddProductoPromocion>();
 
                 services.AddTransient<AgregarVentas>();
+
+                services.AddTransient<Ventas>();
+
+                services.AddTransient<DetalleVenta>();
 
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));

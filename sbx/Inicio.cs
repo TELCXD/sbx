@@ -1,5 +1,5 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.Tienda;
 
 namespace sbx
 {
@@ -7,6 +7,7 @@ namespace sbx
     {
         private dynamic? _Permisos;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ITienda _ITienda;
         private Tienda? _Tienda;
         private Ajustes? _Ajustes;
         private Productos? _Productos;
@@ -15,10 +16,11 @@ namespace sbx
         private Inventario? _Inventario;
         private AgregarVentas? _AgregarVentas;
 
-        public Inicio(IServiceProvider serviceProvider)
+        public Inicio(IServiceProvider serviceProvider, ITienda iTienda)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
+            _ITienda = iTienda;
         }
 
         public dynamic? Permisos
@@ -186,7 +188,7 @@ namespace sbx
             _Inventario.Show();
         }
 
-        private void btn_venta_Click(object sender, EventArgs e)
+        private async void btn_venta_Click(object sender, EventArgs e)
         {
             if (_AgregarVentas != null && !_AgregarVentas.IsDisposed)
             {
@@ -195,10 +197,25 @@ namespace sbx
                 return;
             }
 
-            _AgregarVentas = _serviceProvider.GetRequiredService<AgregarVentas>();
-            _AgregarVentas.Permisos = _Permisos;
-            _AgregarVentas.FormClosed += (s, args) => _Clientes = null;
-            _AgregarVentas.Show();
+            var DataTienda = await _ITienda.List();
+            if (DataTienda.Data != null)
+            {
+                if (DataTienda.Data.Count > 0)
+                {
+                    _AgregarVentas = _serviceProvider.GetRequiredService<AgregarVentas>();
+                    _AgregarVentas.Permisos = _Permisos;
+                    _AgregarVentas.FormClosed += (s, args) => _Clientes = null;
+                    _AgregarVentas.Show();
+                }
+                else
+                {
+                    MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }

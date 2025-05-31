@@ -11,6 +11,7 @@ namespace sbx.core.Interfaces.Cliente
         Task<bool> ExisteNombreRazonSocial(string nombreRazonSocial, int Id_Proveedor);
         Task<bool> ExisteTelefono(string telefono, int Id_Proveedor);
         Task<bool> ExisteEmail(string email, int Id_Proveedor);
-        Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro); 
+        Task<Response<dynamic>> ListNumDoc(string NumDoc);
     }
 }
