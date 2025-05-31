@@ -5,11 +5,14 @@ namespace sbx.core.Entities.Venta
 {
     public class GenerarTirillaPOS
     {
-        private const int ANCHO_TIRILLA = 40;
+        private const int ANCHO_TIRILLA = 42;
 
         public static string GenerarTirilla(FacturaPOSEntitie factura)
         {
             var sb = new StringBuilder();
+
+            //Abrir cajon
+            sb.AppendLine("\x1B" + "p" + "\x00" + "\x0F" + "\x96");
 
             // Encabezado
             sb.AppendLine(CentrarTexto(factura.NombreEmpresa));
@@ -28,38 +31,45 @@ namespace sbx.core.Entities.Venta
 
             // Items
             sb.AppendLine("ITEM - DESCRIPCION");
-            sb.AppendLine("CANT | U.M | PRECIO_UNI | DESC% | TOTAL | IVA");
+            sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IVA");
             sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
             foreach (var item in factura.Items)
             {
                 // Descripción (puede ocupar varias líneas)
-                var descripcionLineas = DividirTexto(item.Codigo + " - "+ item.Descripcion, ANCHO_TIRILLA - 5);
+                var descripcionLineas = DividirTexto("Item: "+item.Codigo + "-"+ item.Descripcion, ANCHO_TIRILLA - 5);
                 foreach (var linea in descripcionLineas)
                 {
                     sb.AppendLine($"{linea}");
                 }
 
                 // Línea con cantidad y precio
-                var lineaCantidad = $"{item.Cantidad} {item.UnidadMedida} {item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO"))} {item.Descuento} {item.Total.ToString("N2", new CultureInfo("es-CO"))} {item.Impuesto}";
+                string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
+                string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3): item.UnidadMedida.PadRight(3);
+                string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0,10): item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
+                string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10): item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                string impuesto = item.Impuesto.ToString().Length > 2 ? item.Impuesto.ToString().Substring(0, 2) : item.Impuesto.ToString().PadRight(2);
+
+                var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
                 sb.AppendLine(lineaCantidad);
             }
 
             sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
             // Totales
-            sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N2", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento}");
-            sb.AppendLine($"{"IVA:",-20} {factura.Impuesto}");
-            sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N2", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"IVA:",-20} {factura.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
             // Forma de pago
             sb.AppendLine($"FORMA DE PAGO: {factura.FormaPago}");
             if (factura.FormaPago.ToUpper() == "EFECTIVO")
             {
-                sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N2", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N0", new CultureInfo("es-CO"))}");
             }
 
             sb.AppendLine(new string('=', ANCHO_TIRILLA));
@@ -68,7 +78,8 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine(CentrarTexto("GRACIAS POR SU COMPRA"));
             sb.AppendLine(CentrarTexto("VUELVA PRONTO"));
             sb.AppendLine();
-            sb.AppendLine(CentrarTexto($"Sistema SBX - {DateTime.Now:dd/MM/yyyy HH:mm}"));
+            sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
+            sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
 
             return sb.ToString();
         }

@@ -34,10 +34,10 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
-            label1 = new Label();
             dtp_fecha_fin = new DateTimePicker();
-            lbl_fechaVencimiento = new Label();
             dtp_fecha_inicio = new DateTimePicker();
+            label1 = new Label();
+            lbl_fechaVencimiento = new Label();
             btn_imprimir = new Button();
             cbx_client_venta = new ComboBox();
             cbx_tipo_filtro = new ComboBox();
@@ -82,10 +82,10 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
-            panel1.Controls.Add(label1);
             panel1.Controls.Add(dtp_fecha_fin);
-            panel1.Controls.Add(lbl_fechaVencimiento);
             panel1.Controls.Add(dtp_fecha_inicio);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(lbl_fechaVencimiento);
             panel1.Controls.Add(btn_imprimir);
             panel1.Controls.Add(cbx_client_venta);
             panel1.Controls.Add(cbx_tipo_filtro);
@@ -98,6 +98,22 @@
             panel1.Size = new Size(1223, 58);
             panel1.TabIndex = 0;
             // 
+            // dtp_fecha_fin
+            // 
+            dtp_fecha_fin.Format = DateTimePickerFormat.Short;
+            dtp_fecha_fin.Location = new Point(396, 24);
+            dtp_fecha_fin.Name = "dtp_fecha_fin";
+            dtp_fecha_fin.Size = new Size(187, 23);
+            dtp_fecha_fin.TabIndex = 147;
+            // 
+            // dtp_fecha_inicio
+            // 
+            dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
+            dtp_fecha_inicio.Location = new Point(171, 24);
+            dtp_fecha_inicio.Name = "dtp_fecha_inicio";
+            dtp_fecha_inicio.Size = new Size(200, 23);
+            dtp_fecha_inicio.TabIndex = 146;
+            // 
             // label1
             // 
             label1.AutoSize = true;
@@ -107,15 +123,6 @@
             label1.TabIndex = 145;
             label1.Text = "Fecha fin";
             // 
-            // dtp_fecha_fin
-            // 
-            dtp_fecha_fin.Format = DateTimePickerFormat.Short;
-            dtp_fecha_fin.Location = new Point(396, 24);
-            dtp_fecha_fin.Name = "dtp_fecha_fin";
-            dtp_fecha_fin.Size = new Size(193, 23);
-            dtp_fecha_fin.TabIndex = 143;
-            dtp_fecha_fin.Value = new DateTime(2025, 5, 30, 0, 0, 0, 0);
-            // 
             // lbl_fechaVencimiento
             // 
             lbl_fechaVencimiento.AutoSize = true;
@@ -124,15 +131,6 @@
             lbl_fechaVencimiento.Size = new Size(70, 15);
             lbl_fechaVencimiento.TabIndex = 144;
             lbl_fechaVencimiento.Text = "Fecha inicio";
-            // 
-            // dtp_fecha_inicio
-            // 
-            dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
-            dtp_fecha_inicio.Location = new Point(171, 24);
-            dtp_fecha_inicio.Name = "dtp_fecha_inicio";
-            dtp_fecha_inicio.Size = new Size(193, 23);
-            dtp_fecha_inicio.TabIndex = 142;
-            dtp_fecha_inicio.Value = new DateTime(2025, 5, 30, 0, 0, 0, 0);
             // 
             // btn_imprimir
             // 
@@ -147,6 +145,7 @@
             btn_imprimir.Text = "Imprimir";
             btn_imprimir.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_imprimir.UseVisualStyleBackColor = true;
+            btn_imprimir.Click += btn_imprimir_Click;
             // 
             // cbx_client_venta
             // 
@@ -223,9 +222,9 @@
             panel2.Controls.Add(lbl_cantidadProductos);
             panel2.Controls.Add(label4);
             panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 348);
+            panel2.Location = new Point(0, 402);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1223, 211);
+            panel2.Size = new Size(1223, 170);
             panel2.TabIndex = 4;
             // 
             // lbl_total
@@ -234,7 +233,7 @@
             lbl_total.AutoSize = true;
             lbl_total.Font = new Font("Segoe UI", 12F);
             lbl_total.ForeColor = SystemColors.ControlDarkDark;
-            lbl_total.Location = new Point(895, 174);
+            lbl_total.Location = new Point(895, 136);
             lbl_total.Name = "lbl_total";
             lbl_total.RightToLeft = RightToLeft.No;
             lbl_total.Size = new Size(17, 21);
@@ -247,7 +246,7 @@
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 12F);
             label12.ForeColor = SystemColors.ControlDarkDark;
-            label12.Location = new Point(810, 174);
+            label12.Location = new Point(810, 136);
             label12.Name = "label12";
             label12.Size = new Size(49, 21);
             label12.TabIndex = 172;
@@ -259,7 +258,7 @@
             lbl_impuesto.AutoSize = true;
             lbl_impuesto.Font = new Font("Segoe UI", 12F);
             lbl_impuesto.ForeColor = SystemColors.ControlDarkDark;
-            lbl_impuesto.Location = new Point(895, 132);
+            lbl_impuesto.Location = new Point(895, 104);
             lbl_impuesto.Name = "lbl_impuesto";
             lbl_impuesto.RightToLeft = RightToLeft.No;
             lbl_impuesto.Size = new Size(17, 21);
@@ -272,7 +271,7 @@
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 12F);
             label10.ForeColor = SystemColors.ControlDarkDark;
-            label10.Location = new Point(810, 132);
+            label10.Location = new Point(810, 104);
             label10.Name = "label10";
             label10.Size = new Size(82, 21);
             label10.TabIndex = 170;
@@ -284,7 +283,7 @@
             lbl_descuento.AutoSize = true;
             lbl_descuento.Font = new Font("Segoe UI", 12F);
             lbl_descuento.ForeColor = SystemColors.ControlDarkDark;
-            lbl_descuento.Location = new Point(895, 91);
+            lbl_descuento.Location = new Point(895, 71);
             lbl_descuento.Name = "lbl_descuento";
             lbl_descuento.RightToLeft = RightToLeft.No;
             lbl_descuento.Size = new Size(17, 21);
@@ -297,7 +296,7 @@
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 12F);
             label8.ForeColor = SystemColors.ControlDarkDark;
-            label8.Location = new Point(810, 91);
+            label8.Location = new Point(810, 71);
             label8.Name = "label8";
             label8.Size = new Size(90, 21);
             label8.TabIndex = 168;
@@ -309,7 +308,7 @@
             lbl_subtotal.AutoSize = true;
             lbl_subtotal.Font = new Font("Segoe UI", 12F);
             lbl_subtotal.ForeColor = SystemColors.ControlDarkDark;
-            lbl_subtotal.Location = new Point(895, 50);
+            lbl_subtotal.Location = new Point(895, 40);
             lbl_subtotal.Name = "lbl_subtotal";
             lbl_subtotal.RightToLeft = RightToLeft.No;
             lbl_subtotal.Size = new Size(17, 21);
@@ -322,7 +321,7 @@
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F);
             label6.ForeColor = SystemColors.ControlDarkDark;
-            label6.Location = new Point(810, 50);
+            label6.Location = new Point(810, 40);
             label6.Name = "label6";
             label6.Size = new Size(75, 21);
             label6.TabIndex = 166;
@@ -390,7 +389,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_ventas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_ventas.Size = new Size(1223, 290);
+            dtg_ventas.Size = new Size(1223, 344);
             dtg_ventas.TabIndex = 5;
             dtg_ventas.DoubleClick += dtg_ventas_DoubleClick;
             // 
@@ -493,7 +492,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1223, 559);
+            ClientSize = new Size(1223, 572);
             Controls.Add(dtg_ventas);
             Controls.Add(panel2);
             Controls.Add(panel1);
@@ -533,9 +532,7 @@
         private Label lbl_cantidadProductos;
         private Label label4;
         private Label label1;
-        private DateTimePicker dtp_fecha_fin;
         private Label lbl_fechaVencimiento;
-        private DateTimePicker dtp_fecha_inicio;
         private DataGridViewTextBoxColumn cl_fecha;
         private DataGridViewTextBoxColumn cl_id_venta;
         private DataGridViewTextBoxColumn cl_factura;
@@ -551,5 +548,7 @@
         private DataGridViewTextBoxColumn cl_documento_cliente;
         private DataGridViewTextBoxColumn cl_nombre_cliente;
         private DataGridViewTextBoxColumn cl_usuario;
+        private DateTimePicker dtp_fecha_inicio;
+        private DateTimePicker dtp_fecha_fin;
     }
 }
