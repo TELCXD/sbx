@@ -520,13 +520,13 @@ namespace sbx
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
-                             DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].Nombre,
                              resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
                              1,
                              0,
                              DataProducto.Data[0].Iva,
-                             Total.ToString("N2", new CultureInfo("es-CO"))
+                             Total.ToString("N2", new CultureInfo("es-CO")),
+                             DataProducto.Data[0].NombreUnidadMedida
                             );
 
                         Continuar = false;
@@ -550,13 +550,13 @@ namespace sbx
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
-                             DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].Nombre,
                              resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
                              1,
                              0,
                              DataProducto.Data[0].Iva,
-                             Total.ToString("N2", new CultureInfo("es-CO"))
+                             Total.ToString("N2", new CultureInfo("es-CO")),
+                             DataProducto.Data[0].NombreUnidadMedida
                             );
 
                         Continuar = false;
@@ -577,13 +577,13 @@ namespace sbx
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
-                             DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].Nombre,
                              DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
                              1,
                              resp3.Data[0].Porcentaje,
                              DataProducto.Data[0].Iva,
-                             Total.ToString("N2", new CultureInfo("es-CO"))
+                             Total.ToString("N2", new CultureInfo("es-CO")),
+                             DataProducto.Data[0].NombreUnidadMedida
                             );
 
                         Continuar = false;
@@ -599,13 +599,13 @@ namespace sbx
                      DataProducto.Data[0].IdProducto,
                      DataProducto.Data[0].Sku,
                      DataProducto.Data[0].CodigoBarras,
-                     DataProducto.Data[0].NombreUnidadMedida,
                      DataProducto.Data[0].Nombre,
                      DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
                      1,
                      0,
                      DataProducto.Data[0].Iva,
-                     Total.ToString("N2", new CultureInfo("es-CO"))
+                     Total.ToString("N2", new CultureInfo("es-CO")),
+                     DataProducto.Data[0].NombreUnidadMedida
                     );
 
                 Continuar = false;
@@ -962,7 +962,7 @@ namespace sbx
                         if (FechaVencimiento >= FechaActual)
                         {
                             List<DetalleVentaEntitie> detalleVentas = new List<DetalleVentaEntitie>();
-
+                            
                             foreach (DataGridViewRow fila in dtg_producto.Rows)
                             {
                                 DetalleVentaEntitie Detalle = new DetalleVentaEntitie
@@ -987,7 +987,7 @@ namespace sbx
                             PagosVentaEntitie pagosVentaEntitie = new PagosVentaEntitie
                             {
                                 IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue),
-                                Recibido = Convert.ToDecimal(lbl_cambio.Text, new CultureInfo("es-CO")),
+                                Recibido = Convert.ToDecimal(txt_valor_pago.Text, new CultureInfo("es-CO")),
                                 Monto = Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
                                 Referencia = txt_referencia_pago.Text,
                                 IdBanco = Convert.ToInt32(cbx_banco.SelectedValue)
@@ -1004,6 +1004,7 @@ namespace sbx
                                     MessageBox.Show(respGuardado.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     Limpiar();
 
+                                    //Imprime Tirilla
                                     var DataTienda = await _ITienda.List();
                                     if (DataTienda.Data != null) 
                                     {
@@ -1014,11 +1015,12 @@ namespace sbx
                                             FacturaPOSEntitie DataFactura = new FacturaPOSEntitie();
 
                                             DataFactura.NumeroFactura = DataVenta.Data[0].Factura;
+                                            DataFactura.Fecha = DataVenta.Data[0].FechaFactura;
                                             DataFactura.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
                                             DataFactura.DireccionEmpresa = DataTienda.Data[0].Direccion;
                                             DataFactura.TelefonoEmpresa = DataTienda.Data[0].Telefono;
                                             DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
-                                            DataFactura.UserNameFactura = DataTienda.Data[0].UserNameFactura;
+                                            DataFactura.UserNameFactura = DataVenta.Data[0].IdUserActionFactura + " - " + DataVenta.Data[0].UserNameFactura;
                                             DataFactura.NombreCliente = DataVenta.Data[0].NumeroDocumento + " - " + DataVenta.Data[0].NombreRazonSocial;
                                             DataFactura.NombreVendedor = DataVenta.Data[0].NumeroDocumentoVendedor + " - " + DataVenta.Data[0].NombreVendedor;
                                             DataFactura.FormaPago = DataVenta.Data[0].NombreMetodoPago;
@@ -1047,6 +1049,7 @@ namespace sbx
                                             DataFactura.Descuento = Descuento;
                                             DataFactura.Impuesto = Impuesto;
                                             DataFactura.Total = Total;
+                                            DataFactura.Cambio = DataFactura.Recibido - Total;
 
                                             List<ItemFacturaEntitie> ListItemFacturaEntitie = new List<ItemFacturaEntitie>();
 
@@ -1054,6 +1057,7 @@ namespace sbx
                                             decimal cantidad;
                                             decimal desc;
                                             decimal iva;
+                                            decimal totalLinea;
                                             decimal total;
 
                                             foreach (var item in DataVenta.Data)
@@ -1066,12 +1070,51 @@ namespace sbx
                                                 total = CalcularTotal(precio, iva, desc);
                                                 total = total * cantidad;
 
+                                                string UnidadMedidaAbreviada;
+
+                                                switch (item.UnidadMedida)
+                                                {
+                                                    case "Unidad (und)":
+                                                        UnidadMedidaAbreviada = "Unidad (und)";
+                                                        break;
+                                                    case "Caja (caja)":
+                                                        UnidadMedidaAbreviada = "caja";
+                                                        break;
+                                                    case "Paquete (paq)":
+                                                        UnidadMedidaAbreviada = "paq";
+                                                        break;
+                                                    case "Bolsa (bol)":
+                                                        UnidadMedidaAbreviada = "bol";
+                                                        break;
+                                                    case "Litro (lt)":
+                                                        UnidadMedidaAbreviada = "lt";
+                                                        break;
+                                                    case "Mililitro (ml)":
+                                                        UnidadMedidaAbreviada = "ml";
+                                                        break;
+                                                    case "Kilogramo (kg)":
+                                                        UnidadMedidaAbreviada = "kg";
+                                                        break;
+                                                    case "Gramo (g)":
+                                                        UnidadMedidaAbreviada = "g";
+                                                        break;
+                                                    case "Metro (m)":
+                                                        UnidadMedidaAbreviada = "m";
+                                                        break;
+                                                    case "Par (par)":
+                                                        UnidadMedidaAbreviada = "par";
+                                                        break;
+                                                    default:
+                                                        UnidadMedidaAbreviada = "";
+                                                        break;
+                                                }
+
                                                 var ItemFactura = new ItemFacturaEntitie
                                                 {
                                                     Codigo = item.IdProducto,
                                                     Descripcion = item.NombreProducto,
                                                     Cantidad = item.Cantidad,
-                                                    UnidadMedida = item.UnidadMedida,
+                                                    UnidadMedida = UnidadMedidaAbreviada,
                                                     PrecioUnitario = item.PrecioUnitario,
                                                     Descuento = item.Descuento,
                                                     Impuesto = item.Impuesto,                                                  
