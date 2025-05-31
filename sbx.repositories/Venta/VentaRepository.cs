@@ -51,9 +51,9 @@ namespace sbx.repositories.Venta
                     int idVenta = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_DetalleVenta (
-                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, PrecioUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
                             VALUES (@IdVenta, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @PrecioUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in ventaEntitie.detalleVentas)
                     {
@@ -67,6 +67,7 @@ namespace sbx.repositories.Venta
                                 detalle.CodigoBarras,
                                 detalle.NombreProducto,
                                 detalle.Cantidad,
+                                detalle.UnidadMedida,
                                 detalle.PrecioUnitario,
                                 detalle.Descuento,
                                 detalle.Impuesto,
@@ -78,8 +79,8 @@ namespace sbx.repositories.Venta
                     }
 
                     sql = @"INSERT INTO T_PagosVenta (
-                            IdVenta, IdMetodoPago, Monto, Referencia, IdBanco, CreationDate, IdUserAction)
-                            VALUES (@IdVenta, @IdMetodoPago, @Monto, @Referencia, @IdBanco, @CreationDate, @IdUserAction)";
+                            IdVenta, IdMetodoPago, Recibido, Monto, Referencia, IdBanco, CreationDate, IdUserAction)
+                            VALUES (@IdVenta, @IdMetodoPago, @Recibido, @Monto, @Referencia, @IdBanco, @CreationDate, @IdUserAction)";
 
                     foreach (var detallePago in ventaEntitie.pagosVenta)
                     {
@@ -89,6 +90,7 @@ namespace sbx.repositories.Venta
                             {
                                 IdVenta = idVenta,
                                 detallePago.IdMetodoPago,
+                                detallePago.Recibido,
                                 detallePago.Monto,
                                 detallePago.Referencia,
                                 detallePago.IdBanco,
@@ -102,6 +104,7 @@ namespace sbx.repositories.Venta
                     await transaction.CommitAsync();
 
                     response.Flag = true;
+                    response.Data = idVenta;
                     response.Message = "Venta creada correctamente";
                     return response;
                 }
@@ -142,6 +145,7 @@ namespace sbx.repositories.Venta
                                     B.IdProducto,
                                     B.Sku,
                                     B.CodigoBarras,
+                                    B.UnidadMedida,
                                     B.NombreProducto,
                                     B.PrecioUnitario,
                                     B.Cantidad,
@@ -158,6 +162,7 @@ namespace sbx.repositories.Venta
                                     C.Referencia,
                                     C.IdBanco,
                                     E.Nombre NombreBanco,
+                                    C.Recibido,
                                     C.Monto,
                                     C.CreationDate FechaPagoFactura,
                                     C.IdUserAction IdUserActionPagoFactura, 

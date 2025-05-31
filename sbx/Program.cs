@@ -89,12 +89,12 @@ namespace sbx
                     new LoginRepository(connectionString));
                 services.AddTransient<Login>();
 
-                services.AddTransient<Inicio>(sp =>
-                     new Inicio(sp));
-
                 services.AddTransient<ITienda>(provider =>
                    new TiendaRepository(connectionString));
+
                 services.AddTransient<Tienda>();
+
+                services.AddTransient<Inicio>();
 
                 services.AddTransient<Ajustes>();
 

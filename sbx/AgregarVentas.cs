@@ -12,6 +12,7 @@ using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Tienda;
+using sbx.core.Interfaces.UnidadMedida;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
 using System.Globalization;
@@ -108,15 +109,13 @@ namespace sbx
                 if (resp.Data.Count > 0)
                 {
                     agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                    agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
-                    agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                     txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                     lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                     IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
                 }
             }
 
-            resp = await _IMedioPago.List();
+            resp = await _IMedioPago.List(0);
             cbx_medio_pago.DataSource = resp.Data;
             cbx_medio_pago.ValueMember = "IdMetodoPago";
             cbx_medio_pago.DisplayMember = "Nombre";
@@ -256,8 +255,6 @@ namespace sbx
                                 if (resp.Data.Count > 0)
                                 {
                                     agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                                    agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
-                                    agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                                     txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                                     lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                                     IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
@@ -318,8 +315,6 @@ namespace sbx
                             if (resp.Data.Count > 0)
                             {
                                 agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                                agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
-                                agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                                 txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                                 lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                                 IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
@@ -395,8 +390,6 @@ namespace sbx
                     if (resp.Data.Count > 0)
                     {
                         agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                        agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
-                        agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                         txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                         lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                         IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
@@ -445,8 +438,6 @@ namespace sbx
                         if (resp.Data.Count > 0)
                         {
                             agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                            agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
-                            agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                             txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                             lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                             IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
@@ -529,6 +520,7 @@ namespace sbx
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
+                             DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].Nombre,
                              resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
                              1,
@@ -558,6 +550,7 @@ namespace sbx
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
+                             DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].Nombre,
                              resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
                              1,
@@ -584,6 +577,7 @@ namespace sbx
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
+                             DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].Nombre,
                              DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
                              1,
@@ -605,6 +599,7 @@ namespace sbx
                      DataProducto.Data[0].IdProducto,
                      DataProducto.Data[0].Sku,
                      DataProducto.Data[0].CodigoBarras,
+                     DataProducto.Data[0].NombreUnidadMedida,
                      DataProducto.Data[0].Nombre,
                      DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
                      1,
@@ -862,8 +857,6 @@ namespace sbx
                 if (resp.Data.Count > 0)
                 {
                     agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                    agregaVentaEntitie.IdenticacionCliente = resp.Data[0].NumeroDocumento;
-                    agregaVentaEntitie.NombreCliente = resp.Data[0].NombreRazonSocial;
                     txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
                     lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
                 }
@@ -953,16 +946,6 @@ namespace sbx
                     DateTime FechaVencimiento = DateTime.Now;
                     venta.IdCliente = agregaVentaEntitie.IdCliente;
                     venta.IdVendedor = Convert.ToInt32(cbx_vendedor.SelectedValue);
-                    agregaVentaEntitie.IdVendedor = venta.IdVendedor;
-                    var respDataVendedor = await _IVendedor.List(venta.IdVendedor);
-                    if (respDataVendedor.Data != null) 
-                    {
-                        if (respDataVendedor.Data.Count > 0)
-                        {
-                            agregaVentaEntitie.IdenticacionVendedor = respDataVendedor.Data[0].NumeroDocumento;
-                            agregaVentaEntitie.NombreVendedor = respDataVendedor.Data[0].Nombre;
-                        }
-                    }
                     venta.IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue);
                     var resp = await _IRangoNumeracion.List(0);
                     if (resp.Data != null)
@@ -987,6 +970,7 @@ namespace sbx
                                     IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
                                     Sku = fila.Cells["cl_sku"].Value?.ToString() ?? "",
                                     CodigoBarras = fila.Cells["cl_codigo_barras"].Value?.ToString() ?? "",
+                                    UnidadMedida = fila.Cells["cl_unidad_medida"].Value?.ToString() ?? "",
                                     NombreProducto = fila.Cells["cl_nombre"].Value?.ToString() ?? "",
                                     Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
                                     PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
@@ -1003,6 +987,7 @@ namespace sbx
                             PagosVentaEntitie pagosVentaEntitie = new PagosVentaEntitie
                             {
                                 IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue),
+                                Recibido = Convert.ToDecimal(lbl_cambio.Text, new CultureInfo("es-CO")),
                                 Monto = Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
                                 Referencia = txt_referencia_pago.Text,
                                 IdBanco = Convert.ToInt32(cbx_banco.SelectedValue)
@@ -1019,39 +1004,87 @@ namespace sbx
                                     MessageBox.Show(respGuardado.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     Limpiar();
 
-                                    var respTienda = await _ITienda.List();
-                                    if (respTienda.Data != null) 
+                                    var DataTienda = await _ITienda.List();
+                                    if (DataTienda.Data != null) 
                                     {
-                                        if (respTienda.Data.Count > 0) 
+                                        if (DataTienda.Data.Count > 0) 
                                         {
-                                            var DataCliente = await _ICliente.List(venta.IdCliente);
-                                            if (DataCliente.Data != null)
-                                            {
-                                                if (DataCliente.Data.Count > 0)
-                                                {
-                                                    var DataFactura = new FacturaPOSEntitie
-                                                    {
-                                                        NumeroFactura = venta.Prefijo + "-" + venta.Consecutivo,
-                                                        NombreEmpresa = respTienda.Data[0].NombreRazonSocial,
-                                                        DireccionEmpresa = respTienda.Data[0].Direccion,
-                                                        TelefonoEmpresa = respTienda.Data[0].Telefono,
-                                                        NIT = respTienda.Data[0].NumeroDocumento,
-                                                        NombreCliente = DataCliente.Data[0].NumeroDocumento + " - " + DataCliente.Data[0].NombreRazonSocial,
-                                                        FormaPago = venta.IdMetodoPago
-                                                    };
+                                            var DataVenta = await _IVenta.List(respGuardado.Data);
 
-                                                    string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura);
-                                                    File.WriteAllText("factura.txt", tirilla, Encoding.UTF8);
-                                                }
-                                                else
-                                                {
-                                                    MessageBox.Show("No se encuentra informacion de Cliente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                }
-                                            }
-                                            else
+                                            FacturaPOSEntitie DataFactura = new FacturaPOSEntitie();
+
+                                            DataFactura.NumeroFactura = DataVenta.Data[0].Factura;
+                                            DataFactura.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
+                                            DataFactura.DireccionEmpresa = DataTienda.Data[0].Direccion;
+                                            DataFactura.TelefonoEmpresa = DataTienda.Data[0].Telefono;
+                                            DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
+                                            DataFactura.UserNameFactura = DataTienda.Data[0].UserNameFactura;
+                                            DataFactura.NombreCliente = DataVenta.Data[0].NumeroDocumento + " - " + DataVenta.Data[0].NombreRazonSocial;
+                                            DataFactura.NombreVendedor = DataVenta.Data[0].NumeroDocumentoVendedor + " - " + DataVenta.Data[0].NombreVendedor;
+                                            DataFactura.FormaPago = DataVenta.Data[0].NombreMetodoPago;
+                                            DataFactura.Recibido = DataVenta.Data[0].Recibido;
+
+                                            Cantidad = 0;
+                                            Subtotal = 0;
+                                            Descuento = 0;
+                                            Impuesto = 0;
+                                            SubtotalLinea = 0;
+                                            DescuentoLinea = 0;
+
+                                            foreach (var item in DataVenta.Data)
                                             {
-                                                MessageBox.Show("No se encuentra informacion de Cliente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                Cantidad += Convert.ToDecimal(item.Cantidad);
+                                                Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
                                             }
+                                            Total = (Subtotal - Descuento) + Impuesto;
+
+                                            DataFactura.CantidadTotal = Cantidad;
+                                            DataFactura.Subtotal = Subtotal;
+                                            DataFactura.Descuento = Descuento;
+                                            DataFactura.Impuesto = Impuesto;
+                                            DataFactura.Total = Total;
+
+                                            List<ItemFacturaEntitie> ListItemFacturaEntitie = new List<ItemFacturaEntitie>();
+
+                                            decimal precio;
+                                            decimal cantidad;
+                                            decimal desc;
+                                            decimal iva;
+                                            decimal total;
+
+                                            foreach (var item in DataVenta.Data)
+                                            {
+                                                precio = Convert.ToDecimal(item.PrecioUnitario);
+                                                cantidad = Convert.ToDecimal(item.Cantidad);
+                                                desc = Convert.ToDecimal(item.Descuento);
+                                                iva = Convert.ToDecimal(item.Impuesto);
+
+                                                total = CalcularTotal(precio, iva, desc);
+                                                total = total * cantidad;
+
+                                                var ItemFactura = new ItemFacturaEntitie
+                                                {
+                                                    Codigo = item.IdProducto,
+                                                    Descripcion = item.NombreProducto,
+                                                    Cantidad = item.Cantidad,
+                                                    UnidadMedida = item.UnidadMedida,
+                                                    PrecioUnitario = item.PrecioUnitario,
+                                                    Descuento = item.Descuento,
+                                                    Impuesto = item.Impuesto,                                                  
+                                                    Total = total
+                                                };
+
+                                                ListItemFacturaEntitie.Add(ItemFactura);
+                                            }
+
+                                            DataFactura.Items = ListItemFacturaEntitie;
+
+                                            string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura);
+                                            File.WriteAllText($"factura_{DataFactura.NumeroFactura}.txt", tirilla, Encoding.UTF8);
                                         }
                                         else
                                         {
@@ -1067,6 +1100,10 @@ namespace sbx
                                 {
                                     MessageBox.Show(respGuardado.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se registro venta", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
                         else
