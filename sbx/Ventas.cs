@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.Venta;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Venta;
 using System.Globalization;
@@ -14,6 +15,7 @@ namespace sbx
         private readonly IServiceProvider _serviceProvider;
         private DetalleVenta? _DetalleVenta;
         private readonly ITienda _ITienda;
+        private readonly IParametros _IParametros;
         decimal Cantidad = 0;
         decimal Subtotal = 0;
         decimal SubtotalLinea = 0;
@@ -22,12 +24,13 @@ namespace sbx
         decimal Total = 0;
         decimal DescuentoLinea = 0;
 
-        public Ventas(IVenta venta, IServiceProvider serviceProvider, ITienda tienda)
+        public Ventas(IVenta venta, IServiceProvider serviceProvider, ITienda tienda, IParametros iParametros)
         {
             InitializeComponent();
             _IVenta = venta;
             _serviceProvider = serviceProvider;
             _ITienda = tienda;
+            _IParametros = iParametros;
         }
 
         private void Ventas_Load(object sender, EventArgs e)
@@ -359,8 +362,22 @@ namespace sbx
 
                                     DataFactura.Items = ListItemFacturaEntitie;
 
-                                    string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura);
-                                    File.WriteAllText($"factura_{DataFactura.NumeroFactura}.txt", tirilla, Encoding.UTF8);
+                                    var DataParametros = await _IParametros.List("Ancho tirilla");
+
+                                    if (DataParametros.Data != null)
+                                    {
+                                        if (DataParametros.Data.Count > 0)
+                                        {
+                                            int ANCHO_TIRILLA = Convert.ToInt32(DataParametros.Data[0].Value);
+
+                                            string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
+                                            File.WriteAllText($"factura_{DataFactura.NumeroFactura}.txt", tirilla, Encoding.UTF8);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se encuentra informacion de ancho de tirilla", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
                                 }
                                 else
                                 {

@@ -5,11 +5,13 @@ namespace sbx.core.Entities.Venta
 {
     public class GenerarTirillaPOS
     {
-        private const int ANCHO_TIRILLA = 42;
+        private static int ANCHO_TIRILLA = 32;
 
-        public static string GenerarTirilla(FacturaPOSEntitie factura)
+        public static string GenerarTirilla(FacturaPOSEntitie factura, int Pr_ANCHO_TIRILLA)
         {
             var sb = new StringBuilder();
+
+            ANCHO_TIRILLA = Pr_ANCHO_TIRILLA;
 
             //Abrir cajon
             sb.AppendLine("\x1B" + "p" + "\x00" + "\x0F" + "\x96");

@@ -645,4 +645,18 @@ FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
 FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
 FOREIGN KEY (IdBanco) REFERENCES T_Bancos(IdBanco),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
-);
+)
+GO
+CREATE TABLE T_Parametros(
+IdParametro INT IDENTITY(1,1) PRIMARY KEY,
+Nombre VARCHAR(50) NOT NULL,
+Value VARCHAR(50) NOT NULL 
+)
+GO
+INSERT INTO T_Parametros 
+VALUES
+	('Validar stock para venta','SI'),
+    ('Preguntar imprimir factura en venta','NO'),
+	('Ancho tirilla','42'),
+	('Impresora','Generic'),
+	('Ruta backup','')

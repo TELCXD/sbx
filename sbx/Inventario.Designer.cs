@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inventario));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
@@ -157,28 +157,30 @@
             panel2.Controls.Add(label1);
             panel2.Controls.Add(txt_total_stock);
             panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 485);
+            panel2.Location = new Point(0, 474);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1308, 35);
+            panel2.Size = new Size(1308, 46);
             panel2.TabIndex = 1;
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(1025, 9);
+            label1.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Location = new Point(1006, 9);
             label1.Name = "label1";
-            label1.Size = new Size(48, 15);
+            label1.Size = new Size(62, 30);
             label1.TabIndex = 28;
-            label1.Text = "T. Stock";
+            label1.Text = "Stock";
             // 
             // txt_total_stock
             // 
             txt_total_stock.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             txt_total_stock.Enabled = false;
-            txt_total_stock.Location = new Point(1079, 6);
+            txt_total_stock.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txt_total_stock.Location = new Point(1074, 6);
             txt_total_stock.Name = "txt_total_stock";
-            txt_total_stock.Size = new Size(226, 23);
+            txt_total_stock.Size = new Size(226, 35);
             txt_total_stock.TabIndex = 27;
             // 
             // dtg_inventario
@@ -187,38 +189,38 @@
             dtg_inventario.AllowUserToDeleteRows = false;
             dtg_inventario.AllowUserToOrderColumns = true;
             dtg_inventario.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_inventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_inventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_inventario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_movimiento, cl_cantidad, cl_tipo, cl_id_producto, cl_nombre, cl_sku, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_inventario.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_inventario.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_inventario.Dock = DockStyle.Fill;
             dtg_inventario.Location = new Point(0, 56);
             dtg_inventario.Name = "dtg_inventario";
             dtg_inventario.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_inventario.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_inventario.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_inventario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_inventario.Size = new Size(1308, 429);
+            dtg_inventario.Size = new Size(1308, 418);
             dtg_inventario.TabIndex = 6;
             // 
             // cl_fecha
