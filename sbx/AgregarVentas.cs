@@ -2,6 +2,7 @@
 using sbx.core.Entities.AgregaVenta;
 using sbx.core.Entities.PagosVenta;
 using sbx.core.Entities.Venta;
+using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.Banco;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.ListaPrecios;
@@ -1176,16 +1177,60 @@ namespace sbx
 
                                             DataFactura.Items = ListItemFacturaEntitie;
 
-                                            var DataParametros = await _IParametros.List("Ancho tirilla");
+                                            var DataParametros = await _IParametros.List("");
 
                                             if (DataParametros.Data != null)
                                             {
                                                 if (DataParametros.Data.Count > 0)
                                                 {
-                                                    int ANCHO_TIRILLA = Convert.ToInt32(DataParametros.Data[0].Value);
+                                                    int ANCHO_TIRILLA = 0;
+                                                    string PreguntarParaImprimir = "";
+                                                    string Impresora = "";
+                                                    foreach (var itemParametros in DataParametros.Data)
+                                                    {
+                                                        switch (itemParametros.Nombre)
+                                                        {
+                                                            case "Ancho tirilla":
+                                                                ANCHO_TIRILLA = Convert.ToInt32(itemParametros.Value);
+                                                                break;
+                                                            case "Preguntar imprimir factura en venta":
+                                                                PreguntarParaImprimir = itemParametros.Value;
+                                                                break;
+                                                            case "Impresora":
+                                                                Impresora = itemParametros.Value;
+                                                                break;
+                                                            default:
+                                                                break;
+                                                        }                                                                                                                                                                     
+                                                    }
+                                                   
+                                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
 
-                                                    string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
-                                                    File.WriteAllText($"factura_{DataFactura.NumeroFactura}.txt", tirilla, Encoding.UTF8);
+                                                    string carpetaFacturas = "Facturas";
+                                                    if (!Directory.Exists(carpetaFacturas))
+                                                    {
+                                                        Directory.CreateDirectory(carpetaFacturas);
+                                                    }
+
+                                                    File.WriteAllText(Path.Combine(carpetaFacturas, $"factura_{DataFactura.NumeroFactura}.txt"),
+                                                                      tirilla.ToString(),
+                                                                      Encoding.UTF8);
+
+                                                    if (PreguntarParaImprimir == "SI")
+                                                    {
+                                                        DialogResult result = MessageBox.Show("¿Está seguro de imprimir la factura?",
+                                                        "Confirmar cancelacion",
+                                                        MessageBoxButtons.YesNo,
+                                                        MessageBoxIcon.Question);
+                                                        if (result == DialogResult.Yes)
+                                                        {
+                                                            RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                                        }    
+                                                    }
+                                                    else
+                                                    {
+                                                        RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                                    }
                                                 }
                                             }
                                             else

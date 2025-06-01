@@ -159,7 +159,7 @@ namespace sbx.repositories.EntradaInventario
 
                     string Where = "";
                     string Filtro = "";
-                    string Orderby = " ORDER BY R.Fecha ";
+                    string Orderby = " ORDER BY R.Fecha DESC ";
 
                     switch (tipoFiltro)
                     {
