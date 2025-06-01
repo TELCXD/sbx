@@ -28,11 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ajustes));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ajustes));
             TabParametros = new TabPage();
+            txt_ruta_backup = new TextBox();
+            txt_impresora = new TextBox();
+            txt_ancho_tirilla = new TextBox();
+            cbx_pregunta_imprimir_venta = new ComboBox();
+            cbx_valida_stock_venta = new ComboBox();
+            label4 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            label1 = new Label();
+            lbl_valida_stock = new Label();
+            panel2 = new Panel();
+            button1 = new Button();
+            textBox2 = new TextBox();
+            btn_guardar_parametros = new Button();
             tabPage1 = new TabPage();
             tabControl2 = new TabControl();
             tabPage2 = new TabPage();
@@ -53,6 +67,8 @@
             btn_editar_ra = new Button();
             btn_agregar_ra = new Button();
             tabControl1 = new TabControl();
+            TabParametros.SuspendLayout();
+            panel2.SuspendLayout();
             tabPage1.SuspendLayout();
             tabControl2.SuspendLayout();
             tabPage2.SuspendLayout();
@@ -63,6 +79,17 @@
             // 
             // TabParametros
             // 
+            TabParametros.Controls.Add(txt_ruta_backup);
+            TabParametros.Controls.Add(txt_impresora);
+            TabParametros.Controls.Add(txt_ancho_tirilla);
+            TabParametros.Controls.Add(cbx_pregunta_imprimir_venta);
+            TabParametros.Controls.Add(cbx_valida_stock_venta);
+            TabParametros.Controls.Add(label4);
+            TabParametros.Controls.Add(label3);
+            TabParametros.Controls.Add(label2);
+            TabParametros.Controls.Add(label1);
+            TabParametros.Controls.Add(lbl_valida_stock);
+            TabParametros.Controls.Add(panel2);
             TabParametros.Location = new Point(4, 26);
             TabParametros.Name = "TabParametros";
             TabParametros.Padding = new Padding(3);
@@ -70,6 +97,143 @@
             TabParametros.TabIndex = 1;
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
+            // 
+            // txt_ruta_backup
+            // 
+            txt_ruta_backup.Location = new Point(253, 188);
+            txt_ruta_backup.Name = "txt_ruta_backup";
+            txt_ruta_backup.Size = new Size(223, 23);
+            txt_ruta_backup.TabIndex = 11;
+            // 
+            // txt_impresora
+            // 
+            txt_impresora.Location = new Point(253, 159);
+            txt_impresora.Name = "txt_impresora";
+            txt_impresora.Size = new Size(223, 23);
+            txt_impresora.TabIndex = 10;
+            // 
+            // txt_ancho_tirilla
+            // 
+            txt_ancho_tirilla.Enabled = false;
+            txt_ancho_tirilla.Location = new Point(253, 130);
+            txt_ancho_tirilla.Name = "txt_ancho_tirilla";
+            txt_ancho_tirilla.Size = new Size(223, 23);
+            txt_ancho_tirilla.TabIndex = 9;
+            txt_ancho_tirilla.KeyPress += txt_ancho_tirilla_KeyPress;
+            // 
+            // cbx_pregunta_imprimir_venta
+            // 
+            cbx_pregunta_imprimir_venta.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_pregunta_imprimir_venta.FormattingEnabled = true;
+            cbx_pregunta_imprimir_venta.Items.AddRange(new object[] { "NO", "SI" });
+            cbx_pregunta_imprimir_venta.Location = new Point(253, 97);
+            cbx_pregunta_imprimir_venta.Name = "cbx_pregunta_imprimir_venta";
+            cbx_pregunta_imprimir_venta.Size = new Size(121, 25);
+            cbx_pregunta_imprimir_venta.TabIndex = 8;
+            // 
+            // cbx_valida_stock_venta
+            // 
+            cbx_valida_stock_venta.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_valida_stock_venta.FormattingEnabled = true;
+            cbx_valida_stock_venta.Items.AddRange(new object[] { "SI", "NO" });
+            cbx_valida_stock_venta.Location = new Point(253, 66);
+            cbx_valida_stock_venta.Name = "cbx_valida_stock_venta";
+            cbx_valida_stock_venta.Size = new Size(121, 25);
+            cbx_valida_stock_venta.TabIndex = 7;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(8, 194);
+            label4.Name = "label4";
+            label4.Size = new Size(92, 17);
+            label4.TabIndex = 6;
+            label4.Text = "Ruta backup";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(8, 165);
+            label3.Name = "label3";
+            label3.Size = new Size(72, 17);
+            label3.TabIndex = 5;
+            label3.Text = "Impresora";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(8, 136);
+            label2.Name = "label2";
+            label2.Size = new Size(84, 17);
+            label2.TabIndex = 4;
+            label2.Text = "Ancho tirilla";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(8, 102);
+            label1.Name = "label1";
+            label1.Size = new Size(240, 17);
+            label1.TabIndex = 3;
+            label1.Text = "Preguntar imprimir factura en venta";
+            // 
+            // lbl_valida_stock
+            // 
+            lbl_valida_stock.AutoSize = true;
+            lbl_valida_stock.Location = new Point(8, 74);
+            lbl_valida_stock.Name = "lbl_valida_stock";
+            lbl_valida_stock.Size = new Size(169, 17);
+            lbl_valida_stock.TabIndex = 2;
+            lbl_valida_stock.Text = "Validar stock para venta";
+            // 
+            // panel2
+            // 
+            panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(button1);
+            panel2.Controls.Add(textBox2);
+            panel2.Controls.Add(btn_guardar_parametros);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(3, 3);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(857, 56);
+            panel2.TabIndex = 1;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatAppearance.MouseDownBackColor = Color.Gray;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Image = (Image)resources.GetObject("button1.Image");
+            button1.Location = new Point(1447, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(42, 45);
+            button1.TabIndex = 5;
+            button1.TextImageRelation = TextImageRelation.ImageBeforeText;
+            button1.UseVisualStyleBackColor = true;
+            // 
+            // textBox2
+            // 
+            textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            textBox2.Location = new Point(1250, 14);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(191, 23);
+            textBox2.TabIndex = 2;
+            // 
+            // btn_guardar_parametros
+            // 
+            btn_guardar_parametros.Enabled = false;
+            btn_guardar_parametros.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_guardar_parametros.FlatStyle = FlatStyle.Flat;
+            btn_guardar_parametros.Image = (Image)resources.GetObject("btn_guardar_parametros.Image");
+            btn_guardar_parametros.Location = new Point(3, 3);
+            btn_guardar_parametros.Name = "btn_guardar_parametros";
+            btn_guardar_parametros.Size = new Size(101, 45);
+            btn_guardar_parametros.TabIndex = 0;
+            btn_guardar_parametros.Text = "Guardar";
+            btn_guardar_parametros.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_guardar_parametros.UseVisualStyleBackColor = true;
+            btn_guardar_parametros.Click += btn_guardar_parametros_Click;
             // 
             // tabPage1
             // 
@@ -310,6 +474,7 @@
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(871, 552);
             tabControl1.TabIndex = 0;
+            tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // Ajustes
             // 
@@ -322,6 +487,10 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Ajustes";
             Load += Ajustes_Load;
+            TabParametros.ResumeLayout(false);
+            TabParametros.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             tabPage1.ResumeLayout(false);
             tabControl2.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
@@ -354,5 +523,19 @@
         private DataGridViewTextBoxColumn cl_nro_autorizacion;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
         private DataGridViewTextBoxColumn cl_numero_actual;
+        private Panel panel2;
+        private Button button1;
+        private TextBox textBox2;
+        private Button btn_guardar_parametros;
+        private Label lbl_valida_stock;
+        private Label label2;
+        private Label label1;
+        private Label label3;
+        private Label label4;
+        private ComboBox cbx_valida_stock_venta;
+        private ComboBox cbx_pregunta_imprimir_venta;
+        private TextBox txt_ancho_tirilla;
+        private TextBox txt_ruta_backup;
+        private TextBox txt_impresora;
     }
 }

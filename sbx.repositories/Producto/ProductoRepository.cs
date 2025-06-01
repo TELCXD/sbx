@@ -153,7 +153,38 @@ namespace sbx.repositories.Producto
 								  ,D.Nombre NombreUnidadMedida
                                   ,A.CreationDate
                                   ,A.UpdateDate
-                                  ,A.IdUserAction 
+                                  ,A.IdUserAction
+                                  ,(SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                        (
+                                         SELECT
+	                                     e.IdProducto, 
+                                         'Entrada' AS TipoMovimiento,
+	                                     e.Cantidad
+                                         FROM T_DetalleEntradasInventario e
+                                         INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+                                         SELECT
+	                                     s.IdProducto, 
+                                         'Salida' AS TipoMovimiento,
+	                                     s.Cantidad
+                                         FROM T_DetalleSalidasInventario s
+                                         INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+	                                     UNION ALL
+
+	                                     SELECT
+	                                     dvt.IdProducto,
+	                                     'Salida por Venta' AS TipoMovimiento,
+	                                     dvt.Cantidad
+	                                     FROM T_DetalleVenta dvt
+                                         ) R
+	                                     WHERE R.IdProducto = A.IdProducto) Stock  
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
@@ -268,7 +299,38 @@ namespace sbx.repositories.Producto
 								  ,D.Nombre NombreUnidadMedida
                                   ,A.CreationDate
                                   ,A.UpdateDate
-                                  ,A.IdUserAction 
+                                  ,A.IdUserAction
+                                  ,(SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                        (
+                                         SELECT
+	                                     e.IdProducto, 
+                                         'Entrada' AS TipoMovimiento,
+	                                     e.Cantidad
+                                         FROM T_DetalleEntradasInventario e
+                                         INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+                                         SELECT
+	                                     s.IdProducto, 
+                                         'Salida' AS TipoMovimiento,
+	                                     s.Cantidad
+                                         FROM T_DetalleSalidasInventario s
+                                         INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+	                                     UNION ALL
+
+	                                     SELECT
+	                                     dvt.IdProducto,
+	                                     'Salida por Venta' AS TipoMovimiento,
+	                                     dvt.Cantidad
+	                                     FROM T_DetalleVenta dvt
+                                         ) R
+	                                     WHERE R.IdProducto = A.IdProducto) Stock                                 
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
@@ -392,7 +454,38 @@ namespace sbx.repositories.Producto
 								  ,D.Nombre NombreUnidadMedida
                                   ,A.CreationDate
                                   ,A.UpdateDate
-                                  ,A.IdUserAction 
+                                  ,A.IdUserAction
+                                  ,(SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                        (
+                                         SELECT
+	                                     e.IdProducto, 
+                                         'Entrada' AS TipoMovimiento,
+	                                     e.Cantidad
+                                         FROM T_DetalleEntradasInventario e
+                                         INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+                                         SELECT
+	                                     s.IdProducto, 
+                                         'Salida' AS TipoMovimiento,
+	                                     s.Cantidad
+                                         FROM T_DetalleSalidasInventario s
+                                         INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+	                                     UNION ALL
+
+	                                     SELECT
+	                                     dvt.IdProducto,
+	                                     'Salida por Venta' AS TipoMovimiento,
+	                                     dvt.Cantidad
+	                                     FROM T_DetalleVenta dvt
+                                         ) R
+	                                     WHERE R.IdProducto = A.IdProducto) Stock  
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
@@ -450,7 +543,38 @@ namespace sbx.repositories.Producto
 								  ,D.Nombre NombreUnidadMedida
                                   ,A.CreationDate
                                   ,A.UpdateDate
-                                  ,A.IdUserAction 
+                                  ,A.IdUserAction
+                                  ,(SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                        (
+                                         SELECT
+	                                     e.IdProducto, 
+                                         'Entrada' AS TipoMovimiento,
+	                                     e.Cantidad
+                                         FROM T_DetalleEntradasInventario e
+                                         INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+                                         SELECT
+	                                     s.IdProducto, 
+                                         'Salida' AS TipoMovimiento,
+	                                     s.Cantidad
+                                         FROM T_DetalleSalidasInventario s
+                                         INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+	                                     UNION ALL
+
+	                                     SELECT
+	                                     dvt.IdProducto,
+	                                     'Salida por Venta' AS TipoMovimiento,
+	                                     dvt.Cantidad
+	                                     FROM T_DetalleVenta dvt
+                                         ) R
+	                                     WHERE R.IdProducto = A.IdProducto) Stock  
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca

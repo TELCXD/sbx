@@ -109,7 +109,7 @@ namespace sbx
                             item.Sku,
                             item.CodigoBarras,
                             item.Nombre,
-                            0,
+                            item.Stock,
                             item.CostoBase.ToString("N2", new CultureInfo("es-CO")),
                             item.PrecioBase.ToString("N2", new CultureInfo("es-CO")),
                             item.Iva.ToString().Replace('.', ','),

@@ -14,6 +14,7 @@ using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.Marca;
 using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.Pais;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.PrecioCliente;
 using sbx.core.Interfaces.PrecioProducto;
 using sbx.core.Interfaces.Producto;
@@ -48,6 +49,7 @@ using sbx.repositories.LoginRepository;
 using sbx.repositories.Marca;
 using sbx.repositories.MedioPago;
 using sbx.repositories.Pais;
+using sbx.repositories.Parametros;
 using sbx.repositories.PrecioCliente;
 using sbx.repositories.PrecioProducto;
 using sbx.repositories.Producto;
@@ -101,8 +103,7 @@ namespace sbx
                 services.AddTransient<IRangoNumeracion>(provider =>
                 new RangoNumeracionRepository(connectionString));
 
-                services.AddTransient<Ajustes>(sp =>
-                     new Ajustes(sp, sp.GetService<IRangoNumeracion>()));
+                services.AddTransient<Ajustes>();
 
                 services.AddTransient<ITipoDocumentoRangoNumeracion>(provider =>
                 new TipoDocumentoRangoNumeracionRepository(connectionString));
@@ -247,6 +248,9 @@ namespace sbx
 
                 services.AddTransient<IVenta>(provider =>
                 new VentaRepository(connectionString));
+
+                services.AddTransient<IParametros>(provider =>
+                new ParametrosRepository(connectionString));
             })
             .Build();
 

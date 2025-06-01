@@ -6,13 +6,13 @@ using sbx.core.Interfaces.Banco;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.MedioPago;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.PrecioCliente;
 using sbx.core.Interfaces.PrecioProducto;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Tienda;
-using sbx.core.Interfaces.UnidadMedida;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
 using System.Globalization;
@@ -37,6 +37,7 @@ namespace sbx
         private readonly IRangoNumeracion _IRangoNumeracion;
         private readonly IVenta _IVenta;
         private readonly ITienda _ITienda;
+        private readonly IParametros _IParametros;
         string busqueda = "";
         AgregaVentaEntitie agregaVentaEntitie = new AgregaVentaEntitie();
         VentaEntitie venta = new VentaEntitie();
@@ -56,7 +57,7 @@ namespace sbx
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
-            IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta, ITienda tienda)
+            IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta, ITienda tienda, IParametros parametros)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -73,6 +74,7 @@ namespace sbx
             _IRangoNumeracion = iRangoNumeracion;
             _IVenta = venta;
             _ITienda = tienda;
+            _IParametros = parametros;
         }
 
         public dynamic? Permisos
@@ -272,7 +274,31 @@ namespace sbx
                                 {
                                     if (DataProducto.Data.Count > 0)
                                     {
-                                        IdentificarPrecio(DataProducto);
+                                        var DataParametros = await _IParametros.List("Validar stock para venta");
+
+                                        if(DataParametros.Data != null)
+                                        {
+                                            if (DataParametros.Data.Count > 0)
+                                            {
+                                                string ValidaStock = DataParametros.Data[0].Value;
+                                                if (ValidaStock == "SI") 
+                                                {
+                                                    decimal Stock = DataProducto.Data[0].Stock;
+                                                    if (Stock > 0)
+                                                    {
+                                                        IdentificarPrecio(DataProducto);
+                                                    }
+                                                    else
+                                                    {
+                                                        MessageBox.Show($"Producto sin Stock", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    IdentificarPrecio(DataProducto);
+                                                }
+                                            }
+                                        }                                                                            
                                     }
                                     else
                                     {
@@ -452,7 +478,31 @@ namespace sbx
                     {
                         if (DataProducto.Data.Count > 0)
                         {
-                            IdentificarPrecio(DataProducto);
+                            var DataParametros = await _IParametros.List("Validar stock para venta");
+
+                            if (DataParametros.Data != null)
+                            {
+                                if (DataParametros.Data.Count > 0)
+                                {
+                                    string ValidaStock = DataParametros.Data[0].Value;
+                                    if (ValidaStock == "SI")
+                                    {
+                                        decimal Stock = DataProducto.Data[0].Stock;
+                                        if (Stock > 0)
+                                        {
+                                            IdentificarPrecio(DataProducto);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"Producto sin Stock", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        IdentificarPrecio(DataProducto);
+                                    }
+                                }
+                            }
                         }
                     }
                     else
@@ -1126,8 +1176,22 @@ namespace sbx
 
                                             DataFactura.Items = ListItemFacturaEntitie;
 
-                                            string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura);
-                                            File.WriteAllText($"factura_{DataFactura.NumeroFactura}.txt", tirilla, Encoding.UTF8);
+                                            var DataParametros = await _IParametros.List("Ancho tirilla");
+
+                                            if (DataParametros.Data != null)
+                                            {
+                                                if (DataParametros.Data.Count > 0)
+                                                {
+                                                    int ANCHO_TIRILLA = Convert.ToInt32(DataParametros.Data[0].Value);
+
+                                                    string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
+                                                    File.WriteAllText($"factura_{DataFactura.NumeroFactura}.txt", tirilla, Encoding.UTF8);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("No se encuentra informacion de ancho de tirilla", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
                                         }
                                         else
                                         {

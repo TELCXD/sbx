@@ -1,5 +1,6 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Entities.Parametros;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.RangoNumeracion;
 
 namespace sbx
@@ -9,14 +10,16 @@ namespace sbx
         private dynamic? _Permisos;
         private readonly IRangoNumeracion _IRangoNumeracion;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IParametros _IParametros;
         private AgregaRna? _AgregaRna;
         private int Id_RangoNumeracion = 0;
 
-        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion)
+        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, IParametros parametros)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IRangoNumeracion = rangoNumeracion;
+            _IParametros = parametros;
         }
 
         public dynamic? Permisos
@@ -43,6 +46,7 @@ namespace sbx
                             //btn_agregar_ra.Enabled = item.ToCreate == 1 ? true : false;
                             //btn_editar_ra.Enabled = item.ToUpdate == 1 ? true : false;
                             //btn_eliminar_ra.Enabled = item.ToDelete == 1 ? true : false;
+                            btn_guardar_parametros.Enabled = item.ToCreate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -68,8 +72,8 @@ namespace sbx
                         item.Id_RangoNumeracion,
                         item.Active == true ? "Active" : "Inactivo",
                         item.Id_TipoDocumentoRangoNumeracion == 1 ? "Factura Electrónica de Venta"
-                        :item.Id_TipoDocumentoRangoNumeracion == 2 ? "Nota de Crédito" 
-                        :item.Id_TipoDocumentoRangoNumeracion == 3 ? "Factura": "",
+                        : item.Id_TipoDocumentoRangoNumeracion == 2 ? "Nota de Crédito"
+                        : item.Id_TipoDocumentoRangoNumeracion == 3 ? "Factura" : "",
                         item.Prefijo,
                         item.NumeroDesde,
                         item.NumeroHasta,
@@ -99,7 +103,7 @@ namespace sbx
 
         private void btn_editar_ra_Click(object sender, EventArgs e)
         {
-            if (dtg_rangos_numeracion.Rows.Count > 0) 
+            if (dtg_rangos_numeracion.Rows.Count > 0)
             {
                 if (dtg_rangos_numeracion.SelectedRows.Count > 0)
                 {
@@ -121,6 +125,135 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabControl tabControl = sender as TabControl;
+            int selectedIndex = tabControl.SelectedIndex;
+
+            switch (selectedIndex)
+            {
+                case 1:
+                    ConsultaParametros();
+                    break;
+            }
+        }
+
+        private async void ConsultaParametros()
+        {
+            var resp = await _IParametros.List("");
+
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 0)
+                {
+                    foreach (var item in resp.Data)
+                    {
+                        switch (item.Nombre)
+                        {
+                            case "Validar stock para venta":
+                                cbx_valida_stock_venta.Text = item.Value;
+                                break;
+                            case "Preguntar imprimir factura en venta":
+                                cbx_pregunta_imprimir_venta.Text = item.Value;
+                                break;
+                            case "Ancho tirilla":
+                                txt_ancho_tirilla.Text = item.Value;
+                                break;
+                            case "Impresora":
+                                txt_impresora.Text = item.Value;
+                                break;
+                            case "Ruta backup":
+                                txt_ruta_backup.Text = item.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void btn_guardar_parametros_Click(object sender, EventArgs e)
+        {
+            List<ParametrosEntitie> ListParametros = new List<ParametrosEntitie>();
+
+            for (int i = 0; i < 5; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        var Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Validar stock para venta",
+                            Value = cbx_valida_stock_venta.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 1:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Preguntar imprimir factura en venta",
+                            Value = cbx_pregunta_imprimir_venta.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 2:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Ancho tirilla",
+                            Value = txt_ancho_tirilla.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 3:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Impresora",
+                            Value = txt_impresora.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 4:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Ruta backup",
+                            Value = txt_ruta_backup.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            var resp = await _IParametros.Update(ListParametros);
+
+            if (resp != null)
+            {
+                if (resp.Flag == true)
+                {
+                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        private void txt_ancho_tirilla_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != 8)
+            {
+                e.Handled = true;
             }
         }
     }

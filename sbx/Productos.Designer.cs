@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Productos));
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            btn_promociones = new Button();
             btn_lista_precios = new Button();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
@@ -45,6 +46,7 @@
             btn_editar = new Button();
             btn_agregar = new Button();
             dtg_producto = new DataGridView();
+            errorProvider1 = new ErrorProvider(components);
             cl_idProducto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
@@ -57,8 +59,6 @@
             cl_unidadMedida = new DataGridViewTextBoxColumn();
             cl_marca = new DataGridViewTextBoxColumn();
             cl_categoria = new DataGridViewTextBoxColumn();
-            errorProvider1 = new ErrorProvider(components);
-            btn_promociones = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -82,8 +82,23 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1243, 56);
+            panel1.Size = new Size(1148, 56);
             panel1.TabIndex = 1;
+            // 
+            // btn_promociones
+            // 
+            btn_promociones.Enabled = false;
+            btn_promociones.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_promociones.FlatStyle = FlatStyle.Flat;
+            btn_promociones.Image = (Image)resources.GetObject("btn_promociones.Image");
+            btn_promociones.Location = new Point(436, 3);
+            btn_promociones.Name = "btn_promociones";
+            btn_promociones.Size = new Size(111, 45);
+            btn_promociones.TabIndex = 12;
+            btn_promociones.Text = "Promociones";
+            btn_promociones.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_promociones.UseVisualStyleBackColor = true;
+            btn_promociones.Click += btn_promociones_Click;
             // 
             // btn_lista_precios
             // 
@@ -106,7 +121,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(902, 15);
+            cbx_tipo_filtro.Location = new Point(807, 15);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 10;
@@ -117,7 +132,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(782, 15);
+            cbx_campo_filtro.Location = new Point(687, 15);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 9;
@@ -129,7 +144,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1192, 4);
+            btn_buscar.Location = new Point(1097, 4);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(42, 45);
             btn_buscar.TabIndex = 7;
@@ -140,7 +155,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(995, 15);
+            txt_buscar.Location = new Point(900, 15);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 6;
@@ -152,7 +167,7 @@
             btn_buscar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_ra.FlatStyle = FlatStyle.Flat;
             btn_buscar_ra.Image = (Image)resources.GetObject("btn_buscar_ra.Image");
-            btn_buscar_ra.Location = new Point(1833, 3);
+            btn_buscar_ra.Location = new Point(1738, 3);
             btn_buscar_ra.Name = "btn_buscar_ra";
             btn_buscar_ra.Size = new Size(42, 45);
             btn_buscar_ra.TabIndex = 5;
@@ -176,7 +191,7 @@
             // textBox1
             // 
             textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(1636, 14);
+            textBox1.Location = new Point(1541, 14);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(191, 23);
             textBox1.TabIndex = 2;
@@ -217,39 +232,43 @@
             dtg_producto.AllowUserToDeleteRows = false;
             dtg_producto.AllowUserToOrderColumns = true;
             dtg_producto.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_stock, cl_costo, cl_precio, cl_iva, cl_esInventariable, cl_unidadMedida, cl_marca, cl_categoria });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_producto.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_producto.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_producto.Dock = DockStyle.Fill;
             dtg_producto.Location = new Point(0, 56);
             dtg_producto.Name = "dtg_producto";
             dtg_producto.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_producto.Size = new Size(1243, 496);
+            dtg_producto.Size = new Size(1148, 496);
             dtg_producto.TabIndex = 2;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // cl_idProducto
             // 
@@ -281,7 +300,6 @@
             cl_stock.HeaderText = "Stock";
             cl_stock.Name = "cl_stock";
             cl_stock.ReadOnly = true;
-            cl_stock.Visible = false;
             // 
             // cl_costo
             // 
@@ -325,34 +343,16 @@
             cl_categoria.Name = "cl_categoria";
             cl_categoria.ReadOnly = true;
             // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
-            // 
-            // btn_promociones
-            // 
-            btn_promociones.Enabled = false;
-            btn_promociones.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_promociones.FlatStyle = FlatStyle.Flat;
-            btn_promociones.Image = (Image)resources.GetObject("btn_promociones.Image");
-            btn_promociones.Location = new Point(436, 3);
-            btn_promociones.Name = "btn_promociones";
-            btn_promociones.Size = new Size(111, 45);
-            btn_promociones.TabIndex = 12;
-            btn_promociones.Text = "Promociones";
-            btn_promociones.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_promociones.UseVisualStyleBackColor = true;
-            btn_promociones.Click += btn_promociones_Click;
-            // 
             // Productos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1243, 552);
+            ClientSize = new Size(1148, 552);
             Controls.Add(dtg_producto);
             Controls.Add(panel1);
             MaximizeBox = false;
-            MinimumSize = new Size(991, 575);
+            MaximumSize = new Size(1164, 591);
+            MinimumSize = new Size(1164, 591);
             Name = "Productos";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Productos";
@@ -379,6 +379,7 @@
         private ComboBox cbx_tipo_filtro;
         private ErrorProvider errorProvider1;
         private Button btn_lista_precios;
+        private Button btn_promociones;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -391,6 +392,5 @@
         private DataGridViewTextBoxColumn cl_unidadMedida;
         private DataGridViewTextBoxColumn cl_marca;
         private DataGridViewTextBoxColumn cl_categoria;
-        private Button btn_promociones;
     }
 }

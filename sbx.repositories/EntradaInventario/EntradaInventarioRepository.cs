@@ -140,6 +140,21 @@ namespace sbx.repositories.EntradaInventario
                                     INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
                                     INNER JOIN T_TipoSalida ts ON ts.IdTipoSalida = si.IdTipoSalida
                                     INNER JOIN T_Productos p ON p.IdProducto = s.IdProducto
+
+                                    UNION ALL
+
+	                                SELECT
+	                                    dvt.CreationDate AS Fecha,
+	                                    'Salida por Venta' AS TipoMovimiento,
+	                                    dvt.Cantidad,
+	                                    'Ventas' AS Tipo,
+	                                    dvt.IdProducto,
+	                                    dvt.NombreProducto AS Nombre,
+	                                    dvt.Sku,
+	                                    dvt.CodigoBarras,
+	                                    '' AS CodigoLote,
+	                                    '' AS FechaVencimiento
+	                                FROM T_DetalleVenta dvt
                                     ) R ";
 
                     string Where = "";

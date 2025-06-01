@@ -90,7 +90,12 @@ namespace sbx
 
                     foreach (var item in resp.Data)
                     {
-                        if (item.TipoMovimiento == "Entrada") { TotalStock += item.Cantidad; } else if(item.TipoMovimiento == "Salida") { TotalStock -= item.Cantidad; }
+                        if (item.TipoMovimiento == "Entrada") 
+                        { TotalStock += item.Cantidad; } 
+                        else if(item.TipoMovimiento == "Salida") 
+                        { TotalStock -= item.Cantidad; }
+                        else if (item.TipoMovimiento == "Salida por Venta")
+                        { TotalStock -= item.Cantidad; }
 
                         dtg_inventario.Rows.Add(
                             item.Fecha,
