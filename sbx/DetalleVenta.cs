@@ -309,8 +309,17 @@ namespace sbx
                                 {
                                     int ANCHO_TIRILLA = Convert.ToInt32(DataParametros.Data[0].Value);
 
-                                    string tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
-                                    File.WriteAllText($"factura_{DataFactura.NumeroFactura}.txt", tirilla, Encoding.UTF8);
+                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
+
+                                    string carpetaFacturas = "Facturas";
+                                    if (!Directory.Exists(carpetaFacturas))
+                                    {
+                                        Directory.CreateDirectory(carpetaFacturas);
+                                    }
+
+                                    File.WriteAllText(Path.Combine(carpetaFacturas, $"factura_{DataFactura.NumeroFactura}.txt"),
+                                                              tirilla.ToString(),
+                                                              Encoding.UTF8);
                                 }
                             }
                             else

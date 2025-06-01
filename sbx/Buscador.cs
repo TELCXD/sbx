@@ -168,7 +168,7 @@ namespace sbx
                 {                    
                     dtg_buscador.DataSource = dataTable;
 
-                    dtg_buscador.Columns["IdProducto"].Visible = false;
+                    dtg_buscador.Columns["IdProducto"].Visible = true;
                     dtg_buscador.Columns["CostoBase"].Visible = false;
                     dtg_buscador.Columns["PrecioBase"].Visible = false;
                     dtg_buscador.Columns["EsInventariable"].Visible = false;

@@ -7,7 +7,7 @@ namespace sbx.core.Entities.Venta
     {
         private static int ANCHO_TIRILLA = 32;
 
-        public static string GenerarTirilla(FacturaPOSEntitie factura, int Pr_ANCHO_TIRILLA)
+        public static StringBuilder GenerarTirilla(FacturaPOSEntitie factura, int Pr_ANCHO_TIRILLA)
         {
             var sb = new StringBuilder();
 
@@ -51,7 +51,7 @@ namespace sbx.core.Entities.Venta
                 string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0,10): item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
                 string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
                 string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10): item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
-                string impuesto = item.Impuesto.ToString().Length > 2 ? item.Impuesto.ToString().Substring(0, 2) : item.Impuesto.ToString().PadRight(2);
+                string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                 var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
                 sb.AppendLine(lineaCantidad);
@@ -83,7 +83,7 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
             sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
 
-            return sb.ToString();
+            return sb;
         }
 
         private static string CentrarTexto(string texto)
