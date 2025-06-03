@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inicio));
             panel1 = new Panel();
+            btn_caja = new Button();
             btn_inventario = new Button();
             btn_ajustes = new Button();
             btn_producto = new Button();
@@ -51,6 +52,7 @@
             // 
             panel1.BackColor = Color.Transparent;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_caja);
             panel1.Controls.Add(btn_inventario);
             panel1.Controls.Add(btn_ajustes);
             panel1.Controls.Add(btn_producto);
@@ -63,6 +65,27 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(815, 66);
             panel1.TabIndex = 0;
+            // 
+            // btn_caja
+            // 
+            btn_caja.BackColor = Color.Transparent;
+            btn_caja.Dock = DockStyle.Left;
+            btn_caja.FlatAppearance.BorderSize = 0;
+            btn_caja.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_caja.FlatStyle = FlatStyle.Flat;
+            btn_caja.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_caja.ForeColor = SystemColors.ControlText;
+            btn_caja.Image = (Image)resources.GetObject("btn_caja.Image");
+            btn_caja.Location = new Point(588, 0);
+            btn_caja.Name = "btn_caja";
+            btn_caja.Size = new Size(84, 62);
+            btn_caja.TabIndex = 7;
+            btn_caja.Text = "Caja";
+            btn_caja.TextAlign = ContentAlignment.BottomCenter;
+            btn_caja.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_caja.UseVisualStyleBackColor = false;
+            btn_caja.Visible = false;
+            btn_caja.Click += btn_caja_Click;
             // 
             // btn_inventario
             // 
@@ -289,5 +312,6 @@
         private Button btn_producto;
         private Button btn_ajustes;
         private Button btn_inventario;
+        private Button btn_caja;
     }
 }

@@ -392,5 +392,57 @@ namespace sbx.repositories.Venta
                 }
             }
         }
+
+        public async Task<Response<dynamic>> VentasTotales(int IdUser, DateTime FechaHoraApertura)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                DateTime FechaActual = DateTime.Now;
+                FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                DateTime FechaApertura = FechaHoraApertura;
+                FechaApertura = Convert.ToDateTime(FechaApertura.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT
+                                    IdDetalleVenta,
+                                    IdVenta,
+                                    IdProducto,
+                                    Sku,
+                                    CodigoBarras,
+                                    NombreProducto,
+                                    Cantidad,
+                                    UnidadMedida,
+                                    PrecioUnitario,
+                                    Descuento,
+                                    Impuesto,
+                                    CreationDate,
+                                    IdUserAction 
+                                    FROM T_DetalleVenta
+                                    WHERE 
+                                    IdUserAction = @IdUser 
+                                    AND 
+                                    CreationDate BETWEEN CONVERT(DATETIME,@FechaApertura,120) AND CONVERT(DATETIME,@FechaActual,120) ";
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { IdUser , FechaActual, FechaApertura });
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }
