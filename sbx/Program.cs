@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using sbx.core.Interfaces;
 using sbx.core.Interfaces.ActividadEconomica;
 using sbx.core.Interfaces.Banco;
+using sbx.core.Interfaces.Caja;
 using sbx.core.Interfaces.Categoria;
 using sbx.core.Interfaces.Ciudad;
 using sbx.core.Interfaces.Cliente;
@@ -37,6 +38,7 @@ using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
 using sbx.repositories.ActividadEconomica;
 using sbx.repositories.Banco;
+using sbx.repositories.Caja;
 using sbx.repositories.Categorias;
 using sbx.repositories.Ciudad;
 using sbx.repositories.Cliente;
@@ -156,6 +158,12 @@ namespace sbx
 
                 services.AddTransient<DetalleVenta>();
 
+                services.AddTransient<Caja>();
+
+                services.AddTransient<AddApertura>();
+
+                services.AddTransient<AddCierre>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -251,6 +259,9 @@ namespace sbx
 
                 services.AddTransient<IParametros>(provider =>
                 new ParametrosRepository(connectionString));
+
+                services.AddTransient<ICaja>(provider =>
+                new CajaRepository(connectionString));
             })
             .Build();
 

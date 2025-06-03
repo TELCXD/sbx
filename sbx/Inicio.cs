@@ -15,6 +15,7 @@ namespace sbx
         private Clientes? _Clientes;
         private Inventario? _Inventario;
         private AgregarVentas? _AgregarVentas;
+        private Caja? _Caja;
 
         public Inicio(IServiceProvider serviceProvider, ITienda iTienda)
         {
@@ -99,6 +100,12 @@ namespace sbx
                             if (item.ToRead == 1)
                             {
                                 btn_inventario.Visible = true;
+                            }
+                            break;
+                        case "caja":
+                            if (item.ToRead == 1)
+                            {
+                                btn_caja.Visible = true;
                             }
                             break;
                         default:
@@ -216,6 +223,21 @@ namespace sbx
             {
                 MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void btn_caja_Click(object sender, EventArgs e)
+        {
+            if (_Caja != null && !_Caja.IsDisposed)
+            {
+                _Caja.BringToFront();
+                _Caja.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Caja = _serviceProvider.GetRequiredService<Caja>();
+            _Caja.Permisos = _Permisos;
+            _Caja.FormClosed += (s, args) => _Caja = null;
+            _Caja.Show();
         }
     }
 }

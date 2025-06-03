@@ -154,7 +154,7 @@ namespace sbx.repositories.Producto
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
-                                  ,(SELECT 
+                                  ,ISNULL((SELECT 
                                     SUM(CASE WHEN 
                                     R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
                                     THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
@@ -184,7 +184,7 @@ namespace sbx.repositories.Producto
 	                                     dvt.Cantidad
 	                                     FROM T_DetalleVenta dvt
                                          ) R
-	                                     WHERE R.IdProducto = A.IdProducto) Stock  
+	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
@@ -300,7 +300,7 @@ namespace sbx.repositories.Producto
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
-                                  ,(SELECT 
+                                  ,ISNULL((SELECT 
                                     SUM(CASE WHEN 
                                     R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
                                     THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
@@ -330,7 +330,7 @@ namespace sbx.repositories.Producto
 	                                     dvt.Cantidad
 	                                     FROM T_DetalleVenta dvt
                                          ) R
-	                                     WHERE R.IdProducto = A.IdProducto) Stock                                 
+	                                     WHERE R.IdProducto = A.IdProducto),0) Stock                                 
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca

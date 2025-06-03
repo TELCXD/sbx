@@ -82,10 +82,6 @@ IdRole INT,
 UserName VARCHAR(50) UNIQUE,
 Password VARCHAR(MAX),
 DatePassword DATE,
-FailedAttempts INT,
-MinutesSuspended INT,
-SesionDate DATETIME,
-LockDate DATETIME,
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
@@ -660,3 +656,16 @@ VALUES
 	('Ancho tirilla','42'),
 	('Impresora','Generic'),
 	('Ruta backup','')
+GO
+CREATE TABLE T_AperturaCierreCaja (
+IdApertura_Cierre_caja INT IDENTITY(1,1) PRIMARY KEY,
+IdUserAction INT,
+FechaHoraApertura DATETIME NOT NULL,
+MontoInicialDeclarado DECIMAL(10,2) NOT NULL,
+FechaHoraCierre DATETIME NULL,
+MontoFinalDeclarado DECIMAL(10,2) NULL,
+VentasTotales DECIMAL(10,2) NULL,
+Diferencia DECIMAL(10,2) NULL,
+Estado VARCHAR(20) NOT NULL, -- ABIERTA, CERRADA
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)

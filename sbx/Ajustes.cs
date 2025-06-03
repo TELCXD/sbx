@@ -256,5 +256,10 @@ namespace sbx
                 e.Handled = true;
             }
         }
+
+        private void btn_buscar_usuario_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
