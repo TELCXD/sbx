@@ -2,11 +2,11 @@
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.usuario;
-using System;
+using sbx.core.Interfaces.Usuario;
 
 namespace sbx.repositories.Usuario
 {
-    public class UsuarioRepository
+    public class UsuarioRepository : IUsuario
     {
         private readonly string _connectionString;
 
@@ -50,10 +50,11 @@ namespace sbx.repositories.Usuario
                                   Active = @Active,
                                   UpdateDate = @UpdateDate,
                                   IdUserAction = @IdUserAction 
-                                  WHERE IdCliente = @IdCliente ";
+                                  WHERE IdUser = @IdUser ";
 
                         var parametros = new
                         {
+                            IdUser = UsuarioEntitie.IdUser,
                             IdIdentificationType = UsuarioEntitie.IdIdentificationType,
                             IdentificationNumber = UsuarioEntitie.IdentificationNumber,
                             Name = UsuarioEntitie.Name,
@@ -150,29 +151,34 @@ namespace sbx.repositories.Usuario
                     await connection.OpenAsync();
 
                     string sql = @"SELECT 
-                                   A.IdCliente
+                                   A.IdUser
                                   ,A.IdIdentificationType
                                   ,B.IdentificationType
-                                  ,A.NumeroDocumento
-                                  ,A.NombreRazonSocial
-                                  ,C.IdTipoCliente
-                                  ,C.Nombre
-                                  ,A.Direccion
-                                  ,A.Telefono
+                                  ,A.IdentificationNumber
+                                  ,A.Name
+                                  ,A.LastName
+                                  ,A.BirthDate
+                                  ,A.IdCountry
+                                  ,A.IdDepartament
+                                  ,A.IdCity
+                                  ,A.TelephoneNumber
                                   ,A.Email
-                                  ,A.Estado
+                                  ,A.IdRole
+                                  ,A.UserName
+                                  ,A.Password
+                                  ,A.DatePassword
+                                  ,A.Active
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction 
-                                  FROM T_Cliente A
-								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
-                                  INNER JOIN T_TipoCliente C ON A.IdTipoCliente = C.IdTipoCliente ";
+                                  FROM T_User A
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType ";
 
                     string Where = "";
 
                     if (Id > 0)
                     {
-                        Where = $"WHERE A.IdCliente = {Id}";
+                        Where = $"WHERE A.IdUser = {Id}";
                         sql += Where;
                     }
 
@@ -203,23 +209,31 @@ namespace sbx.repositories.Usuario
                     await connection.OpenAsync();
 
                     string sql = @"SELECT 
-                                   A.IdCliente
+                                   A.IdUser
                                   ,A.IdIdentificationType
                                   ,B.IdentificationType
-                                  ,A.NumeroDocumento
-                                  ,A.NombreRazonSocial
-                                  ,C.IdTipoCliente
-                                  ,C.Nombre TipoCliente
-                                  ,A.Direccion
-                                  ,A.Telefono
+                                  ,A.IdentificationNumber
+                                  ,A.Name
+                                  ,A.LastName
+                                  ,CONCAT(A.Name, ' ', A.LastName) NombreCompleto
+                                  ,A.BirthDate
+                                  ,A.IdCountry
+                                  ,A.IdDepartament
+                                  ,A.IdCity
+                                  ,A.TelephoneNumber
                                   ,A.Email
-                                  ,A.Estado
+                                  ,A.IdRole
+                                  ,C.NameRole
+                                  ,A.UserName
+                                  ,A.Password
+                                  ,A.DatePassword
+                                  ,A.Active
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction 
-                                  FROM T_Cliente A
-								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
-                                  INNER JOIN T_TipoCliente C ON A.IdTipoCliente = C.IdTipoCliente ";
+                                  FROM T_User A
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType
+                                  INNER JOIN T_Role C ON C.IdRole = A.IdRole ";
 
                     string Where = "";
                     string Filtro = "";
@@ -229,11 +243,11 @@ namespace sbx.repositories.Usuario
                         case "Inicia con":
                             switch (campoFiltro)
                             {
-                                case "Nombre":
-                                    Where = $"WHERE A.NombreRazonSocial LIKE @Filtro ";
+                                case "Nombre usuario":
+                                    Where = $"WHERE A.UserName LIKE @Filtro ";
                                     break;
-                                case "Num Doc":
-                                    Where = $"WHERE A.NumeroDocumento LIKE @Filtro ";
+                                case "Id usuario":
+                                    Where = $"WHERE A.IdUser LIKE @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -244,11 +258,11 @@ namespace sbx.repositories.Usuario
                         case "Igual a":
                             switch (campoFiltro)
                             {
-                                case "Nombre":
-                                    Where = $"WHERE A.NombreRazonSocial = @Filtro ";
+                                case "Nombre usuario":
+                                    Where = $"WHERE A.UserName = @Filtro ";
                                     break;
-                                case "Num Doc":
-                                    Where = $"WHERE A.NumeroDocumento = @Filtro ";
+                                case "Id usuario":
+                                    Where = $"WHERE A.IdUser = @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -259,11 +273,11 @@ namespace sbx.repositories.Usuario
                         case "Contiene":
                             switch (campoFiltro)
                             {
-                                case "Nombre":
-                                    Where = $"WHERE A.NombreRazonSocial LIKE @Filtro ";
+                                case "Nombre usuario":
+                                    Where = $"WHERE A.UserName LIKE @Filtro ";
                                     break;
-                                case "Num Doc":
-                                    Where = $"WHERE A.NumeroDocumento LIKE @Filtro ";
+                                case "Id usuario":
+                                    Where = $"WHERE A.IdUser LIKE @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -292,5 +306,63 @@ namespace sbx.repositories.Usuario
                 }
             }
         }
+
+        public async Task<bool> ExisteNumeroDocumento(string IdentificationNumber, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT COUNT(1) FROM T_User WHERE IdentificationNumber = @IdentificationNumber AND IdUser != @IdUser ";
+
+                    return connection.ExecuteScalar<int>(sql, new { IdentificationNumber, IdUser }) > 0;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public async Task<bool> ExisteTelefono(string TelephoneNumber, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT COUNT(1) FROM T_User WHERE TelephoneNumber = @TelephoneNumber AND IdUser != @IdUser ";
+
+                    return connection.ExecuteScalar<int>(sql, new { TelephoneNumber, IdUser }) > 0;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public async Task<bool> ExisteEmail(string Email, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT COUNT(1) FROM T_User WHERE Email = @Email AND IdUser != @IdUser ";
+
+                    return connection.ExecuteScalar<int>(sql, new { Email, IdUser }) > 0;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+
     }
 }

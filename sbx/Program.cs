@@ -24,6 +24,7 @@ using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.ResponsabilidadTributaria;
+using sbx.core.Interfaces.Rol;
 using sbx.core.Interfaces.SalidaInventario;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.TipoCliente;
@@ -34,6 +35,7 @@ using sbx.core.Interfaces.TipoPromocion;
 using sbx.core.Interfaces.TipoResponsabilidad;
 using sbx.core.Interfaces.TipoSalida;
 using sbx.core.Interfaces.UnidadMedida;
+using sbx.core.Interfaces.Usuario;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
 using sbx.repositories.ActividadEconomica;
@@ -60,6 +62,7 @@ using sbx.repositories.PromocionProducto;
 using sbx.repositories.Proveedor;
 using sbx.repositories.RangoNumeracion;
 using sbx.repositories.ResponsabilidadTributaria;
+using sbx.repositories.Rol;
 using sbx.repositories.SalidaInventario;
 using sbx.repositories.TiendaRepository;
 using sbx.repositories.TipoCliente;
@@ -70,6 +73,7 @@ using sbx.repositories.TipoPromocion;
 using sbx.repositories.TipoResponsabilidad;
 using sbx.repositories.TipoSalida;
 using sbx.repositories.UnidadMedida;
+using sbx.repositories.Usuario;
 using sbx.repositories.Vendedor;
 using sbx.repositories.Venta;
 using System.Configuration;
@@ -163,6 +167,8 @@ namespace sbx
                 services.AddTransient<AddApertura>();
 
                 services.AddTransient<AddCierre>();
+
+                services.AddTransient<AddUsuario>();
 
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
@@ -262,6 +268,12 @@ namespace sbx
 
                 services.AddTransient<ICaja>(provider =>
                 new CajaRepository(connectionString));
+
+                services.AddTransient<IUsuario>(provider =>
+                new UsuarioRepository(connectionString));
+
+                services.AddTransient<IRol>(provider =>
+                new RolRepository(connectionString));
             })
             .Build();
 

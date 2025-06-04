@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.Parametros;
+using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.RangoNumeracion;
+using sbx.core.Interfaces.Usuario;
 
 namespace sbx
 {
@@ -13,13 +15,17 @@ namespace sbx
         private readonly IParametros _IParametros;
         private AgregaRna? _AgregaRna;
         private int Id_RangoNumeracion = 0;
+        private readonly IUsuario _IUsuario;
+        private AddUsuario? _AddUsuario;
+        private int Id_usuario = 0;
 
-        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, IParametros parametros)
+        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, IParametros parametros, IUsuario usuario)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IRangoNumeracion = rangoNumeracion;
             _IParametros = parametros;
+            _IUsuario = usuario;
         }
 
         public dynamic? Permisos
@@ -32,6 +38,8 @@ namespace sbx
         {
             ValidaPermisos();
             await ConsultaRangosNumeracion();
+            cbx_campo_filtro.SelectedIndex = 0;
+            cbx_tipo_filtro.SelectedIndex = 0;
         }
 
         private void ValidaPermisos()
@@ -43,10 +51,11 @@ namespace sbx
                     switch (item.MenuUrl)
                     {
                         case "ajustes":
-                            //btn_agregar_ra.Enabled = item.ToCreate == 1 ? true : false;
-                            //btn_editar_ra.Enabled = item.ToUpdate == 1 ? true : false;
-                            //btn_eliminar_ra.Enabled = item.ToDelete == 1 ? true : false;
                             btn_guardar_parametros.Enabled = item.ToCreate == 1 ? true : false;
+                            break;
+                        case "usuarios":
+                            btn_agregar_usuario.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_editar_usuario.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -257,9 +266,81 @@ namespace sbx
             }
         }
 
-        private void btn_buscar_usuario_Click(object sender, EventArgs e)
+        private async void btn_buscar_usuario_Click(object sender, EventArgs e)
         {
+            errorProvider1.Clear();
+            if (cbx_campo_filtro.Text == "Id")
+            {
+                bool esNumerico = int.TryParse(txt_buscar_usuario.Text, out int valor);
+                if (!esNumerico)
+                {
+                    errorProvider1.SetError(txt_buscar_usuario, "Ingrese un valor numerico");
+                    return;
+                }
+            }
 
+            var resp = await _IUsuario.Buscar(txt_buscar_usuario.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            dtg_usuario.Rows.Clear();
+
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 0)
+                {
+                    foreach (var item in resp.Data)
+                    {
+                        dtg_usuario.Rows.Add(
+                            item.IdUser,
+                            item.UserName,
+                            item.IdRole,
+                            item.NameRole,
+                            item.IdentificationType,
+                            item.IdentificationNumber,
+                            item.NombreCompleto,
+                            item.TelephoneNumber,
+                            item.BirthDate);
+                    }
+                }
+            }
+        }
+
+        private void btn_agregar_usuario_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _AddUsuario = _serviceProvider.GetRequiredService<AddUsuario>();
+                _AddUsuario.Permisos = _Permisos;
+                _AddUsuario.Id_Usuario = 0;
+                _AddUsuario.FormClosed += (s, args) => _AddUsuario = null;
+                _AddUsuario.ShowDialog();
+            }
+        }
+
+        private void btn_editar_usuario_Click(object sender, EventArgs e)
+        {
+            if (dtg_usuario.Rows.Count > 0)
+            {
+                if (dtg_usuario.SelectedRows.Count > 0)
+                {
+                    var row = dtg_usuario.SelectedRows[0];
+                    if (row.Cells["cl_IdUsuario"].Value != null)
+                    {
+                        Id_usuario = Convert.ToInt32(row.Cells["cl_IdUsuario"].Value);
+                        if (_Permisos != null)
+                        {
+                            _AddUsuario = _serviceProvider.GetRequiredService<AddUsuario>();
+                            _AddUsuario.Permisos = _Permisos;
+                            _AddUsuario.Id_Usuario = Id_usuario;
+                            _AddUsuario.FormClosed += (s, args) => _AddUsuario = null;
+                            _AddUsuario.ShowDialog();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }
