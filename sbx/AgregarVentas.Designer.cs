@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarVentas));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarVentas));
             panel1 = new Panel();
             btn_ver_ventas = new Button();
             btn_nuevo_cliente = new Button();
@@ -89,6 +89,7 @@
             cbx_busca_por = new ComboBox();
             label20 = new Label();
             errorProvider1 = new ErrorProvider(components);
+            btn_devolucion = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             panel3.SuspendLayout();
@@ -100,6 +101,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(btn_devolucion);
             panel1.Controls.Add(btn_ver_ventas);
             panel1.Controls.Add(btn_nuevo_cliente);
             panel1.Controls.Add(label1);
@@ -734,6 +736,22 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // btn_devolucion
+            // 
+            btn_devolucion.Enabled = false;
+            btn_devolucion.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_devolucion.FlatStyle = FlatStyle.Flat;
+            btn_devolucion.Image = (Image)resources.GetObject("btn_devolucion.Image");
+            btn_devolucion.Location = new Point(979, 23);
+            btn_devolucion.Name = "btn_devolucion";
+            btn_devolucion.Size = new Size(136, 26);
+            btn_devolucion.TabIndex = 136;
+            btn_devolucion.Text = "Devolucion";
+            btn_devolucion.TextAlign = ContentAlignment.BottomCenter;
+            btn_devolucion.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_devolucion.UseVisualStyleBackColor = true;
+            btn_devolucion.Click += btn_devolucion_Click;
+            // 
             // AgregarVentas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -828,5 +846,6 @@
         private DataGridViewTextBoxColumn cl_iva;
         private DataGridViewTextBoxColumn cl_total;
         private DataGridViewTextBoxColumn cl_unidad_medida;
+        private Button btn_devolucion;
     }
 }

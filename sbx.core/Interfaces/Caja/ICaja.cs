@@ -7,7 +7,7 @@ namespace sbx.core.Interfaces.Caja
     {
         Task<Response<dynamic>> CreateUpdate(CajaEntitie cajaEntitie);
         Task<Response<dynamic>> List(int IdUser);
-        Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, DateTime Finicio, DateTime Ffin);
+        Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, DateTime Finicio, DateTime Ffin, int idUser, string RolName);
         Task<Response<dynamic>> EstadoCaja(int IdUser);
     }
 }

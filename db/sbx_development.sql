@@ -111,7 +111,7 @@ FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 INSERT INTO T_Menu (MenuName,OrderNumber,MenuURL,Active,IdUserAction)
 VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'productos',1,1), ('Inventario',4,'inventario',1,1), 
-('Clientes',5,'clientes',1,1), ('Proveedor',6,'proveedor',1,1),('Caja',7,'caja',1,1), ('Separados',8,'separados',1,1), 
+('Clientes',5,'clientes',1,1), ('Proveedor',6,'proveedor',1,1),('Caja',7,'caja',1,1), ('NotaCredito',8,'notaCredito',1,1), 
 ('Domicilios',9,'domicilios',1,1), ('Reportes',10,'reportes',1,1), ('Ajustes',11,'ajustes',1,1), ('Tienda',12,'tienda',1,1), 
 ('Entrada',13,'entradas',1,1), ('Salida',14,'salidas',1,1),('PreciosClientes',15,'preciosClientes',1,1),
 ('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1)
@@ -668,5 +668,35 @@ MontoFinalDeclarado DECIMAL(10,2) NULL,
 VentasTotales DECIMAL(10,2) NULL,
 Diferencia DECIMAL(10,2) NULL,
 Estado VARCHAR(20) NOT NULL, -- ABIERTA, CERRADA
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)
+GO
+CREATE TABLE T_NotaCredito (
+IdNotaCredito INT PRIMARY KEY IDENTITY,
+IdVenta INT,
+Motivo NVARCHAR(255),
+CreationDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
+)
+GO
+CREATE TABLE NotaCreditoDetalle (
+IdNotaCreditoDetalle INT PRIMARY KEY IDENTITY,
+IdNotaCredito INT,
+IdDetalleVenta INT,	
+IdProducto INT,
+Sku VARCHAR(50),
+CodigoBarras VARCHAR(50),
+NombreProducto VARCHAR(100) NOT NULL,
+Cantidad DECIMAL(10,2) NOT NULL,
+UnidadMedida VARCHAR(50),
+PrecioUnitario DECIMAL(10,2) NOT NULL,
+Descuento DECIMAL(10,2),
+Impuesto DECIMAL(10,2) NOT NULL,
+CreationDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdNotaCredito) REFERENCES T_NotaCredito(IdNotaCredito),
+FOREIGN KEY (IdDetalleVenta) REFERENCES T_DetalleVenta(IdDetalleVenta),
+FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )

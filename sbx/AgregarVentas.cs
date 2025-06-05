@@ -59,10 +59,11 @@ namespace sbx
         private readonly ICaja _ICaja;
         private AddApertura _AddApertura;
         private bool CajaAperturada = false;
+        private AgregarNotaCredito? _AgregarNotaCredito;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
-            IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta, 
+            IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta,
             ITienda tienda, IParametros parametros, ICaja caja)
         {
             InitializeComponent();
@@ -162,6 +163,9 @@ namespace sbx
                             btn_nuevo_cliente.Enabled = item.ToCreate == 1 ? true : false;
                             txt_valor_pago.Enabled = item.ToCreate == 1 ? true : false;
                             btn_completar_venta.Enabled = item.ToCreate == 1 ? true : false;
+                            break;
+                        case "notaCredito":
+                            btn_devolucion.Enabled = item.ToCreate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -349,7 +353,7 @@ namespace sbx
                                                     }
                                                 }
                                             }
-                                        }                                                                            
+                                        }
                                     }
                                     else
                                     {
@@ -549,7 +553,8 @@ namespace sbx
                                             _AddApertura.FormClosed += (s, args) => _AddApertura = null;
                                             _AddApertura.ShowDialog();
                                         }
-                                    }else if (estadoCaja.Data[0].Estado == "ABIERTA") 
+                                    }
+                                    else if (estadoCaja.Data[0].Estado == "ABIERTA")
                                     {
                                         CajaAperturada = true;
                                     }
@@ -572,7 +577,7 @@ namespace sbx
                                 CajaAperturada = false;
                             }
 
-                            if (CajaAperturada) 
+                            if (CajaAperturada)
                             {
                                 var DataParametros = await _IParametros.List("Validar stock para venta");
 
@@ -1113,7 +1118,7 @@ namespace sbx
                         if (FechaVencimiento >= FechaActual)
                         {
                             List<DetalleVentaEntitie> detalleVentas = new List<DetalleVentaEntitie>();
-                            
+
                             foreach (DataGridViewRow fila in dtg_producto.Rows)
                             {
                                 DetalleVentaEntitie Detalle = new DetalleVentaEntitie
@@ -1157,9 +1162,9 @@ namespace sbx
 
                                     //Imprime Tirilla
                                     var DataTienda = await _ITienda.List();
-                                    if (DataTienda.Data != null) 
+                                    if (DataTienda.Data != null)
                                     {
-                                        if (DataTienda.Data.Count > 0) 
+                                        if (DataTienda.Data.Count > 0)
                                         {
                                             var DataVenta = await _IVenta.List(respGuardado.Data);
 
@@ -1268,7 +1273,7 @@ namespace sbx
                                                     UnidadMedida = UnidadMedidaAbreviada,
                                                     PrecioUnitario = item.PrecioUnitario,
                                                     Descuento = item.Descuento,
-                                                    Impuesto = item.Impuesto,                                                  
+                                                    Impuesto = item.Impuesto,
                                                     Total = total
                                                 };
 
@@ -1301,9 +1306,9 @@ namespace sbx
                                                                 break;
                                                             default:
                                                                 break;
-                                                        }                                                                                                                                                                     
+                                                        }
                                                     }
-                                                   
+
                                                     StringBuilder tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
 
                                                     string carpetaFacturas = "Facturas";
@@ -1325,7 +1330,7 @@ namespace sbx
                                                         if (result == DialogResult.Yes)
                                                         {
                                                             RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
-                                                        }    
+                                                        }
                                                     }
                                                     else
                                                     {
@@ -1431,6 +1436,17 @@ namespace sbx
         private void ConfirmacionAperturaCaja(bool CajaAbierta)
         {
             CajaAperturada = CajaAbierta;
+        }
+
+        private void btn_devolucion_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _AgregarNotaCredito = _serviceProvider.GetRequiredService<AgregarNotaCredito>();
+                _AgregarNotaCredito.Permisos = _Permisos;
+                _AgregarNotaCredito.FormClosed += (s, args) => _AgregarNotaCredito = null;
+                _AgregarNotaCredito.ShowDialog();
+            }
         }
     }
 }

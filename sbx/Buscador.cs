@@ -3,6 +3,7 @@ using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.Usuario;
+using sbx.core.Interfaces.Venta;
 using System.Data;
 
 namespace sbx
@@ -14,18 +15,20 @@ namespace sbx
         private readonly IProducto _IProducto;
         private readonly ICliente _ICliente;
         private readonly IUsuario _IUsuario;
+        private readonly IVenta _IVenta;
         public delegate void EnviarId(int id);
         public event EnviarId EnviaId;
         int fila = 0;
         int Id = 0;
 
-        public Buscador(IProveedor proveedor, IProducto producto, ICliente cliente, IUsuario usuario)
+        public Buscador(IProveedor proveedor, IProducto producto, ICliente cliente, IUsuario usuario, IVenta venta)
         {
             InitializeComponent();
             _IProveedor = proveedor;
             _IProducto = producto;
             _ICliente = cliente;
             _IUsuario = usuario;
+            _IVenta = venta;
         }
 
         public string? Origen
@@ -73,6 +76,9 @@ namespace sbx
                 case "Busca_usuario":
                     await ConsultaUsuarios();
                     break;
+                case "Busca_factura":
+                    await ConsultaFactura();
+                    break;
                 default:
                     break; 
             }
@@ -113,6 +119,9 @@ namespace sbx
                     break;
                 case "Busca_usuario":
                     opciones = new List<string> { "Nombre" };
+                    break;
+                case "Busca_factura":
+                    opciones = new List<string> { "Factura", "Identificacion cliente", "Nombre cliente" };
                     break;
                 default:
                     break;
@@ -267,6 +276,24 @@ namespace sbx
                     dtg_buscador.Columns["CreationDate"].Visible = false;
                     dtg_buscador.Columns["UpdateDate"].Visible = false;
                     dtg_buscador.Columns["IdUserAction"].Visible = false;
+                }
+            }
+        }
+
+        private async Task ConsultaFactura()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _IVenta.BuscarFactura(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dtg_buscador.DataSource = dataTable;                 
                 }
             }
         }

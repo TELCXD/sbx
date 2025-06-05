@@ -26,7 +26,16 @@ namespace sbx.repositories.LoginRepository
                 {
                     await connection.OpenAsync();
 
-                    string sql = "SELECT IdUser, Password, Active, IdRole FROM T_User WHERE UserName = @NombreUsuario";
+                    string sql = @"SELECT 
+                                    A.IdUser, 
+                                    A.UserName, 
+                                    A.Password, 
+                                    A.Active, 
+                                    A.IdRole,
+                                    B.NameRole 
+                                    FROM T_User A
+                                    INNER JOIN T_Role B ON A.IdRole = B.IdRole WHERE A.UserName = @NombreUsuario ";
+
                     var parametros = new { NombreUsuario = nombreUsuario };
 
                     dynamic resultado = await connection.QueryAsync(sql, parametros);
@@ -58,12 +67,30 @@ namespace sbx.repositories.LoginRepository
 
                                         var permisos = await connection.QueryAsync<Permisos>(sql);
 
-                                        foreach (var item in permisos)
+                                        if (permisos.Count() > 0) 
                                         {
-                                            item.IdUser = IdUser;
-                                            item.UserName = nombreUsuario;
+                                            foreach (var item in permisos)
+                                            {
+                                                item.IdUser = IdUser;
+                                                item.UserName = nombreUsuario;
+                                                item.IdRole = resultado[0].IdRole;
+                                                item.NameRole = resultado[0].NameRole;
+                                            }
                                         }
-
+                                        else
+                                        {
+                                            permisos = new List<Permisos>
+                                            {
+                                                new Permisos
+                                                {
+                                                    IdUser = IdUser,
+                                                    UserName = nombreUsuario,
+                                                    IdRole = resultado[0].IdRole,
+                                                    NameRole = resultado[0].NameRole
+                                                }
+                                            };
+                                        }
+                                       
                                         response.Flag = true;
                                         response.Message = "Credenciales correctas";
                                         response.Data = permisos;

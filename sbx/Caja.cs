@@ -69,7 +69,7 @@ namespace sbx
                 }
             }
 
-            var resp = await _ICaja.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, dtp_F_ini.Value, dtp_F_f.Value);
+            var resp = await _ICaja.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, dtp_F_ini.Value, dtp_F_f.Value, Convert.ToInt32(_Permisos?[0]?.IdUser), _Permisos?[0]?.NameRole);
 
             dtg_aperturas_cierres_caja.Rows.Clear();
 

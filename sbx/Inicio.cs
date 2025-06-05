@@ -55,62 +55,65 @@ namespace sbx
         {
             if (_Permisos != null)
             {
-                lbl_usuario.Text += _Permisos[0].IdUser + " - "+_Permisos[0].UserName;
-
-                foreach (var item in _Permisos)
+                if (_Permisos.Count > 0) 
                 {
-                    switch (item.MenuUrl)
+                    lbl_usuario.Text += _Permisos[0].IdUser + " - " + _Permisos[0].UserName;
+
+                    foreach (var item in _Permisos)
                     {
-                        case "ventas":
-                            if (item.ToRead == 1)
-                            {
-                                btn_venta.Visible = true;
-                            }
-                            break;
-                        case "ajustes":
-                            if (item.ToRead == 1)
-                            {
-                                btn_ajustes.Visible = true;
-                            }
-                            break;
-                        case "tienda":
-                            if (item.ToRead == 1)
-                            {
-                                btn_tienda.Visible = true;
-                            }
-                            break;
-                        case "productos":
-                            if (item.ToRead == 1)
-                            {
-                                btn_producto.Visible = true;
-                            }
-                            break;
-                        case "proveedor":
-                            if (item.ToRead == 1)
-                            {
-                                btn_proveedor.Visible = true;
-                            }
-                            break;
-                        case "clientes":
-                            if (item.ToRead == 1)
-                            {
-                                btn_cliente.Visible = true;
-                            }
-                            break;
-                        case "inventario":
-                            if (item.ToRead == 1)
-                            {
-                                btn_inventario.Visible = true;
-                            }
-                            break;
-                        case "caja":
-                            if (item.ToRead == 1)
-                            {
-                                btn_caja.Visible = true;
-                            }
-                            break;
-                        default:
-                            break;
+                        switch (item.MenuUrl)
+                        {
+                            case "ventas":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_venta.Visible = true;
+                                }
+                                break;
+                            case "ajustes":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_ajustes.Visible = true;
+                                }
+                                break;
+                            case "tienda":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_tienda.Visible = true;
+                                }
+                                break;
+                            case "productos":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_producto.Visible = true;
+                                }
+                                break;
+                            case "proveedor":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_proveedor.Visible = true;
+                                }
+                                break;
+                            case "clientes":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_cliente.Visible = true;
+                                }
+                                break;
+                            case "inventario":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_inventario.Visible = true;
+                                }
+                                break;
+                            case "caja":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_caja.Visible = true;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }

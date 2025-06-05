@@ -152,7 +152,7 @@
             cbx_client_venta.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cbx_client_venta.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_client_venta.FormattingEnabled = true;
-            cbx_client_venta.Items.AddRange(new object[] { "Factura", "Cliente", "Producto" });
+            cbx_client_venta.Items.AddRange(new object[] { "Factura", "Cliente", "Producto", "Usuario" });
             cbx_client_venta.Location = new Point(675, 24);
             cbx_client_venta.Name = "cbx_client_venta";
             cbx_client_venta.Size = new Size(87, 23);

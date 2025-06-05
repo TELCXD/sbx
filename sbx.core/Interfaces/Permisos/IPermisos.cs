@@ -7,5 +7,6 @@ namespace sbx.core.Interfaces.Permisos
     {
         Task<Response<dynamic>> CreateUpdate(List<PermisosEntitie> permisosEntitie, int IdUser);
         Task<Response<dynamic>> List(int Id);
+        Task<Response<dynamic>> ListMenusPermisosInicial();
     }
 }
