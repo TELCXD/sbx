@@ -13,6 +13,7 @@ namespace sbx
         private readonly IIdentificationType _IIdentificationType;
         private readonly IUsuario _IUsuario;
         private readonly IRol _IRol;
+        private string PasswordHash = "";
 
         public AddUsuario(IIdentificationType identificationType, IUsuario usuario, IRol rol)
         {
@@ -85,11 +86,17 @@ namespace sbx
                 if (resp.Data != null)
                 {
                     cbx_tipo_identificacion.SelectedValue = resp.Data[0].IdIdentificationType;
-                    txt_numero_documento.Text = resp.Data[0].NumeroDocumento;
-                    txt_nombre.Text = resp.Data[0].NombreRazonSocial;
-                    txt_telefono.Text = resp.Data[0].Telefono;
+                    txt_numero_documento.Text = resp.Data[0].IdentificationNumber;
+                    txt_nombre.Text = resp.Data[0].Name;
+                    txt_apellido.Text = resp.Data[0].LastName;
+                    txt_telefono.Text = resp.Data[0].TelephoneNumber;
                     txt_email.Text = resp.Data[0].Email;
-                    cbx_estado.SelectedIndex = resp.Data[0].Estado == true ? 0 : 1;
+                    cbx_estado.SelectedIndex = resp.Data[0].Estado == true ? 1 : 0;
+                    txt_usuario.Text = resp.Data[0].UserName;
+                    //txt_contrasena.Text = resp.Data[0].Password;
+                    PasswordHash = resp.Data[0].Password;
+                    cbx_rol.SelectedValue = resp.Data[0].IdRole;
+                    dtp_fecha_cumpleaños.Value = resp.Data[0].BirthDate;
                 }
                 else
                 {
@@ -126,19 +133,21 @@ namespace sbx
 
             var Datos = new usuarioEntitie
             {
+                IdUser = Id_Usuario,
                 IdIdentificationType = Convert.ToInt32(cbx_tipo_identificacion.SelectedValue),
-                IdentificationNumber = txt_numero_documento.Text,
-                Name = txt_nombre.Text,
-                LastName = txt_apellido.Text,
+                IdentificationNumber = txt_numero_documento.Text.Trim(),
+                Name = txt_nombre.Text.Trim(),
+                LastName = txt_apellido.Text.Trim(),
                 BirthDate = dtp_fecha_cumpleaños.Value,
                 IdCountry = 1,
                 IdDepartament = 1,
                 IdCity = 1,
                 TelephoneNumber = txt_telefono.Text,
-                Email = txt_email.Text,
+                Email = txt_email.Text.Trim(),
                 IdRole = Convert.ToInt32(cbx_rol.SelectedValue),
-                UserName = txt_usuario.Text,
-                Password = txt_contrasena.Text,
+                UserName = txt_usuario.Text.Trim(),
+                Password = txt_contrasena.Text.Trim(),
+                PasswordHash = this.PasswordHash,
                 Active = cbx_estado.Text == "Activo" ? 1 : 0,
             };
 
@@ -155,6 +164,7 @@ namespace sbx
                 if (Exist) { errorProvider1.SetError(txt_telefono, "Telefono ya existe"); valido++; }
                 Exist = await _IUsuario.ExisteEmail(txt_email.Text.Trim(), Id_Usuario);
                 if (Exist) { errorProvider1.SetError(txt_email, "Email ya existe"); valido++; }
+                if (Id_Usuario == 0 && txt_contrasena.Text == "") { errorProvider1.SetError(txt_contrasena, "Debe ingresar contraseña"); valido++; }
                 if (valido > 0) { return; }
 
                 var resp = await _IUsuario.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));

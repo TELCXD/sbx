@@ -1,19 +1,19 @@
-using sbx.core.Entities;
+using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces;
-using System.Windows.Forms;
 
 namespace sbx
 {
     public partial class Login : Form
     {
         private readonly ILogin _ILogin;
-        private readonly Inicio _Inicio;
+        private Inicio? _Inicio;
+        private readonly IServiceProvider _serviceProvider;
 
-        public Login(ILogin login, Inicio inicio)
+        public Login(ILogin login, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _ILogin = login;
-            _Inicio = inicio;   
+            _serviceProvider = serviceProvider;
         }
 
         private async void btn_login_Click(object sender, EventArgs e)
@@ -59,7 +59,9 @@ namespace sbx
             {
                 if (resp.Flag == true && resp.Message == "Credenciales correctas")
                 {
+                    _Inicio = _serviceProvider.GetRequiredService<Inicio>();
                     _Inicio.Permisos = resp.Data;
+                    _Inicio.FormClosed += (s, args) => _Inicio = null;
                     _Inicio.Show();
                     this.Hide();
                 }
@@ -72,5 +74,10 @@ namespace sbx
             this.Cursor = Cursors.Default;
         }
         #endregion
+
+        private void Login_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

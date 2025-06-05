@@ -162,6 +162,7 @@
             Name = "Login";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Iniciar sesión";
+            FormClosing += Login_FormClosing;
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();

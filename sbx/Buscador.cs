@@ -2,6 +2,7 @@
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
+using sbx.core.Interfaces.Usuario;
 using System.Data;
 
 namespace sbx
@@ -12,17 +13,19 @@ namespace sbx
         private readonly IProveedor _IProveedor;
         private readonly IProducto _IProducto;
         private readonly ICliente _ICliente;
+        private readonly IUsuario _IUsuario;
         public delegate void EnviarId(int id);
         public event EnviarId EnviaId;
         int fila = 0;
         int Id = 0;
 
-        public Buscador(IProveedor proveedor, IProducto producto, ICliente cliente)
+        public Buscador(IProveedor proveedor, IProducto producto, ICliente cliente, IUsuario usuario)
         {
             InitializeComponent();
             _IProveedor = proveedor;
             _IProducto = producto;
             _ICliente = cliente;
+            _IUsuario = usuario;
         }
 
         public string? Origen
@@ -67,6 +70,9 @@ namespace sbx
                 case "Add_AgregaVenta_busca_cliente":
                     await ConsultaCliente();
                     break;
+                case "Busca_usuario":
+                    await ConsultaUsuarios();
+                    break;
                 default:
                     break; 
             }
@@ -104,6 +110,9 @@ namespace sbx
                     break;
                 case "Add_AgregaVenta_busca_cliente":
                     opciones = new List<string> { "Nombre", "Num Doc" };
+                    break;
+                case "Busca_usuario":
+                    opciones = new List<string> { "Nombre" };
                     break;
                 default:
                     break;
@@ -222,6 +231,42 @@ namespace sbx
                     dtg_buscador.Columns["UpdateDate"].Visible = false;
                     dtg_buscador.Columns["IdUserAction"].Visible = false;
                     dtg_buscador.Columns["Estado"].Visible = false;
+                }
+            }
+        }
+
+        private async Task ConsultaUsuarios()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _IUsuario.List(0);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dataTable.Columns.Add("Activo", typeof(string));
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        if (row["Activo"] != DBNull.Value)
+                        {
+                            bool valor = Convert.ToBoolean(row["Activo"]);
+                            row["Activo"] = valor ? "Sí" : "No";
+                        }
+                        else
+                        {
+                            row["Activo"] = "No";
+                        }
+                    }
+
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
                 }
             }
         }

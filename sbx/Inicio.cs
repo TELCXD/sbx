@@ -16,6 +16,7 @@ namespace sbx
         private Inventario? _Inventario;
         private AgregarVentas? _AgregarVentas;
         private Caja? _Caja;
+        private Login? _Login;
 
         public Inicio(IServiceProvider serviceProvider, ITienda iTienda)
         {
@@ -54,7 +55,7 @@ namespace sbx
         {
             if (_Permisos != null)
             {
-                lbl_usuario.Text += _Permisos[0].UserName;
+                lbl_usuario.Text += _Permisos[0].IdUser + " - "+_Permisos[0].UserName;
 
                 foreach (var item in _Permisos)
                 {
@@ -147,7 +148,21 @@ namespace sbx
 
         private void Inicio_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            DialogResult result = MessageBox.Show("¿Está seguro que desea salir?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                _Login = _serviceProvider.GetRequiredService<Login>();
+                _Login.FormClosed += (s, args) => _Login = null;
+                _Login.Show();
+                this.Hide();
+            }
+            else
+            {
+                e.Cancel = true;
+            }    
         }
 
         private void btn_proveedor_Click(object sender, EventArgs e)
@@ -225,7 +240,7 @@ namespace sbx
             }
         }
 
-        private void btn_caja_Click(object sender, EventArgs e)
+        private async void btn_caja_Click(object sender, EventArgs e)
         {
             if (_Caja != null && !_Caja.IsDisposed)
             {
@@ -234,10 +249,25 @@ namespace sbx
                 return;
             }
 
-            _Caja = _serviceProvider.GetRequiredService<Caja>();
-            _Caja.Permisos = _Permisos;
-            _Caja.FormClosed += (s, args) => _Caja = null;
-            _Caja.Show();
+            var DataTienda = await _ITienda.List();
+            if (DataTienda.Data != null)
+            {
+                if (DataTienda.Data.Count > 0)
+                {
+                    _Caja = _serviceProvider.GetRequiredService<Caja>();
+                    _Caja.Permisos = _Permisos;
+                    _Caja.FormClosed += (s, args) => _Caja = null;
+                    _Caja.Show();
+                }
+                else
+                {
+                    MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }

@@ -265,7 +265,6 @@
             // 
             cbx_rol.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_rol.FormattingEnabled = true;
-            cbx_rol.Items.AddRange(new object[] { "Activo", "Inactivo" });
             cbx_rol.Location = new Point(346, 241);
             cbx_rol.Name = "cbx_rol";
             cbx_rol.Size = new Size(303, 23);
