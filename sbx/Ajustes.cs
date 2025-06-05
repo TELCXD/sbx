@@ -5,7 +5,6 @@ using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Permisos;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Usuario;
-using System.Threading;
 
 namespace sbx
 {
@@ -364,7 +363,40 @@ namespace sbx
 
         private async void _Buscador_EnviaId(int idUser)
         {
+            var dataMenus = await _IPermisos.ListMenusPermisosInicial();
+
+            dtg_permisos.Rows.Clear();
+
+            if (dataMenus.Data != null)
+            {
+                if (dataMenus.Data.Count > 0)
+                {
+                    foreach (var item in dataMenus.Data)
+                    {
+                        dtg_permisos.Rows.Add(
+                            item.IdUserMenu,
+                            item.IdMenu,
+                            item.MenuName,
+                            PermisosEntitie.IdUser,
+                            item.ToRead,
+                            item.ToCreate,
+                            item.ToUpdate,
+                            item.ToDelete,
+                            item.Active);
+                    }
+                }
+            }
+
             PermisosEntitie.IdUser = idUser;
+
+            var DataUsuario = await _IUsuario.List(idUser);
+            if (DataUsuario.Data != null)
+            {
+                if (DataUsuario.Data.Count > 0)
+                {
+                    txt_busca_usuario.Text = DataUsuario.Data[0].IdUser + " - " + DataUsuario.Data[0].UserName;
+                }
+            }
 
             var resp = await _IPermisos.List(idUser);
 
@@ -372,20 +404,19 @@ namespace sbx
             {
                 if (resp.Data.Count > 0)
                 {
-                    txt_busca_usuario.Text = resp.Data[0].IdUser + " - " + resp.Data[0].UserName;
-
                     foreach (var item in resp.Data)
                     {
-                        dtg_permisos.Rows.Add(
-                            item.IdUserMenu,
-                            item.IdMenu,
-                            item.MenuName,
-                            item.IdUser,
-                            item.ToRead,
-                            item.ToCreate,
-                            item.ToUpdate,
-                            item.ToDelete,
-                            item.Active);
+                        foreach (DataGridViewRow fila in dtg_permisos.Rows)
+                        {
+                            if (Convert.ToInt32(item.IdMenu) == Convert.ToInt32(fila.Cells["cl_id_menu"].Value)) 
+                            {
+                                fila.Cells["cl_idUserMenu"].Value = Convert.ToInt32(item.IdUserMenu);
+                                fila.Cells["cl_toRead"].Value = Convert.ToInt32(item.ToRead) == 1 ? true: false;
+                                fila.Cells["cl_ToCreate"].Value = Convert.ToInt32(item.ToCreate) == 1 ? true : false;
+                                fila.Cells["cl_toUpdate"].Value = Convert.ToInt32(item.ToUpdate) == 1 ? true : false;
+                                fila.Cells["cl_toDelete"].Value = Convert.ToInt32(item.ToDelete) == 1 ? true : false;
+                            }
+                        }
                     }
                 }
             }
@@ -405,7 +436,7 @@ namespace sbx
                     {
                         IdUserMenu = Convert.ToInt32(fila.Cells["cl_idUserMenu"].Value),
                         IdMenu = Convert.ToInt32(fila.Cells["cl_id_menu"].Value),
-                        IdUser = Convert.ToInt32(fila.Cells["cl_id_user"].Value),
+                        IdUser = PermisosEntitie.IdUser,
                         ToRead = Convert.ToInt32(fila.Cells["cl_toRead"].Value),
                         ToCreate = Convert.ToInt32(fila.Cells["cl_toCreate"].Value),
                         ToUpdate = Convert.ToInt32(fila.Cells["cl_toUpdate"].Value),

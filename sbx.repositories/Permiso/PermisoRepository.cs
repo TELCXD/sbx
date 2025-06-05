@@ -75,8 +75,8 @@ namespace sbx.repositories.Permiso
                         }
                         else
                         {
-                            sql = @$" INSERT INTO T_Cliente (IdMenu,IdUser,ToRead,ToCreate,ToUpdate,ToDelete,Active)
-                                  VALUES(@IdMenu,@IdUser,@ToRead,@ToCreate,@ToUpdate,@ToDelete,@Active) ";
+                            sql = @$" INSERT INTO TR_User_Menu (IdMenu,IdUser,ToRead,ToCreate,ToUpdate,ToDelete,Active, CreationDate, IdUserAction)
+                                  VALUES(@IdMenu,@IdUser,@ToRead,@ToCreate,@ToUpdate,@ToDelete,@Active, @CreationDate, @IdUserAction) ";
 
                             var parametros = new
                             {
@@ -153,6 +153,44 @@ namespace sbx.repositories.Permiso
                         Where = $"WHERE A.IdUser = {IdUser}";
                         sql += Where;
                     }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListMenusPermisosInicial()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT
+                                    0 IdUserMenu 
+                                    ,IdMenu
+                                    ,MenuName
+                                    ,0 ToRead
+                                    ,0 ToCreate
+                                    ,0 ToUpdate
+                                    ,0 ToDelete
+                                    ,Active
+                                    FROM T_Menu
+                                    ORDER BY IdMenu ";
 
                     dynamic resultado = await connection.QueryAsync(sql);
 

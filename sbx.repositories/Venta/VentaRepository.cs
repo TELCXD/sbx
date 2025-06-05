@@ -142,6 +142,7 @@ namespace sbx.repositories.Venta
                                     J.Apellido ApellidoVendedor,
                                     CONCAT(J.Nombre,' ',J.Apellido) NombreCompletoVendedor, 
                                     G.UserName UserNameFactura,
+                                    B.IdDetalleVenta,
                                     B.IdProducto,
                                     B.Sku,
                                     B.CodigoBarras,
@@ -153,7 +154,7 @@ namespace sbx.repositories.Venta
                                     B.Impuesto,
                                     B.CreationDate FechaDetalleFactura,
                                     B.IdUserAction IdUserActionDetalleFactura,
-                                    H.UserName UserNameDetalleFactura,
+                                    --H.UserName UserNameDetalleFactura,
                                     A.IdCliente,
                                     D.NumeroDocumento,
                                     D.NombreRazonSocial,
@@ -165,8 +166,8 @@ namespace sbx.repositories.Venta
                                     C.Recibido,
                                     C.Monto,
                                     C.CreationDate FechaPagoFactura,
-                                    C.IdUserAction IdUserActionPagoFactura, 
-                                    I.UserName UserNamePagoFactura
+                                    C.IdUserAction IdUserActionPagoFactura 
+                                    --,I.UserName UserNamePagoFactura
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                     INNER JOIN T_PagosVenta C ON A.IdVenta = C.IdVenta
@@ -174,8 +175,8 @@ namespace sbx.repositories.Venta
                                     INNER JOIN T_Bancos E ON C.IdBanco = E.IdBanco
                                     INNER JOIN T_MetodoPago F ON F.IdMetodoPago = A.IdMetodoPago
                                     INNER JOIN T_User G ON G.IdUser = A.IdUserAction
-                                    INNER JOIN T_User H ON H.IdUser = B.IdUserAction
-                                    INNER JOIN T_User I ON H.IdUser = C.IdUserAction 
+                                    --INNER JOIN T_User H ON H.IdUser = B.IdUserAction
+                                    --INNER JOIN T_User I ON H.IdUser = C.IdUserAction 
                                     INNER JOIN T_Vendedor J ON J.IdVendedor = A.IdVendedor ";
 
                     string Where = "";
@@ -202,7 +203,7 @@ namespace sbx.repositories.Venta
             }
         }
 
-        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, string clientVenta, DateTime FechaInicio, DateTime FechaFin)
+        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, string clientVenta, DateTime FechaInicio, DateTime FechaFin, int idUser, string RolName)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -214,6 +215,13 @@ namespace sbx.repositories.Venta
                 try
                 {
                     await connection.OpenAsync();
+
+                    string FiltroPorUsuario = "";
+
+                    if (RolName != "Administrador")
+                    {
+                        FiltroPorUsuario = $" AND A.IdUserAction = {idUser} ";
+                    }
 
                     string sql = @"SELECT 
                                     A.IdVenta,
@@ -238,7 +246,7 @@ namespace sbx.repositories.Venta
                                     B.Impuesto,
                                     B.CreationDate FechaDetalleFactura,
                                     B.IdUserAction IdUserActionDetalleFactura,
-                                    H.UserName UserNameDetalleFactura,
+                                    --H.UserName UserNameDetalleFactura,
                                     A.IdCliente,
                                     D.NumeroDocumento,
                                     D.NombreRazonSocial,
@@ -249,8 +257,8 @@ namespace sbx.repositories.Venta
                                     E.Nombre NombreBanco,
                                     C.Monto,
                                     C.CreationDate FechaPagoFactura,
-                                    C.IdUserAction IdUserActionPagoFactura, 
-                                    I.UserName UserNamePagoFactura
+                                    C.IdUserAction IdUserActionPagoFactura 
+                                    --,I.UserName UserNamePagoFactura
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                     INNER JOIN T_PagosVenta C ON A.IdVenta = C.IdVenta
@@ -258,11 +266,11 @@ namespace sbx.repositories.Venta
                                     INNER JOIN T_Bancos E ON C.IdBanco = E.IdBanco
                                     INNER JOIN T_MetodoPago F ON F.IdMetodoPago = A.IdMetodoPago
                                     INNER JOIN T_User G ON G.IdUser = A.IdUserAction
-                                    INNER JOIN T_User H ON H.IdUser = B.IdUserAction
-                                    INNER JOIN T_User I ON H.IdUser = C.IdUserAction 
+                                    --INNER JOIN T_User H ON H.IdUser = B.IdUserAction
+                                    --INNER JOIN T_User I ON H.IdUser = C.IdUserAction 
                                     INNER JOIN T_Vendedor J ON J.IdVendedor = A.IdVendedor
                                     WHERE 
-                                    A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120) ";
+                                    A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120) " + FiltroPorUsuario;
 
                     string Where = "";
                     string Filtro = "";
@@ -281,12 +289,23 @@ namespace sbx.repositories.Venta
                                     {
                                         Where = $" AND B.NombreProducto LIKE @Filtro ";
                                     }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND G.UserName LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Num Doc":
                                     Where = $" AND D.NumeroDocumento LIKE @Filtro ";
                                     break;
                                 case "Id":
-                                    Where = $" AND B.IdProducto LIKE @Filtro ";
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.IdProducto LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND A.IdUserAction LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku LIKE @Filtro ";
@@ -315,12 +334,23 @@ namespace sbx.repositories.Venta
                                     {
                                         Where = $" AND B.NombreProducto = @Filtro ";
                                     }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND G.UserName = @Filtro ";
+                                    }
                                     break;
                                 case "Num Doc":
                                     Where = $" AND D.NumeroDocumento = @Filtro ";
                                     break;
                                 case "Id":
-                                    Where = $" AND B.IdProducto = @Filtro ";
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.IdProducto = @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND A.IdUserAction = @Filtro ";
+                                    }                                   
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku = @Filtro ";
@@ -349,12 +379,23 @@ namespace sbx.repositories.Venta
                                     {
                                         Where = $" AND B.NombreProducto LIKE @Filtro ";
                                     }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND G.UserName LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Num Doc":
                                     Where = $" AND D.NumeroDocumento = @Filtro ";
                                     break;
                                 case "Id":
-                                    Where = $" AND B.IdProducto LIKE @Filtro ";
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.IdProducto LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND A.IdUserAction LIKE @Filtro ";
+                                    }                                   
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku LIKE @Filtro ";
@@ -430,6 +471,106 @@ namespace sbx.repositories.Venta
                                     CreationDate BETWEEN CONVERT(DATETIME,@FechaApertura,120) AND CONVERT(DATETIME,@FechaActual,120) ";
 
                     dynamic resultado = await connection.QueryAsync(sql, new { IdUser , FechaActual, FechaApertura });
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> BuscarFactura(string dato, string campoFiltro, string tipoFiltro)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();     
+
+                try
+                {
+                    await connection.OpenAsync();
+                   
+                    string sql = @"SELECT A.IdVenta,                                
+                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,
+                                    A.CreationDate FechaFactura,                                                              
+                                    A.IdCliente,
+                                    D.NumeroDocumento,
+                                    D.NombreRazonSocial
+                                    FROM T_Ventas A                                 
+                                    INNER JOIN T_Cliente D ON A.IdCliente = D.IdCliente ";
+
+                    string Where = "";
+                    string Filtro = "";
+
+                    switch (tipoFiltro)
+                    {
+                        case "Inicia con":
+                            switch (campoFiltro)
+                            {
+                                case "Factura":
+                                    Where = $"WHERE CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    break;
+                                case "Identificacion cliente":
+                                    Where = $"WHERE D.NumeroDocumento LIKE @Filtro ";
+                                    break;
+                                case "Nombre cliente":
+                                    Where = $"WHERE D.NombreRazonSocial LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato + "%";
+                            break;
+                        case "Igual a":
+                            switch (campoFiltro)
+                            {
+                                case "Factura":
+                                    Where = $"WHERE CONCAT(A.Prefijo,'-',A.Consecutivo) = @Filtro ";
+                                    break;
+                                case "Identificacion cliente":
+                                    Where = $"WHERE D.NumeroDocumento = @Filtro ";
+                                    break;
+                                case "Nombre cliente":
+                                    Where = $"WHERE D.NombreRazonSocial = @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato;
+                            break;
+                        case "Contiene":
+                            switch (campoFiltro)
+                            {
+                                case "Factura":
+                                    Where = $"WHERE CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    break;
+                                case "Identificacion cliente":
+                                    Where = $"WHERE D.NumeroDocumento LIKE @Filtro ";
+                                    break;
+                                case "Nombre cliente":
+                                    Where = $"WHERE D.NombreRazonSocial LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = "%" + dato + "%";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    sql += Where + " ORDER BY A.CreationDate DESC ";
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

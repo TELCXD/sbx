@@ -15,5 +15,7 @@ namespace sbx.core.Entities
         public int ToDelete { get; set; }
         public int IdUser { get; set; }
         public string? UserName { get; set; }
+        public int IdRole { get; set; }
+        public string NameRole { get; set; }
     }
 }

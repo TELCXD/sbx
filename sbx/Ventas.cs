@@ -85,6 +85,10 @@ namespace sbx
             {
                 cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
             }
+            else if (cbx_client_venta.Text == "Usuario")
+            {
+                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id" });
+            }
             cbx_campo_filtro.SelectedIndex = 0;
         }
 
@@ -107,7 +111,7 @@ namespace sbx
                 }
             }
 
-            var resp = await _IVenta.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_client_venta.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+            var resp = await _IVenta.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_client_venta.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value, Convert.ToInt32(_Permisos?[0]?.IdUser), _Permisos?[0]?.NameRole);
 
             dtg_ventas.Rows.Clear();
 
