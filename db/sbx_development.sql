@@ -81,7 +81,6 @@ Email VARCHAR(50) UNIQUE,
 IdRole INT,
 UserName VARCHAR(50) UNIQUE,
 Password VARCHAR(MAX),
-DatePassword DATE,
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
@@ -94,8 +93,8 @@ FOREIGN KEY(IdRole) REFERENCES T_Role(IdRole),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
-INSERT INTO T_User (IdIdentificationType,IdentificationNumber,Name,LastName,BirthDate,IdCountry,IdDepartament,IdCity,TelephoneNumber,Email,IdRole,UserName,Password,DatePassword,CreationDate,Active)
-VALUES(1,'1113528027','Ruben','Cordoba','1993-05-07',1,1,1,'3137450103','ruben0793@hotmail.com',1,'Ruben','$argon2id$v=19$m=65536,t=3,p=1$r1zN0nle0xnH8cGWgGWMqw$R37Ws1t8521Tj9AXjFY593sBQsmsuVZ6KFScE1ueFeY',GETDATE(),GETDATE(),1)
+INSERT INTO T_User (IdIdentificationType,IdentificationNumber,Name,LastName,BirthDate,IdCountry,IdDepartament,IdCity,TelephoneNumber,Email,IdRole,UserName,Password,CreationDate,Active)
+VALUES(1,'1113528027','Ruben','Cordoba','1993-05-07',1,1,1,'3137450103','ruben0793@hotmail.com',1,'Ruben','$argon2id$v=19$m=65536,t=3,p=1$r1zN0nle0xnH8cGWgGWMqw$R37Ws1t8521Tj9AXjFY593sBQsmsuVZ6KFScE1ueFeY',GETDATE(),1)
 GO
 CREATE TABLE T_Menu
 (
@@ -116,12 +115,13 @@ VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'product
 ('Domicilios',9,'domicilios',1,1), ('Reportes',10,'reportes',1,1), ('Ajustes',11,'ajustes',1,1), ('Tienda',12,'tienda',1,1), 
 ('Entrada',13,'entradas',1,1), ('Salida',14,'salidas',1,1),('PreciosClientes',15,'preciosClientes',1,1),
 ('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1)
+,('Permisos',19,'permisos',1,1)
 GO
-CREATE TABLE TR_Role_Menu
+CREATE TABLE TR_User_Menu
 (
-IdRoleMenu INT IDENTITY(1,1) PRIMARY KEY,
+IdUserMenu INT IDENTITY(1,1) PRIMARY KEY,
 IdMenu INT,
-IdRole INT,
+IdUser INT,
 ToRead BIT,
 ToCreate BIT,
 ToUpdate BIT,
@@ -131,16 +131,17 @@ CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY(IdMenu) REFERENCES T_Menu(IdMenu),
-FOREIGN KEY(IdRole) REFERENCES T_Role(IdRole),
+FOREIGN KEY(IdUser) REFERENCES T_User(IdUser),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
-INSERT INTO TR_Role_Menu (IdMenu, IdRole, ToRead, ToCreate, ToUpdate, ToDelete, Active,CreationDate, IdUserAction)
+INSERT INTO TR_User_Menu (IdMenu, IdUser, ToRead, ToCreate, ToUpdate, ToDelete, Active,CreationDate, IdUserAction)
 VALUES(1,1,1,1,1,1,1,GETDATE(),1), (2,1,1,1,1,1,1,GETDATE(),1), (3,1,1,1,1,1,1,GETDATE(),1), (4,1,1,1,1,1,1,GETDATE(),1), 
 (5,1,1,1,1,1,1,GETDATE(),1), (6,1,1,1,1,1,1,GETDATE(),1), (7,1,1,1,1,1,1,GETDATE(),1),
 (8,1,1,1,1,1,1,GETDATE(),1), (9,1,1,1,1,1,1,GETDATE(),1), (10,1,1,1,1,1,1,GETDATE(),1), (11,1,1,1,1,1,1,GETDATE(),1), 
 (12,1,1,1,1,1,1,GETDATE(),1), (13,1,1,1,1,1,1,GETDATE(),1), (14,1,1,1,1,1,1,GETDATE(),1), (15,1,1,1,1,1,1,GETDATE(),1),
-(16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1), (18,1,1,1,1,1,1,GETDATE(),1)
+(16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1), (18,1,1,1,1,1,1,GETDATE(),1), (19,1,1,1,1,1,1,GETDATE(),1)
+--,(2,2,1,1,1,0,1,GETDATE(),1),(7,2,1,1,1,0,1,GETDATE(),1)
 GO
 CREATE TABLE T_TipoResponsabilidad(
 IdTipoResponsabilidad INT PRIMARY KEY,

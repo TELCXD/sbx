@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.Parametros;
-using sbx.core.Interfaces.Cliente;
+using sbx.core.Entities.Permiso;
 using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Permisos;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Usuario;
+using System.Threading;
 
 namespace sbx
 {
@@ -13,19 +15,23 @@ namespace sbx
         private readonly IRangoNumeracion _IRangoNumeracion;
         private readonly IServiceProvider _serviceProvider;
         private readonly IParametros _IParametros;
+        private readonly IPermisos _IPermisos;
         private AgregaRna? _AgregaRna;
         private int Id_RangoNumeracion = 0;
         private readonly IUsuario _IUsuario;
         private AddUsuario? _AddUsuario;
         private int Id_usuario = 0;
+        private Buscador? _Buscador;
+        PermisosEntitie PermisosEntitie = new PermisosEntitie();
 
-        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, IParametros parametros, IUsuario usuario)
+        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, IParametros parametros, IUsuario usuario, IPermisos permisos)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IRangoNumeracion = rangoNumeracion;
             _IParametros = parametros;
             _IUsuario = usuario;
+            _IPermisos = permisos;
         }
 
         public dynamic? Permisos
@@ -56,6 +62,10 @@ namespace sbx
                         case "usuarios":
                             btn_agregar_usuario.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar_usuario.Enabled = item.ToUpdate == 1 ? true : false;
+                            break;
+                        case "permisos":
+                            btn_guardar_permisos.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_busca_usuario.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -340,6 +350,89 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btn_busca_usuario_Click(object sender, EventArgs e)
+        {
+            _Buscador = _serviceProvider.GetRequiredService<Buscador>();
+            _Buscador.Origen = "Busca_usuario";
+            _Buscador.EnviaId += _Buscador_EnviaId;
+            _Buscador.FormClosed += (s, args) => _Buscador = null;
+            _Buscador.ShowDialog();
+        }
+
+        private async void _Buscador_EnviaId(int idUser)
+        {
+            PermisosEntitie.IdUser = idUser;
+
+            var resp = await _IPermisos.List(idUser);
+
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 0)
+                {
+                    txt_busca_usuario.Text = resp.Data[0].IdUser + " - " + resp.Data[0].UserName;
+
+                    foreach (var item in resp.Data)
+                    {
+                        dtg_permisos.Rows.Add(
+                            item.IdUserMenu,
+                            item.IdMenu,
+                            item.MenuName,
+                            item.IdUser,
+                            item.ToRead,
+                            item.ToCreate,
+                            item.ToUpdate,
+                            item.ToDelete,
+                            item.Active);
+                    }
+                }
+            }
+        }
+
+        private async void btn_guardar_permisos_Click(object sender, EventArgs e)
+        {
+            errorProvider1.Clear();
+
+            if (txt_busca_usuario.Text.Trim() != "")
+            {
+                List<PermisosEntitie> lisPermisosEntitie = new List<PermisosEntitie>();
+
+                foreach (DataGridViewRow fila in dtg_permisos.Rows)
+                {
+                    PermisosEntitie permiso = new PermisosEntitie()
+                    {
+                        IdUserMenu = Convert.ToInt32(fila.Cells["cl_idUserMenu"].Value),
+                        IdMenu = Convert.ToInt32(fila.Cells["cl_id_menu"].Value),
+                        IdUser = Convert.ToInt32(fila.Cells["cl_id_user"].Value),
+                        ToRead = Convert.ToInt32(fila.Cells["cl_toRead"].Value),
+                        ToCreate = Convert.ToInt32(fila.Cells["cl_toCreate"].Value),
+                        ToUpdate = Convert.ToInt32(fila.Cells["cl_toUpdate"].Value),
+                        ToDelete = Convert.ToInt32(fila.Cells["cl_toDelete"].Value),
+                        Active = Convert.ToInt32(fila.Cells["cl_estado"].Value)
+                    };
+
+                    lisPermisosEntitie.Add(permiso);
+                }
+
+                var resp = await _IPermisos.CreateUpdate(lisPermisosEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                if (resp != null)
+                {
+                    if (resp.Flag == true)
+                    {
+                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+            else
+            {
+                errorProvider1.SetError(txt_busca_usuario, "Debe seleccionar un usuario");
             }
         }
     }

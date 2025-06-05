@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Isopoh.Cryptography.Argon2;
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.usuario;
@@ -30,6 +31,12 @@ namespace sbx.repositories.Usuario
                     DateTime FechaActual = DateTime.Now;
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
+                    string PasswordEncriptado = "";
+                    if (UsuarioEntitie.Password != "") 
+                    {
+                        PasswordEncriptado = Argon2.Hash(UsuarioEntitie.Password);
+                    }
+
                     if (UsuarioEntitie.IdUser > 0)
                     {
                         sql = @$" UPDATE T_User SET 
@@ -46,11 +53,10 @@ namespace sbx.repositories.Usuario
                                   IdRole = @IdRole,
                                   UserName = @UserName,
                                   Password = @Password,
-                                  DatePassword = @DatePassword,
                                   Active = @Active,
                                   UpdateDate = @UpdateDate,
                                   IdUserAction = @IdUserAction 
-                                  WHERE IdUser = @IdUser ";
+                                  WHERE IdUser = @IdUser ";                        
 
                         var parametros = new
                         {
@@ -67,8 +73,7 @@ namespace sbx.repositories.Usuario
                             Email = UsuarioEntitie.Email,
                             IdRole = UsuarioEntitie.IdRole,
                             UserName = UsuarioEntitie.UserName,
-                            Password = UsuarioEntitie.Password,
-                            DatePassword = UsuarioEntitie.DatePassword,
+                            Password = PasswordEncriptado != "" ? PasswordEncriptado: UsuarioEntitie.PasswordHash,
                             Active = UsuarioEntitie.Active,
                             UpdateDate = FechaActual,
                             IdUserAction = IdUser
@@ -90,9 +95,9 @@ namespace sbx.repositories.Usuario
                     else
                     {
                         sql = @$" INSERT INTO T_User (IdIdentificationType,IdentificationNumber,Name,LastName,
-                                  BirthDate,IdCountry,IdDepartament,IdCity,TelephoneNumber, Email, IdRole,UserName, Password,DatePassword,Active,CreationDate,IdUserAction)
+                                  BirthDate,IdCountry,IdDepartament,IdCity,TelephoneNumber, Email, IdRole,UserName, Password,Active,CreationDate,IdUserAction)
                                   VALUES(@IdIdentificationType,@IdentificationNumber,@Name,@LastName,
-                                  @BirthDate,@IdCountry,@IdDepartament,@IdCity,@TelephoneNumber,@Email,@IdRole,@UserName,@Password,@DatePassword,@Active,@CreationDate,@IdUserAction)";
+                                  @BirthDate,@IdCountry,@IdDepartament,@IdCity,@TelephoneNumber,@Email,@IdRole,@UserName,@Password,@Active,@CreationDate,@IdUserAction)";
 
                         var parametros = new
                         {
@@ -108,8 +113,7 @@ namespace sbx.repositories.Usuario
                             Email = UsuarioEntitie.Email,
                             IdRole = UsuarioEntitie.IdRole,
                             UserName = UsuarioEntitie.UserName,
-                            Password = UsuarioEntitie.Password,
-                            DatePassword = UsuarioEntitie.DatePassword,
+                            Password = PasswordEncriptado,
                             Active = UsuarioEntitie.Active,
                             CreationDate = FechaActual,
                             IdUserAction = IdUser
@@ -166,7 +170,6 @@ namespace sbx.repositories.Usuario
                                   ,A.IdRole
                                   ,A.UserName
                                   ,A.Password
-                                  ,A.DatePassword
                                   ,A.Active
                                   ,A.CreationDate
                                   ,A.UpdateDate
@@ -226,7 +229,6 @@ namespace sbx.repositories.Usuario
                                   ,C.NameRole
                                   ,A.UserName
                                   ,A.Password
-                                  ,A.DatePassword
                                   ,A.Active
                                   ,A.CreationDate
                                   ,A.UpdateDate

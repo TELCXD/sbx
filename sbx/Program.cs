@@ -16,6 +16,7 @@ using sbx.core.Interfaces.Marca;
 using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.Pais;
 using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Permisos;
 using sbx.core.Interfaces.PrecioCliente;
 using sbx.core.Interfaces.PrecioProducto;
 using sbx.core.Interfaces.Producto;
@@ -54,6 +55,7 @@ using sbx.repositories.Marca;
 using sbx.repositories.MedioPago;
 using sbx.repositories.Pais;
 using sbx.repositories.Parametros;
+using sbx.repositories.Permiso;
 using sbx.repositories.PrecioCliente;
 using sbx.repositories.PrecioProducto;
 using sbx.repositories.Producto;
@@ -274,6 +276,9 @@ namespace sbx
 
                 services.AddTransient<IRol>(provider =>
                 new RolRepository(connectionString));
+
+                services.AddTransient<IPermisos>(provider =>
+                new PermisoRepository(connectionString));
             })
             .Build();
 

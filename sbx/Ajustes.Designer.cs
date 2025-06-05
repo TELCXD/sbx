@@ -36,6 +36,9 @@
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
             txt_ruta_backup = new TextBox();
             txt_impresora = new TextBox();
@@ -93,7 +96,22 @@
             btn_agregar_usuario = new Button();
             button2 = new Button();
             textBox3 = new TextBox();
-            tabPage4 = new TabPage();
+            tabPage5 = new TabPage();
+            dtg_permisos = new DataGridView();
+            cl_idUserMenu = new DataGridViewTextBoxColumn();
+            cl_id_menu = new DataGridViewTextBoxColumn();
+            cl_menu = new DataGridViewTextBoxColumn();
+            cl_id_user = new DataGridViewTextBoxColumn();
+            cl_toRead = new DataGridViewCheckBoxColumn();
+            cl_ToCreate = new DataGridViewCheckBoxColumn();
+            cl_toUpdate = new DataGridViewCheckBoxColumn();
+            cl_toDelete = new DataGridViewCheckBoxColumn();
+            cl_estado = new DataGridViewTextBoxColumn();
+            panel4 = new Panel();
+            btn_guardar_permisos = new Button();
+            txt_busca_usuario = new TextBox();
+            btn_busca_usuario = new Button();
+            label5 = new Label();
             errorProvider1 = new ErrorProvider(components);
             TabParametros.SuspendLayout();
             panel2.SuspendLayout();
@@ -108,6 +126,9 @@
             tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_usuario).BeginInit();
             panel3.SuspendLayout();
+            tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dtg_permisos).BeginInit();
+            panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
@@ -525,7 +546,7 @@
             // tabControl1
             // 
             tabControl1.Controls.Add(tabPage3);
-            tabControl1.Controls.Add(tabPage4);
+            tabControl1.Controls.Add(tabPage5);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(3, 3);
             tabControl1.Name = "tabControl1";
@@ -757,15 +778,174 @@
             textBox3.Size = new Size(191, 23);
             textBox3.TabIndex = 2;
             // 
-            // tabPage4
+            // tabPage5
             // 
-            tabPage4.Location = new Point(4, 24);
-            tabPage4.Name = "tabPage4";
-            tabPage4.Padding = new Padding(3);
-            tabPage4.Size = new Size(849, 488);
-            tabPage4.TabIndex = 1;
-            tabPage4.Text = "Roles";
-            tabPage4.UseVisualStyleBackColor = true;
+            tabPage5.Controls.Add(dtg_permisos);
+            tabPage5.Controls.Add(panel4);
+            tabPage5.Location = new Point(4, 26);
+            tabPage5.Name = "tabPage5";
+            tabPage5.Padding = new Padding(3);
+            tabPage5.Size = new Size(849, 486);
+            tabPage5.TabIndex = 2;
+            tabPage5.Text = "Permisos";
+            tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // dtg_permisos
+            // 
+            dtg_permisos.AllowUserToAddRows = false;
+            dtg_permisos.AllowUserToDeleteRows = false;
+            dtg_permisos.AllowUserToOrderColumns = true;
+            dtg_permisos.BackgroundColor = SystemColors.Control;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = SystemColors.Control;
+            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dtg_permisos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtg_permisos.Columns.AddRange(new DataGridViewColumn[] { cl_idUserMenu, cl_id_menu, cl_menu, cl_id_user, cl_toRead, cl_ToCreate, cl_toUpdate, cl_toDelete, cl_estado });
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = SystemColors.Window;
+            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
+            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle8;
+            dtg_permisos.Dock = DockStyle.Fill;
+            dtg_permisos.Location = new Point(3, 58);
+            dtg_permisos.Name = "dtg_permisos";
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = SystemColors.Control;
+            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dtg_permisos.Size = new Size(843, 425);
+            dtg_permisos.TabIndex = 140;
+            // 
+            // cl_idUserMenu
+            // 
+            cl_idUserMenu.HeaderText = "Id";
+            cl_idUserMenu.Name = "cl_idUserMenu";
+            cl_idUserMenu.Visible = false;
+            // 
+            // cl_id_menu
+            // 
+            cl_id_menu.HeaderText = "Id Menu";
+            cl_id_menu.Name = "cl_id_menu";
+            cl_id_menu.Visible = false;
+            // 
+            // cl_menu
+            // 
+            cl_menu.HeaderText = "Menu";
+            cl_menu.Name = "cl_menu";
+            cl_menu.Width = 390;
+            // 
+            // cl_id_user
+            // 
+            cl_id_user.HeaderText = "Id User";
+            cl_id_user.Name = "cl_id_user";
+            cl_id_user.Visible = false;
+            // 
+            // cl_toRead
+            // 
+            cl_toRead.HeaderText = "Ver";
+            cl_toRead.Name = "cl_toRead";
+            cl_toRead.Resizable = DataGridViewTriState.True;
+            cl_toRead.SortMode = DataGridViewColumnSortMode.Automatic;
+            // 
+            // cl_ToCreate
+            // 
+            cl_ToCreate.HeaderText = "Crear";
+            cl_ToCreate.Name = "cl_ToCreate";
+            cl_ToCreate.Resizable = DataGridViewTriState.True;
+            cl_ToCreate.SortMode = DataGridViewColumnSortMode.Automatic;
+            // 
+            // cl_toUpdate
+            // 
+            cl_toUpdate.HeaderText = "Actualizar";
+            cl_toUpdate.Name = "cl_toUpdate";
+            cl_toUpdate.Resizable = DataGridViewTriState.True;
+            cl_toUpdate.SortMode = DataGridViewColumnSortMode.Automatic;
+            // 
+            // cl_toDelete
+            // 
+            cl_toDelete.HeaderText = "Eliminar";
+            cl_toDelete.Name = "cl_toDelete";
+            cl_toDelete.Resizable = DataGridViewTriState.True;
+            cl_toDelete.SortMode = DataGridViewColumnSortMode.Automatic;
+            // 
+            // cl_estado
+            // 
+            cl_estado.HeaderText = "Estado";
+            cl_estado.Name = "cl_estado";
+            cl_estado.Visible = false;
+            // 
+            // panel4
+            // 
+            panel4.BorderStyle = BorderStyle.Fixed3D;
+            panel4.Controls.Add(btn_guardar_permisos);
+            panel4.Controls.Add(txt_busca_usuario);
+            panel4.Controls.Add(btn_busca_usuario);
+            panel4.Controls.Add(label5);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(3, 3);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(843, 55);
+            panel4.TabIndex = 139;
+            // 
+            // btn_guardar_permisos
+            // 
+            btn_guardar_permisos.Enabled = false;
+            btn_guardar_permisos.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_guardar_permisos.FlatStyle = FlatStyle.Flat;
+            btn_guardar_permisos.Image = (Image)resources.GetObject("btn_guardar_permisos.Image");
+            btn_guardar_permisos.Location = new Point(3, 3);
+            btn_guardar_permisos.Name = "btn_guardar_permisos";
+            btn_guardar_permisos.Size = new Size(101, 45);
+            btn_guardar_permisos.TabIndex = 17;
+            btn_guardar_permisos.Text = "Guardar";
+            btn_guardar_permisos.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_guardar_permisos.UseVisualStyleBackColor = true;
+            btn_guardar_permisos.Click += btn_guardar_permisos_Click;
+            // 
+            // txt_busca_usuario
+            // 
+            txt_busca_usuario.Anchor = AnchorStyles.Top;
+            txt_busca_usuario.Enabled = false;
+            txt_busca_usuario.Location = new Point(504, 14);
+            txt_busca_usuario.Name = "txt_busca_usuario";
+            txt_busca_usuario.Size = new Size(268, 23);
+            txt_busca_usuario.TabIndex = 135;
+            // 
+            // btn_busca_usuario
+            // 
+            btn_busca_usuario.Enabled = false;
+            btn_busca_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_busca_usuario.FlatStyle = FlatStyle.Flat;
+            btn_busca_usuario.Image = (Image)resources.GetObject("btn_busca_usuario.Image");
+            btn_busca_usuario.Location = new Point(792, 12);
+            btn_busca_usuario.Name = "btn_busca_usuario";
+            btn_busca_usuario.Size = new Size(26, 26);
+            btn_busca_usuario.TabIndex = 136;
+            btn_busca_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_busca_usuario.UseVisualStyleBackColor = true;
+            btn_busca_usuario.Click += btn_busca_usuario_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(444, 17);
+            label5.Name = "label5";
+            label5.Size = new Size(54, 17);
+            label5.TabIndex = 137;
+            label5.Text = "Usuario";
             // 
             // errorProvider1
             // 
@@ -799,6 +979,10 @@
             ((System.ComponentModel.ISupportInitialize)dtg_usuario).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
+            tabPage5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dtg_permisos).EndInit();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
         }
@@ -840,18 +1024,9 @@
         private TextBox txt_ruta_backup;
         private TextBox txt_impresora;
         private TabPage tabAdministracion;
+        private ErrorProvider errorProvider1;
         private TabControl tabControl1;
         private TabPage tabPage3;
-        private TabPage tabPage4;
-        private Panel panel3;
-        private Button button2;
-        private TextBox textBox3;
-        private Button btn_editar_usuario;
-        private Button btn_agregar_usuario;
-        private ComboBox cbx_tipo_filtro;
-        private ComboBox cbx_campo_filtro;
-        private Button btn_buscar_usuario;
-        private TextBox txt_buscar_usuario;
         private DataGridView dtg_usuario;
         private DataGridViewTextBoxColumn cl_IdUsuario;
         private DataGridViewTextBoxColumn cl_userName;
@@ -862,6 +1037,30 @@
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_telefono;
         private DataGridViewTextBoxColumn cl_BirthDate;
-        private ErrorProvider errorProvider1;
+        private Panel panel3;
+        private ComboBox cbx_tipo_filtro;
+        private ComboBox cbx_campo_filtro;
+        private Button btn_buscar_usuario;
+        private TextBox txt_buscar_usuario;
+        private Button btn_editar_usuario;
+        private Button btn_agregar_usuario;
+        private Button button2;
+        private TextBox textBox3;
+        private TabPage tabPage5;
+        private Label label5;
+        private TextBox txt_busca_usuario;
+        private Button btn_busca_usuario;
+        private Panel panel4;
+        private Button btn_guardar_permisos;
+        private DataGridView dtg_permisos;
+        private DataGridViewTextBoxColumn cl_idUserMenu;
+        private DataGridViewTextBoxColumn cl_id_menu;
+        private DataGridViewTextBoxColumn cl_menu;
+        private DataGridViewTextBoxColumn cl_id_user;
+        private DataGridViewCheckBoxColumn cl_toRead;
+        private DataGridViewCheckBoxColumn cl_ToCreate;
+        private DataGridViewCheckBoxColumn cl_toUpdate;
+        private DataGridViewCheckBoxColumn cl_toDelete;
+        private DataGridViewTextBoxColumn cl_estado;
     }
 }

@@ -33,7 +33,6 @@ namespace sbx.repositories.LoginRepository
 
                     int IdUser = 0;
                     bool Activo = false;
-                    int IdRole = 0;
 
                     if (resultado != null)
                     {
@@ -50,14 +49,11 @@ namespace sbx.repositories.LoginRepository
                                     passwordValidate = Argon2.Verify(password, contrasena);
                                     if (passwordValidate)
                                     {
-                                        IdRole = resultado[0].IdRole;
                                         sql = @$"SELECT B.MenuURL, A.ToRead, A.ToCreate, A.ToUpdate, A.ToDelete  
-                                            FROM TR_Role_Menu A 
+                                            FROM TR_User_Menu A 
                                                 INNER JOIN T_Menu B
                                                     ON A.IdMenu= B.IdMenu
-	                                            INNER JOIN T_Role C 
-		                                            ON A.IdRole = C.IdRole
-                                            WHERE A.IdRole= {IdRole} AND B.Active = 1 AND C.Active = 1
+                                            WHERE A.IdUser= {IdUser} AND B.Active = 1
                                             AND (A.ToUpdate=1 OR A.ToCreate=1 OR A.ToRead=1 OR A.ToDelete=1)";
 
                                         var permisos = await connection.QueryAsync<Permisos>(sql);
