@@ -54,6 +54,7 @@
             cl_fecha_cierre = new DataGridViewTextBoxColumn();
             cl_montoFinal = new DataGridViewTextBoxColumn();
             cl_ventasTotales = new DataGridViewTextBoxColumn();
+            cl_pago_en_efectivo = new DataGridViewTextBoxColumn();
             cl_diferencia = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
@@ -78,7 +79,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1061, 56);
+            panel1.Size = new Size(1211, 56);
             panel1.TabIndex = 0;
             // 
             // label2
@@ -121,7 +122,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(722, 15);
+            cbx_tipo_filtro.Location = new Point(872, 15);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 14;
@@ -132,7 +133,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre usuario", "Id usuario" });
-            cbx_campo_filtro.Location = new Point(602, 15);
+            cbx_campo_filtro.Location = new Point(752, 15);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 13;
@@ -144,7 +145,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1012, 4);
+            btn_buscar.Location = new Point(1162, 4);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(42, 45);
             btn_buscar.TabIndex = 12;
@@ -155,7 +156,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(815, 15);
+            txt_buscar.Location = new Point(965, 15);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 11;
@@ -205,7 +206,7 @@
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
             dtg_aperturas_cierres_caja.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_aperturas_cierres_caja.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_aperturas_cierres_caja.Columns.AddRange(new DataGridViewColumn[] { cl_IdApertura_Cierre_caja, cl_IdUser, cl_usuario, cl_fecha_apertura, cl_monto_inicial, cl_fecha_cierre, cl_montoFinal, cl_ventasTotales, cl_diferencia, cl_estado });
+            dtg_aperturas_cierres_caja.Columns.AddRange(new DataGridViewColumn[] { cl_IdApertura_Cierre_caja, cl_IdUser, cl_usuario, cl_fecha_apertura, cl_monto_inicial, cl_fecha_cierre, cl_montoFinal, cl_ventasTotales, cl_pago_en_efectivo, cl_diferencia, cl_estado });
             dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle5.BackColor = SystemColors.Window;
             dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -227,7 +228,7 @@
             dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
             dtg_aperturas_cierres_caja.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_aperturas_cierres_caja.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_aperturas_cierres_caja.Size = new Size(1061, 443);
+            dtg_aperturas_cierres_caja.Size = new Size(1211, 443);
             dtg_aperturas_cierres_caja.TabIndex = 3;
             // 
             // errorProvider1
@@ -290,6 +291,13 @@
             cl_ventasTotales.ReadOnly = true;
             cl_ventasTotales.Width = 130;
             // 
+            // cl_pago_en_efectivo
+            // 
+            cl_pago_en_efectivo.HeaderText = "Pagos en Efectivo";
+            cl_pago_en_efectivo.Name = "cl_pago_en_efectivo";
+            cl_pago_en_efectivo.ReadOnly = true;
+            cl_pago_en_efectivo.Width = 150;
+            // 
             // cl_diferencia
             // 
             cl_diferencia.HeaderText = "Diferencia";
@@ -307,12 +315,12 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1061, 499);
+            ClientSize = new Size(1211, 499);
             Controls.Add(dtg_aperturas_cierres_caja);
             Controls.Add(panel1);
             MaximizeBox = false;
-            MaximumSize = new Size(1077, 538);
-            MinimumSize = new Size(1077, 538);
+            MaximumSize = new Size(1227, 538);
+            MinimumSize = new Size(1227, 538);
             Name = "Caja";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Caja";
@@ -347,6 +355,7 @@
         private DataGridViewTextBoxColumn cl_fecha_cierre;
         private DataGridViewTextBoxColumn cl_montoFinal;
         private DataGridViewTextBoxColumn cl_ventasTotales;
+        private DataGridViewTextBoxColumn cl_pago_en_efectivo;
         private DataGridViewTextBoxColumn cl_diferencia;
         private DataGridViewTextBoxColumn cl_estado;
     }

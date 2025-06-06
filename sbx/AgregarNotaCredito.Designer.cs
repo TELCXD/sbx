@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarNotaCredito));
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             label2 = new Label();
             txt_busca_factura = new TextBox();
             btn_busca_factura = new Button();
@@ -53,19 +53,6 @@
             lbl_cantidadProductos = new Label();
             label4 = new Label();
             dtg_ventas = new DataGridView();
-            cl_id_detalle_venta = new DataGridViewTextBoxColumn();
-            cl_seleccionado = new DataGridViewCheckBoxColumn();
-            cl_idProducto = new DataGridViewTextBoxColumn();
-            cl_sku = new DataGridViewTextBoxColumn();
-            cl_codigo_barras = new DataGridViewTextBoxColumn();
-            cl_nombre = new DataGridViewTextBoxColumn();
-            cl_unidadMedida = new DataGridViewTextBoxColumn();
-            cl_precio = new DataGridViewTextBoxColumn();
-            cl_cantidad = new DataGridViewTextBoxColumn();
-            cl_cantidad_devolver = new DataGridViewTextBoxColumn();
-            cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
-            cl_total = new DataGridViewTextBoxColumn();
             lbl_vendedor = new Label();
             label5 = new Label();
             lbl_medio_pago = new Label();
@@ -84,8 +71,22 @@
             panel2 = new Panel();
             lbl_cantidad_devolucion = new Label();
             label17 = new Label();
+            cl_id_detalle_venta = new DataGridViewTextBoxColumn();
+            cl_seleccionado = new DataGridViewCheckBoxColumn();
+            cl_idProducto = new DataGridViewTextBoxColumn();
+            cl_sku = new DataGridViewTextBoxColumn();
+            cl_codigo_barras = new DataGridViewTextBoxColumn();
+            cl_nombre = new DataGridViewTextBoxColumn();
+            cl_unidadMedida = new DataGridViewTextBoxColumn();
+            cl_precio = new DataGridViewTextBoxColumn();
+            cl_cantidad = new DataGridViewTextBoxColumn();
+            cl_cantidad_devolver = new DataGridViewTextBoxColumn();
+            cl_descuento = new DataGridViewTextBoxColumn();
+            cl_iva = new DataGridViewTextBoxColumn();
+            cl_total = new DataGridViewTextBoxColumn();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_ventas).BeginInit();
+            panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
             // 
@@ -105,7 +106,7 @@
             txt_busca_factura.Location = new Point(4, 21);
             txt_busca_factura.Name = "txt_busca_factura";
             txt_busca_factura.Size = new Size(184, 23);
-            txt_busca_factura.TabIndex = 134;
+            txt_busca_factura.TabIndex = 0;
             // 
             // btn_busca_factura
             // 
@@ -116,7 +117,7 @@
             btn_busca_factura.Location = new Point(194, 18);
             btn_busca_factura.Name = "btn_busca_factura";
             btn_busca_factura.Size = new Size(26, 26);
-            btn_busca_factura.TabIndex = 135;
+            btn_busca_factura.TabIndex = 1;
             btn_busca_factura.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_busca_factura.UseVisualStyleBackColor = true;
             btn_busca_factura.Click += btn_busca_factura_Click;
@@ -124,54 +125,60 @@
             // lbl_usuario
             // 
             lbl_usuario.AutoSize = true;
+            lbl_usuario.Font = new Font("Segoe UI", 9.75F);
             lbl_usuario.Location = new Point(848, 110);
             lbl_usuario.Name = "lbl_usuario";
-            lbl_usuario.Size = new Size(12, 15);
+            lbl_usuario.Size = new Size(13, 17);
             lbl_usuario.TabIndex = 164;
             lbl_usuario.Text = "_";
             // 
             // label13
             // 
             label13.AutoSize = true;
+            label13.Font = new Font("Segoe UI", 9.75F);
             label13.Location = new Point(792, 110);
             label13.Name = "label13";
-            label13.Size = new Size(50, 15);
+            label13.Size = new Size(56, 17);
             label13.TabIndex = 163;
             label13.Text = "Usuario:";
             // 
             // lbl_referencia
             // 
             lbl_referencia.AutoSize = true;
-            lbl_referencia.Location = new Point(574, 84);
+            lbl_referencia.Font = new Font("Segoe UI", 9.75F);
+            lbl_referencia.Location = new Point(584, 84);
             lbl_referencia.Name = "lbl_referencia";
-            lbl_referencia.Size = new Size(12, 15);
+            lbl_referencia.Size = new Size(13, 17);
             lbl_referencia.TabIndex = 162;
             lbl_referencia.Text = "_";
             // 
             // label11
             // 
             label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI", 9.75F);
             label11.Location = new Point(481, 84);
             label11.Name = "label11";
-            label11.Size = new Size(65, 15);
+            label11.Size = new Size(72, 17);
             label11.TabIndex = 161;
             label11.Text = "Referencia:";
             // 
             // lbl_banco
             // 
             lbl_banco.AutoSize = true;
-            lbl_banco.Location = new Point(574, 110);
+            lbl_banco.Font = new Font("Segoe UI", 9.75F);
+            lbl_banco.Location = new Point(584, 110);
             lbl_banco.Name = "lbl_banco";
-            lbl_banco.Size = new Size(12, 15);
+            lbl_banco.Size = new Size(13, 17);
             lbl_banco.TabIndex = 160;
             lbl_banco.Text = "_";
             // 
             // label9
             // 
             label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 9.75F);
             label9.Location = new Point(481, 110);
             label9.Name = "label9";
-            label9.Size = new Size(43, 15);
+            label9.Size = new Size(46, 17);
             label9.TabIndex = 159;
             label9.Text = "Banco:";
             // 
@@ -188,9 +195,9 @@
             panel3.Controls.Add(label6);
             panel3.Controls.Add(lbl_cantidadProductos);
             panel3.Controls.Add(label4);
-            panel3.Location = new Point(800, 406);
+            panel3.Location = new Point(800, 387);
             panel3.Name = "panel3";
-            panel3.Size = new Size(359, 140);
+            panel3.Size = new Size(359, 159);
             panel3.TabIndex = 158;
             // 
             // lbl_total
@@ -314,34 +321,34 @@
             dtg_ventas.AllowUserToDeleteRows = false;
             dtg_ventas.AllowUserToOrderColumns = true;
             dtg_ventas.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_id_detalle_venta, cl_seleccionado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_unidadMedida, cl_precio, cl_cantidad, cl_cantidad_devolver, cl_descuento, cl_iva, cl_total });
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Window;
-            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_ventas.Location = new Point(4, 165);
             dtg_ventas.Name = "dtg_ventas";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_ventas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_ventas.Size = new Size(1155, 216);
             dtg_ventas.TabIndex = 157;
@@ -350,161 +357,83 @@
             dtg_ventas.EditingControlShowing += dtg_ventas_EditingControlShowing;
             dtg_ventas.KeyPress += dtg_ventas_KeyPress;
             // 
-            // cl_id_detalle_venta
-            // 
-            cl_id_detalle_venta.HeaderText = "Id Detalle venta";
-            cl_id_detalle_venta.Name = "cl_id_detalle_venta";
-            cl_id_detalle_venta.Visible = false;
-            // 
-            // cl_seleccionado
-            // 
-            cl_seleccionado.HeaderText = "";
-            cl_seleccionado.Name = "cl_seleccionado";
-            cl_seleccionado.Resizable = DataGridViewTriState.True;
-            cl_seleccionado.SortMode = DataGridViewColumnSortMode.Automatic;
-            cl_seleccionado.Width = 50;
-            // 
-            // cl_idProducto
-            // 
-            cl_idProducto.HeaderText = "Id";
-            cl_idProducto.Name = "cl_idProducto";
-            cl_idProducto.ReadOnly = true;
-            cl_idProducto.Width = 50;
-            // 
-            // cl_sku
-            // 
-            cl_sku.HeaderText = "sku";
-            cl_sku.Name = "cl_sku";
-            cl_sku.ReadOnly = true;
-            // 
-            // cl_codigo_barras
-            // 
-            cl_codigo_barras.HeaderText = "Codigo b";
-            cl_codigo_barras.Name = "cl_codigo_barras";
-            cl_codigo_barras.ReadOnly = true;
-            cl_codigo_barras.Width = 120;
-            // 
-            // cl_nombre
-            // 
-            cl_nombre.HeaderText = "Nombre";
-            cl_nombre.Name = "cl_nombre";
-            cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 150;
-            // 
-            // cl_unidadMedida
-            // 
-            cl_unidadMedida.HeaderText = "UM";
-            cl_unidadMedida.Name = "cl_unidadMedida";
-            cl_unidadMedida.Visible = false;
-            // 
-            // cl_precio
-            // 
-            cl_precio.HeaderText = "Precio";
-            cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
-            cl_precio.Width = 150;
-            // 
-            // cl_cantidad
-            // 
-            cl_cantidad.HeaderText = "Cantidad";
-            cl_cantidad.Name = "cl_cantidad";
-            cl_cantidad.ReadOnly = true;
-            // 
-            // cl_cantidad_devolver
-            // 
-            cl_cantidad_devolver.HeaderText = "Cant. dev";
-            cl_cantidad_devolver.Name = "cl_cantidad_devolver";
-            // 
-            // cl_descuento
-            // 
-            cl_descuento.HeaderText = "Desc %";
-            cl_descuento.Name = "cl_descuento";
-            cl_descuento.ReadOnly = true;
-            cl_descuento.Width = 80;
-            // 
-            // cl_iva
-            // 
-            cl_iva.HeaderText = "Iva %";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 67;
-            // 
-            // cl_total
-            // 
-            cl_total.HeaderText = "Total";
-            cl_total.Name = "cl_total";
-            cl_total.ReadOnly = true;
-            cl_total.Width = 142;
-            // 
             // lbl_vendedor
             // 
             lbl_vendedor.AutoSize = true;
-            lbl_vendedor.Location = new Point(74, 112);
+            lbl_vendedor.Font = new Font("Segoe UI", 9.75F);
+            lbl_vendedor.Location = new Point(77, 61);
             lbl_vendedor.Name = "lbl_vendedor";
-            lbl_vendedor.Size = new Size(12, 15);
+            lbl_vendedor.Size = new Size(13, 17);
             lbl_vendedor.TabIndex = 156;
             lbl_vendedor.Text = "_";
             // 
             // label5
             // 
             label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 9.75F);
             label5.Location = new Point(10, 112);
             label5.Name = "label5";
-            label5.Size = new Size(60, 15);
+            label5.Size = new Size(68, 17);
             label5.TabIndex = 155;
             label5.Text = "Vendedor:";
             // 
             // lbl_medio_pago
             // 
             lbl_medio_pago.AutoSize = true;
-            lbl_medio_pago.Location = new Point(574, 58);
+            lbl_medio_pago.Font = new Font("Segoe UI", 9.75F);
+            lbl_medio_pago.Location = new Point(584, 58);
             lbl_medio_pago.Name = "lbl_medio_pago";
-            lbl_medio_pago.Size = new Size(12, 15);
+            lbl_medio_pago.Size = new Size(13, 17);
             lbl_medio_pago.TabIndex = 154;
             lbl_medio_pago.Text = "_";
             // 
             // label3
             // 
             label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9.75F);
             label3.Location = new Point(481, 58);
             label3.Name = "label3";
-            label3.Size = new Size(90, 15);
+            label3.Size = new Size(103, 17);
             label3.TabIndex = 153;
             label3.Text = "Medio de pago:";
             // 
             // lbl_cliente
             // 
             lbl_cliente.AutoSize = true;
-            lbl_cliente.Location = new Point(74, 84);
+            lbl_cliente.Font = new Font("Segoe UI", 9.75F);
+            lbl_cliente.Location = new Point(77, 33);
             lbl_cliente.Name = "lbl_cliente";
-            lbl_cliente.Size = new Size(12, 15);
+            lbl_cliente.Size = new Size(13, 17);
             lbl_cliente.TabIndex = 152;
             lbl_cliente.Text = "_";
             // 
             // label1
             // 
             label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9.75F);
             label1.Location = new Point(10, 84);
             label1.Name = "label1";
-            label1.Size = new Size(47, 15);
+            label1.Size = new Size(50, 17);
             label1.TabIndex = 151;
             label1.Text = "Cliente:";
             // 
             // lbl_factura
             // 
             lbl_factura.AutoSize = true;
-            lbl_factura.Location = new Point(74, 58);
+            lbl_factura.Font = new Font("Segoe UI", 9.75F);
+            lbl_factura.Location = new Point(77, 7);
             lbl_factura.Name = "lbl_factura";
-            lbl_factura.Size = new Size(12, 15);
+            lbl_factura.Size = new Size(13, 17);
             lbl_factura.TabIndex = 150;
             lbl_factura.Text = "_";
             // 
             // label7
             // 
             label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9.75F);
             label7.Location = new Point(10, 58);
             label7.Name = "label7";
-            label7.Size = new Size(49, 15);
+            label7.Size = new Size(53, 17);
             label7.TabIndex = 149;
             label7.Text = "Factura:";
             // 
@@ -517,7 +446,7 @@
             btn_devolucion.Location = new Point(12, 493);
             btn_devolucion.Name = "btn_devolucion";
             btn_devolucion.Size = new Size(150, 47);
-            btn_devolucion.TabIndex = 165;
+            btn_devolucion.TabIndex = 5;
             btn_devolucion.Text = "Guardar Devolucion";
             btn_devolucion.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_devolucion.UseVisualStyleBackColor = true;
@@ -539,7 +468,7 @@
             txt_motivo_devolucion.Location = new Point(5, 75);
             txt_motivo_devolucion.Name = "txt_motivo_devolucion";
             txt_motivo_devolucion.Size = new Size(769, 23);
-            txt_motivo_devolucion.TabIndex = 167;
+            txt_motivo_devolucion.TabIndex = 4;
             // 
             // lbl_total_devolucion
             // 
@@ -567,10 +496,11 @@
             // chk_marcar_todo
             // 
             chk_marcar_todo.AutoSize = true;
+            chk_marcar_todo.Enabled = false;
             chk_marcar_todo.Location = new Point(4, 140);
             chk_marcar_todo.Name = "chk_marcar_todo";
             chk_marcar_todo.Size = new Size(91, 19);
-            chk_marcar_todo.TabIndex = 171;
+            chk_marcar_todo.TabIndex = 3;
             chk_marcar_todo.Text = "Marcar todo";
             chk_marcar_todo.UseVisualStyleBackColor = true;
             chk_marcar_todo.CheckedChanged += chk_marcar_todo_CheckedChanged;
@@ -578,6 +508,9 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(lbl_cliente);
+            panel1.Controls.Add(lbl_factura);
+            panel1.Controls.Add(lbl_vendedor);
             panel1.Location = new Point(4, 50);
             panel1.Name = "panel1";
             panel1.Size = new Size(1155, 84);
@@ -620,6 +553,96 @@
             label17.TabIndex = 171;
             label17.Text = "Cantidad devolucion: ";
             // 
+            // cl_id_detalle_venta
+            // 
+            cl_id_detalle_venta.HeaderText = "Id Detalle venta";
+            cl_id_detalle_venta.Name = "cl_id_detalle_venta";
+            cl_id_detalle_venta.ReadOnly = true;
+            cl_id_detalle_venta.Visible = false;
+            // 
+            // cl_seleccionado
+            // 
+            cl_seleccionado.HeaderText = "";
+            cl_seleccionado.Name = "cl_seleccionado";
+            cl_seleccionado.ReadOnly = true;
+            cl_seleccionado.Resizable = DataGridViewTriState.True;
+            cl_seleccionado.SortMode = DataGridViewColumnSortMode.Automatic;
+            cl_seleccionado.Width = 50;
+            // 
+            // cl_idProducto
+            // 
+            cl_idProducto.HeaderText = "Id";
+            cl_idProducto.Name = "cl_idProducto";
+            cl_idProducto.ReadOnly = true;
+            cl_idProducto.Width = 50;
+            // 
+            // cl_sku
+            // 
+            cl_sku.HeaderText = "sku";
+            cl_sku.Name = "cl_sku";
+            cl_sku.ReadOnly = true;
+            // 
+            // cl_codigo_barras
+            // 
+            cl_codigo_barras.HeaderText = "Codigo b";
+            cl_codigo_barras.Name = "cl_codigo_barras";
+            cl_codigo_barras.ReadOnly = true;
+            cl_codigo_barras.Width = 120;
+            // 
+            // cl_nombre
+            // 
+            cl_nombre.HeaderText = "Nombre";
+            cl_nombre.Name = "cl_nombre";
+            cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 150;
+            // 
+            // cl_unidadMedida
+            // 
+            cl_unidadMedida.HeaderText = "UM";
+            cl_unidadMedida.Name = "cl_unidadMedida";
+            cl_unidadMedida.ReadOnly = true;
+            cl_unidadMedida.Visible = false;
+            // 
+            // cl_precio
+            // 
+            cl_precio.HeaderText = "Precio";
+            cl_precio.Name = "cl_precio";
+            cl_precio.ReadOnly = true;
+            cl_precio.Width = 150;
+            // 
+            // cl_cantidad
+            // 
+            cl_cantidad.HeaderText = "Cantidad";
+            cl_cantidad.Name = "cl_cantidad";
+            cl_cantidad.ReadOnly = true;
+            // 
+            // cl_cantidad_devolver
+            // 
+            cl_cantidad_devolver.HeaderText = "Cant. dev";
+            cl_cantidad_devolver.Name = "cl_cantidad_devolver";
+            cl_cantidad_devolver.ReadOnly = true;
+            // 
+            // cl_descuento
+            // 
+            cl_descuento.HeaderText = "Desc %";
+            cl_descuento.Name = "cl_descuento";
+            cl_descuento.ReadOnly = true;
+            cl_descuento.Width = 80;
+            // 
+            // cl_iva
+            // 
+            cl_iva.HeaderText = "Iva %";
+            cl_iva.Name = "cl_iva";
+            cl_iva.ReadOnly = true;
+            cl_iva.Width = 67;
+            // 
+            // cl_total
+            // 
+            cl_total.HeaderText = "Total";
+            cl_total.Name = "cl_total";
+            cl_total.ReadOnly = true;
+            cl_total.Width = 142;
+            // 
             // AgregarNotaCredito
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -636,13 +659,10 @@
             Controls.Add(label9);
             Controls.Add(panel3);
             Controls.Add(dtg_ventas);
-            Controls.Add(lbl_vendedor);
             Controls.Add(label5);
             Controls.Add(lbl_medio_pago);
             Controls.Add(label3);
-            Controls.Add(lbl_cliente);
             Controls.Add(label1);
-            Controls.Add(lbl_factura);
             Controls.Add(label7);
             Controls.Add(label2);
             Controls.Add(txt_busca_factura);
@@ -659,6 +679,8 @@
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_ventas).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ResumeLayout(false);
@@ -702,6 +724,10 @@
         private Label lbl_total_devolucion;
         private Label label16;
         private CheckBox chk_marcar_todo;
+        private Panel panel1;
+        private Panel panel2;
+        private Label lbl_cantidad_devolucion;
+        private Label label17;
         private DataGridViewTextBoxColumn cl_id_detalle_venta;
         private DataGridViewCheckBoxColumn cl_seleccionado;
         private DataGridViewTextBoxColumn cl_idProducto;
@@ -715,9 +741,5 @@
         private DataGridViewTextBoxColumn cl_descuento;
         private DataGridViewTextBoxColumn cl_iva;
         private DataGridViewTextBoxColumn cl_total;
-        private Panel panel1;
-        private Panel panel2;
-        private Label lbl_cantidad_devolucion;
-        private Label label17;
     }
 }

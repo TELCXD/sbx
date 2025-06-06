@@ -29,6 +29,10 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine($"CAJERO: {factura.UserNameFactura}");
             sb.AppendLine($"VENDEDOR: {factura.NombreVendedor}");
             sb.AppendLine($"CLIENTE: {factura.NombreCliente}");
+            if (factura.Estado == "ANULADA") 
+            {
+                sb.AppendLine($"ESTADO: {factura.Estado}");
+            }
             sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
             // Items

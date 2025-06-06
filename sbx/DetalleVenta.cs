@@ -1,4 +1,6 @@
-﻿using sbx.core.Entities.Venta;
+﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Entities.Venta;
+using sbx.core.Interfaces.NotaCredito;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Venta;
@@ -14,6 +16,8 @@ namespace sbx
         private readonly IVenta _IVenta;
         private readonly ITienda _ITienda;
         private readonly IParametros _IParametros;
+        private DetalleProdDevo? _DetalleProdDevo;
+        private readonly IServiceProvider _serviceProvider;
         decimal Cantidad = 0;
         decimal Subtotal = 0;
         decimal SubtotalLinea = 0;
@@ -21,13 +25,15 @@ namespace sbx
         decimal Impuesto = 0;
         decimal Total = 0;
         decimal DescuentoLinea = 0;
+        int IdNotaCredito = 0;
 
-        public DetalleVenta(IVenta venta, ITienda tienda, IParametros iParametros)
+        public DetalleVenta(IVenta venta, ITienda tienda, IParametros iParametros, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _IVenta = venta;
             _ITienda = tienda;
             _IParametros = iParametros;
+            _serviceProvider = serviceProvider;
         }
 
         public dynamic? Permisos
@@ -86,7 +92,15 @@ namespace sbx
                         lbl_medio_pago.Text = resp.Data[0].NombreMetodoPago;
                         lbl_referencia.Text = resp.Data[0].Referencia;
                         lbl_banco.Text = resp.Data[0].NombreBanco;
+                        lbl_estado.Text = resp.Data[0].Estado;
                         lbl_usuario.Text = resp.Data[0].IdUserActionFactura + " - " + resp.Data[0].UserNameFactura;
+
+                        if (resp.Data[0].IdNotaCredito > 0) 
+                        {
+                            lbl_nota_credito.Text = "NC - " + resp.Data[0].IdNotaCredito;
+                            IdNotaCredito = resp.Data[0].IdNotaCredito;
+                            btn_ver_productos.Enabled = true;
+                        }
 
                         decimal Subtotal = 0;
                         decimal cantidadTotal = 0;
@@ -198,6 +212,7 @@ namespace sbx
                             DataFactura.UserNameFactura = DataVenta.Data[0].IdUserActionFactura + " - " + DataVenta.Data[0].UserNameFactura;
                             DataFactura.NombreCliente = DataVenta.Data[0].NumeroDocumento + " - " + DataVenta.Data[0].NombreRazonSocial;
                             DataFactura.NombreVendedor = DataVenta.Data[0].NumeroDocumentoVendedor + " - " + DataVenta.Data[0].NombreVendedor;
+                            DataFactura.Estado = DataVenta.Data[0].Estado;
                             DataFactura.FormaPago = DataVenta.Data[0].NombreMetodoPago;
                             DataFactura.Recibido = DataVenta.Data[0].Recibido;
 
@@ -350,6 +365,18 @@ namespace sbx
             var valor = valorBase - descuento;
             var iva = CalcularIva(valor, porcentajeIva);
             return valor + iva;
+        }
+
+        private void btn_ver_productos_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _DetalleProdDevo = _serviceProvider.GetRequiredService<DetalleProdDevo>();
+                _DetalleProdDevo.Id_NotaCredito = IdNotaCredito;
+                _DetalleProdDevo.Permisos = _Permisos;
+                _DetalleProdDevo.FormClosed += (s, args) => _DetalleProdDevo = null;
+                _DetalleProdDevo.ShowDialog();
+            }
         }
     }
 }

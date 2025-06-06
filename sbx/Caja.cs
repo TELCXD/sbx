@@ -88,6 +88,7 @@ namespace sbx
                             item.FechaHoraCierre?.ToString(),
                             (item.MontoFinalDeclarado ?? 0).ToString("N2", new CultureInfo("es-CO")),
                             (item.VentasTotales ?? 0).ToString("N2", new CultureInfo("es-CO")),
+                            (item.PagosEnEfectivo ?? 0).ToString("N2", new CultureInfo("es-CO")),
                             (item.Diferencia ?? 0).ToString("N2", new CultureInfo("es-CO")),
                             item.Estado?.ToString());
                     }

@@ -10,6 +10,7 @@ namespace sbx.core.Entities.Venta
         public int IdCliente { get; set; }
         public int IdVendedor { get; set; }
         public int IdMetodoPago { get; set; }
+        public string Estado { get; set; }
         public List<DetalleVentaEntitie> detalleVentas { get; set; } = new();
         public List<PagosVentaEntitie> pagosVenta { get; set; } = new();
     }

@@ -35,7 +35,8 @@ namespace sbx.repositories.Caja
                         sql = @$" UPDATE T_AperturaCierreCaja SET 
                                   FechaHoraCierre = @FechaActual,
                                   MontoFinalDeclarado = @MontoFinalDeclarado,
-                                  VentasTotales = @VentasTotales, 
+                                  VentasTotales = @VentasTotales,
+                                  PagosEnEfectivo = @PagosEnEfectivo,
                                   Diferencia = @Diferencia,
                                   Estado = @Estado
                                   WHERE IdApertura_Cierre_caja = @IdApertura_Cierre_caja";
@@ -46,6 +47,7 @@ namespace sbx.repositories.Caja
                             FechaActual,
                             cajaEntitie.MontoFinalDeclarado,
                             cajaEntitie.VentasTotales,
+                            cajaEntitie.PagosEnEfectivo,
                             cajaEntitie.Diferencia,
                             cajaEntitie.Estado
                         };
@@ -178,6 +180,7 @@ namespace sbx.repositories.Caja
                                    A.FechaHoraCierre,
                                    A.MontoFinalDeclarado,
                                    A.VentasTotales,
+                                   A.PagosEnEfectivo,
                                    A.Diferencia,
                                    A.Estado
                                    FROM T_AperturaCierreCaja A 

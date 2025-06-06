@@ -15,6 +15,7 @@ using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.Marca;
 using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.NotaCredito;
+using sbx.core.Interfaces.Pago;
 using sbx.core.Interfaces.Pais;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Permisos;
@@ -55,6 +56,7 @@ using sbx.repositories.LoginRepository;
 using sbx.repositories.Marca;
 using sbx.repositories.MedioPago;
 using sbx.repositories.NotaCredito;
+using sbx.repositories.Pagos;
 using sbx.repositories.Pais;
 using sbx.repositories.Parametros;
 using sbx.repositories.Permiso;
@@ -176,6 +178,10 @@ namespace sbx
 
                 services.AddTransient<AgregarNotaCredito>();
 
+                services.AddTransient<DetalleProdDevo>();
+
+                services.AddTransient<AddPagosEfectivo>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -286,6 +292,9 @@ namespace sbx
 
                 services.AddTransient<INotaCredito>(provider =>
                 new NotaCreditoRepository(connectionString));
+
+                services.AddTransient<IPagosEfectivo>(provider =>
+                new PagosRepository(connectionString));
             })
             .Build();
 

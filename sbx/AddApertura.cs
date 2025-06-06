@@ -69,6 +69,11 @@ namespace sbx
 
         private async void btn_apertura_Click(object sender, EventArgs e)
         {
+            await AbrirCaja();
+        }
+
+        private async Task AbrirCaja()
+        {
             if (txt_monto_inicial.Text.Trim() != "")
             {
                 var estadoCaja = await _ICaja.EstadoCaja(Convert.ToInt32(_Permisos?[0]?.IdUser));

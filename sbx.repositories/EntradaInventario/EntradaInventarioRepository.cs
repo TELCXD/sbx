@@ -103,12 +103,16 @@ namespace sbx.repositories.EntradaInventario
                 {
                     await connection.OpenAsync();
 
-                    string sql = @" SELECT Fecha, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
+                    string sql = @" SELECT Fecha,IdUserAction,UserName ,Usuario ,Documento, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
                                     CodigoBarras, CodigoLote, FechaVencimiento
                                     FROM
                                     (
                                     SELECT 
                                         e.CreationDate AS Fecha,
+										e.IdUserAction,
+										usr.UserName,
+										CONCAT(e.IdUserAction,'-',usr.UserName) Usuario,
+										CONCAT('EI','-',ei.IdEntradasInventario) Documento,
                                         'Entrada' AS TipoMovimiento,
 	                                    e.Cantidad,
                                         te.Nombre AS Tipo,
@@ -122,11 +126,16 @@ namespace sbx.repositories.EntradaInventario
                                     INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
                                     INNER JOIN T_TipoEntrada te ON te.IdTipoEntrada = ei.IdTipoEntrada
                                     INNER JOIN T_Productos p ON p.IdProducto = e.IdProducto
+									INNER JOIN T_User usr ON usr.IdUser = e.IdUserAction
 
                                     UNION ALL
 
                                     SELECT 
                                         s.CreationDate AS Fecha,
+										s.IdUserAction,
+										usr.UserName,
+										CONCAT(s.IdUserAction,'-',usr.UserName) Usuario,
+										CONCAT('SI','-',si.IdSalidasInventario) Documento,
                                         'Salida' AS TipoMovimiento,
 	                                    s.Cantidad,
                                         ts.Nombre AS Tipo,
@@ -140,11 +149,16 @@ namespace sbx.repositories.EntradaInventario
                                     INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
                                     INNER JOIN T_TipoSalida ts ON ts.IdTipoSalida = si.IdTipoSalida
                                     INNER JOIN T_Productos p ON p.IdProducto = s.IdProducto
+									INNER JOIN T_User usr ON usr.IdUser = s.IdUserAction
 
                                     UNION ALL
 
 	                                SELECT
 	                                    dvt.CreationDate AS Fecha,
+										dvt.IdUserAction,
+										usr.UserName,
+										CONCAT(dvt.IdUserAction,'-',usr.UserName) Usuario,
+										CONCAT(vt.Prefijo,'-',vt.Consecutivo) Documento,
 	                                    'Salida por Venta' AS TipoMovimiento,
 	                                    dvt.Cantidad,
 	                                    'Ventas' AS Tipo,
@@ -154,7 +168,29 @@ namespace sbx.repositories.EntradaInventario
 	                                    dvt.CodigoBarras,
 	                                    '' AS CodigoLote,
 	                                    '' AS FechaVencimiento
-	                                FROM T_DetalleVenta dvt
+	                                FROM T_Ventas vt 
+									INNER JOIN T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta
+									INNER JOIN T_User usr ON usr.IdUser = dvt.IdUserAction
+
+									UNION ALL
+
+									SELECT
+									    ncd.CreationDate AS Fecha,
+										ncd.IdUserAction,
+										usr.UserName,
+										CONCAT(ncd.IdUserAction,'-',usr.UserName) Usuario,
+										CONCAT('NC','-',nc.IdNotaCredito) Documento,
+										'Entrada por Nota credito' AS TipoMovimiento,
+										ncd.Cantidad,
+										'Devolucion' AS Tipo,
+										ncd.IdProducto,
+										ncd.NombreProducto AS Nombre,
+										ncd.Sku,
+										ncd.CodigoBarras,
+										'' AS CodigoLote,
+	                                    '' AS FechaVencimiento
+									FROM T_NotaCredito nc INNER JOIN T_NotaCreditoDetalle ncd ON nc.IdNotaCredito  = ncd.IdNotaCredito
+									INNER JOIN T_User usr ON usr.IdUser = ncd.IdUserAction
                                     ) R ";
 
                     string Where = "";

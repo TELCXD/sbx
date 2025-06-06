@@ -46,7 +46,7 @@ namespace sbx.repositories.NotaCredito
 
                     int idNotaCredito = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
-                    sql = @"INSERT INTO NotaCreditoDetalle (
+                    sql = @"INSERT INTO T_NotaCreditoDetalle (
                             IdNotaCredito, IdDetalleVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
                             VALUES (@IdNotaCredito, @IdDetalleVenta, @IdProducto, @Sku, @CodigoBarras,
                                     @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
@@ -75,6 +75,17 @@ namespace sbx.repositories.NotaCredito
                         );
                     }
 
+                    sql = @$" UPDATE T_Ventas SET Estado = 'ANULADA', UpdateDate = @UpdateDate, IdUserActionNotaCredito = @IdUserAction WHERE IdVenta = @IdVenta ";
+
+                    var parametrosVenta = new
+                    {
+                        notaCredito.IdVenta,
+                        UpdateDate = FechaActual,
+                        IdUserAction = IdUser
+                    };
+
+                    int FilasAfectadas = await connection.ExecuteAsync(sql, parametrosVenta, transaction);
+
                     await transaction.CommitAsync();
 
                     response.Flag = true;
@@ -86,6 +97,63 @@ namespace sbx.repositories.NotaCredito
                 {
                     await transaction.RollbackAsync();
 
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> List(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                    A.Motivo,
+                                    A.IdVenta,
+									A.IdUserAction AS IdUserActionNotaCredito,
+									CONCAT(A.IdUserAction, '-', C.UserName) AS Usuario,
+                                    B.IdNotaCreditoDetalle,
+                                    B.IdNotaCredito,
+                                    B.IdDetalleVenta,	
+                                    B.IdProducto,
+                                    B.Sku,
+                                    B.CodigoBarras,
+                                    B.NombreProducto,
+                                    B.Cantidad,
+                                    B.UnidadMedida,
+                                    B.PrecioUnitario,
+                                    B.Descuento,
+                                    B.Impuesto,
+                                    B.CreationDate,
+                                    B.IdUserAction AS IdUserActionNotaCreditoDetalle
+                                    FROM T_NotaCredito A 
+                                    INNER JOIN T_NotaCreditoDetalle B ON B.IdNotaCredito = A.IdNotaCredito
+									INNER JOIN T_User C ON C.IdUser = A.IdUserAction ";
+
+                    string Where = "";
+
+                    if (Id > 0)
+                    {
+                        Where = $"WHERE B.IdNotaCredito = {Id}";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
                     return response;

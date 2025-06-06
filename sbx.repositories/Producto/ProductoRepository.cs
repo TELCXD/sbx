@@ -328,7 +328,8 @@ namespace sbx.repositories.Producto
 	                                     dvt.IdProducto,
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
-	                                     FROM T_DetalleVenta dvt
+	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
+										 WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock                                 
                                   FROM T_Productos A

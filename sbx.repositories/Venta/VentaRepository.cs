@@ -32,10 +32,10 @@ namespace sbx.repositories.Venta
                     DateTime FechaActual = DateTime.Now;
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,CreationDate, IdUserAction)
+                    sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
                                   VALUES(@Prefijo,
                                         (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
-                                        @IdCliente,@IdVendedor,@IdMetodoPago,@CreationDate,@IdUserAction);
+                                        @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
                                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                     var parametros = new
@@ -44,6 +44,7 @@ namespace sbx.repositories.Venta
                         ventaEntitie.IdCliente,
                         ventaEntitie.IdVendedor,
                         ventaEntitie.IdMetodoPago,
+                        ventaEntitie.Estado,
                         CreationDate = FechaActual,
                         IdUserAction = IdUser
                     };
@@ -137,6 +138,8 @@ namespace sbx.repositories.Venta
                                     A.CreationDate FechaFactura,
                                     A.IdUserAction IdUserActionFactura,
                                     A.IdVendedor,
+                                    A.Estado,
+                                    ISNULL((SELECT NT.IdNotaCredito FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) IdNotaCredito,
                                     J.NumeroDocumento NumeroDocumentoVendedor,
                                     J.Nombre NombreVendedor,
                                     J.Apellido ApellidoVendedor,
@@ -231,6 +234,8 @@ namespace sbx.repositories.Venta
                                     A.CreationDate FechaFactura,
                                     A.IdUserAction IdUserActionFactura,
                                     A.IdVendedor,
+                                    A.Estado,
+                                    ISNULL((SELECT IdNotaCredito FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) IdNotaCredito,
                                     J.NumeroDocumento NumeroDocumentoVendedor,
                                     J.Nombre NombreVendedor,
                                     J.Apellido ApellidoVendedor,
@@ -451,24 +456,27 @@ namespace sbx.repositories.Venta
                     await connection.OpenAsync();
 
                     string sql = @"SELECT
-                                    IdDetalleVenta,
-                                    IdVenta,
-                                    IdProducto,
-                                    Sku,
-                                    CodigoBarras,
-                                    NombreProducto,
-                                    Cantidad,
-                                    UnidadMedida,
-                                    PrecioUnitario,
-                                    Descuento,
-                                    Impuesto,
-                                    CreationDate,
-                                    IdUserAction 
-                                    FROM T_DetalleVenta
+                                    B.IdDetalleVenta,
+                                    B.IdVenta,
+									A.Estado,
+                                    B.IdProducto,
+                                    B.Sku,
+                                    B.CodigoBarras,
+                                    B.NombreProducto,
+                                    B.Cantidad,
+                                    B.UnidadMedida,
+                                    B.PrecioUnitario,
+                                    B.Descuento,
+                                    B.Impuesto,
+                                    B.CreationDate,
+                                    B.IdUserAction 
+                                    FROM T_Ventas A INNER JOIN T_DetalleVenta B ON B.IdVenta = A.IdVenta 
                                     WHERE 
-                                    IdUserAction = @IdUser 
+                                    A.IdUserAction = @IdUser 
                                     AND 
-                                    CreationDate BETWEEN CONVERT(DATETIME,@FechaApertura,120) AND CONVERT(DATETIME,@FechaActual,120) ";
+									A.Estado = 'FACTURADA' 
+                                    AND 
+                                    A.CreationDate BETWEEN CONVERT(DATETIME,@FechaApertura,120) AND CONVERT(DATETIME,@FechaActual,120) ";
 
                     dynamic resultado = await connection.QueryAsync(sql, new { IdUser , FechaActual, FechaApertura });
 

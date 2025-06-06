@@ -144,6 +144,7 @@ namespace sbx
                             item.FechaFactura,
                             item.IdVenta,
                             item.Factura,
+                            item.Estado,
                             item.IdProducto,
                             item.Sku,
                             item.CodigoBarras,
@@ -263,6 +264,7 @@ namespace sbx
                                     DataFactura.UserNameFactura = DataVenta.Data[0].IdUserActionFactura + " - " + DataVenta.Data[0].UserNameFactura;
                                     DataFactura.NombreCliente = DataVenta.Data[0].NumeroDocumento + " - " + DataVenta.Data[0].NombreRazonSocial;
                                     DataFactura.NombreVendedor = DataVenta.Data[0].NumeroDocumentoVendedor + " - " + DataVenta.Data[0].NombreVendedor;
+                                    DataFactura.Estado = DataVenta.Data[0].Estado;
                                     DataFactura.FormaPago = DataVenta.Data[0].NombreMetodoPago;
                                     DataFactura.Recibido = DataVenta.Data[0].Recibido;
 
