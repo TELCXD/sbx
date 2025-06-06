@@ -76,6 +76,19 @@ namespace sbx
             {
                 if (resp.Data.Count > 0)
                 {
+                    if (resp.Data[0].Estado == "ANULADA") 
+                    {
+                        if (resp.Data[0].IdNotaCredito > 0) 
+                        {
+                            MessageBox.Show($"Factura: {resp.Data[0].Factura} en estado ANULADA con Nota credito: NC-{resp.Data[0].IdNotaCredito} ", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Factura: {resp.Data[0].Factura} en estado ANULADA ", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        return;
+                    }
+
                     dtg_ventas.Rows.Clear();
 
                     txt_busca_factura.Text = resp.Data[0].Factura;
@@ -123,7 +136,7 @@ namespace sbx
                                     item.UnidadMedida,
                                     item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                     Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
-                                    0,
+                                    Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                     Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
                                     Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
                                     TotalLinea.ToString("N2", new CultureInfo("es-CO")));
@@ -136,6 +149,8 @@ namespace sbx
                             lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                             lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                             lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+
+                            chk_marcar_todo.Checked = true;
                         }
                         else
                         {
@@ -211,11 +226,16 @@ namespace sbx
                         if (resp.Flag == true)
                         {
                             MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            this.Close();
                         }
                         else
                         {
                             MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se obtuvo informacion de proceso creacion de nota credito", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }
@@ -371,6 +391,19 @@ namespace sbx
                 }
                 else
                 {
+                    decimal cantidad = Convert.ToDecimal(dtg_ventas[8, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    decimal cantidadDevo = Convert.ToDecimal(dtg_ventas[9, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                    if (cantidadDevo > cantidad)
+                    {
+                        MessageBox.Show("Cantidad a devolver no puede ser mayor a cantidad vendida", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        if (e.ColumnIndex == 9)
+                        {
+                            celda.Value = 0;
+                        }
+                        return;
+                    }
+
                     dtg_ventas[1, e.RowIndex].Value = 1;
                    
                     foreach (DataGridViewRow fila in dtg_ventas.Rows)

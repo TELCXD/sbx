@@ -117,19 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btn_imprimir.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        qAAAAKgBefSzxgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAE8SURBVEhL3da7
-        SsVAEIDhIIgXtNVOxEI8nSD2Cj6Hl0ZQe8U3OPgCYmVvpYJYWFhYaie+j/+fk4V12YQNptGBLyxhZicJ
-        2U2qlhjhAy+FzN1AcRzgcDIsCnOtKQ4L+jYoyr/AG77Qt4E11p57oi1usYriK2oi5FvrHK3xNxss4hQ+
-        f1+3Me4anisR8q11Ds+dYAHVI3zF9gbmHT2gevXwy7jEJ3aScT33EA187s/YT8aDNZjB5mT4YzxYg7b4
-        pw2WkXvtSlgbR7bBNp4aLpwSId/aOLINjLD0p3GE4w7rCPlp1HO72pwkvtUr9G1gTTyHdfeo94szpLds
-        0Szc39O9J7YFc9NH6v5W70W5sEBTcMnHV5ZaQsgvjlAwj2vcdNhF7wbxR38Fax3mYG6vj76/Le/I/aLk
-        mJv5bamqb8KefCAN0WeiAAAAAElFTkSuQmCC
-</value>
-  </data>
   <metadata name="cl_idProducto.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -157,14 +144,4 @@
   <metadata name="cl_total.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="btn_ver_productos.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAH
-        XgAAB14BODEn8gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADkSURBVDhP3dFf
-        SgJRFMfxeQoKimwTarYFfQpdSWTQH3QRKRS1gHQzmj1GvhrkYy2j73fmjIwwzALmBx+Ye+aew+XepJ45
-        wgM+8BdWuIf/KjPAN57QshBp4xn+61soyw2+0MQBptiGSdQc6p5r7GWMBU7TVdb8hsMwg0NMA+8YpSvS
-        xSeO01WWH9iYx29redxrj71JLxZVA7y84oAT7AYYj7OExzMe12M7xOY5HmHO4Kv4UnsZYg1v3AtzSH6J
-        Nls7h3uuUBqfyKd6QcdC5AKv2ODSQlU89h286d/g9y2K91KPJMk/8zEs4ic9nmEAAAAASUVORK5CYII=
-</value>
-  </data>
 </root>

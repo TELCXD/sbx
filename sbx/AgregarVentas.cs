@@ -60,6 +60,7 @@ namespace sbx
         private AddApertura _AddApertura;
         private bool CajaAperturada = false;
         private AgregarNotaCredito? _AgregarNotaCredito;
+        private AddPagosEfectivo? _AddPagosEfectivo;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
@@ -163,6 +164,7 @@ namespace sbx
                             btn_nuevo_cliente.Enabled = item.ToCreate == 1 ? true : false;
                             txt_valor_pago.Enabled = item.ToCreate == 1 ? true : false;
                             btn_completar_venta.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_pagos_en_efectivo.Enabled = item.ToCreate == 1 ? true : false;
                             break;
                         case "notaCredito":
                             btn_devolucion.Enabled = item.ToCreate == 1 ? true : false;
@@ -930,6 +932,11 @@ namespace sbx
                 }
                 else
                 {
+                    if (e.ColumnIndex == 5 && Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) <= 0)
+                    {
+                        celda.Value = 1;
+                    }
+
                     decimal precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
                     decimal cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
                     decimal desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
@@ -1103,6 +1110,7 @@ namespace sbx
                     venta.IdCliente = agregaVentaEntitie.IdCliente;
                     venta.IdVendedor = Convert.ToInt32(cbx_vendedor.SelectedValue);
                     venta.IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue);
+                    venta.Estado = "FACTURADA";
                     var resp = await _IRangoNumeracion.List(0);
                     if (resp.Data != null)
                     {
@@ -1446,6 +1454,61 @@ namespace sbx
                 _AgregarNotaCredito.Permisos = _Permisos;
                 _AgregarNotaCredito.FormClosed += (s, args) => _AgregarNotaCredito = null;
                 _AgregarNotaCredito.ShowDialog();
+            }
+        }
+
+        private async void btn_pagos_en_efectivo_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                CajaAperturada = false;
+                var estadoCaja = await _ICaja.EstadoCaja(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                if (estadoCaja.Data != null)
+                {
+                    if (estadoCaja.Data.Count > 0)
+                    {
+                        if (estadoCaja.Data[0].Estado == "CERRADA")
+                        {
+                            if (_Permisos != null)
+                            {
+                                _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
+                                _AddApertura.Permisos = _Permisos;
+                                _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
+                                _AddApertura.FormClosed += (s, args) => _AddApertura = null;
+                                _AddApertura.ShowDialog();
+                            }
+                        }
+                        else if (estadoCaja.Data[0].Estado == "ABIERTA")
+                        {
+                            CajaAperturada = true;
+                        }
+                    }
+                    else
+                    {
+                        if (_Permisos != null)
+                        {
+                            _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
+                            _AddApertura.Permisos = _Permisos;
+                            _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
+                            _AddApertura.FormClosed += (s, args) => _AddApertura = null;
+                            _AddApertura.ShowDialog();
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"No se logro obtener informacion de estado de caja", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    CajaAperturada = false;
+                }
+
+                if (CajaAperturada)
+                {
+                    _AddPagosEfectivo = _serviceProvider.GetRequiredService<AddPagosEfectivo>();
+                    _AddPagosEfectivo.Permisos = _Permisos;
+                    _AddPagosEfectivo.Id_Pago = 0;
+                    _AddPagosEfectivo.FormClosed += (s, args) => _AddPagosEfectivo = null;
+                    _AddPagosEfectivo.ShowDialog();
+                } 
             }
         }
     }

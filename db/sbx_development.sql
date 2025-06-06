@@ -601,12 +601,16 @@ Consecutivo BIGINT,
 IdCliente INT,
 IdVendedor INT,
 IdMetodoPago INT,
+Estado VARCHAR(100), --FACTURADA, --ANULADA
 CreationDate DATETIME,
+UpdateDate DATETIME,
 IdUserAction INT,
+IdUserActionNotaCredito INT,
 FOREIGN KEY (IdCliente) REFERENCES T_Cliente(IdCliente),
 FOREIGN KEY (IdVendedor) REFERENCES T_Vendedor(IdVendedor),
 FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
-FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
+FOREIGN KEY(IdUserActionNotaCredito) REFERENCES T_User(IdUser)
 )
 GO
 CREATE TABLE T_DetalleVenta(
@@ -666,6 +670,7 @@ MontoInicialDeclarado DECIMAL(10,2) NOT NULL,
 FechaHoraCierre DATETIME NULL,
 MontoFinalDeclarado DECIMAL(10,2) NULL,
 VentasTotales DECIMAL(10,2) NULL,
+PagosEnEfectivo  DECIMAL(10,2) NULL,
 Diferencia DECIMAL(10,2) NULL,
 Estado VARCHAR(20) NOT NULL, -- ABIERTA, CERRADA
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
@@ -680,7 +685,7 @@ IdUserAction INT,
 FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
 )
 GO
-CREATE TABLE NotaCreditoDetalle (
+CREATE TABLE T_NotaCreditoDetalle (
 IdNotaCreditoDetalle INT PRIMARY KEY IDENTITY,
 IdNotaCredito INT,
 IdDetalleVenta INT,	
@@ -699,4 +704,14 @@ FOREIGN KEY (IdNotaCredito) REFERENCES T_NotaCredito(IdNotaCredito),
 FOREIGN KEY (IdDetalleVenta) REFERENCES T_DetalleVenta(IdDetalleVenta),
 FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)
+GO
+CREATE TABLE T_Pagos (
+IdPago INT PRIMARY KEY IDENTITY,
+ValorPago DECIMAL(10,2),
+Descripcion VARCHAR(100),
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
 )

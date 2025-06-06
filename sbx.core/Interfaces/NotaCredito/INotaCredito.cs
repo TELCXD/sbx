@@ -6,5 +6,6 @@ namespace sbx.core.Interfaces.NotaCredito
     public interface INotaCredito
     {
         Task<Response<dynamic>> Create(NotaCreditoEntitie notaCreditoEntitie, int IdUser);
+        Task<Response<dynamic>> List(int Id);
     }
 }

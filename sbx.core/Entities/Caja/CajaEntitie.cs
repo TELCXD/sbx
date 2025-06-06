@@ -10,6 +10,7 @@ namespace sbx.core.Entities.Caja
         public DateTime FechaHoraCierre { get; set; }
         public decimal MontoFinalDeclarado { get; set; }
         public decimal VentasTotales { get; set; }
+        public decimal PagosEnEfectivo { get; set; }
         public decimal Diferencia { get; set; }
         public string Estado { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using sbx.core.Entities.Caja;
 using sbx.core.Interfaces.Caja;
+using sbx.core.Interfaces.Pago;
 using sbx.core.Interfaces.Venta;
 using System.Globalization;
 
@@ -12,13 +13,15 @@ namespace sbx
         private dynamic? _Permisos;
         private readonly IServiceProvider _serviceProvider;
         private readonly IVenta _IVenta;
+        private readonly IPagosEfectivo _IPagosEfectivo;
 
-        public AddCierre(ICaja caja, IServiceProvider serviceProvider, IVenta venta)
+        public AddCierre(ICaja caja, IServiceProvider serviceProvider, IVenta venta, IPagosEfectivo pagosEfectivo)
         {
             InitializeComponent();
             _ICaja = caja;
             _serviceProvider = serviceProvider;
             _IVenta = venta;
+            _IPagosEfectivo = pagosEfectivo;
         }
 
         public dynamic? Permisos
@@ -114,7 +117,24 @@ namespace sbx
 
                                     MontoInicial = Convert.ToDecimal(estadoCaja.Data[0].MontoInicialDeclarado, new CultureInfo("es-CO"));
                                     Total += (Subtotal - Descuento) + Impuesto;
+
+                                    decimal Valorpagos = 0;
+
+                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                    if (respPagosEfectivo.Data != null)
+                                    {
+                                        if (respPagosEfectivo.Data.Count > 0)
+                                        {
+                                            foreach (var pago in respPagosEfectivo.Data)
+                                            {
+                                                Valorpagos += Convert.ToDecimal(pago.ValorPago);
+                                            }                                          
+                                        }
+                                    }
+
                                     diferencia = (Total + MontoInicial) - Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO"));
+
+                                    diferencia = diferencia - Valorpagos;
 
                                     Cierre = new CajaEntitie
                                     {
@@ -122,6 +142,7 @@ namespace sbx
                                         MontoFinalDeclarado = Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")),
                                         IdUserAction = Convert.ToInt32(_Permisos?[0]?.IdUser),
                                         VentasTotales = Total,
+                                        PagosEnEfectivo = Valorpagos,
                                         Diferencia = diferencia,
                                         Estado = "CERRADA"
                                     };
@@ -130,13 +151,28 @@ namespace sbx
                                 {
                                     MontoInicial = Convert.ToDecimal(estadoCaja.Data[0].MontoInicialDeclarado, new CultureInfo("es-CO"));
 
+                                    decimal Valorpagos = 0;
+
+                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                    if (respPagosEfectivo.Data != null)
+                                    {
+                                        if (respPagosEfectivo.Data.Count > 0)
+                                        {
+                                            foreach (var pago in respPagosEfectivo.Data)
+                                            {
+                                                Valorpagos += Convert.ToDecimal(pago.ValorPago);
+                                            }
+                                        }
+                                    }
+
                                     Cierre = new CajaEntitie
                                     {
                                         IdApertura_Cierre_caja = Convert.ToInt32(estadoCaja.Data[0].IdApertura_Cierre_caja),
                                         MontoFinalDeclarado = Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")),
                                         IdUserAction = Convert.ToInt32(_Permisos?[0]?.IdUser),
                                         VentasTotales = 0,
-                                        Diferencia = MontoInicial - Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")),
+                                        PagosEnEfectivo = Valorpagos,
+                                        Diferencia = MontoInicial - Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")) - Valorpagos,
                                         Estado = "CERRADA"
                                     };
                                 }

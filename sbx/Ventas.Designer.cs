@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ventas));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             panel1 = new Panel();
             dtp_fecha_fin = new DateTimePicker();
             dtp_fecha_inicio = new DateTimePicker();
@@ -60,6 +60,7 @@
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_id_venta = new DataGridViewTextBoxColumn();
             cl_factura = new DataGridViewTextBoxColumn();
+            cl_estado = new DataGridViewTextBoxColumn();
             cl_idProducto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
@@ -72,6 +73,7 @@
             cl_documento_cliente = new DataGridViewTextBoxColumn();
             cl_nombre_cliente = new DataGridViewTextBoxColumn();
             cl_usuario = new DataGridViewTextBoxColumn();
+            panel3 = new Panel();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             panel2.SuspendLayout();
@@ -187,7 +189,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1172, 9);
+            btn_buscar.Location = new Point(1172, 8);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(42, 45);
             btn_buscar.TabIndex = 36;
@@ -221,6 +223,7 @@
             panel2.Controls.Add(label6);
             panel2.Controls.Add(lbl_cantidadProductos);
             panel2.Controls.Add(label4);
+            panel2.Controls.Add(panel3);
             panel2.Dock = DockStyle.Bottom;
             panel2.Location = new Point(0, 402);
             panel2.Name = "panel2";
@@ -358,36 +361,36 @@
             dtg_ventas.AllowUserToDeleteRows = false;
             dtg_ventas.AllowUserToOrderColumns = true;
             dtg_ventas.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = SystemColors.Control;
+            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle2;
+            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_estado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario });
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = SystemColors.Window;
+            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
+            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle8;
             dtg_ventas.Dock = DockStyle.Fill;
             dtg_ventas.Location = new Point(0, 58);
             dtg_ventas.Name = "dtg_ventas";
             dtg_ventas.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = SystemColors.Control;
+            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_ventas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_ventas.Size = new Size(1223, 344);
             dtg_ventas.TabIndex = 5;
@@ -411,6 +414,12 @@
             cl_factura.HeaderText = "Factura";
             cl_factura.Name = "cl_factura";
             cl_factura.ReadOnly = true;
+            // 
+            // cl_estado
+            // 
+            cl_estado.HeaderText = "Estado";
+            cl_estado.Name = "cl_estado";
+            cl_estado.ReadOnly = true;
             // 
             // cl_idProducto
             // 
@@ -488,6 +497,14 @@
             cl_usuario.Name = "cl_usuario";
             cl_usuario.ReadOnly = true;
             // 
+            // panel3
+            // 
+            panel3.BorderStyle = BorderStyle.FixedSingle;
+            panel3.Location = new Point(802, 3);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(414, 160);
+            panel3.TabIndex = 174;
+            // 
             // Ventas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -550,5 +567,7 @@
         private DataGridViewTextBoxColumn cl_usuario;
         private DateTimePicker dtp_fecha_inicio;
         private DateTimePicker dtp_fecha_fin;
+        private DataGridViewTextBoxColumn cl_estado;
+        private Panel panel3;
     }
 }

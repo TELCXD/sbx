@@ -96,9 +96,13 @@ namespace sbx
                         { TotalStock -= item.Cantidad; }
                         else if (item.TipoMovimiento == "Salida por Venta")
                         { TotalStock -= item.Cantidad; }
+                        else if (item.TipoMovimiento == "Entrada por Nota credito")
+                        { TotalStock += item.Cantidad; }
 
                         dtg_inventario.Rows.Add(
                             item.Fecha,
+                            item.Usuario,
+                            item.Documento,
                             item.TipoMovimiento,
                             item.Cantidad,
                             item.Tipo,

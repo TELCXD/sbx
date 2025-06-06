@@ -136,7 +136,7 @@
   <data name="btn_cierre.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        qgAAAKoBBgpwTwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGgSURBVEhLvdU5
+        qQAAAKkBq7NRIgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGgSURBVEhLvdU5
         LERBHMfxIREkzoKEgoRIKBCdiM4RFCJCQU1PEJWaUudoXIWoFCpRORoE0RNnaIRCq/D9zctuxjuS3exb
         v+QjM8/u/Hfn/Xee+Y/kogejMeuG1jbbOMFazI6xCfOFfBRiBvMxmIbW/IQtoDTjAWFvSNc7amDX1p8C
         7ED/GEemucWfApo8YgEHiEo5GlBqZ9EJLaCLnQgr0AE1wjMu8IojtCEsgQJV+MYl9uFmGHdQ2ylNyMEg
@@ -182,6 +182,9 @@
     <value>True</value>
   </metadata>
   <metadata name="cl_ventasTotales.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="cl_pago_en_efectivo.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="cl_diferencia.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

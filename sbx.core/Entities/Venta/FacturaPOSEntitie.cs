@@ -18,6 +18,7 @@ namespace sbx.core.Entities.Venta
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
+        public string Estado { get; set; }
         public string FormaPago { get; set; } = "EFECTIVO";
         public decimal Recibido { get; set; }
         public decimal Cambio { get; set; }
