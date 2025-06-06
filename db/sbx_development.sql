@@ -53,7 +53,10 @@ IdCountry INT NOT NULL,
 FOREIGN KEY(IdCountry) REFERENCES T_Country(IdCountry)
 )
 GO
-INSERT INTO T_Departament (Code, DepartmentName,IdCountry) VALUES(76,'VALLE DEL CAUCA',1)
+INSERT INTO T_Departament (Code, DepartmentName,IdCountry) 
+VALUES
+	(76,'VALLE DEL CAUCA',1),
+	(41,'HUILA',1)
 GO
 CREATE TABLE T_City(
 IdCity INT IDENTITY(1,1) PRIMARY KEY,
@@ -63,7 +66,11 @@ IdDepartment INT NOT NULL,
 FOREIGN KEY(IdDepartment) REFERENCES T_Departament(IdDepartament)
 )
 GO
-INSERT INTO T_City (Code, CityName,IdDepartment) VALUES(76001,'CALI',1)
+INSERT INTO T_City (Code, CityName,IdDepartment) 
+VALUES
+	(76001,'CALI',1),
+	(41551,'PITALITO',1),
+	(76130,'CANDELARIA',1)
 GO
 CREATE TABLE T_User
 (
@@ -94,7 +101,9 @@ FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
 INSERT INTO T_User (IdIdentificationType,IdentificationNumber,Name,LastName,BirthDate,IdCountry,IdDepartament,IdCity,TelephoneNumber,Email,IdRole,UserName,Password,CreationDate,Active)
-VALUES(1,'1113528027','Ruben','Cordoba','1993-05-07',1,1,1,'3137450103','ruben0793@hotmail.com',1,'Ruben','$argon2id$v=19$m=65536,t=3,p=1$r1zN0nle0xnH8cGWgGWMqw$R37Ws1t8521Tj9AXjFY593sBQsmsuVZ6KFScE1ueFeY',GETDATE(),1)
+VALUES
+(1,'1113528027','Ruben','Cordoba','1993-05-07',1,1,1,'3137450103','ruben0793@hotmail.com',1,'Ruben','$argon2id$v=19$m=65536,t=3,p=1$r1zN0nle0xnH8cGWgGWMqw$R37Ws1t8521Tj9AXjFY593sBQsmsuVZ6KFScE1ueFeY',GETDATE(),1),
+(1,'111','Admin','Admin','1993-05-07',1,1,1,'0','',1,'admin','$argon2id$v=19$m=65536,t=3,p=1$dcutl4S74zG2Qnhjj6vdUQ$jljJ67rhubEv1oWa02Dio9pj97sz8qen+ZUGcH/QiyM',GETDATE(),1)
 GO
 CREATE TABLE T_Menu
 (
@@ -140,8 +149,13 @@ VALUES(1,1,1,1,1,1,1,GETDATE(),1), (2,1,1,1,1,1,1,GETDATE(),1), (3,1,1,1,1,1,1,G
 (5,1,1,1,1,1,1,GETDATE(),1), (6,1,1,1,1,1,1,GETDATE(),1), (7,1,1,1,1,1,1,GETDATE(),1),
 (8,1,1,1,1,1,1,GETDATE(),1), (9,1,1,1,1,1,1,GETDATE(),1), (10,1,1,1,1,1,1,GETDATE(),1), (11,1,1,1,1,1,1,GETDATE(),1), 
 (12,1,1,1,1,1,1,GETDATE(),1), (13,1,1,1,1,1,1,GETDATE(),1), (14,1,1,1,1,1,1,GETDATE(),1), (15,1,1,1,1,1,1,GETDATE(),1),
-(16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1), (18,1,1,1,1,1,1,GETDATE(),1), (19,1,1,1,1,1,1,GETDATE(),1)
---,(2,2,1,1,1,0,1,GETDATE(),1),(7,2,1,1,1,0,1,GETDATE(),1)
+(16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1), (18,1,1,1,1,1,1,GETDATE(),1), (19,1,1,1,1,1,1,GETDATE(),1),
+
+(1,2,1,1,1,1,1,GETDATE(),1), (2,2,1,1,1,1,1,GETDATE(),1), (3,2,1,1,1,1,1,GETDATE(),1), (4,2,1,1,1,1,1,GETDATE(),1), 
+(5,2,1,1,1,1,1,GETDATE(),1), (6,2,1,1,1,1,1,GETDATE(),1), (7,2,1,1,1,1,1,GETDATE(),1),
+(8,2,1,1,1,1,1,GETDATE(),1), (9,2,1,1,1,1,1,GETDATE(),1), (10,2,1,1,1,1,1,GETDATE(),1), (11,2,1,1,1,1,1,GETDATE(),1), 
+(12,2,1,1,1,1,1,GETDATE(),1), (13,2,1,1,1,1,1,GETDATE(),1), (14,2,1,1,1,1,1,GETDATE(),1), (15,2,1,1,1,1,1,GETDATE(),1),
+(16,2,1,1,1,1,1,GETDATE(),1), (17,2,1,1,1,1,1,GETDATE(),1), (18,2,1,1,1,1,1,GETDATE(),1), (19,2,1,1,1,1,1,GETDATE(),1)
 GO
 CREATE TABLE T_TipoResponsabilidad(
 IdTipoResponsabilidad INT PRIMARY KEY,

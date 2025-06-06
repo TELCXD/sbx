@@ -98,19 +98,28 @@ namespace sbx.repositories.Pagos
             }
         }
 
-        public async Task<Response<dynamic>> List(int IdUser)
+        public async Task<Response<dynamic>> List(int IdUser, DateTime FechaHoraApertura)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 var response = new Response<dynamic>();
 
+                DateTime FechaActual = DateTime.Now;
+                FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                DateTime FechaApertura = FechaHoraApertura;
+                FechaApertura = Convert.ToDateTime(FechaApertura.ToString("yyyy-MM-dd HH:mm:ss"));
+
                 try
                 {
                     await connection.OpenAsync();
 
-                    string sql = $"SELECT IdPago, ValorPago, Descripcion, CreationDate, UpdateDate, IdUserAction FROM T_Pagos WHERE IdUserAction = {IdUser} ";
+                    string sql = $@"SELECT IdPago, ValorPago, Descripcion, CreationDate, UpdateDate, IdUserAction FROM T_Pagos 
+                                    WHERE IdUserAction = {IdUser}
+                                    AND 
+                                    CreationDate BETWEEN CONVERT(DATETIME,@FechaApertura,120) AND CONVERT(DATETIME,@FechaActual,120) ";
 
-                    dynamic resultado = await connection.QueryAsync(sql);
+                    dynamic resultado = await connection.QueryAsync(sql, new { FechaApertura, FechaActual });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

@@ -5,7 +5,7 @@ namespace sbx.core.Interfaces.Pago
 {
     public interface IPagosEfectivo
     {
-        Task<Response<dynamic>> List(int IdUser);
+        Task<Response<dynamic>> List(int IdUser, DateTime FechaHoraApertura);
         Task<Response<dynamic>> CreateUpdate(PagosEfectivoEntitie pagosEfectivoEntitie, int IdUser);
     }
 }

@@ -120,7 +120,7 @@ namespace sbx
 
                                     decimal Valorpagos = 0;
 
-                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser), Convert.ToDateTime(estadoCaja.Data[0].FechaHoraApertura));
                                     if (respPagosEfectivo.Data != null)
                                     {
                                         if (respPagosEfectivo.Data.Count > 0)
@@ -153,7 +153,7 @@ namespace sbx
 
                                     decimal Valorpagos = 0;
 
-                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser), Convert.ToDateTime(estadoCaja.Data[0].FechaHoraApertura));
                                     if (respPagosEfectivo.Data != null)
                                     {
                                         if (respPagosEfectivo.Data.Count > 0)
