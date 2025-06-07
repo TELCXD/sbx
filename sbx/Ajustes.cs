@@ -177,6 +177,9 @@ namespace sbx
                             case "Preguntar imprimir factura en venta":
                                 cbx_pregunta_imprimir_venta.Text = item.Value;
                                 break;
+                            case "Buscar en venta por":
+                                cbx_Buscarenventapor.Text = item.Value;
+                                break;
                             case "Ancho tirilla":
                                 txt_ancho_tirilla.Text = item.Value;
                                 break;
@@ -198,7 +201,7 @@ namespace sbx
         {
             List<ParametrosEntitie> ListParametros = new List<ParametrosEntitie>();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i <= 5; i++)
             {
                 switch (i)
                 {
@@ -223,13 +226,22 @@ namespace sbx
                     case 2:
                         Parametros = new ParametrosEntitie
                         {
+                            Nombre = "Buscar en venta por",
+                            Value = cbx_Buscarenventapor.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 3:
+                        Parametros = new ParametrosEntitie
+                        {
                             Nombre = "Ancho tirilla",
                             Value = txt_ancho_tirilla.Text
                         };
 
                         ListParametros.Add(Parametros);
                         break;
-                    case 3:
+                    case 4:
                         Parametros = new ParametrosEntitie
                         {
                             Nombre = "Impresora",
@@ -238,7 +250,7 @@ namespace sbx
 
                         ListParametros.Add(Parametros);
                         break;
-                    case 4:
+                    case 5:
                         Parametros = new ParametrosEntitie
                         {
                             Nombre = "Ruta backup",

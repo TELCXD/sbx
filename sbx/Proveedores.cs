@@ -1,9 +1,5 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
-using sbx.core.Interfaces.Producto;
+﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.Proveedor;
-using System.Globalization;
-using System.Windows.Forms;
 
 namespace sbx
 {

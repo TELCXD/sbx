@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.Backup;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Tienda;
 
 namespace sbx
@@ -17,12 +19,17 @@ namespace sbx
         private AgregarVentas? _AgregarVentas;
         private Caja? _Caja;
         private Login? _Login;
+        private readonly IParametros _IParametros;
+        private readonly IBackup _IBackup;
+        private Reportes? _Reportes;
 
-        public Inicio(IServiceProvider serviceProvider, ITienda iTienda)
+        public Inicio(IServiceProvider serviceProvider, ITienda iTienda, IParametros iParametros, IBackup backup)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _ITienda = iTienda;
+            _IParametros = iParametros;
+            _IBackup = backup;
         }
 
         public dynamic? Permisos
@@ -55,7 +62,7 @@ namespace sbx
         {
             if (_Permisos != null)
             {
-                if (_Permisos.Count > 0) 
+                if (_Permisos.Count > 0)
                 {
                     lbl_usuario.Text += _Permisos[0].IdUser + " - " + _Permisos[0].UserName;
 
@@ -149,7 +156,7 @@ namespace sbx
             _Productos.Show();
         }
 
-        private void Inicio_FormClosing(object sender, FormClosingEventArgs e)
+        private async void Inicio_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult result = MessageBox.Show("¿Está seguro que desea salir?",
                         "Confirmar",
@@ -157,6 +164,30 @@ namespace sbx
                         MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
+
+                var DataParametros = await _IParametros.List("Ruta backup");
+
+                if (DataParametros.Data != null)
+                {
+                    if (DataParametros.Data.Count > 0)
+                    {
+                        string Ruta_backup = DataParametros.Data[0].Value;
+                        string NombreCopiaSeguridad = DateTime.Today.Year.ToString() + "-" + DateTime.Today.Month.ToString() + "-" + DateTime.Today.Day.ToString() + "-" + DateTime.Now.Hour + "-" + DateTime.Now.Minute + "-" + DateTime.Now.Second + " sbx_development.bak";
+                        var resp = await _IBackup.Create(Ruta_backup, NombreCopiaSeguridad);
+                        if (resp != null)
+                        {
+                            if (resp.Flag == true)
+                            {
+                                MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                }
+
                 _Login = _serviceProvider.GetRequiredService<Login>();
                 _Login.FormClosed += (s, args) => _Login = null;
                 _Login.Show();
@@ -165,7 +196,7 @@ namespace sbx
             else
             {
                 e.Cancel = true;
-            }    
+            }
         }
 
         private void btn_proveedor_Click(object sender, EventArgs e)
@@ -271,6 +302,13 @@ namespace sbx
             {
                 MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void btn_reportes_Click(object sender, EventArgs e)
+        {
+            _Reportes = _serviceProvider.GetRequiredService<Reportes>();
+            _Reportes.FormClosed += (s, args) => _Caja = null;
+            _Reportes.Show();
         }
     }
 }

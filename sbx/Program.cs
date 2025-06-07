@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using sbx.core.Interfaces;
 using sbx.core.Interfaces.ActividadEconomica;
+using sbx.core.Interfaces.Backup;
 using sbx.core.Interfaces.Banco;
 using sbx.core.Interfaces.Caja;
 using sbx.core.Interfaces.Categoria;
@@ -42,6 +43,7 @@ using sbx.core.Interfaces.Usuario;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
 using sbx.repositories.ActividadEconomica;
+using sbx.repositories.Backup;
 using sbx.repositories.Banco;
 using sbx.repositories.Caja;
 using sbx.repositories.Categorias;
@@ -182,6 +184,8 @@ namespace sbx
 
                 services.AddTransient<AddPagosEfectivo>();
 
+                services.AddTransient<Reportes>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -295,6 +299,9 @@ namespace sbx
 
                 services.AddTransient<IPagosEfectivo>(provider =>
                 new PagosRepository(connectionString));
+
+                services.AddTransient<IBackup>(provider =>
+                new BackupRepository(connectionString));
             })
             .Build();
 
