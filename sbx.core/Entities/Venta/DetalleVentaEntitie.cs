@@ -14,5 +14,6 @@ namespace sbx.core.Entities.Venta
         public decimal PrecioUnitario { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
+        public decimal CostoUnitario { get; set; }
     }
 }

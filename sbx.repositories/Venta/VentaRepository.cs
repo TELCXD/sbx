@@ -52,9 +52,9 @@ namespace sbx.repositories.Venta
                     int idVenta = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_DetalleVenta (
-                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
                             VALUES (@IdVenta, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in ventaEntitie.detalleVentas)
                     {
@@ -70,6 +70,7 @@ namespace sbx.repositories.Venta
                                 detalle.Cantidad,
                                 detalle.UnidadMedida,
                                 detalle.PrecioUnitario,
+                                detalle.CostoUnitario,
                                 detalle.Descuento,
                                 detalle.Impuesto,
                                 CreationDate = FechaActual,
@@ -152,6 +153,7 @@ namespace sbx.repositories.Venta
                                     B.UnidadMedida,
                                     B.NombreProducto,
                                     B.PrecioUnitario,
+                                    B.CostoUnitario,
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
@@ -246,6 +248,7 @@ namespace sbx.repositories.Venta
                                     B.CodigoBarras,
                                     B.NombreProducto,
                                     B.PrecioUnitario,
+                                    B.CostoUnitario,
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
@@ -466,6 +469,7 @@ namespace sbx.repositories.Venta
                                     B.Cantidad,
                                     B.UnidadMedida,
                                     B.PrecioUnitario,
+                                    B.CostoUnitario,
                                     B.Descuento,
                                     B.Impuesto,
                                     B.CreationDate,

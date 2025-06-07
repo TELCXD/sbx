@@ -42,6 +42,7 @@
             lbl_usuario = new Label();
             pictureBox1 = new PictureBox();
             panel3 = new Panel();
+            btn_reportes = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -52,6 +53,7 @@
             // 
             panel1.BackColor = Color.Transparent;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_reportes);
             panel1.Controls.Add(btn_caja);
             panel1.Controls.Add(btn_inventario);
             panel1.Controls.Add(btn_ajustes);
@@ -276,6 +278,27 @@
             panel3.Size = new Size(815, 170);
             panel3.TabIndex = 3;
             // 
+            // btn_reportes
+            // 
+            btn_reportes.BackColor = Color.Transparent;
+            btn_reportes.Dock = DockStyle.Left;
+            btn_reportes.FlatAppearance.BorderSize = 0;
+            btn_reportes.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_reportes.FlatStyle = FlatStyle.Flat;
+            btn_reportes.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_reportes.ForeColor = SystemColors.ControlText;
+            btn_reportes.Image = (Image)resources.GetObject("btn_reportes.Image");
+            btn_reportes.Location = new Point(672, 0);
+            btn_reportes.Name = "btn_reportes";
+            btn_reportes.Size = new Size(84, 62);
+            btn_reportes.TabIndex = 8;
+            btn_reportes.Text = "Reportes";
+            btn_reportes.TextAlign = ContentAlignment.BottomCenter;
+            btn_reportes.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_reportes.UseVisualStyleBackColor = false;
+            btn_reportes.Visible = false;
+            btn_reportes.Click += btn_reportes_Click;
+            // 
             // Inicio
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -313,5 +336,6 @@
         private Button btn_ajustes;
         private Button btn_inventario;
         private Button btn_caja;
+        private Button btn_reportes;
     }
 }

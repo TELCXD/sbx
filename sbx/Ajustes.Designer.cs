@@ -40,6 +40,8 @@
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
+            cbx_Buscarenventapor = new ComboBox();
+            label6 = new Label();
             txt_ruta_backup = new TextBox();
             txt_impresora = new TextBox();
             txt_ancho_tirilla = new TextBox();
@@ -134,6 +136,8 @@
             // 
             // TabParametros
             // 
+            TabParametros.Controls.Add(cbx_Buscarenventapor);
+            TabParametros.Controls.Add(label6);
             TabParametros.Controls.Add(txt_ruta_backup);
             TabParametros.Controls.Add(txt_impresora);
             TabParametros.Controls.Add(txt_ancho_tirilla);
@@ -153,16 +157,36 @@
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
             // 
+            // cbx_Buscarenventapor
+            // 
+            cbx_Buscarenventapor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_Buscarenventapor.FormattingEnabled = true;
+            cbx_Buscarenventapor.Items.AddRange(new object[] { "Id", "Sku", "Codigo barras" });
+            cbx_Buscarenventapor.Location = new Point(253, 128);
+            cbx_Buscarenventapor.Name = "cbx_Buscarenventapor";
+            cbx_Buscarenventapor.Size = new Size(121, 25);
+            cbx_Buscarenventapor.TabIndex = 13;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(8, 133);
+            label6.Name = "label6";
+            label6.Size = new Size(137, 17);
+            label6.TabIndex = 12;
+            label6.Text = "Buscar en venta por";
+            // 
             // txt_ruta_backup
             // 
-            txt_ruta_backup.Location = new Point(253, 188);
+            txt_ruta_backup.Enabled = false;
+            txt_ruta_backup.Location = new Point(253, 217);
             txt_ruta_backup.Name = "txt_ruta_backup";
             txt_ruta_backup.Size = new Size(223, 23);
             txt_ruta_backup.TabIndex = 11;
             // 
             // txt_impresora
             // 
-            txt_impresora.Location = new Point(253, 159);
+            txt_impresora.Location = new Point(253, 188);
             txt_impresora.Name = "txt_impresora";
             txt_impresora.Size = new Size(223, 23);
             txt_impresora.TabIndex = 10;
@@ -170,7 +194,7 @@
             // txt_ancho_tirilla
             // 
             txt_ancho_tirilla.Enabled = false;
-            txt_ancho_tirilla.Location = new Point(253, 130);
+            txt_ancho_tirilla.Location = new Point(253, 159);
             txt_ancho_tirilla.Name = "txt_ancho_tirilla";
             txt_ancho_tirilla.Size = new Size(223, 23);
             txt_ancho_tirilla.TabIndex = 9;
@@ -199,7 +223,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(8, 194);
+            label4.Location = new Point(8, 223);
             label4.Name = "label4";
             label4.Size = new Size(92, 17);
             label4.TabIndex = 6;
@@ -208,7 +232,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(8, 165);
+            label3.Location = new Point(8, 194);
             label3.Name = "label3";
             label3.Size = new Size(72, 17);
             label3.TabIndex = 5;
@@ -217,7 +241,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(8, 136);
+            label2.Location = new Point(8, 165);
             label2.Name = "label2";
             label2.Size = new Size(84, 17);
             label2.TabIndex = 4;
@@ -782,10 +806,10 @@
             // 
             tabPage5.Controls.Add(dtg_permisos);
             tabPage5.Controls.Add(panel4);
-            tabPage5.Location = new Point(4, 26);
+            tabPage5.Location = new Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(849, 486);
+            tabPage5.Size = new Size(849, 488);
             tabPage5.TabIndex = 2;
             tabPage5.Text = "Permisos";
             tabPage5.UseVisualStyleBackColor = true;
@@ -826,7 +850,7 @@
             dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
             dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_permisos.Size = new Size(843, 425);
+            dtg_permisos.Size = new Size(843, 427);
             dtg_permisos.TabIndex = 140;
             // 
             // cl_idUserMenu
@@ -1062,5 +1086,8 @@
         private DataGridViewCheckBoxColumn cl_toUpdate;
         private DataGridViewCheckBoxColumn cl_toDelete;
         private DataGridViewTextBoxColumn cl_estado;
+        private ComboBox comboBox1;
+        private Label label6;
+        private ComboBox cbx_Buscarenventapor;
     }
 }

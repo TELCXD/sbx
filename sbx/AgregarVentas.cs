@@ -138,9 +138,18 @@ namespace sbx
             cbx_banco.DisplayMember = "Nombre";
             cbx_banco.SelectedIndex = 0;
 
-            cbx_busca_por.SelectedIndex = 0;
-
             pnl_pagos.Enabled = false;
+
+            var DataParametros = await _IParametros.List("Buscar en venta por");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    string BuscarPor = DataParametros.Data[0].Value;
+                    cbx_busca_por.Text = BuscarPor;
+                }
+            }
         }
 
         private void ValidaPermisos()
@@ -684,7 +693,8 @@ namespace sbx
                              0,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].NombreUnidadMedida
+                             DataProducto.Data[0].NombreUnidadMedida,
+                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                             );
 
                         Continuar = false;
@@ -714,7 +724,8 @@ namespace sbx
                              0,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].NombreUnidadMedida
+                             DataProducto.Data[0].NombreUnidadMedida,
+                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                             );
 
                         Continuar = false;
@@ -741,7 +752,8 @@ namespace sbx
                              resp3.Data[0].Porcentaje,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].NombreUnidadMedida
+                             DataProducto.Data[0].NombreUnidadMedida,
+                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                             );
 
                         Continuar = false;
@@ -763,7 +775,8 @@ namespace sbx
                      0,
                      DataProducto.Data[0].Iva,
                      Total.ToString("N2", new CultureInfo("es-CO")),
-                     DataProducto.Data[0].NombreUnidadMedida
+                     DataProducto.Data[0].NombreUnidadMedida,
+                     DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                     );
 
                 Continuar = false;
@@ -1139,7 +1152,8 @@ namespace sbx
                                     Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
                                     PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
                                     Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"))
+                                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")),
+                                    CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
                                 };
 
                                 detalleVentas.Add(Detalle);

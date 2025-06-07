@@ -637,6 +637,7 @@ NombreProducto VARCHAR(100) NOT NULL,
 Cantidad DECIMAL(10,2) NOT NULL,
 UnidadMedida VARCHAR(50),
 PrecioUnitario DECIMAL(10,2) NOT NULL,
+CostoUnitario DECIMAL(10,2) NOT NULL,
 Descuento DECIMAL(10,2),
 Impuesto DECIMAL(10,2) NOT NULL,
 CreationDate DATETIME,
@@ -664,14 +665,15 @@ FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 GO
 CREATE TABLE T_Parametros(
 IdParametro INT IDENTITY(1,1) PRIMARY KEY,
-Nombre VARCHAR(50) NOT NULL,
-Value VARCHAR(50) NOT NULL 
+Nombre VARCHAR(100) NOT NULL,
+Value VARCHAR(MAX) NOT NULL 
 )
 GO
 INSERT INTO T_Parametros 
 VALUES
 	('Validar stock para venta','SI'),
     ('Preguntar imprimir factura en venta','NO'),
+	('Buscar en venta por','Id'),
 	('Ancho tirilla','42'),
 	('Impresora','Generic'),
 	('Ruta backup','')
