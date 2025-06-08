@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
+using sbx.core.Interfaces.Reportes;
 
 namespace sbx.repositories.Reportes
 {
-    public class ReportesRepository
+    public class ReportesRepository: IReportes
     {
         private readonly string _connectionString;
 
@@ -13,7 +14,7 @@ namespace sbx.repositories.Reportes
             _connectionString = connectionString;
         }
 
-        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, string clientVenta, DateTime FechaInicio, DateTime FechaFin)
+        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, string TipoReporte, DateTime FechaInicio, DateTime FechaFin)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -26,62 +27,100 @@ namespace sbx.repositories.Reportes
                 {
                     await connection.OpenAsync();
 
-                    string sql = @"SELECT 
-                                    v.CreationDate,
-                                    v.IdVenta,
-                                    v.Prefijo,
-	                                v.Consecutivo,
-                                    CONCAT(v.Prefijo,'-',v.Consecutivo) Factura,
-	                                v.IdCliente,
-	                                A.NumeroDocumento,
-	                                A.NombreRazonSocial,
-	                                v.IdUserAction,
-	                                B.UserName,
-	                                v.Estado,
-	                                dv.IdProducto,
-	                                dv.Sku,
-	                                dv.CodigoBarras,
-                                    dv.NombreProducto,
-                                    dv.Cantidad,
-                                    dv.PrecioUnitario,
-                                    dv.CostoUnitario,
-                                    ISNULL(dv.Descuento, 0) AS DescuentoPorcentaje,
-                                    dv.Impuesto AS ImpuestoPorcentaje,
-    
-                                    -- Cálculos directos
-                                    (dv.Cantidad * dv.PrecioUnitario) AS VentaBruta,
-                                    (dv.Cantidad * dv.PrecioUnitario) * (ISNULL(dv.Descuento, 0) / 100.0) AS DescuentoValor,
-                                    (dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) AS VentaConDescuento,
-                                    (dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) * (dv.Impuesto / 100.0) AS ImpuestoValor,
-                                    (dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) * (1 + dv.Impuesto / 100.0) AS VentaNetaFinal,
-                                    (dv.Cantidad * dv.CostoUnitario) AS CostoTotal,
-    
+                    string sql = "";
+
+                    switch (TipoReporte)
+                    {
+                        case "Resumen - Ganancias y perdidas":
+                            sql = @"SELECT 
+                                    A.CreationDate,
+									CONCAT(A.IdUserAction,'-',D.UserName) Usuario,
+                                    A.IdVenta,                                  
+                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,	                               
+	                                B.IdProducto,
+                                    B.NombreProducto,
+                                    B.Cantidad,
+                                    B.PrecioUnitario,
+                                    B.CostoUnitario,
+                                    ISNULL(B.Descuento, 0) AS DescuentoPorcentaje,
+                                    B.Impuesto AS ImpuestoPorcentaje,
+                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100) AS VentaNetaFinal,
+                                    (B.Cantidad * B.CostoUnitario) AS CostoTotal,
                                     -- Ganancia/Pérdida
-                                    ((dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) * (1 + dv.Impuesto / 100.0)) - (dv.Cantidad * dv.CostoUnitario) AS GananciaBruta,
-    
+                                    ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario) AS GananciaBruta,   
                                     -- Margen sobre venta
                                     CASE 
-                                        WHEN (dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) * (1 + dv.Impuesto / 100.0) > 0 
-                                        THEN ((((dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) * (1 + dv.Impuesto / 100.0)) - (dv.Cantidad * dv.CostoUnitario)) / 
-                                              ((dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) * (1 + dv.Impuesto / 100.0))) * 100
+                                        WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100) > 0 
+                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) / 
+                                              ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100))) * 100
+                                        ELSE 0 
+                                    END AS MargenPorcentaje      
+                                FROM T_Ventas A
+                                INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
+                                INNER JOIN T_Cliente C ON A.IdCliente = C.IdCliente
+                                INNER JOIN T_User D ON D.IdUser = A.IdUserAction
+                                WHERE (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) AND
+                                A.Estado = 'FACTURADA'
+                                ORDER BY A.CreationDate DESC, A.IdVenta; ";
+                            break;
+                        case "Detallado -  Ganancias y perdidas":
+                            sql = @"SELECT 
+                                    A.CreationDate,
+									CONCAT(A.IdUserAction,'-',D.UserName) Usuario,
+                                    A.IdVenta,
+                                    A.Prefijo,
+	                                A.Consecutivo,
+                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,
+	                                A.IdCliente,
+	                                C.NumeroDocumento,
+	                                C.NombreRazonSocial,
+	                                A.IdUserAction,
+	                                D.UserName,
+	                                A.Estado,
+	                                B.IdProducto,
+	                                B.Sku,
+	                                B.CodigoBarras,
+                                    B.NombreProducto,
+                                    B.Cantidad,
+                                    B.PrecioUnitario,
+                                    B.CostoUnitario,
+                                    ISNULL(B.Descuento, 0) AS DescuentoPorcentaje,
+                                    B.Impuesto AS ImpuestoPorcentaje,
+                                    -- Cálculos directos
+                                    (B.Cantidad * B.PrecioUnitario) AS VentaBruta,
+                                    (B.Cantidad * B.PrecioUnitario) * (ISNULL(B.Descuento, 0) / 100.0) AS DescuentoValor,
+                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) AS VentaConDescuento,
+                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) * (B.Impuesto / 100.0) AS ImpuestoValor,
+                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) * (1 + B.Impuesto / 100.0) AS VentaNetaFinal,
+                                    (B.Cantidad * B.CostoUnitario) AS CostoTotal,
+                                    -- Ganancia/Pérdida
+                                    ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) * (1 + B.Impuesto / 100.0)) - (B.Cantidad * B.CostoUnitario) AS GananciaBruta,
+                                    -- Margen sobre venta
+                                    CASE 
+                                        WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100) > 0 
+                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) / 
+                                              ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100))) * 100
                                         ELSE 0 
                                     END AS MargenPorcentaje,
-    
                                     -- Markup sobre costo
                                     CASE 
-                                        WHEN (dv.Cantidad * dv.CostoUnitario) > 0 
-                                        THEN ((((dv.Cantidad * dv.PrecioUnitario) * (1 - ISNULL(dv.Descuento, 0) / 100.0) * (1 + dv.Impuesto / 100.0)) - (dv.Cantidad * dv.CostoUnitario)) / 
-                                              (dv.Cantidad * dv.CostoUnitario)) * 100
+                                        WHEN (B.Cantidad * B.CostoUnitario) > 0 
+                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) / 
+                                              (B.Cantidad * B.CostoUnitario)) * 100
                                         ELSE 0 
                                     END AS MarkupPorcentaje
     
-                                FROM T_Ventas v
-                                INNER JOIN T_DetalleVenta dv ON v.IdVenta = dv.IdVenta
-                                INNER JOIN T_Cliente A ON A.IdCliente = v.IdCliente
-                                INNER JOIN T_User B ON B.IdUser = v.IdUserAction
-                                WHERE (v.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) 
-                                AND v.Estado = 'FACTURADA'
-                                ORDER BY v.CreationDate DESC, v.IdVenta; ";
+                                FROM T_Ventas A
+                                INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
+                                INNER JOIN T_Cliente C ON C.IdCliente = A.IdCliente
+                                INNER JOIN T_User D ON D.IdUser = A.IdUserAction
+                                WHERE (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) AND 
+                                A.Estado = 'FACTURADA'
+                                ORDER BY A.CreationDate DESC, A.IdVenta; ";
+                            break;
+                        default:
+                            break;
+                    }
 
                     string Where = "";
                     string Filtro = "";
@@ -92,20 +131,13 @@ namespace sbx.repositories.Reportes
                             switch (campoFiltro)
                             {
                                 case "Nombre Cliente":
-                                    Where = $" AND D.NombreRazonSocial LIKE @Filtro ";
+                                    Where = $" AND C.NombreRazonSocial LIKE @Filtro ";
                                     break;
-                                case "Num Doc":
-                                    Where = $" AND D.NumeroDocumento LIKE @Filtro ";
+                                case "Num Doc Cliente":
+                                    Where = $" AND C.NumeroDocumento LIKE @Filtro ";
                                     break;
                                 case "Id":
-                                    if (clientVenta == "Producto")
-                                    {
-                                        Where = $" AND B.IdProducto LIKE @Filtro ";
-                                    }
-                                    else if (clientVenta == "Usuario")
-                                    {
-                                        Where = $" AND A.IdUserAction LIKE @Filtro ";
-                                    }
+                                    Where = $" AND B.IdProducto LIKE @Filtro ";
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku LIKE @Filtro ";
@@ -113,8 +145,17 @@ namespace sbx.repositories.Reportes
                                 case "Codigo barras":
                                     Where = $" AND B.CodigoBarras LIKE @Filtro ";
                                     break;
+                                case "Nombre producto":
+                                    Where = $" AND B.NombreProducto LIKE @Filtro ";
+                                    break;
                                 case "Prefijo-Consecutivo":
                                     Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    break;
+                                case "Nombre usuario":
+                                    Where = $" AND D.UserName LIKE @Filtro ";
+                                    break;
+                                case "Id usuario":
+                                    Where = $" AND A.IdUserAction LIKE @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -125,32 +166,14 @@ namespace sbx.repositories.Reportes
                         case "Igual a":
                             switch (campoFiltro)
                             {
-                                case "Nombre":
-                                    if (clientVenta == "Cliente")
-                                    {
-                                        Where = $" AND D.NombreRazonSocial = @Filtro ";
-                                    }
-                                    else if (clientVenta == "Producto")
-                                    {
-                                        Where = $" AND B.NombreProducto = @Filtro ";
-                                    }
-                                    else if (clientVenta == "Usuario")
-                                    {
-                                        Where = $" AND G.UserName = @Filtro ";
-                                    }
+                                case "Nombre Cliente":
+                                    Where = $" AND C.NombreRazonSocial = @Filtro ";
                                     break;
-                                case "Num Doc":
-                                    Where = $" AND D.NumeroDocumento = @Filtro ";
+                                case "Num Doc Cliente":
+                                    Where = $" AND C.NumeroDocumento = @Filtro ";
                                     break;
                                 case "Id":
-                                    if (clientVenta == "Producto")
-                                    {
-                                        Where = $" AND B.IdProducto = @Filtro ";
-                                    }
-                                    else if (clientVenta == "Usuario")
-                                    {
-                                        Where = $" AND A.IdUserAction = @Filtro ";
-                                    }
+                                    Where = $" AND B.IdProducto = @Filtro ";
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku = @Filtro ";
@@ -158,8 +181,17 @@ namespace sbx.repositories.Reportes
                                 case "Codigo barras":
                                     Where = $" AND B.CodigoBarras = @Filtro ";
                                     break;
+                                case "Nombre producto":
+                                    Where = $" AND B.NombreProducto = @Filtro ";
+                                    break;
                                 case "Prefijo-Consecutivo":
                                     Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) = @Filtro ";
+                                    break;
+                                case "Nombre usuario":
+                                    Where = $" AND D.UserName = @Filtro ";
+                                    break;
+                                case "Id usuario":
+                                    Where = $" AND A.IdUserAction = @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -170,32 +202,14 @@ namespace sbx.repositories.Reportes
                         case "Contiene":
                             switch (campoFiltro)
                             {
-                                case "Nombre":
-                                    if (clientVenta == "Cliente")
-                                    {
-                                        Where = $" AND D.NombreRazonSocial LIKE @Filtro ";
-                                    }
-                                    else if (clientVenta == "Producto")
-                                    {
-                                        Where = $" AND B.NombreProducto LIKE @Filtro ";
-                                    }
-                                    else if (clientVenta == "Usuario")
-                                    {
-                                        Where = $" AND G.UserName LIKE @Filtro ";
-                                    }
+                                case "Nombre Cliente":
+                                    Where = $" AND C.NombreRazonSocial LIKE @Filtro ";
                                     break;
-                                case "Num Doc":
-                                    Where = $" AND D.NumeroDocumento = @Filtro ";
+                                case "Num Doc Cliente":
+                                    Where = $" AND C.NumeroDocumento LIKE @Filtro ";
                                     break;
                                 case "Id":
-                                    if (clientVenta == "Producto")
-                                    {
-                                        Where = $" AND B.IdProducto LIKE @Filtro ";
-                                    }
-                                    else if (clientVenta == "Usuario")
-                                    {
-                                        Where = $" AND A.IdUserAction LIKE @Filtro ";
-                                    }
+                                    Where = $" AND B.IdProducto LIKE @Filtro ";
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku LIKE @Filtro ";
@@ -203,8 +217,17 @@ namespace sbx.repositories.Reportes
                                 case "Codigo barras":
                                     Where = $" AND B.CodigoBarras LIKE @Filtro ";
                                     break;
+                                case "Nombre producto":
+                                    Where = $" AND B.NombreProducto LIKE @Filtro ";
+                                    break;
                                 case "Prefijo-Consecutivo":
                                     Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    break;
+                                case "Nombre usuario":
+                                    Where = $" AND D.UserName LIKE @Filtro ";
+                                    break;
+                                case "Id usuario":
+                                    Where = $" AND A.IdUserAction LIKE @Filtro ";
                                     break;
                                 default:
                                     break;
