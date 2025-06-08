@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using sbx.core.Interfaces.Reportes;
 
 namespace sbx
 {
     public partial class Reportes : Form
     {
-        public Reportes()
+        private readonly IReportes _IReportes;
+
+        public Reportes(IReportes reportes)
         {
             InitializeComponent();
+            _IReportes = reportes;
         }
 
         private void Reportes_Load(object sender, EventArgs e)
         {
-            cbx_client_venta.SelectedIndex = 0;
+            cbx_tipo_reporte.SelectedIndex = 0;
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
         }
@@ -28,7 +23,7 @@ namespace sbx
         {
             cbx_campo_filtro.Items.Clear();
 
-            switch (cbx_client_venta.Text)
+            switch (cbx_tipo_reporte.Text)
             {
                 case "":
                     break;
@@ -36,12 +31,12 @@ namespace sbx
                     break;
             }
 
-            if (cbx_client_venta.Text == "Resumen - Ganancias y perdidas")
+            if (cbx_tipo_reporte.Text == "Resumen - Ganancias y perdidas")
             {
                 cbx_campo_filtro.Items.AddRange(new object[] { "Prefijo-Consecutivo", "Nombre producto", "Id", "Sku", "Codigo barras", "Nombre Cliente", "Num Doc Cliente", "Nombre usuario", "Id usuario" });
             }
 
-            if (cbx_client_venta.Text == "Resumen - Ganancias y perdidas")
+            if (cbx_tipo_reporte.Text == "Detallado -  Ganancias y perdidas")
             {
                 cbx_campo_filtro.Items.AddRange(new object[] { "Prefijo-Consecutivo", "Nombre producto", "Id", "Sku", "Codigo barras", "Nombre Cliente", "Num Doc Cliente", "Nombre usuario", "Id usuario" });
             }
@@ -49,9 +44,16 @@ namespace sbx
             cbx_campo_filtro.SelectedIndex = 0;
         }
 
-        private void btn_buscar_Click(object sender, EventArgs e)
+        private async void btn_buscar_Click(object sender, EventArgs e)
         {
+            var resp = await _IReportes.Buscar(txt_buscar.Text,cbx_campo_filtro.Text,cbx_tipo_filtro.Text,cbx_tipo_reporte.Text,dtp_fecha_inicio.Value,dtp_fecha_fin.Value);
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 0)
+                {
 
+                }
+            }
         }
     }
 }
