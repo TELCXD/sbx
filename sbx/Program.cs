@@ -27,6 +27,7 @@ using sbx.core.Interfaces.Promociones;
 using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.RangoNumeracion;
+using sbx.core.Interfaces.Reportes;
 using sbx.core.Interfaces.ResponsabilidadTributaria;
 using sbx.core.Interfaces.Rol;
 using sbx.core.Interfaces.SalidaInventario;
@@ -69,6 +70,7 @@ using sbx.repositories.Promociones;
 using sbx.repositories.PromocionProducto;
 using sbx.repositories.Proveedor;
 using sbx.repositories.RangoNumeracion;
+using sbx.repositories.Reportes;
 using sbx.repositories.ResponsabilidadTributaria;
 using sbx.repositories.Rol;
 using sbx.repositories.SalidaInventario;
@@ -302,6 +304,9 @@ namespace sbx
 
                 services.AddTransient<IBackup>(provider =>
                 new BackupRepository(connectionString));
+
+                services.AddTransient<IReportes>(provider =>
+                new ReportesRepository(connectionString));
             })
             .Build();
 
