@@ -60,8 +60,7 @@ namespace sbx.repositories.Reportes
                                 INNER JOIN T_Cliente C ON A.IdCliente = C.IdCliente
                                 INNER JOIN T_User D ON D.IdUser = A.IdUserAction
                                 WHERE (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) AND
-                                A.Estado = 'FACTURADA'
-                                ORDER BY A.CreationDate DESC, A.IdVenta; ";
+                                A.Estado = 'FACTURADA' ";
                             break;
                         case "Detallado -  Ganancias y perdidas":
                             sql = @"SELECT 
@@ -74,6 +73,10 @@ namespace sbx.repositories.Reportes
 	                                A.IdCliente,
 	                                C.NumeroDocumento,
 	                                C.NombreRazonSocial,
+                                    CONCAT(C.NumeroDocumento, '-',C.NombreRazonSocial) Cliente,
+                                    A.IdVendedor,
+									E.NumeroDocumento NumeroDocumento,
+									CONCAT(A.IdVendedor,'-',E.Nombre,' ',E.Apellido) Vendedor,
 	                                A.IdUserAction,
 	                                D.UserName,
 	                                A.Estado,
@@ -81,6 +84,7 @@ namespace sbx.repositories.Reportes
 	                                B.Sku,
 	                                B.CodigoBarras,
                                     B.NombreProducto,
+                                    B.UnidadMedida,
                                     B.Cantidad,
                                     B.PrecioUnitario,
                                     B.CostoUnitario,
@@ -114,9 +118,9 @@ namespace sbx.repositories.Reportes
                                 INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                 INNER JOIN T_Cliente C ON C.IdCliente = A.IdCliente
                                 INNER JOIN T_User D ON D.IdUser = A.IdUserAction
+                                INNER JOIN T_Vendedor E ON E.IdVendedor = A.IdVendedor
                                 WHERE (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) AND 
-                                A.Estado = 'FACTURADA'
-                                ORDER BY A.CreationDate DESC, A.IdVenta; ";
+                                A.Estado = 'FACTURADA' ";
                             break;
                         default:
                             break;
@@ -239,7 +243,7 @@ namespace sbx.repositories.Reportes
                             break;
                     }
 
-                    sql += Where + " ORDER BY A.CreationDate DESC ";
+                    sql += Where + " ORDER BY A.CreationDate DESC, A.IdVenta; ";
 
                     dynamic resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
 

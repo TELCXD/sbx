@@ -118,6 +118,12 @@ namespace sbx
                                     btn_caja.Visible = true;
                                 }
                                 break;
+                            case "reportes":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_reportes.Visible = true;
+                                }
+                                break;
                             default:
                                 break;
                         }

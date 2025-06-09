@@ -16,6 +16,11 @@ namespace sbx
             _serviceProvider = serviceProvider;
         }
 
+        private void Login_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private async void btn_login_Click(object sender, EventArgs e)
         {
             await mtd_login();
@@ -50,6 +55,7 @@ namespace sbx
             if (string.IsNullOrWhiteSpace(nombreUsuario) || string.IsNullOrWhiteSpace(contrasena))
             {
                 this.Cursor = Cursors.Default;
+                btn_login.Enabled = true;
                 return;
             }
 
