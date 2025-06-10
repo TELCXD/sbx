@@ -14,7 +14,7 @@ namespace sbx.core.Entities.Venta
             ANCHO_TIRILLA = Pr_ANCHO_TIRILLA;
 
             //Abrir cajon
-            sb.AppendLine("\x1B" + "p" + "\x00" + "\x0F" + "\x96");
+            sb.Append("\x1B" + "p" + "\x00" + "\x0F" + "\x96");
 
             // Encabezado
             sb.AppendLine(CentrarTexto(factura.NombreEmpresa));

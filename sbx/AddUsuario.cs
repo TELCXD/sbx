@@ -182,6 +182,26 @@ namespace sbx
                     }
                 }
             }
+            else
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    if (validationResult.MemberNames.Contains("IdentificationNumber"))
+                    {
+                        errorProvider1.SetError(txt_numero_documento, validationResult.ErrorMessage);
+                    }
+
+                    if (validationResult.MemberNames.Contains("TelephoneNumber"))
+                    {
+                        errorProvider1.SetError(txt_telefono, validationResult.ErrorMessage);
+                    }
+
+                    if (validationResult.MemberNames.Contains("Email"))
+                    {
+                        errorProvider1.SetError(txt_email, validationResult.ErrorMessage);
+                    }
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.Venta;
+using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Venta;
@@ -368,13 +369,28 @@ namespace sbx
 
                                     DataFactura.Items = ListItemFacturaEntitie;
 
-                                    var DataParametros = await _IParametros.List("Ancho tirilla");
+                                    var DataParametros = await _IParametros.List("");
 
                                     if (DataParametros.Data != null)
                                     {
                                         if (DataParametros.Data.Count > 0)
                                         {
-                                            int ANCHO_TIRILLA = Convert.ToInt32(DataParametros.Data[0].Value);
+                                            int ANCHO_TIRILLA = 0;
+                                            string Impresora = "";
+                                            foreach (var itemParametros in DataParametros.Data)
+                                            {
+                                                switch (itemParametros.Nombre)
+                                                {
+                                                    case "Ancho tirilla":
+                                                        ANCHO_TIRILLA = Convert.ToInt32(itemParametros.Value);
+                                                        break;
+                                                    case "Impresora":
+                                                        Impresora = itemParametros.Value;
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
 
                                             StringBuilder tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
 
@@ -387,11 +403,17 @@ namespace sbx
                                             File.WriteAllText(Path.Combine(carpetaFacturas, $"factura_{DataFactura.NumeroFactura}.txt"),
                                                                       tirilla.ToString(),
                                                                       Encoding.UTF8);
+
+                                            RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                         }
                                     }
                                     else
                                     {
-                                        MessageBox.Show("No se encuentra informacion de ancho de tirilla", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                 }
                                 else

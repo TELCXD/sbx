@@ -185,7 +185,8 @@ namespace sbx.repositories.Caja
                                    A.Estado
                                    FROM T_AperturaCierreCaja A 
                                    INNER JOIN T_User B ON A.IdUserAction = B.IdUser 
-                                   WHERE (A.FechaHoraApertura BETWEEN CONVERT(DATETIME,@FechaIni+'00:00:00',120) AND CONVERT(DATETIME,@FechaFn+'23:59:59',120)) " + FiltroPorUsuario;
+                                   WHERE (A.FechaHoraApertura BETWEEN CONVERT(DATETIME,@FechaIni+'00:00:00',120) AND CONVERT(DATETIME,@FechaFn+'23:59:59',120)) 
+                                   OR (A.FechaHoraCierre BETWEEN CONVERT(DATETIME,@FechaIni+'00:00:00',120) AND CONVERT(DATETIME,@FechaFn+'23:59:59',120)) " + FiltroPorUsuario;
 
                     string Where = "";
                     string Filtro = "";
