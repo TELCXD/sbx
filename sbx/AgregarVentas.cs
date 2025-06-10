@@ -430,7 +430,73 @@ namespace sbx
                                 {
                                     if (DataProducto.Data.Count > 0)
                                     {
-                                        IdentificarPrecio(DataProducto);
+                                        var estadoCaja = await _ICaja.EstadoCaja(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                        if (estadoCaja.Data != null)
+                                        {
+                                            if (estadoCaja.Data.Count > 0)
+                                            {
+                                                if (estadoCaja.Data[0].Estado == "CERRADA")
+                                                {
+                                                    if (_Permisos != null)
+                                                    {
+                                                        _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
+                                                        _AddApertura.Permisos = _Permisos;
+                                                        _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
+                                                        _AddApertura.FormClosed += (s, args) => _AddApertura = null;
+                                                        _AddApertura.ShowDialog();
+                                                    }
+                                                }
+                                                else if (estadoCaja.Data[0].Estado == "ABIERTA")
+                                                {
+                                                    CajaAperturada = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (_Permisos != null)
+                                                {
+                                                    _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
+                                                    _AddApertura.Permisos = _Permisos;
+                                                    _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
+                                                    _AddApertura.FormClosed += (s, args) => _AddApertura = null;
+                                                    _AddApertura.ShowDialog();
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"No se logro obtener informacion de estado de caja", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            CajaAperturada = false;
+                                        }
+
+                                        if (CajaAperturada)
+                                        {
+                                            var DataParametros = await _IParametros.List("Validar stock para venta");
+
+                                            if (DataParametros.Data != null)
+                                            {
+                                                if (DataParametros.Data.Count > 0)
+                                                {
+                                                    string ValidaStock = DataParametros.Data[0].Value;
+                                                    if (ValidaStock == "SI")
+                                                    {
+                                                        decimal Stock = DataProducto.Data[0].Stock;
+                                                        if (Stock > 0)
+                                                        {
+                                                            IdentificarPrecio(DataProducto);
+                                                        }
+                                                        else
+                                                        {
+                                                            MessageBox.Show($"Producto sin Stock", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        IdentificarPrecio(DataProducto);
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -446,7 +512,73 @@ namespace sbx
                                 {
                                     if (DataProducto.Data.Count > 0)
                                     {
-                                        IdentificarPrecio(DataProducto);
+                                        var estadoCaja = await _ICaja.EstadoCaja(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                        if (estadoCaja.Data != null)
+                                        {
+                                            if (estadoCaja.Data.Count > 0)
+                                            {
+                                                if (estadoCaja.Data[0].Estado == "CERRADA")
+                                                {
+                                                    if (_Permisos != null)
+                                                    {
+                                                        _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
+                                                        _AddApertura.Permisos = _Permisos;
+                                                        _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
+                                                        _AddApertura.FormClosed += (s, args) => _AddApertura = null;
+                                                        _AddApertura.ShowDialog();
+                                                    }
+                                                }
+                                                else if (estadoCaja.Data[0].Estado == "ABIERTA")
+                                                {
+                                                    CajaAperturada = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (_Permisos != null)
+                                                {
+                                                    _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
+                                                    _AddApertura.Permisos = _Permisos;
+                                                    _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
+                                                    _AddApertura.FormClosed += (s, args) => _AddApertura = null;
+                                                    _AddApertura.ShowDialog();
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"No se logro obtener informacion de estado de caja", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            CajaAperturada = false;
+                                        }
+
+                                        if (CajaAperturada)
+                                        {
+                                            var DataParametros = await _IParametros.List("Validar stock para venta");
+
+                                            if (DataParametros.Data != null)
+                                            {
+                                                if (DataParametros.Data.Count > 0)
+                                                {
+                                                    string ValidaStock = DataParametros.Data[0].Value;
+                                                    if (ValidaStock == "SI")
+                                                    {
+                                                        decimal Stock = DataProducto.Data[0].Stock;
+                                                        if (Stock > 0)
+                                                        {
+                                                            IdentificarPrecio(DataProducto);
+                                                        }
+                                                        else
+                                                        {
+                                                            MessageBox.Show($"Producto sin Stock", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        IdentificarPrecio(DataProducto);
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -1056,7 +1188,16 @@ namespace sbx
             lbl_impuesto.Text = "_";
             lbl_total.Text = "_";
 
-            cbx_busca_por.SelectedIndex = 0;
+            var DataParametros = await _IParametros.List("Buscar en venta por");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    string BuscarPor = DataParametros.Data[0].Value;
+                    cbx_busca_por.Text = BuscarPor;
+                }
+            }
 
             pnl_pagos.Enabled = false;
 
@@ -1179,7 +1320,7 @@ namespace sbx
                             {
                                 if (respGuardado.Flag == true)
                                 {
-                                    MessageBox.Show(respGuardado.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    //MessageBox.Show(respGuardado.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     Limpiar();
 
                                     //Imprime Tirilla
@@ -1359,10 +1500,14 @@ namespace sbx
                                                         RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
                                                     }
                                                 }
+                                                else
+                                                {
+                                                    MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                }
                                             }
                                             else
                                             {
-                                                MessageBox.Show("No se encuentra informacion de ancho de tirilla", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                             }
                                         }
                                         else

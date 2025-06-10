@@ -126,6 +126,7 @@
             // 
             // txt_iva
             // 
+            txt_iva.Enabled = false;
             txt_iva.Location = new Point(363, 92);
             txt_iva.MaxLength = 13;
             txt_iva.Name = "txt_iva";

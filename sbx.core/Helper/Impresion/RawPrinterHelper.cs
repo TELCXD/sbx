@@ -76,17 +76,17 @@ namespace sbx.core.Helper.Impresion
             return bSuccess;
         }
 
-        public static bool SendStringToPrinter(string szPrinterName, string szString)
+        public static bool SendStringToPrinter(string Impresora, string tirilla)
         {
             IntPtr pBytes;
             Int32 dwCount;
             // How many characters are in the string?
-            dwCount = szString.Length;
+            dwCount = tirilla.Length;
             // Assume that the printer is expecting ANSI text, and then convert
             // the string to ANSI text.
-            pBytes = Marshal.StringToCoTaskMemAnsi(szString);
+            pBytes = Marshal.StringToCoTaskMemAnsi(tirilla);
             // Send the converted ANSI string to the printer.
-            SendBytesToPrinter(szPrinterName, pBytes, dwCount);
+            SendBytesToPrinter(Impresora, pBytes, dwCount);
             Marshal.FreeCoTaskMem(pBytes);
             return true;
         }
