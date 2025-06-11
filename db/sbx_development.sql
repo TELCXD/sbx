@@ -290,7 +290,7 @@ CREATE TABLE T_Productos(
 IdProducto INT IDENTITY(1,1) PRIMARY KEY,
 Sku VARCHAR(50),
 CodigoBarras VARCHAR(50),
-Nombre VARCHAR(100) NOT NULL UNIQUE,
+Nombre VARCHAR(MAX),
 CostoBase DECIMAL(10,2),
 PrecioBase DECIMAL(10,2),
 EsInventariable BIT NOT NULL,

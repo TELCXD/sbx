@@ -3,6 +3,8 @@ using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.EntradaInventario;
 using sbx.core.Interfaces.EntradaInventario;
+using System.Data;
+using System.Globalization;
 
 namespace sbx.repositories.EntradaInventario
 {
@@ -304,6 +306,108 @@ namespace sbx.repositories.EntradaInventario
                 }
                 catch (Exception ex)
                 {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> CargueMasivoProductoEntrada(DataTable Datos, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    foreach (DataRow item in Datos.Rows)
+                    {
+                        string sql = "";
+
+                        DateTime FechaActual = DateTime.Now;
+                        FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+
+                        sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
+                                  CostoBase,PrecioBase,EsInventariable,Iva,IdCategoria,IdMarca,IdUnidadMedida,CreationDate, IdUserAction)
+                                  VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
+                                  @CostoBase,@PrecioBase,@EsInventariable,@Iva,@IdCategoria,@IdMarca,@IdUnidadMedida,@CreationDate,@IdUserAction);
+                                  SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                        var parametrosProducto = new
+                        {
+                            Sku = item[0],
+                            CodigoBarras = "",
+                            Nombre = item[1].ToString().Trim() + " - " + item[2].ToString().Trim(),
+                            CostoBase = 0,
+                            PrecioBase = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                            EsInventariable = 1,
+                            Iva = 0,
+                            IdCategoria = 1,
+                            IdMarca = 1,
+                            IdUnidadMedida = 1,
+                            CreationDate = FechaActual,
+                            IdUserAction = IdUser
+                        };
+
+                        int idProducto = await connection.ExecuteScalarAsync<int>(sql, parametrosProducto, transaction);
+
+                        sql = @"INSERT INTO T_EntradasInventario (IdTipoEntrada, IdProveedor, OrdenCompra, NumFactura, Comentario, CreationDate, IdUserAction)
+                            VALUES (@IdTipoEntrada, NULLIF(@IdProveedor,0), @OrdenCompra, @NumFactura, @Comentario, @CreationDate,@IdUserAction);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT); ";
+
+                        int idEntrada = await connection.ExecuteScalarAsync<int>(sql,
+                        new
+                        {
+                            IdTipoEntrada = 1,
+                            IdProveedor = 1,
+                            OrdenCompra = "",
+                            NumFactura = "",
+                            Comentario = "",
+                            CreationDate = FechaActual,
+                            IdUserAction = IdUser
+                        },
+                        transaction);
+
+                        sql = @"INSERT INTO T_DetalleEntradasInventario (
+                            IdEntradasInventario, IdProducto, CodigoLote, FechaVencimiento,
+                            Cantidad, CostoUnitario, Descuento, Iva, CreationDate, IdUserAction)
+                            VALUES (@IdEntradasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
+                                    @Cantidad, @CostoUnitario, @Descuento, @Iva, @CreationDate, @IdUserAction);";
+
+                        await connection.ExecuteAsync(
+                                sql,
+                                new
+                                {
+                                    IdEntradasInventario = idEntrada,
+                                    idProducto,
+                                    CodigoLote = "",
+                                    FechaVencimiento = "",
+                                    Cantidad = Convert.ToDecimal(item[3], new CultureInfo("es-CO")),
+                                    CostoUnitario = 0,
+                                    Descuento = 0,
+                                    Iva = 0,
+                                    CreationDate = FechaActual,
+                                    IdUserAction = IdUser
+                                },
+                                transaction);
+                    }
+
+                    await transaction.CommitAsync();
+
+                    response.Flag = true;
+                    response.Message = "Cargue masivo creado correctamente";
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
                     return response;

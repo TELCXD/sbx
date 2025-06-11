@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ClosedXML.Excel;
+using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Producto;
+using System.Data;
 using System.Globalization;
 
 namespace sbx
@@ -13,12 +16,14 @@ namespace sbx
         private int Id_Producto = 0;
         private ListaPrecios? _ListaPrecios;
         private Promociones? _Promociones;
+        private readonly IEntradaInventario _IEntradaInventario;
 
-        public Productos(IServiceProvider serviceProvider, IProducto producto)
+        public Productos(IServiceProvider serviceProvider, IProducto producto, IEntradaInventario entradaInventario)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IProducto = producto;
+            _IEntradaInventario = entradaInventario;
         }
 
         public dynamic? Permisos
@@ -62,6 +67,7 @@ namespace sbx
                         case "productos":
                             btn_agregar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_importar.Enabled = item.ToCreate == 1 ? true : false;
                             //btn_eliminar.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         case "listaPrecios":
@@ -169,6 +175,70 @@ namespace sbx
                 _Promociones.FormClosed += (s, args) => _Promociones = null;
                 _Promociones.ShowDialog();
             }
+        }
+
+        private async void btn_importar_Click(object sender, EventArgs e)
+        {
+
+            using OpenFileDialog ofd = new OpenFileDialog
+            {
+                Filter = "Archivos Excel (*.xlsx)|*.xlsx"
+            };
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                this.Cursor = Cursors.WaitCursor;
+
+                DataTable dt = LeerExcel(ofd.FileName);
+                var resp = await _IEntradaInventario.CargueMasivoProductoEntrada(dt, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                this.Cursor = Cursors.Default;
+
+                if (resp != null)
+                {
+                    if (resp.Flag == true)
+                    {
+                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        private DataTable LeerExcel(string path)
+        {
+            var dt = new DataTable();
+
+            using var workbook = new XLWorkbook(path);
+            var worksheet = workbook.Worksheets.Worksheet(1); // Primera hoja
+            bool primeraFila = true;
+
+            foreach (var fila in worksheet.RowsUsed())
+            {
+                if (primeraFila)
+                {
+                    foreach (var celda in fila.Cells())
+                    {
+                        dt.Columns.Add(celda.Value.ToString());
+                    }
+                    primeraFila = false;
+                }
+                else
+                {
+                    dt.Rows.Add();
+                    int i = 0;
+                    foreach (var celda in fila.Cells())
+                    {
+                        dt.Rows[dt.Rows.Count - 1][i] = celda.Value.ToString();
+                        i++;
+                    }
+                }
+            }
+
+            return dt;
         }
     }
 }
