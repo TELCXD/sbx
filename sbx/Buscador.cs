@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using sbx.core.Interfaces.Cliente;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.Usuario;
@@ -18,10 +19,11 @@ namespace sbx
         private readonly IVenta _IVenta;
         public delegate void EnviarId(int id);
         public event EnviarId EnviaId;
+        private readonly IParametros _IParametros;
         int fila = 0;
         int Id = 0;
 
-        public Buscador(IProveedor proveedor, IProducto producto, ICliente cliente, IUsuario usuario, IVenta venta)
+        public Buscador(IProveedor proveedor, IProducto producto, ICliente cliente, IUsuario usuario, IVenta venta, IParametros parametros)
         {
             InitializeComponent();
             _IProveedor = proveedor;
@@ -29,6 +31,7 @@ namespace sbx
             _ICliente = cliente;
             _IUsuario = usuario;
             _IVenta = venta;
+            _IParametros = parametros;
         }
 
         public string? Origen
@@ -57,7 +60,7 @@ namespace sbx
                     break;
                 case "Salidas_busca_producto":
                     await ConsultaProducto();
-                    break; 
+                    break;
                 case "AgregaPrecios_busca_producto":
                     await ConsultaProducto();
                     break;
@@ -66,7 +69,7 @@ namespace sbx
                     break;
                 case "Add_listaPrecio_busca_producto":
                     await ConsultaProducto();
-                    break; 
+                    break;
                 case "Add_AgregaVenta_busca_producto":
                     await ConsultaProducto();
                     break;
@@ -80,11 +83,11 @@ namespace sbx
                     await ConsultaFactura();
                     break;
                 default:
-                    break; 
+                    break;
             }
         }
 
-        private void CargaDatosIniciales()
+        private async void CargaDatosIniciales()
         {
             List<string> opciones = new List<string>();
 
@@ -129,7 +132,17 @@ namespace sbx
 
             cbx_campo_filtro.DataSource = opciones;
             cbx_campo_filtro.SelectedIndex = 0;
-            cbx_tipo_filtro.SelectedIndex = 0;
+
+            var DataParametros = await _IParametros.List("Tipo filtro producto");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    string BuscarPor = DataParametros.Data[0].Value;
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
+            }
         }
 
         private async Task ConsultaProveedor()
@@ -183,7 +196,7 @@ namespace sbx
                 var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
 
                 if (dataTable.Rows.Count > 0)
-                {                    
+                {
                     dtg_buscador.DataSource = dataTable;
 
                     dtg_buscador.Columns["Nombre"].Width = 500;
@@ -294,7 +307,7 @@ namespace sbx
 
                 if (dataTable.Rows.Count > 0)
                 {
-                    dtg_buscador.DataSource = dataTable;                 
+                    dtg_buscador.DataSource = dataTable;
                 }
             }
         }
@@ -307,6 +320,52 @@ namespace sbx
                 Id = Convert.ToInt32(dtg_buscador[0, fila].Value);
                 EnviaId(Id);
                 this.Close();
+            }
+        }
+
+        private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Enter
+            if (e.KeyChar == (char)13)
+            {
+                switch (Origen)
+                {
+                    case "Entradas_busca_proveedor":
+                        await ConsultaProveedor();
+                        break;
+                    case "Entradas_busca_producto":
+                        await ConsultaProducto();
+                        break;
+                    case "Salidas_busca_proveedor":
+                        await ConsultaProveedor();
+                        break;
+                    case "Salidas_busca_producto":
+                        await ConsultaProducto();
+                        break;
+                    case "AgregaPrecios_busca_producto":
+                        await ConsultaProducto();
+                        break;
+                    case "AgregaPrecios_busca_cliente":
+                        await ConsultaCliente();
+                        break;
+                    case "Add_listaPrecio_busca_producto":
+                        await ConsultaProducto();
+                        break;
+                    case "Add_AgregaVenta_busca_producto":
+                        await ConsultaProducto();
+                        break;
+                    case "Add_AgregaVenta_busca_cliente":
+                        await ConsultaCliente();
+                        break;
+                    case "Busca_usuario":
+                        await ConsultaUsuarios();
+                        break;
+                    case "Busca_factura":
+                        await ConsultaFactura();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

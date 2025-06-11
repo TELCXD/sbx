@@ -13,9 +13,6 @@ namespace sbx.core.Entities.Venta
 
             ANCHO_TIRILLA = Pr_ANCHO_TIRILLA;
 
-            //Abrir cajon
-            sb.Append("\x1B" + "p" + "\x00" + "\x0F" + "\x96");
-
             // Encabezado
             sb.AppendLine(CentrarTexto(factura.NombreEmpresa));
             sb.AppendLine(CentrarTexto(factura.DireccionEmpresa));
@@ -86,6 +83,9 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine();
             sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
             sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
+
+            //Abrir cajon
+            sb.Append("\x1B" + "p" + "\x00" + "\x0F" + "\x96");
 
             return sb;
         }

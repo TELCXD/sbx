@@ -180,6 +180,9 @@ namespace sbx
                             case "Buscar en venta por":
                                 cbx_Buscarenventapor.Text = item.Value;
                                 break;
+                            case "Tipo filtro producto":
+                                cbx_parametro_tipo_filtro_producto.Text = item.Value;
+                                break;
                             case "Ancho tirilla":
                                 txt_ancho_tirilla.Text = item.Value;
                                 break;
@@ -235,13 +238,22 @@ namespace sbx
                     case 3:
                         Parametros = new ParametrosEntitie
                         {
+                            Nombre = "Tipo filtro producto",
+                            Value = cbx_parametro_tipo_filtro_producto.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 4:
+                        Parametros = new ParametrosEntitie
+                        {
                             Nombre = "Ancho tirilla",
                             Value = txt_ancho_tirilla.Text
                         };
 
                         ListParametros.Add(Parametros);
                         break;
-                    case 4:
+                    case 5:
                         Parametros = new ParametrosEntitie
                         {
                             Nombre = "Impresora",
@@ -250,7 +262,7 @@ namespace sbx
 
                         ListParametros.Add(Parametros);
                         break;
-                    case 5:
+                    case 6:
                         Parametros = new ParametrosEntitie
                         {
                             Nombre = "Ruta backup",
