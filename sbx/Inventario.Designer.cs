@@ -44,7 +44,6 @@
             label1 = new Label();
             txt_total_stock = new TextBox();
             dtg_inventario = new DataGridView();
-            errorProvider1 = new ErrorProvider(components);
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_usuario = new DataGridViewTextBoxColumn();
             cl_documento = new DataGridViewTextBoxColumn();
@@ -57,6 +56,7 @@
             cl_codigo_barras = new DataGridViewTextBoxColumn();
             cl_codigo_lote = new DataGridViewTextBoxColumn();
             cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
+            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).BeginInit();
@@ -84,7 +84,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(968, 17);
+            cbx_tipo_filtro.Location = new Point(985, 17);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 20;
@@ -95,7 +95,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(848, 17);
+            cbx_campo_filtro.Location = new Point(865, 17);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 19;
@@ -103,13 +103,12 @@
             // btn_buscar
             // 
             btn_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_buscar.FlatAppearance.BorderSize = 0;
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1258, 6);
+            btn_buscar.Location = new Point(1275, 15);
             btn_buscar.Name = "btn_buscar";
-            btn_buscar.Size = new Size(42, 45);
+            btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 18;
             btn_buscar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar.UseVisualStyleBackColor = true;
@@ -118,10 +117,11 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(1061, 17);
+            txt_buscar.Location = new Point(1078, 17);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 17;
+            txt_buscar.KeyPress += txt_buscar_KeyPress;
             // 
             // btn_salida
             // 
@@ -225,10 +225,6 @@
             dtg_inventario.Size = new Size(1308, 418);
             dtg_inventario.TabIndex = 6;
             // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
-            // 
             // cl_fecha
             // 
             cl_fecha.HeaderText = "Fecha";
@@ -307,6 +303,10 @@
             cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
             cl_fecha_vencimiento.ReadOnly = true;
             cl_fecha_vencimiento.Width = 155;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // Inventario
             // 

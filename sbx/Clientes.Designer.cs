@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Clientes));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Clientes));
             panel1 = new Panel();
+            btn_mejor_precio = new Button();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
             btn_buscar = new Button();
@@ -52,7 +53,6 @@
             cl_email = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
-            btn_mejor_precio = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_cliente).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -76,13 +76,28 @@
             panel1.Size = new Size(1033, 68);
             panel1.TabIndex = 0;
             // 
+            // btn_mejor_precio
+            // 
+            btn_mejor_precio.Enabled = false;
+            btn_mejor_precio.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_mejor_precio.FlatStyle = FlatStyle.Flat;
+            btn_mejor_precio.Image = (Image)resources.GetObject("btn_mejor_precio.Image");
+            btn_mejor_precio.Location = new Point(331, 10);
+            btn_mejor_precio.Name = "btn_mejor_precio";
+            btn_mejor_precio.Size = new Size(109, 45);
+            btn_mejor_precio.TabIndex = 30;
+            btn_mejor_precio.Text = "Mejor precio";
+            btn_mejor_precio.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_mejor_precio.UseVisualStyleBackColor = true;
+            btn_mejor_precio.Click += btn_mejor_precio_Click;
+            // 
             // cbx_tipo_filtro
             // 
             cbx_tipo_filtro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(688, 22);
+            cbx_tipo_filtro.Location = new Point(715, 22);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 29;
@@ -93,7 +108,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Num Doc" });
-            cbx_campo_filtro.Location = new Point(568, 22);
+            cbx_campo_filtro.Location = new Point(595, 22);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 28;
@@ -101,13 +116,12 @@
             // btn_buscar
             // 
             btn_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_buscar.FlatAppearance.BorderSize = 0;
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(978, 11);
+            btn_buscar.Location = new Point(999, 20);
             btn_buscar.Name = "btn_buscar";
-            btn_buscar.Size = new Size(42, 45);
+            btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 27;
             btn_buscar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar.UseVisualStyleBackColor = true;
@@ -116,7 +130,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(781, 22);
+            txt_buscar.Location = new Point(808, 22);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 26;
@@ -266,21 +280,6 @@
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
-            // 
-            // btn_mejor_precio
-            // 
-            btn_mejor_precio.Enabled = false;
-            btn_mejor_precio.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_mejor_precio.FlatStyle = FlatStyle.Flat;
-            btn_mejor_precio.Image = (Image)resources.GetObject("btn_mejor_precio.Image");
-            btn_mejor_precio.Location = new Point(331, 10);
-            btn_mejor_precio.Name = "btn_mejor_precio";
-            btn_mejor_precio.Size = new Size(109, 45);
-            btn_mejor_precio.TabIndex = 30;
-            btn_mejor_precio.Text = "Mejor precio";
-            btn_mejor_precio.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_mejor_precio.UseVisualStyleBackColor = true;
-            btn_mejor_precio.Click += btn_mejor_precio_Click;
             // 
             // Clientes
             // 

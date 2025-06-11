@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Productos));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Productos));
             panel1 = new Panel();
+            btn_importar = new Button();
             btn_promociones = new Button();
             btn_lista_precios = new Button();
             cbx_tipo_filtro = new ComboBox();
@@ -59,7 +60,6 @@
             cl_marca = new DataGridViewTextBoxColumn();
             cl_categoria = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
-            btn_importar = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -86,6 +86,21 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1148, 56);
             panel1.TabIndex = 1;
+            // 
+            // btn_importar
+            // 
+            btn_importar.Enabled = false;
+            btn_importar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_importar.FlatStyle = FlatStyle.Flat;
+            btn_importar.Image = (Image)resources.GetObject("btn_importar.Image");
+            btn_importar.Location = new Point(553, 3);
+            btn_importar.Name = "btn_importar";
+            btn_importar.Size = new Size(111, 45);
+            btn_importar.TabIndex = 13;
+            btn_importar.Text = "Importar";
+            btn_importar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_importar.UseVisualStyleBackColor = true;
+            btn_importar.Click += btn_importar_Click;
             // 
             // btn_promociones
             // 
@@ -160,6 +175,7 @@
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 6;
+            txt_buscar.KeyPress += txt_buscar_KeyPress;
             // 
             // btn_buscar_ra
             // 
@@ -343,21 +359,6 @@
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
-            // 
-            // btn_importar
-            // 
-            btn_importar.Enabled = false;
-            btn_importar.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_importar.FlatStyle = FlatStyle.Flat;
-            btn_importar.Image = (Image)resources.GetObject("btn_importar.Image");
-            btn_importar.Location = new Point(553, 3);
-            btn_importar.Name = "btn_importar";
-            btn_importar.Size = new Size(111, 45);
-            btn_importar.TabIndex = 13;
-            btn_importar.Text = "Importar";
-            btn_importar.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_importar.UseVisualStyleBackColor = true;
-            btn_importar.Click += btn_importar_Click;
             // 
             // Productos
             // 

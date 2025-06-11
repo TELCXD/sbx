@@ -40,6 +40,8 @@
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
+            cbx_parametro_tipo_filtro_producto = new ComboBox();
+            label7 = new Label();
             cbx_Buscarenventapor = new ComboBox();
             label6 = new Label();
             txt_ruta_backup = new TextBox();
@@ -136,6 +138,8 @@
             // 
             // TabParametros
             // 
+            TabParametros.Controls.Add(cbx_parametro_tipo_filtro_producto);
+            TabParametros.Controls.Add(label7);
             TabParametros.Controls.Add(cbx_Buscarenventapor);
             TabParametros.Controls.Add(label6);
             TabParametros.Controls.Add(txt_ruta_backup);
@@ -156,6 +160,25 @@
             TabParametros.TabIndex = 1;
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
+            // 
+            // cbx_parametro_tipo_filtro_producto
+            // 
+            cbx_parametro_tipo_filtro_producto.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_parametro_tipo_filtro_producto.FormattingEnabled = true;
+            cbx_parametro_tipo_filtro_producto.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
+            cbx_parametro_tipo_filtro_producto.Location = new Point(253, 160);
+            cbx_parametro_tipo_filtro_producto.Name = "cbx_parametro_tipo_filtro_producto";
+            cbx_parametro_tipo_filtro_producto.Size = new Size(121, 25);
+            cbx_parametro_tipo_filtro_producto.TabIndex = 15;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(8, 165);
+            label7.Name = "label7";
+            label7.Size = new Size(131, 17);
+            label7.TabIndex = 14;
+            label7.Text = "Tipo filtro producto";
             // 
             // cbx_Buscarenventapor
             // 
@@ -179,14 +202,14 @@
             // txt_ruta_backup
             // 
             txt_ruta_backup.Enabled = false;
-            txt_ruta_backup.Location = new Point(253, 217);
+            txt_ruta_backup.Location = new Point(253, 249);
             txt_ruta_backup.Name = "txt_ruta_backup";
             txt_ruta_backup.Size = new Size(223, 23);
             txt_ruta_backup.TabIndex = 11;
             // 
             // txt_impresora
             // 
-            txt_impresora.Location = new Point(253, 188);
+            txt_impresora.Location = new Point(253, 220);
             txt_impresora.Name = "txt_impresora";
             txt_impresora.Size = new Size(223, 23);
             txt_impresora.TabIndex = 10;
@@ -194,7 +217,7 @@
             // txt_ancho_tirilla
             // 
             txt_ancho_tirilla.Enabled = false;
-            txt_ancho_tirilla.Location = new Point(253, 159);
+            txt_ancho_tirilla.Location = new Point(253, 191);
             txt_ancho_tirilla.Name = "txt_ancho_tirilla";
             txt_ancho_tirilla.Size = new Size(223, 23);
             txt_ancho_tirilla.TabIndex = 9;
@@ -223,7 +246,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(8, 223);
+            label4.Location = new Point(8, 255);
             label4.Name = "label4";
             label4.Size = new Size(92, 17);
             label4.TabIndex = 6;
@@ -232,7 +255,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(8, 194);
+            label3.Location = new Point(8, 226);
             label3.Name = "label3";
             label3.Size = new Size(72, 17);
             label3.TabIndex = 5;
@@ -241,7 +264,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(8, 165);
+            label2.Location = new Point(8, 197);
             label2.Name = "label2";
             label2.Size = new Size(84, 17);
             label2.TabIndex = 4;
@@ -478,13 +501,12 @@
             // btn_buscar_ra
             // 
             btn_buscar_ra.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_buscar_ra.FlatAppearance.BorderSize = 0;
             btn_buscar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_ra.FlatStyle = FlatStyle.Flat;
             btn_buscar_ra.Image = (Image)resources.GetObject("btn_buscar_ra.Image");
-            btn_buscar_ra.Location = new Point(794, 3);
+            btn_buscar_ra.Location = new Point(809, 12);
             btn_buscar_ra.Name = "btn_buscar_ra";
-            btn_buscar_ra.Size = new Size(42, 45);
+            btn_buscar_ra.Size = new Size(26, 26);
             btn_buscar_ra.TabIndex = 5;
             btn_buscar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar_ra.UseVisualStyleBackColor = true;
@@ -507,7 +529,7 @@
             // textBox1
             // 
             textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(597, 14);
+            textBox1.Location = new Point(612, 14);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(191, 23);
             textBox1.TabIndex = 2;
@@ -711,7 +733,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(503, 14);
+            cbx_tipo_filtro.Location = new Point(532, 14);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 25);
             cbx_tipo_filtro.TabIndex = 33;
@@ -722,7 +744,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre usuario", "Id usuario" });
-            cbx_campo_filtro.Location = new Point(383, 14);
+            cbx_campo_filtro.Location = new Point(412, 14);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 25);
             cbx_campo_filtro.TabIndex = 32;
@@ -730,13 +752,12 @@
             // btn_buscar_usuario
             // 
             btn_buscar_usuario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_buscar_usuario.FlatAppearance.BorderSize = 0;
             btn_buscar_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_usuario.FlatStyle = FlatStyle.Flat;
             btn_buscar_usuario.Image = (Image)resources.GetObject("btn_buscar_usuario.Image");
-            btn_buscar_usuario.Location = new Point(793, 3);
+            btn_buscar_usuario.Location = new Point(808, 12);
             btn_buscar_usuario.Name = "btn_buscar_usuario";
-            btn_buscar_usuario.Size = new Size(42, 45);
+            btn_buscar_usuario.Size = new Size(26, 26);
             btn_buscar_usuario.TabIndex = 31;
             btn_buscar_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar_usuario.UseVisualStyleBackColor = true;
@@ -745,7 +766,7 @@
             // txt_buscar_usuario
             // 
             txt_buscar_usuario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar_usuario.Location = new Point(596, 14);
+            txt_buscar_usuario.Location = new Point(625, 14);
             txt_buscar_usuario.Name = "txt_buscar_usuario";
             txt_buscar_usuario.Size = new Size(177, 23);
             txt_buscar_usuario.TabIndex = 30;
@@ -806,10 +827,10 @@
             // 
             tabPage5.Controls.Add(dtg_permisos);
             tabPage5.Controls.Add(panel4);
-            tabPage5.Location = new Point(4, 24);
+            tabPage5.Location = new Point(4, 26);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(849, 488);
+            tabPage5.Size = new Size(849, 486);
             tabPage5.TabIndex = 2;
             tabPage5.Text = "Permisos";
             tabPage5.UseVisualStyleBackColor = true;
@@ -850,7 +871,7 @@
             dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
             dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_permisos.Size = new Size(843, 427);
+            dtg_permisos.Size = new Size(843, 425);
             dtg_permisos.TabIndex = 140;
             // 
             // cl_idUserMenu
@@ -943,7 +964,7 @@
             // 
             txt_busca_usuario.Anchor = AnchorStyles.Top;
             txt_busca_usuario.Enabled = false;
-            txt_busca_usuario.Location = new Point(504, 14);
+            txt_busca_usuario.Location = new Point(532, 14);
             txt_busca_usuario.Name = "txt_busca_usuario";
             txt_busca_usuario.Size = new Size(268, 23);
             txt_busca_usuario.TabIndex = 135;
@@ -954,7 +975,7 @@
             btn_busca_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_busca_usuario.FlatStyle = FlatStyle.Flat;
             btn_busca_usuario.Image = (Image)resources.GetObject("btn_busca_usuario.Image");
-            btn_busca_usuario.Location = new Point(792, 12);
+            btn_busca_usuario.Location = new Point(808, 12);
             btn_busca_usuario.Name = "btn_busca_usuario";
             btn_busca_usuario.Size = new Size(26, 26);
             btn_busca_usuario.TabIndex = 136;
@@ -965,7 +986,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(444, 17);
+            label5.Location = new Point(472, 17);
             label5.Name = "label5";
             label5.Size = new Size(54, 17);
             label5.TabIndex = 137;
@@ -1089,5 +1110,7 @@
         private ComboBox comboBox1;
         private Label label6;
         private ComboBox cbx_Buscarenventapor;
+        private ComboBox cbx_parametro_tipo_filtro_producto;
+        private Label label7;
     }
 }

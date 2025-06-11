@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.Parametros;
 
 namespace sbx
 {
@@ -10,12 +11,14 @@ namespace sbx
         private Salidas? _Salidas;
         private readonly IServiceProvider _serviceProvider;
         private readonly IEntradaInventario _IEntradaInventario;
+        private readonly IParametros _IParametros;
 
-        public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario)
+        public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IEntradaInventario = entradaInventario;
+            _IParametros = iParametros;
         }
 
         public dynamic? Permisos
@@ -24,11 +27,21 @@ namespace sbx
             set => _Permisos = value;
         }
 
-        private void Inventario_Load(object sender, EventArgs e)
+        private async void Inventario_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
             cbx_campo_filtro.SelectedIndex = 0;
-            cbx_tipo_filtro.SelectedIndex = 0;
+
+            var DataParametros = await _IParametros.List("Tipo filtro producto");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    string BuscarPor = DataParametros.Data[0].Value;
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
+            }
         }
 
         private void ValidaPermisos()
@@ -68,12 +81,18 @@ namespace sbx
         private async Task ConsultaInventario()
         {
             errorProvider1.Clear();
+            btn_buscar.Enabled = false;
+            txt_buscar.Enabled = false;
+            this.Cursor = Cursors.WaitCursor;
             if (cbx_campo_filtro.Text == "Id")
             {
                 bool esNumerico = int.TryParse(txt_buscar.Text, out int valor);
                 if (!esNumerico)
                 {
                     errorProvider1.SetError(txt_buscar, "Ingrese un valor numerico");
+                    btn_buscar.Enabled = true;
+                    txt_buscar.Enabled = true;
+                    this.Cursor = Cursors.Default;
                     return;
                 }
             }
@@ -90,9 +109,9 @@ namespace sbx
 
                     foreach (var item in resp.Data)
                     {
-                        if (item.TipoMovimiento == "Entrada") 
-                        { TotalStock += item.Cantidad; } 
-                        else if(item.TipoMovimiento == "Salida") 
+                        if (item.TipoMovimiento == "Entrada")
+                        { TotalStock += item.Cantidad; }
+                        else if (item.TipoMovimiento == "Salida")
                         { TotalStock -= item.Cantidad; }
                         else if (item.TipoMovimiento == "Salida por Venta")
                         { TotalStock -= item.Cantidad; }
@@ -117,6 +136,10 @@ namespace sbx
                     txt_total_stock.Text = TotalStock.ToString();
                 }
             }
+
+            this.Cursor = Cursors.Default;
+            btn_buscar.Enabled = true;
+            txt_buscar.Enabled = true;
         }
 
         private async void btn_buscar_Click(object sender, EventArgs e)
@@ -133,6 +156,15 @@ namespace sbx
                 _Salidas.FormClosed += (s, args) => _Salidas = null;
                 _Salidas.ShowDialog();
             }
+        }
+
+        private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Enter
+            if (e.KeyChar == (char)13)
+            {
+                await ConsultaInventario();
+            }    
         }
     }
 }
