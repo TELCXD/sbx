@@ -41,9 +41,7 @@
             cbx_campo_filtro = new ComboBox();
             btn_buscar = new Button();
             txt_buscar = new TextBox();
-            btn_buscar_ra = new Button();
             btn_eliminar = new Button();
-            textBox1 = new TextBox();
             btn_editar = new Button();
             btn_agregar = new Button();
             dtg_producto = new DataGridView();
@@ -76,9 +74,7 @@
             panel1.Controls.Add(cbx_campo_filtro);
             panel1.Controls.Add(btn_buscar);
             panel1.Controls.Add(txt_buscar);
-            panel1.Controls.Add(btn_buscar_ra);
             panel1.Controls.Add(btn_eliminar);
-            panel1.Controls.Add(textBox1);
             panel1.Controls.Add(btn_editar);
             panel1.Controls.Add(btn_agregar);
             panel1.Dock = DockStyle.Top;
@@ -177,20 +173,6 @@
             txt_buscar.TabIndex = 6;
             txt_buscar.KeyPress += txt_buscar_KeyPress;
             // 
-            // btn_buscar_ra
-            // 
-            btn_buscar_ra.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_buscar_ra.FlatAppearance.BorderSize = 0;
-            btn_buscar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_buscar_ra.FlatStyle = FlatStyle.Flat;
-            btn_buscar_ra.Image = (Image)resources.GetObject("btn_buscar_ra.Image");
-            btn_buscar_ra.Location = new Point(1738, 3);
-            btn_buscar_ra.Name = "btn_buscar_ra";
-            btn_buscar_ra.Size = new Size(42, 45);
-            btn_buscar_ra.TabIndex = 5;
-            btn_buscar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_buscar_ra.UseVisualStyleBackColor = true;
-            // 
             // btn_eliminar
             // 
             btn_eliminar.Enabled = false;
@@ -204,15 +186,7 @@
             btn_eliminar.Text = "Eliminar";
             btn_eliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(1541, 14);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(191, 23);
-            textBox1.TabIndex = 2;
-            // 
+            //            
             // btn_editar
             // 
             btn_editar.Enabled = false;
@@ -384,9 +358,7 @@
         #endregion
 
         private Panel panel1;
-        private Button btn_buscar_ra;
         private Button btn_eliminar;
-        private TextBox textBox1;
         private Button btn_editar;
         private Button btn_agregar;
         private DataGridView dtg_producto;
