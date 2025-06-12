@@ -31,8 +31,6 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Tienda));
             panel3 = new Panel();
-            button1 = new Button();
-            textBox3 = new TextBox();
             btn_guardar = new Button();
             panel4 = new Panel();
             cbx_tipo_documento = new ComboBox();
@@ -77,37 +75,13 @@
             // 
             panel3.BackColor = SystemColors.Window;
             panel3.BorderStyle = BorderStyle.Fixed3D;
-            panel3.Controls.Add(button1);
-            panel3.Controls.Add(textBox3);
             panel3.Controls.Add(btn_guardar);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
             panel3.Size = new Size(724, 56);
             panel3.TabIndex = 2;
-            // 
-            // button1
-            // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatAppearance.MouseDownBackColor = Color.Gray;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Image = (Image)resources.GetObject("button1.Image");
-            button1.Location = new Point(1964, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(42, 45);
-            button1.TabIndex = 5;
-            button1.TextImageRelation = TextImageRelation.ImageBeforeText;
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // textBox3
-            // 
-            textBox3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox3.Location = new Point(1767, 14);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(191, 23);
-            textBox3.TabIndex = 2;
-            // 
+            //             
             // btn_guardar
             // 
             btn_guardar.Enabled = false;
@@ -474,8 +448,6 @@
         #endregion
 
         private Panel panel3;
-        private Button button1;
-        private TextBox textBox3;
         private Button btn_guardar;
         private Panel panel4;
         private Button btn_cargar;

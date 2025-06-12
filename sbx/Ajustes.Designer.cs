@@ -55,8 +55,6 @@
             label1 = new Label();
             lbl_valida_stock = new Label();
             panel2 = new Panel();
-            button1 = new Button();
-            textBox2 = new TextBox();
             btn_guardar_parametros = new Button();
             tabPage1 = new TabPage();
             tabControl2 = new TabControl();
@@ -74,7 +72,6 @@
             panel1 = new Panel();
             btn_buscar_ra = new Button();
             btn_eliminar_ra = new Button();
-            textBox1 = new TextBox();
             btn_editar_ra = new Button();
             btn_agregar_ra = new Button();
             Usuarios = new TabControl();
@@ -291,37 +288,13 @@
             // panel2
             // 
             panel2.BorderStyle = BorderStyle.Fixed3D;
-            panel2.Controls.Add(button1);
-            panel2.Controls.Add(textBox2);
             panel2.Controls.Add(btn_guardar_parametros);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(3, 3);
             panel2.Name = "panel2";
             panel2.Size = new Size(857, 56);
             panel2.TabIndex = 1;
-            // 
-            // button1
-            // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatAppearance.MouseDownBackColor = Color.Gray;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Image = (Image)resources.GetObject("button1.Image");
-            button1.Location = new Point(1447, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(42, 45);
-            button1.TabIndex = 5;
-            button1.TextImageRelation = TextImageRelation.ImageBeforeText;
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // textBox2
-            // 
-            textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox2.Location = new Point(1250, 14);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(191, 23);
-            textBox2.TabIndex = 2;
-            // 
+            //
             // btn_guardar_parametros
             // 
             btn_guardar_parametros.Enabled = false;
@@ -489,7 +462,6 @@
             panel1.BorderStyle = BorderStyle.Fixed3D;
             panel1.Controls.Add(btn_buscar_ra);
             panel1.Controls.Add(btn_eliminar_ra);
-            panel1.Controls.Add(textBox1);
             panel1.Controls.Add(btn_editar_ra);
             panel1.Controls.Add(btn_agregar_ra);
             panel1.Dock = DockStyle.Top;
@@ -525,15 +497,7 @@
             btn_eliminar_ra.Text = "Eliminar";
             btn_eliminar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar_ra.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(612, 14);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(191, 23);
-            textBox1.TabIndex = 2;
-            // 
+            //            
             // btn_editar_ra
             // 
             btn_editar_ra.Enabled = false;
@@ -1041,7 +1005,6 @@
         private Panel panel1;
         private Button btn_buscar_ra;
         private Button btn_eliminar_ra;
-        private TextBox textBox1;
         private Button btn_editar_ra;
         private Button btn_agregar_ra;
         private TabControl Usuarios;
@@ -1055,8 +1018,6 @@
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
         private DataGridViewTextBoxColumn cl_numero_actual;
         private Panel panel2;
-        private Button button1;
-        private TextBox textBox2;
         private Button btn_guardar_parametros;
         private Label lbl_valida_stock;
         private Label label2;
