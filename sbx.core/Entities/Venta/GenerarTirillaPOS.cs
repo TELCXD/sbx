@@ -79,7 +79,7 @@ namespace sbx.core.Entities.Venta
 
             // Pie de página
             sb.AppendLine(CentrarTexto("GRACIAS POR SU COMPRA"));
-            sb.AppendLine(CentrarTexto("VUELVA PRONTO"));
+            sb.AppendLine(CentrarTexto("PARTES ELÉCTRICAS NO TIENEN CAMBIÓ"));
             sb.AppendLine();
             sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
             sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
