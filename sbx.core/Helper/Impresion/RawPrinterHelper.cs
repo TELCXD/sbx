@@ -78,13 +78,20 @@ namespace sbx.core.Helper.Impresion
 
         public static bool SendStringToPrinter(string Impresora, string tirilla)
         {
+            string initPrinter = "\x1B\x40";
+
+            string feedBottom = "\x1B\x64\x09";
+
+            /// Construye tirilla final
+            string tirillaFinal = initPrinter + tirilla + feedBottom;
+
             IntPtr pBytes;
             Int32 dwCount;
             // How many characters are in the string?
-            dwCount = tirilla.Length;
+            dwCount = tirillaFinal.Length;
             // Assume that the printer is expecting ANSI text, and then convert
             // the string to ANSI text.
-            pBytes = Marshal.StringToCoTaskMemAnsi(tirilla);
+            pBytes = Marshal.StringToCoTaskMemAnsi(tirillaFinal);
             // Send the converted ANSI string to the printer.
             SendBytesToPrinter(Impresora, pBytes, dwCount);
             Marshal.FreeCoTaskMem(pBytes);
