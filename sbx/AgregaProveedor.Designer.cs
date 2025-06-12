@@ -31,8 +31,6 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregaProveedor));
             panel3 = new Panel();
-            button1 = new Button();
-            textBox1 = new TextBox();
             btn_guardar = new Button();
             label10 = new Label();
             txt_direccion = new TextBox();
@@ -57,37 +55,13 @@
             // 
             panel3.BackColor = SystemColors.Window;
             panel3.BorderStyle = BorderStyle.Fixed3D;
-            panel3.Controls.Add(button1);
-            panel3.Controls.Add(textBox1);
             panel3.Controls.Add(btn_guardar);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
             panel3.Size = new Size(702, 56);
             panel3.TabIndex = 62;
-            // 
-            // button1
-            // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatAppearance.MouseDownBackColor = Color.Gray;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Image = (Image)resources.GetObject("button1.Image");
-            button1.Location = new Point(2960, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(42, 45);
-            button1.TabIndex = 5;
-            button1.TextImageRelation = TextImageRelation.ImageBeforeText;
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(2763, 14);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(191, 23);
-            textBox1.TabIndex = 2;
-            // 
+            //           
             // btn_guardar
             // 
             btn_guardar.Enabled = false;
@@ -267,9 +241,7 @@
 
         #endregion
 
-        private Panel panel3;
-        private Button button1;
-        private TextBox textBox1;
+        private Panel panel3;     
         private Button btn_guardar;
         private Label label10;
         private TextBox txt_direccion;
