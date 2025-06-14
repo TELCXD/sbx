@@ -340,6 +340,8 @@ namespace sbx.repositories.Producto
                     string Where = "";
                     string Filtro = "";
 
+                    string[] DatoSeparado = dato.Split('+');
+
                     switch (tipoFiltro)
                     {
                         case "Inicia con":
@@ -388,7 +390,15 @@ namespace sbx.repositories.Producto
                             switch (campoFiltro)
                             {
                                 case "Nombre":
-                                    Where = $"WHERE REPLACE(A.Nombre, ' ', '') LIKE REPLACE(@Filtro, ' ', '') ";
+                                    Where = $"WHERE  ";
+
+                                    foreach (string parte in DatoSeparado)
+                                    {
+                                        Where += $" REPLACE(A.Nombre, ' ', '') LIKE REPLACE('%{parte}%', ' ', '') AND ";
+                                    }
+
+                                    string conversion = Where.Substring(0, Where.Length - 4);
+                                    Where = conversion;
                                     break;
                                 case "Id":
                                     Where = $"WHERE A.IdProducto LIKE @Filtro ";
