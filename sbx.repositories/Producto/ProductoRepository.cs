@@ -346,7 +346,7 @@ namespace sbx.repositories.Producto
                             switch (campoFiltro)
                             {
                                 case "Nombre":
-                                    Where = $"WHERE A.Nombre LIKE @Filtro ";
+                                    Where = $"WHERE REPLACE(A.Nombre, ' ', '') LIKE REPLACE(@Filtro, ' ', '') ";
                                     break;
                                 case "Id":
                                     Where = $"WHERE A.IdProducto LIKE @Filtro ";
@@ -367,7 +367,7 @@ namespace sbx.repositories.Producto
                             switch (campoFiltro)
                             {
                                 case "Nombre":
-                                    Where = $"WHERE A.Nombre = @Filtro ";
+                                    Where = $"WHERE REPLACE(A.Nombre, ' ', '') = REPLACE(@Filtro, ' ', '') ";
                                     break;
                                 case "Id":
                                     Where = $"WHERE A.IdProducto = @Filtro ";
@@ -388,7 +388,7 @@ namespace sbx.repositories.Producto
                             switch (campoFiltro)
                             {
                                 case "Nombre":
-                                    Where = $"WHERE A.Nombre LIKE @Filtro ";
+                                    Where = $"WHERE REPLACE(A.Nombre, ' ', '') LIKE REPLACE(@Filtro, ' ', '') ";
                                     break;
                                 case "Id":
                                     Where = $"WHERE A.IdProducto LIKE @Filtro ";
@@ -409,7 +409,7 @@ namespace sbx.repositories.Producto
                             break;
                     }
 
-                    sql += Where;
+                    sql += Where + " ORDER BY REPLACE(A.Nombre, ' ', '') ";
 
                     dynamic resultado = await connection.QueryAsync(sql, new { Filtro });
 
