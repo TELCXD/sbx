@@ -170,6 +170,7 @@
             Controls.Add(btn_busca_producto);
             Controls.Add(txt_producto);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "AddProductoListaPrecio";
             StartPosition = FormStartPosition.CenterScreen;

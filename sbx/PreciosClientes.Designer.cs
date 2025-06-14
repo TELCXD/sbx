@@ -309,6 +309,7 @@
             ClientSize = new Size(1134, 450);
             Controls.Add(dtg_cliente_precio);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(1150, 489);
             MinimumSize = new Size(1150, 489);

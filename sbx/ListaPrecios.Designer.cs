@@ -238,6 +238,7 @@
             ClientSize = new Size(814, 450);
             Controls.Add(dtg_lista_precios);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "ListaPrecios";
             StartPosition = FormStartPosition.CenterScreen;

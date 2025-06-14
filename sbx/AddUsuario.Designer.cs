@@ -312,6 +312,7 @@
             Controls.Add(label7);
             Controls.Add(txt_nombre);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(697, 418);
             MinimumSize = new Size(697, 418);

@@ -732,3 +732,57 @@ UpdateDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
 )
+GO
+CREATE TABLE T_Ventas_Suspendidas(
+IdVenta_Suspendidas INT IDENTITY(1,1) PRIMARY KEY,
+IdListaPrecio INT,
+IdCliente INT,
+IdVendedor INT,
+IdMetodoPago INT,
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+IdUserActionNotaCredito INT,
+FOREIGN KEY (IdListaPrecio) REFERENCES T_ListasPrecios(IdListaPrecio),
+FOREIGN KEY (IdCliente) REFERENCES T_Cliente(IdCliente),
+FOREIGN KEY (IdVendedor) REFERENCES T_Vendedor(IdVendedor),
+FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
+FOREIGN KEY(IdUserActionNotaCredito) REFERENCES T_User(IdUser)
+)
+GO
+CREATE TABLE T_DetalleVenta_Suspendidas(
+IdDetalleVenta_Suspendidas INT IDENTITY(1,1) PRIMARY KEY,
+IdVenta_Suspendidas INT,
+IdProducto INT,
+Sku VARCHAR(50),
+CodigoBarras VARCHAR(50),
+NombreProducto VARCHAR(MAX) NOT NULL,
+Cantidad DECIMAL(10,2) NOT NULL,
+UnidadMedida VARCHAR(50),
+PrecioUnitario DECIMAL(10,2) NOT NULL,
+CostoUnitario DECIMAL(10,2) NOT NULL,
+Descuento DECIMAL(10,2),
+Impuesto DECIMAL(10,2) NOT NULL,
+CreationDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdVenta_Suspendidas) REFERENCES T_Ventas_Suspendidas(IdVenta_Suspendidas),
+FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)
+GO
+CREATE TABLE T_PagosVenta_Suspendidas (
+IdPagoVenta_Suspendidas INT IDENTITY(1,1) PRIMARY KEY,
+IdVenta_Suspendidas INT NOT NULL,
+IdMetodoPago INT NOT NULL,
+Recibido DECIMAL(10,2) NOT NULL,
+Monto DECIMAL(10,2) NOT NULL,
+Referencia VARCHAR(50) NULL, -- Número autorización, comprobante
+IdBanco INT NOT NULL,
+CreationDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdVenta_Suspendidas) REFERENCES T_Ventas_Suspendidas(IdVenta_Suspendidas),
+FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
+FOREIGN KEY (IdBanco) REFERENCES T_Bancos(IdBanco),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)

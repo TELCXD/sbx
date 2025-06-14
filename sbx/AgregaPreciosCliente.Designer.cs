@@ -264,6 +264,7 @@
             Controls.Add(btn_busca_cliente);
             Controls.Add(txt_documento_cliente);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "AgregaPreciosCliente";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AgregaPreciosCliente";

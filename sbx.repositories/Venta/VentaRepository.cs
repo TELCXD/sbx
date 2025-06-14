@@ -597,5 +597,273 @@ namespace sbx.repositories.Venta
                 }
             }
         }
+
+        public async Task<Response<dynamic>> CreateSuspendida(VentaSuspendidaEntitie ventaSuspendidaEntitie, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    string sql = "";
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sql = @$" INSERT INTO T_Ventas_Suspendidas (IdListaPrecio,IdCliente,IdVendedor,IdMetodoPago,CreationDate, IdUserAction)
+                                  VALUES(@IdListaPrecio,@IdCliente,@IdVendedor,@IdMetodoPago,@CreationDate,@IdUserAction);
+                                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                    var parametros = new
+                    {
+                        ventaSuspendidaEntitie.IdListaPrecio,
+                        ventaSuspendidaEntitie.IdCliente,
+                        ventaSuspendidaEntitie.IdVendedor,
+                        ventaSuspendidaEntitie.IdMetodoPago,
+                        CreationDate = FechaActual,
+                        IdUserAction = IdUser
+                    };
+
+                    int idVenta = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
+
+                    sql = @"INSERT INTO T_DetalleVenta_Suspendidas (
+                            IdVenta_Suspendidas, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            VALUES (@IdVenta_Suspendidas, @IdProducto, @Sku, @CodigoBarras,
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+
+                    foreach (var detalle in ventaSuspendidaEntitie.detalleVentasSuspendida)
+                    {
+                        await connection.ExecuteAsync(
+                            sql,
+                            new
+                            {
+                                IdVenta_Suspendidas = idVenta,
+                                detalle.IdProducto,
+                                detalle.Sku,
+                                detalle.CodigoBarras,
+                                detalle.NombreProducto,
+                                detalle.Cantidad,
+                                detalle.UnidadMedida,
+                                detalle.PrecioUnitario,
+                                detalle.CostoUnitario,
+                                detalle.Descuento,
+                                detalle.Impuesto,
+                                CreationDate = FechaActual,
+                                IdUserAction = IdUser
+                            },
+                            transaction
+                        );
+                    }
+
+                    sql = @"INSERT INTO T_PagosVenta_Suspendidas (
+                            IdVenta_Suspendidas, IdMetodoPago, Recibido, Monto, Referencia, IdBanco, CreationDate, IdUserAction)
+                            VALUES (@IdVenta_Suspendidas, @IdMetodoPago, @Recibido, @Monto, @Referencia, @IdBanco, @CreationDate, @IdUserAction)";
+
+                    foreach (var detallePago in ventaSuspendidaEntitie.pagosVentaSuspendida)
+                    {
+                        await connection.ExecuteAsync(
+                            sql,
+                            new
+                            {
+                                IdVenta_Suspendidas = idVenta,
+                                detallePago.IdMetodoPago,
+                                detallePago.Recibido,
+                                detallePago.Monto,
+                                detallePago.Referencia,
+                                detallePago.IdBanco,
+                                CreationDate = FechaActual,
+                                IdUserAction = IdUser
+                            },
+                            transaction
+                        );
+                    }
+
+                    await transaction.CommitAsync();
+
+                    response.Flag = true;
+                    response.Data = idVenta;
+                    response.Message = "Venta suspendida correctamente";
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> VentasSuspendidas(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                    A.IdVenta_Suspendidas,                                   
+                                    A.CreationDate FechaFactura,
+                                    A.IdUserAction IdUserActionFactura,
+                                    A.IdListaPrecio,
+                                    A.IdVendedor,
+                                    J.NumeroDocumento NumeroDocumentoVendedor,
+                                    J.Nombre NombreVendedor,
+                                    J.Apellido ApellidoVendedor,
+                                    CONCAT(J.Nombre,' ',J.Apellido) NombreCompletoVendedor, 
+                                    G.UserName UserNameFactura,
+                                    B.IdDetalleVenta_Suspendidas,
+                                    B.IdProducto,
+                                    B.Sku,
+                                    B.CodigoBarras,
+                                    B.UnidadMedida,
+                                    B.NombreProducto,
+                                    B.PrecioUnitario,
+                                    B.CostoUnitario,
+                                    B.Cantidad,
+                                    B.Descuento,
+                                    B.Impuesto,
+                                    B.CreationDate FechaDetalleFactura,
+                                    B.IdUserAction IdUserActionDetalleFactura,
+                                    A.IdCliente,
+                                    D.NumeroDocumento,
+                                    D.NombreRazonSocial,
+                                    A.IdMetodoPago,
+                                    F.Nombre NombreMetodoPago,
+                                    C.Referencia,
+                                    C.IdBanco,
+                                    E.Nombre NombreBanco,
+                                    C.Recibido,
+                                    C.Monto,
+                                    C.CreationDate FechaPagoFactura,
+                                    C.IdUserAction IdUserActionPagoFactura 
+                                    FROM T_Ventas_Suspendidas A
+                                    INNER JOIN T_DetalleVenta_Suspendidas B ON A.IdVenta_Suspendidas = B.IdVenta_Suspendidas
+                                    INNER JOIN T_PagosVenta_Suspendidas C ON A.IdVenta_Suspendidas = C.IdVenta_Suspendidas
+                                    INNER JOIN T_Cliente D ON A.IdCliente = D.IdCliente
+                                    INNER JOIN T_Bancos E ON C.IdBanco = E.IdBanco
+                                    INNER JOIN T_MetodoPago F ON F.IdMetodoPago = A.IdMetodoPago
+                                    INNER JOIN T_User G ON G.IdUser = A.IdUserAction
+                                    INNER JOIN T_Vendedor J ON J.IdVendedor = A.IdVendedor ";
+
+                    string Where = "";
+
+                    if (Id > 0)
+                    {
+                        Where = $"WHERE A.IdVenta_Suspendidas = {Id}";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListVentasSuspendidas()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT
+                                    A.IdVenta_Suspendidas,
+                                    A.CreationDate,
+                                    A.IdCliente,
+                                    B.NumeroDocumento,
+                                    B.NombreRazonSocial
+                                    FROM T_Ventas_Suspendidas A
+                                    INNER JOIN T_Cliente B ON A.IdCliente = B.IdCliente ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> EliminarVentasSuspendidas(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    string sql = $@"DELETE FROM T_PagosVenta_Suspendidas WHERE IdVenta_Suspendidas = {Id} ";
+
+                    int filasAfectadas = await connection.ExecuteAsync(sql,null, transaction);
+
+                    if (filasAfectadas > 0)
+                    {
+                        sql = $@"DELETE FROM T_DetalleVenta_Suspendidas WHERE IdVenta_Suspendidas = {Id} ";
+
+                        filasAfectadas = await connection.ExecuteAsync(sql,null, transaction);
+
+                        if (filasAfectadas > 0)
+                        {
+                            sql = $@"DELETE FROM T_Ventas_Suspendidas WHERE IdVenta_Suspendidas = {Id} ";
+
+                            filasAfectadas = await connection.ExecuteAsync(sql, null, transaction);
+
+                            if (filasAfectadas > 0) 
+                            {
+                                await transaction.CommitAsync();
+
+                                response.Flag = true;
+                                response.Message = "Proceso realizado correctamente";
+                            }
+                        }
+                    }
+
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

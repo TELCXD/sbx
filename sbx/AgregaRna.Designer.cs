@@ -287,6 +287,7 @@
             ClientSize = new Size(723, 316);
             Controls.Add(panel4);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(739, 355);
             MinimumSize = new Size(739, 355);

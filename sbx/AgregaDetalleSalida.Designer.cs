@@ -277,6 +277,7 @@
             Controls.Add(label1);
             Controls.Add(txt_producto);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(689, 299);
             MinimumSize = new Size(689, 299);

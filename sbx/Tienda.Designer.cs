@@ -81,7 +81,7 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(724, 56);
             panel3.TabIndex = 2;
-            //             
+            // 
             // btn_guardar
             // 
             btn_guardar.Enabled = false;
@@ -429,6 +429,7 @@
             ClientSize = new Size(724, 552);
             Controls.Add(panel4);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(740, 591);
             MinimumSize = new Size(740, 591);
@@ -437,7 +438,6 @@
             Text = "Tienda";
             Load += Tienda_Load;
             panel3.ResumeLayout(false);
-            panel3.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pbx_logo).EndInit();

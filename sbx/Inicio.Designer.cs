@@ -64,9 +64,8 @@
             panel1.Controls.Add(btn_venta);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 4, 3, 4);
             panel1.Name = "panel1";
-            panel1.Size = new Size(931, 86);
+            panel1.Size = new Size(815, 66);
             panel1.TabIndex = 0;
             // 
             // btn_reportes
@@ -79,10 +78,9 @@
             btn_reportes.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_reportes.ForeColor = SystemColors.ControlText;
             btn_reportes.Image = (Image)resources.GetObject("btn_reportes.Image");
-            btn_reportes.Location = new Point(797, 0);
-            btn_reportes.Margin = new Padding(3, 4, 3, 4);
+            btn_reportes.Location = new Point(697, 0);
             btn_reportes.Name = "btn_reportes";
-            btn_reportes.Size = new Size(96, 82);
+            btn_reportes.Size = new Size(84, 62);
             btn_reportes.TabIndex = 8;
             btn_reportes.Text = "Reportes";
             btn_reportes.TextAlign = ContentAlignment.BottomCenter;
@@ -101,10 +99,9 @@
             btn_caja.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_caja.ForeColor = SystemColors.ControlText;
             btn_caja.Image = (Image)resources.GetObject("btn_caja.Image");
-            btn_caja.Location = new Point(701, 0);
-            btn_caja.Margin = new Padding(3, 4, 3, 4);
+            btn_caja.Location = new Point(613, 0);
             btn_caja.Name = "btn_caja";
-            btn_caja.Size = new Size(96, 82);
+            btn_caja.Size = new Size(84, 62);
             btn_caja.TabIndex = 7;
             btn_caja.Text = "Caja";
             btn_caja.TextAlign = ContentAlignment.BottomCenter;
@@ -123,10 +120,9 @@
             btn_inventario.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_inventario.ForeColor = SystemColors.ControlText;
             btn_inventario.Image = (Image)resources.GetObject("btn_inventario.Image");
-            btn_inventario.Location = new Point(591, 0);
-            btn_inventario.Margin = new Padding(3, 4, 3, 4);
+            btn_inventario.Location = new Point(517, 0);
             btn_inventario.Name = "btn_inventario";
-            btn_inventario.Size = new Size(110, 82);
+            btn_inventario.Size = new Size(96, 62);
             btn_inventario.TabIndex = 6;
             btn_inventario.Text = "Inventario";
             btn_inventario.TextAlign = ContentAlignment.BottomCenter;
@@ -145,10 +141,9 @@
             btn_ajustes.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_ajustes.ForeColor = SystemColors.ControlText;
             btn_ajustes.Image = (Image)resources.GetObject("btn_ajustes.Image");
-            btn_ajustes.Location = new Point(495, 0);
-            btn_ajustes.Margin = new Padding(3, 4, 3, 4);
+            btn_ajustes.Location = new Point(433, 0);
             btn_ajustes.Name = "btn_ajustes";
-            btn_ajustes.Size = new Size(96, 82);
+            btn_ajustes.Size = new Size(84, 62);
             btn_ajustes.TabIndex = 5;
             btn_ajustes.Text = "Ajustes";
             btn_ajustes.TextAlign = ContentAlignment.BottomCenter;
@@ -167,10 +162,9 @@
             btn_producto.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_producto.ForeColor = SystemColors.ControlText;
             btn_producto.Image = (Image)resources.GetObject("btn_producto.Image");
-            btn_producto.Location = new Point(399, 0);
-            btn_producto.Margin = new Padding(3, 4, 3, 4);
+            btn_producto.Location = new Point(349, 0);
             btn_producto.Name = "btn_producto";
-            btn_producto.Size = new Size(96, 82);
+            btn_producto.Size = new Size(84, 62);
             btn_producto.TabIndex = 4;
             btn_producto.Text = "Producto";
             btn_producto.TextAlign = ContentAlignment.BottomCenter;
@@ -189,10 +183,9 @@
             btn_proveedor.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_proveedor.ForeColor = SystemColors.ControlText;
             btn_proveedor.Image = (Image)resources.GetObject("btn_proveedor.Image");
-            btn_proveedor.Location = new Point(288, 0);
-            btn_proveedor.Margin = new Padding(3, 4, 3, 4);
+            btn_proveedor.Location = new Point(252, 0);
             btn_proveedor.Name = "btn_proveedor";
-            btn_proveedor.Size = new Size(111, 82);
+            btn_proveedor.Size = new Size(97, 62);
             btn_proveedor.TabIndex = 3;
             btn_proveedor.Text = "Proveedor";
             btn_proveedor.TextAlign = ContentAlignment.BottomCenter;
@@ -211,10 +204,9 @@
             btn_tienda.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_tienda.ForeColor = SystemColors.ControlText;
             btn_tienda.Image = (Image)resources.GetObject("btn_tienda.Image");
-            btn_tienda.Location = new Point(192, 0);
-            btn_tienda.Margin = new Padding(3, 4, 3, 4);
+            btn_tienda.Location = new Point(168, 0);
             btn_tienda.Name = "btn_tienda";
-            btn_tienda.Size = new Size(96, 82);
+            btn_tienda.Size = new Size(84, 62);
             btn_tienda.TabIndex = 2;
             btn_tienda.Text = "Tienda";
             btn_tienda.TextAlign = ContentAlignment.BottomCenter;
@@ -233,10 +225,9 @@
             btn_cliente.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_cliente.ForeColor = SystemColors.ControlText;
             btn_cliente.Image = (Image)resources.GetObject("btn_cliente.Image");
-            btn_cliente.Location = new Point(96, 0);
-            btn_cliente.Margin = new Padding(3, 4, 3, 4);
+            btn_cliente.Location = new Point(84, 0);
             btn_cliente.Name = "btn_cliente";
-            btn_cliente.Size = new Size(96, 82);
+            btn_cliente.Size = new Size(84, 62);
             btn_cliente.TabIndex = 1;
             btn_cliente.Text = "Cliente";
             btn_cliente.TextAlign = ContentAlignment.BottomCenter;
@@ -256,9 +247,8 @@
             btn_venta.ForeColor = SystemColors.ControlText;
             btn_venta.Image = (Image)resources.GetObject("btn_venta.Image");
             btn_venta.Location = new Point(0, 0);
-            btn_venta.Margin = new Padding(3, 4, 3, 4);
             btn_venta.Name = "btn_venta";
-            btn_venta.Size = new Size(96, 82);
+            btn_venta.Size = new Size(84, 62);
             btn_venta.TabIndex = 0;
             btn_venta.Text = "Venta";
             btn_venta.TextAlign = ContentAlignment.BottomCenter;
@@ -273,10 +263,9 @@
             panel2.BorderStyle = BorderStyle.FixedSingle;
             panel2.Controls.Add(lbl_usuario);
             panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 568);
-            panel2.Margin = new Padding(3, 4, 3, 4);
+            panel2.Location = new Point(0, 426);
             panel2.Name = "panel2";
-            panel2.Size = new Size(931, 42);
+            panel2.Size = new Size(815, 32);
             panel2.TabIndex = 1;
             // 
             // lbl_usuario
@@ -284,9 +273,9 @@
             lbl_usuario.AutoSize = true;
             lbl_usuario.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lbl_usuario.ForeColor = SystemColors.ControlText;
-            lbl_usuario.Location = new Point(11, 8);
+            lbl_usuario.Location = new Point(10, 6);
             lbl_usuario.Name = "lbl_usuario";
-            lbl_usuario.Size = new Size(80, 21);
+            lbl_usuario.Size = new Size(62, 17);
             lbl_usuario.TabIndex = 0;
             lbl_usuario.Text = "Usuario: ";
             // 
@@ -294,10 +283,9 @@
             // 
             pictureBox1.Dock = DockStyle.Right;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(604, 0);
-            pictureBox1.Margin = new Padding(3, 4, 3, 4);
+            pictureBox1.Location = new Point(529, 0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(327, 360);
+            pictureBox1.Size = new Size(286, 270);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
@@ -306,22 +294,21 @@
             // 
             panel3.Controls.Add(pictureBox1);
             panel3.Dock = DockStyle.Bottom;
-            panel3.Location = new Point(0, 208);
-            panel3.Margin = new Padding(3, 4, 3, 4);
+            panel3.Location = new Point(0, 156);
             panel3.Name = "panel3";
-            panel3.Size = new Size(931, 360);
+            panel3.Size = new Size(815, 270);
             panel3.TabIndex = 3;
             // 
             // Inicio
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(931, 610);
+            ClientSize = new Size(815, 458);
             Controls.Add(panel3);
             Controls.Add(panel2);
             Controls.Add(panel1);
-            Margin = new Padding(3, 4, 3, 4);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Inicio";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inicio";
