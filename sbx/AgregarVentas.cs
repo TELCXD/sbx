@@ -61,6 +61,7 @@ namespace sbx
         private bool CajaAperturada = false;
         private AgregarNotaCredito? _AgregarNotaCredito;
         private AddPagosEfectivo? _AddPagosEfectivo;
+        private VentasSuspendidas? _VentasSuspendidas;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
@@ -150,6 +151,10 @@ namespace sbx
                     cbx_busca_por.Text = BuscarPor;
                 }
             }
+
+            ToolTip toolTip1 = new ToolTip();
+            toolTip1.SetToolTip(btn_suspender, "Suspender venta");
+            toolTip1.SetToolTip(btn_ventas_suspendidas, "Ver ventas suspendidas");
         }
 
         private void ValidaPermisos()
@@ -165,8 +170,8 @@ namespace sbx
                             btn_busca_producto.Enabled = item.ToRead == 1 ? true : false;
                             btn_nuevo_producto.Enabled = item.ToCreate == 1 ? true : false;
                             txt_busca_cliente.Enabled = item.ToRead == 1 ? true : false;
-                            //btn_ventas_suspendidas.Enabled = item.ToRead == 1 ? true : false;
-                            //btn_suspender.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_ventas_suspendidas.Enabled = item.ToRead == 1 ? true : false;
+                            btn_suspender.Enabled = item.ToCreate == 1 ? true : false;
                             btn_ver_ventas.Enabled = item.ToRead == 1 ? true : false;
                             btn_cancelar.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_busca_cliente.Enabled = item.ToRead == 1 ? true : false;
@@ -1046,29 +1051,96 @@ namespace sbx
             e.Handled = true;
         }
 
-        private void dtg_producto_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private async void dtg_producto_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == 5 || e.ColumnIndex == 6)
             {
                 var celda = dtg_producto[e.ColumnIndex, e.RowIndex];
+                decimal precio = 0;
+                decimal cantidad = 0;
+                decimal desc = 0;
+                decimal iva = 0;
+                decimal total = 0;
 
                 if (celda.Value == null || string.IsNullOrWhiteSpace(celda.Value.ToString()))
                 {
                     if (e.ColumnIndex == 5)
                     {
-                        celda.Value = 1;
+                        var celdaIdProducto = dtg_producto[0, e.RowIndex];
+                        var DataProducto = await _IProducto.List(Convert.ToInt32(celdaIdProducto.Value));
+                        if (DataProducto.Data != null)
+                        {
+                            if (DataProducto.Data.Count > 0)
+                            {
+                                var DataParametros = await _IParametros.List("Validar stock para venta");
+
+                                if (DataParametros.Data != null)
+                                {
+                                    if (DataParametros.Data.Count > 0)
+                                    {
+                                        string ValidaStock = DataParametros.Data[0].Value;
+                                        if (ValidaStock == "SI")
+                                        {
+                                            decimal Stock = DataProducto.Data[0].Stock;
+                                            if (Stock >= 1)
+                                            {
+                                                celda.Value = 1;
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show($"Producto sin Stock suficiente, Stock actual: {Stock}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                celda.Value = 1;
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            celda.Value = 1;
+                                        }
+
+                                        precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                        cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                        desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                        iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                                        total = CalcularTotal(precio, iva, desc);
+                                        total = total * cantidad;
+
+                                        dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
+                                        RecalcularTotal();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se encontro informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No se encontro informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
                     else if (e.ColumnIndex == 6)
                     {
                         celda.Value = 0;
                     }
 
-                    decimal precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
-                    decimal cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
-                    decimal desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
-                    decimal iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                    iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                    decimal total = CalcularTotal(precio, iva, desc);
+                    total = CalcularTotal(precio, iva, desc);
                     total = total * cantidad;
 
                     dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1077,22 +1149,120 @@ namespace sbx
                 }
                 else
                 {
-                    if (e.ColumnIndex == 5 && Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) <= 0)
+                    if (e.ColumnIndex == 5)
                     {
-                        celda.Value = 1;
+                        var celdaIdProducto = dtg_producto[0, e.RowIndex];
+                        var DataProducto = await _IProducto.List(Convert.ToInt32(celdaIdProducto.Value));
+                        if (DataProducto.Data != null)
+                        {
+                            if (DataProducto.Data.Count > 0)
+                            {
+                                var DataParametros = await _IParametros.List("Validar stock para venta");
+
+                                if (DataParametros.Data != null)
+                                {
+                                    if (DataParametros.Data.Count > 0)
+                                    {
+                                        string ValidaStock = DataParametros.Data[0].Value;
+                                        if (ValidaStock == "SI")
+                                        {
+                                            if (Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) <= 0)
+                                            {
+                                                celda.Value = 1;
+                                            }
+
+                                            decimal Stock = DataProducto.Data[0].Stock;
+                                            if (Stock >= Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")))
+                                            {
+                                                precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                                cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                                desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                                iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                                                total = CalcularTotal(precio, iva, desc);
+                                                total = total * cantidad;
+
+                                                dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
+                                                RecalcularTotal();
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show($"Producto sin Stock suficiente, Stock actual: {Stock}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                celda.Value = 1;
+
+                                                precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                                cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                                desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                                iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                                                total = CalcularTotal(precio, iva, desc);
+                                                total = total * cantidad;
+
+                                                dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
+                                                RecalcularTotal();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) <= 0)
+                                            {
+                                                celda.Value = 1;
+                                            }
+
+                                            precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                            cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                            desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                                            iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                                            total = CalcularTotal(precio, iva, desc);
+                                            total = total * cantidad;
+
+                                            dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
+                                            RecalcularTotal();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se encontro informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No se encontro informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
+                    else if (e.ColumnIndex == 6)
+                    {
+                        if (Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) < 0)
+                        {
+                            celda.Value = 0;
+                        }
 
-                    decimal precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
-                    decimal cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
-                    decimal desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
-                    decimal iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+                        precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                        cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                        desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                        iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                    decimal total = CalcularTotal(precio, iva, desc);
-                    total = total * cantidad;
+                        total = CalcularTotal(precio, iva, desc);
+                        total = total * cantidad;
 
-                    dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+                        dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
 
-                    RecalcularTotal();
+                        RecalcularTotal();
+                    }
                 }
             }
         }
@@ -1230,7 +1400,7 @@ namespace sbx
         {
             if (dtg_producto.Rows.Count > 0)
             {
-
+                GuardarVentaSuspendida();
             }
             else
             {
@@ -1667,7 +1837,246 @@ namespace sbx
                     _AddPagosEfectivo.Id_Pago = 0;
                     _AddPagosEfectivo.FormClosed += (s, args) => _AddPagosEfectivo = null;
                     _AddPagosEfectivo.ShowDialog();
-                } 
+                }
+            }
+        }
+
+        private async void GuardarVentaSuspendida()
+        {
+            VentaSuspendidaEntitie ventaSuspendidaEntitie = new VentaSuspendidaEntitie();
+
+            ventaSuspendidaEntitie.IdListaPrecio = Convert.ToInt32(cbx_lista_precio.SelectedValue);
+            ventaSuspendidaEntitie.IdCliente = agregaVentaEntitie.IdCliente;
+            ventaSuspendidaEntitie.IdVendedor = Convert.ToInt32(cbx_vendedor.SelectedValue);
+            ventaSuspendidaEntitie.IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue);
+
+            List<DetalleVentaSuspendidaEntitie> detalleVentaSuspendidaEntitie = new List<DetalleVentaSuspendidaEntitie>();
+
+            foreach (DataGridViewRow fila in dtg_producto.Rows)
+            {
+                DetalleVentaSuspendidaEntitie Detalle = new DetalleVentaSuspendidaEntitie
+                {
+                    IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
+                    Sku = fila.Cells["cl_sku"].Value?.ToString() ?? "",
+                    CodigoBarras = fila.Cells["cl_codigo_barras"].Value?.ToString() ?? "",
+                    UnidadMedida = fila.Cells["cl_unidad_medida"].Value?.ToString() ?? "",
+                    NombreProducto = fila.Cells["cl_nombre"].Value?.ToString() ?? "",
+                    Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
+                    PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
+                    Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
+                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")),
+                    CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
+                };
+
+                detalleVentaSuspendidaEntitie.Add(Detalle);
+            }
+
+            ventaSuspendidaEntitie.detalleVentasSuspendida = detalleVentaSuspendidaEntitie;
+
+            List<PagosVentaSuspendidaEntitie> pagosVentaEntities = new List<PagosVentaSuspendidaEntitie>();
+            PagosVentaSuspendidaEntitie pagosVentaEntitie = new PagosVentaSuspendidaEntitie
+            {
+                IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue),
+                Recibido = txt_valor_pago.Text.Trim() == "" ? 0: Convert.ToDecimal(txt_valor_pago.Text, new CultureInfo("es-CO")),
+                Monto = lbl_total.Text == "_" ? 0 :Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
+                Referencia = txt_referencia_pago.Text,
+                IdBanco = Convert.ToInt32(cbx_banco.SelectedValue)
+            };
+            pagosVentaEntities.Add(pagosVentaEntitie);
+            ventaSuspendidaEntitie.pagosVentaSuspendida = pagosVentaEntities;
+
+            var respGuardado = await _IVenta.CreateSuspendida(ventaSuspendidaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+            if (respGuardado != null)
+            {
+                if (respGuardado.Flag == true)
+                {
+                    Limpiar();
+                }
+                else
+                {
+                    MessageBox.Show(respGuardado.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se suspendio venta", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btn_ventas_suspendidas_Click(object sender, EventArgs e)
+        {
+            _VentasSuspendidas = _serviceProvider.GetRequiredService<VentasSuspendidas>();
+            _VentasSuspendidas.EnviaId += _Buscador_Id_Venta;
+            _VentasSuspendidas.FormClosed += (s, args) => _Buscador = null;
+            _VentasSuspendidas.ShowDialog();
+        }
+
+        private async void _Buscador_Id_Venta(int id)
+        {
+            decimal Cantidad = 0;
+            decimal Subtotal = 0;
+            decimal Descuento = 0;
+            decimal Impuesto = 0;
+            dtg_producto.Rows.Clear();
+
+            var respVentasSuspendidas = await _IVenta.VentasSuspendidas(id);
+
+            if (respVentasSuspendidas.Data != null)
+            {
+                if (respVentasSuspendidas.Data.Count > 0)
+                {
+                    cbx_lista_precio.SelectedValue = respVentasSuspendidas.Data[0].IdListaPrecio;
+
+                    cbx_vendedor.SelectedValue = respVentasSuspendidas.Data[0].IdVendedor;
+
+                    agregaVentaEntitie.IdCliente = Convert.ToInt32(respVentasSuspendidas.Data[0].IdCliente);
+                    txt_busca_cliente.Text = respVentasSuspendidas.Data[0].NumeroDocumento;
+                    lbl_nombre_cliente.Text = respVentasSuspendidas.Data[0].NombreRazonSocial;
+                    IdTipoCliente = Convert.ToInt32(respVentasSuspendidas.Data[0].IdTipoCliente);
+
+                    if (Convert.ToInt32(cbx_lista_precio.SelectedValue) > 1)
+                    {
+                        var resp = await _IListaPrecios.List(Convert.ToInt32(cbx_lista_precio.SelectedValue));
+                        if (resp.Data != null)
+                        {
+                            if (resp.Data.Count > 0)
+                            {
+                                if (IdTipoCliente != Convert.ToInt32(resp.Data[0].IdTipoCliente))
+                                {
+                                    MessageBox.Show($"La lista de precios {cbx_lista_precio.Text} no está disponible para el tipo de cliente asignado a {lbl_nombre_cliente.Text}.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    cbx_lista_precio.SelectedIndex = 0;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    var DataParametros = await _IParametros.List("Validar stock para venta");
+                    foreach (var item in respVentasSuspendidas.Data)
+                    {
+                        if (DataParametros.Data != null)
+                        {
+                            if (DataParametros.Data.Count > 0)
+                            {
+                                string ValidaStock = DataParametros.Data[0].Value;
+                                if (ValidaStock == "SI")
+                                {
+                                    var DataProducto = await _IProducto.List(item.IdProducto);
+                                    if (DataProducto.Data != null)
+                                    {
+                                        if (DataProducto.Data.Count > 0)
+                                        {
+                                            decimal Stock = DataProducto.Data[0].Stock;
+                                            if (Stock >= item.Cantidad)
+                                            {
+                                                decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+
+                                                dtg_producto.Rows.Add(
+                                                     item.IdProducto,
+                                                     item.Sku,
+                                                     item.CodigoBarras,
+                                                     item.NombreProducto,
+                                                     item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                     item.Cantidad.ToString(new CultureInfo("es-CO")),
+                                                     item.Descuento.ToString(new CultureInfo("es-CO")),
+                                                     item.Impuesto.ToString(new CultureInfo("es-CO")),
+                                                     Total.ToString("N2", new CultureInfo("es-CO")),
+                                                     item.UnidadMedida,
+                                                     item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} sin Stock suficiente para cantidad {item.Cantidad}, Stock Actual: {Stock}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                                else
+                                {
+                                    var DataProducto = await _IProducto.List(item.IdProducto);
+                                    if (DataProducto.Data != null)
+                                    {
+                                        if (DataProducto.Data.Count > 0)
+                                        {
+                                            decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+
+                                            dtg_producto.Rows.Add(
+                                                 item.IdProducto,
+                                                 item.Sku,
+                                                 item.CodigoBarras,
+                                                 item.NombreProducto,
+                                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                 item.Cantidad.ToString(new CultureInfo("es-CO")),
+                                                 item.Descuento.ToString(new CultureInfo("es-CO")),
+                                                 item.Impuesto.ToString(new CultureInfo("es-CO")),
+                                                 Total.ToString("N2", new CultureInfo("es-CO")),
+                                                 item.UnidadMedida,
+                                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (dtg_producto.Rows.Count > 0)
+                    {
+                        foreach (DataGridViewRow fila in dtg_producto.Rows)
+                        {
+                            Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                            Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                            SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                            Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                            DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                        }
+                        Total = (Subtotal - Descuento) + Impuesto;
+
+                        lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
+                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+
+                        cbx_lista_precio.Enabled = false;
+                        txt_busca_cliente.Enabled = false;
+                        btn_busca_cliente.Enabled = false;
+                        pnl_pagos.Enabled = true;
+
+                        cbx_medio_pago.SelectedIndex = 0;
+                        txt_referencia_pago.Text = "";
+                        cbx_banco.SelectedIndex = 0;
+                        txt_valor_pago.Text = "";
+                        lbl_cambio.Text = "_";
+
+                        ValidarModoPagos();
+                    }
+                    else
+                    {
+                        cbx_lista_precio.Enabled = true;
+                        txt_busca_cliente.Enabled = true;
+                        btn_busca_cliente.Enabled = true;
+                        pnl_pagos.Enabled = false;
+                        cbx_lista_precio.Enabled = true;
+                    }
+                }
             }
         }
     }

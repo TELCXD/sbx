@@ -63,7 +63,7 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(701, 56);
             panel3.TabIndex = 63;
-            //            
+            // 
             // btn_guardar
             // 
             btn_guardar.Enabled = false;
@@ -248,6 +248,7 @@
             Controls.Add(label7);
             Controls.Add(txt_nombre_razon_social);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(717, 387);
             MinimumSize = new Size(717, 387);
@@ -256,7 +257,6 @@
             Text = "AgregarCliente";
             Load += AgregarCliente_Load;
             panel3.ResumeLayout(false);
-            panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();

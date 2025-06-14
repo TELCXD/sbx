@@ -263,6 +263,7 @@
             ClientSize = new Size(914, 450);
             Controls.Add(dtg_proveedor);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimumSize = new Size(930, 489);
             Name = "Proveedores";

@@ -50,6 +50,17 @@
             btn_busca_producto = new Button();
             btn_nuevo_producto = new Button();
             dtg_producto = new DataGridView();
+            cl_idProducto = new DataGridViewTextBoxColumn();
+            cl_sku = new DataGridViewTextBoxColumn();
+            cl_codigo_barras = new DataGridViewTextBoxColumn();
+            cl_nombre = new DataGridViewTextBoxColumn();
+            cl_precio = new DataGridViewTextBoxColumn();
+            cl_cantidad = new DataGridViewTextBoxColumn();
+            cl_descuento = new DataGridViewTextBoxColumn();
+            cl_iva = new DataGridViewTextBoxColumn();
+            cl_total = new DataGridViewTextBoxColumn();
+            cl_unidad_medida = new DataGridViewTextBoxColumn();
+            cl_costo = new DataGridViewTextBoxColumn();
             btn_suspender = new Button();
             btn_cancelar = new Button();
             label3 = new Label();
@@ -81,17 +92,6 @@
             label20 = new Label();
             errorProvider1 = new ErrorProvider(components);
             btn_pagos_en_efectivo = new Button();
-            cl_idProducto = new DataGridViewTextBoxColumn();
-            cl_sku = new DataGridViewTextBoxColumn();
-            cl_codigo_barras = new DataGridViewTextBoxColumn();
-            cl_nombre = new DataGridViewTextBoxColumn();
-            cl_precio = new DataGridViewTextBoxColumn();
-            cl_cantidad = new DataGridViewTextBoxColumn();
-            cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
-            cl_total = new DataGridViewTextBoxColumn();
-            cl_unidad_medida = new DataGridViewTextBoxColumn();
-            cl_costo = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             panel3.SuspendLayout();
@@ -264,12 +264,13 @@
             btn_ventas_suspendidas.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_ventas_suspendidas.FlatStyle = FlatStyle.Flat;
             btn_ventas_suspendidas.Image = (Image)resources.GetObject("btn_ventas_suspendidas.Image");
-            btn_ventas_suspendidas.Location = new Point(751, 95);
+            btn_ventas_suspendidas.Location = new Point(773, 95);
             btn_ventas_suspendidas.Name = "btn_ventas_suspendidas";
             btn_ventas_suspendidas.Size = new Size(32, 26);
             btn_ventas_suspendidas.TabIndex = 3;
             btn_ventas_suspendidas.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_ventas_suspendidas.UseVisualStyleBackColor = true;
+            btn_ventas_suspendidas.Click += btn_ventas_suspendidas_Click;
             // 
             // txt_buscar_producto
             // 
@@ -352,13 +353,84 @@
             dtg_producto.EditingControlShowing += dtg_producto_EditingControlShowing;
             dtg_producto.KeyPress += dtg_producto_KeyPress;
             // 
+            // cl_idProducto
+            // 
+            cl_idProducto.HeaderText = "Id";
+            cl_idProducto.Name = "cl_idProducto";
+            cl_idProducto.ReadOnly = true;
+            cl_idProducto.Width = 50;
+            // 
+            // cl_sku
+            // 
+            cl_sku.HeaderText = "sku";
+            cl_sku.Name = "cl_sku";
+            cl_sku.ReadOnly = true;
+            // 
+            // cl_codigo_barras
+            // 
+            cl_codigo_barras.HeaderText = "Codigo b";
+            cl_codigo_barras.Name = "cl_codigo_barras";
+            cl_codigo_barras.ReadOnly = true;
+            cl_codigo_barras.Width = 150;
+            // 
+            // cl_nombre
+            // 
+            cl_nombre.HeaderText = "Nombre";
+            cl_nombre.Name = "cl_nombre";
+            cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 220;
+            // 
+            // cl_precio
+            // 
+            cl_precio.HeaderText = "Precio";
+            cl_precio.Name = "cl_precio";
+            cl_precio.ReadOnly = true;
+            cl_precio.Width = 150;
+            // 
+            // cl_cantidad
+            // 
+            cl_cantidad.HeaderText = "Cantidad";
+            cl_cantidad.Name = "cl_cantidad";
+            // 
+            // cl_descuento
+            // 
+            cl_descuento.HeaderText = "Desc %";
+            cl_descuento.Name = "cl_descuento";
+            cl_descuento.Width = 80;
+            // 
+            // cl_iva
+            // 
+            cl_iva.HeaderText = "Iva %";
+            cl_iva.Name = "cl_iva";
+            cl_iva.ReadOnly = true;
+            cl_iva.Width = 67;
+            // 
+            // cl_total
+            // 
+            cl_total.HeaderText = "Total";
+            cl_total.Name = "cl_total";
+            cl_total.ReadOnly = true;
+            cl_total.Width = 142;
+            // 
+            // cl_unidad_medida
+            // 
+            cl_unidad_medida.HeaderText = "UM";
+            cl_unidad_medida.Name = "cl_unidad_medida";
+            cl_unidad_medida.Visible = false;
+            // 
+            // cl_costo
+            // 
+            cl_costo.HeaderText = "Costo";
+            cl_costo.Name = "cl_costo";
+            cl_costo.Visible = false;
+            // 
             // btn_suspender
             // 
             btn_suspender.Enabled = false;
             btn_suspender.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_suspender.FlatStyle = FlatStyle.Flat;
             btn_suspender.Image = (Image)resources.GetObject("btn_suspender.Image");
-            btn_suspender.Location = new Point(789, 95);
+            btn_suspender.Location = new Point(807, 95);
             btn_suspender.Name = "btn_suspender";
             btn_suspender.Size = new Size(35, 26);
             btn_suspender.TabIndex = 4;
@@ -372,7 +444,7 @@
             btn_cancelar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_cancelar.FlatStyle = FlatStyle.Flat;
             btn_cancelar.Image = (Image)resources.GetObject("btn_cancelar.Image");
-            btn_cancelar.Location = new Point(968, 95);
+            btn_cancelar.Location = new Point(982, 95);
             btn_cancelar.Name = "btn_cancelar";
             btn_cancelar.Size = new Size(136, 26);
             btn_cancelar.TabIndex = 5;
@@ -588,7 +660,7 @@
             lbl_metodo_pago.AutoSize = true;
             lbl_metodo_pago.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lbl_metodo_pago.ForeColor = SystemColors.ControlDarkDark;
-            lbl_metodo_pago.Location = new Point(138, 64);
+            lbl_metodo_pago.Location = new Point(130, 64);
             lbl_metodo_pago.Name = "lbl_metodo_pago";
             lbl_metodo_pago.RightToLeft = RightToLeft.No;
             lbl_metodo_pago.Size = new Size(13, 17);
@@ -710,7 +782,7 @@
             btn_pagos_en_efectivo.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_pagos_en_efectivo.FlatStyle = FlatStyle.Flat;
             btn_pagos_en_efectivo.Image = (Image)resources.GetObject("btn_pagos_en_efectivo.Image");
-            btn_pagos_en_efectivo.Location = new Point(826, 95);
+            btn_pagos_en_efectivo.Location = new Point(844, 95);
             btn_pagos_en_efectivo.Name = "btn_pagos_en_efectivo";
             btn_pagos_en_efectivo.Size = new Size(136, 26);
             btn_pagos_en_efectivo.TabIndex = 145;
@@ -718,77 +790,6 @@
             btn_pagos_en_efectivo.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_pagos_en_efectivo.UseVisualStyleBackColor = true;
             btn_pagos_en_efectivo.Click += btn_pagos_en_efectivo_Click;
-            // 
-            // cl_idProducto
-            // 
-            cl_idProducto.HeaderText = "Id";
-            cl_idProducto.Name = "cl_idProducto";
-            cl_idProducto.ReadOnly = true;
-            cl_idProducto.Width = 50;
-            // 
-            // cl_sku
-            // 
-            cl_sku.HeaderText = "sku";
-            cl_sku.Name = "cl_sku";
-            cl_sku.ReadOnly = true;
-            // 
-            // cl_codigo_barras
-            // 
-            cl_codigo_barras.HeaderText = "Codigo b";
-            cl_codigo_barras.Name = "cl_codigo_barras";
-            cl_codigo_barras.ReadOnly = true;
-            cl_codigo_barras.Width = 150;
-            // 
-            // cl_nombre
-            // 
-            cl_nombre.HeaderText = "Nombre";
-            cl_nombre.Name = "cl_nombre";
-            cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 220;
-            // 
-            // cl_precio
-            // 
-            cl_precio.HeaderText = "Precio";
-            cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
-            cl_precio.Width = 150;
-            // 
-            // cl_cantidad
-            // 
-            cl_cantidad.HeaderText = "Cantidad";
-            cl_cantidad.Name = "cl_cantidad";
-            // 
-            // cl_descuento
-            // 
-            cl_descuento.HeaderText = "Desc %";
-            cl_descuento.Name = "cl_descuento";
-            cl_descuento.Width = 80;
-            // 
-            // cl_iva
-            // 
-            cl_iva.HeaderText = "Iva %";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 67;
-            // 
-            // cl_total
-            // 
-            cl_total.HeaderText = "Total";
-            cl_total.Name = "cl_total";
-            cl_total.ReadOnly = true;
-            cl_total.Width = 142;
-            // 
-            // cl_unidad_medida
-            // 
-            cl_unidad_medida.HeaderText = "UM";
-            cl_unidad_medida.Name = "cl_unidad_medida";
-            cl_unidad_medida.Visible = false;
-            // 
-            // cl_costo
-            // 
-            cl_costo.HeaderText = "Costo";
-            cl_costo.Name = "cl_costo";
-            cl_costo.Visible = false;
             // 
             // AgregarVentas
             // 
@@ -810,6 +811,7 @@
             Controls.Add(panel1);
             Controls.Add(txt_buscar_producto);
             Controls.Add(btn_busca_producto);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "AgregarVentas";
             StartPosition = FormStartPosition.CenterScreen;

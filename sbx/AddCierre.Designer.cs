@@ -76,6 +76,7 @@
             Controls.Add(btn_cierre);
             Controls.Add(label1);
             Controls.Add(txt_monto_final);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(324, 153);
             MinimizeBox = false;

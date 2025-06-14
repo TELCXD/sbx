@@ -349,6 +349,7 @@
             Controls.Add(btn_busca_pr);
             Controls.Add(label1);
             Controls.Add(txt_producto);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(684, 347);
             MinimumSize = new Size(684, 347);

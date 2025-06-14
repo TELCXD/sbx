@@ -148,6 +148,7 @@
             Controls.Add(btn_busca_producto);
             Controls.Add(txt_producto);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(367, 188);
             MinimumSize = new Size(367, 188);

@@ -575,6 +575,7 @@
             Controls.Add(label2);
             Controls.Add(lbl_factura);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(1127, 601);
             MinimumSize = new Size(1127, 601);

@@ -188,6 +188,8 @@ namespace sbx
 
                 services.AddTransient<Reportes>();
 
+                services.AddTransient<VentasSuspendidas>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 

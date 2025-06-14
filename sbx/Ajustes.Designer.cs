@@ -294,7 +294,7 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(857, 56);
             panel2.TabIndex = 1;
-            //
+            // 
             // btn_guardar_parametros
             // 
             btn_guardar_parametros.Enabled = false;
@@ -497,7 +497,7 @@
             btn_eliminar_ra.Text = "Eliminar";
             btn_eliminar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar_ra.UseVisualStyleBackColor = true;
-            //            
+            // 
             // btn_editar_ra
             // 
             btn_editar_ra.Enabled = false;
@@ -791,10 +791,10 @@
             // 
             tabPage5.Controls.Add(dtg_permisos);
             tabPage5.Controls.Add(panel4);
-            tabPage5.Location = new Point(4, 26);
+            tabPage5.Location = new Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(849, 486);
+            tabPage5.Size = new Size(849, 488);
             tabPage5.TabIndex = 2;
             tabPage5.Text = "Permisos";
             tabPage5.UseVisualStyleBackColor = true;
@@ -835,7 +835,7 @@
             dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
             dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_permisos.Size = new Size(843, 425);
+            dtg_permisos.Size = new Size(843, 427);
             dtg_permisos.TabIndex = 140;
             // 
             // cl_idUserMenu
@@ -966,6 +966,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(871, 552);
             Controls.Add(Usuarios);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(887, 591);
             Name = "Ajustes";
             StartPosition = FormStartPosition.CenterScreen;
@@ -974,13 +975,11 @@
             TabParametros.ResumeLayout(false);
             TabParametros.PerformLayout();
             panel2.ResumeLayout(false);
-            panel2.PerformLayout();
             tabPage1.ResumeLayout(false);
             tabControl2.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dtg_rangos_numeracion).EndInit();
             panel1.ResumeLayout(false);
-            panel1.PerformLayout();
             Usuarios.ResumeLayout(false);
             tabAdministracion.ResumeLayout(false);
             tabControl1.ResumeLayout(false);

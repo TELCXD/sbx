@@ -274,5 +274,10 @@ namespace sbx
                 await ConsultaProductos();
             }
         }
+
+        private void btn_eliminar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

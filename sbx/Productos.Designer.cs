@@ -186,7 +186,8 @@
             btn_eliminar.Text = "Eliminar";
             btn_eliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar.UseVisualStyleBackColor = true;
-            //            
+            btn_eliminar.Click += btn_eliminar_Click;
+            // 
             // btn_editar
             // 
             btn_editar.Enabled = false;
@@ -341,6 +342,7 @@
             ClientSize = new Size(1148, 552);
             Controls.Add(dtg_producto);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(1164, 591);
             MinimumSize = new Size(1164, 591);

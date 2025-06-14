@@ -316,6 +316,7 @@
             Controls.Add(dtg_inventario);
             Controls.Add(panel2);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(1324, 559);
             MinimumSize = new Size(1324, 559);
