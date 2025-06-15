@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.AgregaVenta;
+using sbx.core.Entities.Cotizacion;
 using sbx.core.Entities.PagosVenta;
 using sbx.core.Entities.Venta;
 using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.Banco;
 using sbx.core.Interfaces.Caja;
 using sbx.core.Interfaces.Cliente;
+using sbx.core.Interfaces.Cotizacion;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.Parametros;
@@ -40,6 +42,7 @@ namespace sbx
         private readonly IVenta _IVenta;
         private readonly ITienda _ITienda;
         private readonly IParametros _IParametros;
+        private readonly ICotizacion _ICotizacion;
         string busqueda = "";
         AgregaVentaEntitie agregaVentaEntitie = new AgregaVentaEntitie();
         VentaEntitie venta = new VentaEntitie();
@@ -62,11 +65,13 @@ namespace sbx
         private AgregarNotaCredito? _AgregarNotaCredito;
         private AddPagosEfectivo? _AddPagosEfectivo;
         private VentasSuspendidas? _VentasSuspendidas;
+        private Cotizacion? _Cotizacion;
+        private int IdCotizacion = 0;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
             IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta,
-            ITienda tienda, IParametros parametros, ICaja caja)
+            ITienda tienda, IParametros parametros, ICaja caja, ICotizacion cotizacion)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -85,6 +90,7 @@ namespace sbx
             _ITienda = tienda;
             _IParametros = parametros;
             _ICaja = caja;
+            _ICotizacion = cotizacion;
         }
 
         public dynamic? Permisos
@@ -155,6 +161,8 @@ namespace sbx
             ToolTip toolTip1 = new ToolTip();
             toolTip1.SetToolTip(btn_suspender, "Suspender venta");
             toolTip1.SetToolTip(btn_ventas_suspendidas, "Ver ventas suspendidas");
+            toolTip1.SetToolTip(btn_lista_cotizaciones, "Ver cotizaciones");
+            toolTip1.SetToolTip(btn_quitar1, "Quitar producto seleccionado");
         }
 
         private void ValidaPermisos()
@@ -182,6 +190,13 @@ namespace sbx
                             break;
                         case "notaCredito":
                             btn_devolucion.Enabled = item.ToCreate == 1 ? true : false;
+                            break;
+                        case "cotizacion":
+                            btn_cotizacion.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_lista_cotizaciones.Enabled = item.ToRead == 1 ? true : false;
+                            break;
+                        case "quitarUno":
+                            btn_quitar1.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -1493,6 +1508,25 @@ namespace sbx
                                     //MessageBox.Show(respGuardado.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     Limpiar();
 
+                                    //Valida si fue en base a Cotizacion, de ser asi, cambia el estado de la cotizacion a FACTURADA
+                                    if (IdCotizacion > 0)
+                                    {
+                                        var respUpdateCotiza = await _ICotizacion.CambioEstadoCotizacion(IdCotizacion, "FACTURADA", respGuardado.Data, Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                        if (respUpdateCotiza != null)
+                                        {
+                                            if (respUpdateCotiza.Flag == false)
+                                            {
+                                                MessageBox.Show("No fue posible cambiar el estado de la cotizacion, pero la factura si se genero correctamente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("No fue posible cambiar el estado de la cotizacion, pero la factura si se genero correctamente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+
+                                        IdCotizacion = 0;
+                                    }
+
                                     //Imprime Tirilla
                                     var DataTienda = await _ITienda.List();
                                     if (DataTienda.Data != null)
@@ -1564,7 +1598,7 @@ namespace sbx
                                                 switch (item.UnidadMedida)
                                                 {
                                                     case "Unidad (und)":
-                                                        UnidadMedidaAbreviada = "Unidad (und)";
+                                                        UnidadMedidaAbreviada = "und";
                                                         break;
                                                     case "Caja (caja)":
                                                         UnidadMedidaAbreviada = "caja";
@@ -1642,7 +1676,7 @@ namespace sbx
                                                         }
                                                     }
 
-                                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
+                                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA);
 
                                                     string carpetaFacturas = "Facturas";
                                                     if (!Directory.Exists(carpetaFacturas))
@@ -1877,8 +1911,8 @@ namespace sbx
             PagosVentaSuspendidaEntitie pagosVentaEntitie = new PagosVentaSuspendidaEntitie
             {
                 IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue),
-                Recibido = txt_valor_pago.Text.Trim() == "" ? 0: Convert.ToDecimal(txt_valor_pago.Text, new CultureInfo("es-CO")),
-                Monto = lbl_total.Text == "_" ? 0 :Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
+                Recibido = txt_valor_pago.Text.Trim() == "" ? 0 : Convert.ToDecimal(txt_valor_pago.Text, new CultureInfo("es-CO")),
+                Monto = lbl_total.Text == "_" ? 0 : Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
                 Referencia = txt_referencia_pago.Text,
                 IdBanco = Convert.ToInt32(cbx_banco.SelectedValue)
             };
@@ -2077,6 +2111,518 @@ namespace sbx
                         cbx_lista_precio.Enabled = true;
                     }
                 }
+            }
+        }
+
+        private void btn_cotizacion_Click(object sender, EventArgs e)
+        {
+            if (dtg_producto.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro de crear una cotizacion?",
+                             "Confirmar cancelacion",
+                             MessageBoxButtons.YesNo,
+                             MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    GuardarCotizacion();
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se encontro informacion de productos para generar cotizacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void GuardarCotizacion()
+        {
+            CotizacionEntitie CotizacionEntitie = new CotizacionEntitie();
+
+            CotizacionEntitie.IdListaPrecio = Convert.ToInt32(cbx_lista_precio.SelectedValue);
+            CotizacionEntitie.IdCliente = agregaVentaEntitie.IdCliente;
+            CotizacionEntitie.IdVendedor = Convert.ToInt32(cbx_vendedor.SelectedValue);
+            CotizacionEntitie.DiasVencimiento = 15;
+            CotizacionEntitie.Estado = "PENDIENTE";
+
+            List<DetalleCotizacionEntitie> detalleCotizacionEntitie = new List<DetalleCotizacionEntitie>();
+
+            foreach (DataGridViewRow fila in dtg_producto.Rows)
+            {
+                DetalleCotizacionEntitie Detalle = new DetalleCotizacionEntitie
+                {
+                    IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
+                    Sku = fila.Cells["cl_sku"].Value?.ToString() ?? "",
+                    CodigoBarras = fila.Cells["cl_codigo_barras"].Value?.ToString() ?? "",
+                    UnidadMedida = fila.Cells["cl_unidad_medida"].Value?.ToString() ?? "",
+                    NombreProducto = fila.Cells["cl_nombre"].Value?.ToString() ?? "",
+                    Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
+                    PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
+                    Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
+                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")),
+                    CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
+                };
+
+                detalleCotizacionEntitie.Add(Detalle);
+            }
+
+            CotizacionEntitie.detalleCotizacion = detalleCotizacionEntitie;
+
+            var respGuardado = await _ICotizacion.CreateCotizacion(CotizacionEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+            if (respGuardado != null)
+            {
+                if (respGuardado.Flag == true)
+                {
+                    Limpiar();
+
+                    //Imprime Tirilla
+                    var DataTienda = await _ITienda.List();
+                    if (DataTienda.Data != null)
+                    {
+                        if (DataTienda.Data.Count > 0)
+                        {
+                            var DatosCotizacion = await _ICotizacion.List(respGuardado.Data);
+
+                            CotizacionPOSEntitie DtCotizacion = new CotizacionPOSEntitie();
+
+                            DtCotizacion.NumeroCotizacion = DatosCotizacion.Data[0].Cotizacion;
+                            DtCotizacion.Fecha = DatosCotizacion.Data[0].FechaCotizacion;
+                            DtCotizacion.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
+                            DtCotizacion.DireccionEmpresa = DataTienda.Data[0].Direccion;
+                            DtCotizacion.TelefonoEmpresa = DataTienda.Data[0].Telefono;
+                            DtCotizacion.NIT = DataTienda.Data[0].NumeroDocumento;
+                            DtCotizacion.UserNameCotizacion = DatosCotizacion.Data[0].IdUserActionCotizacion + " - " + DatosCotizacion.Data[0].UserNameCotizacion;
+                            DtCotizacion.NombreCliente = DatosCotizacion.Data[0].NumeroDocumento + " - " + DatosCotizacion.Data[0].NombreRazonSocial;
+                            DtCotizacion.NombreVendedor = DatosCotizacion.Data[0].NumeroDocumentoVendedor + " - " + DatosCotizacion.Data[0].NombreVendedor;
+                            DtCotizacion.Estado = DatosCotizacion.Data[0].Estado;
+                            DtCotizacion.DiasVencimiento = DatosCotizacion.Data[0].DiasVencimiento;
+                            DtCotizacion.FechaVencimiento = DatosCotizacion.Data[0].FechaVencimiento;
+
+                            Cantidad = 0;
+                            Subtotal = 0;
+                            Descuento = 0;
+                            Impuesto = 0;
+                            SubtotalLinea = 0;
+                            DescuentoLinea = 0;
+
+                            foreach (var item in DatosCotizacion.Data)
+                            {
+                                Cantidad += Convert.ToDecimal(item.Cantidad);
+                                Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                            }
+                            Total = (Subtotal - Descuento) + Impuesto;
+
+                            DtCotizacion.CantidadTotal = Cantidad;
+                            DtCotizacion.Subtotal = Subtotal;
+                            DtCotizacion.Descuento = Descuento;
+                            DtCotizacion.Impuesto = Impuesto;
+                            DtCotizacion.Total = Total;
+
+                            List<ItemCotizacionEntitie> ListItemCotizacionEntitie = new List<ItemCotizacionEntitie>();
+
+                            decimal precio;
+                            decimal cantidad;
+                            decimal desc;
+                            decimal iva;
+                            decimal totalLinea;
+                            decimal total;
+
+                            foreach (var item in DatosCotizacion.Data)
+                            {
+                                precio = Convert.ToDecimal(item.PrecioUnitario);
+                                cantidad = Convert.ToDecimal(item.Cantidad);
+                                desc = Convert.ToDecimal(item.Descuento);
+                                iva = Convert.ToDecimal(item.Impuesto);
+
+                                total = CalcularTotal(precio, iva, desc);
+                                total = total * cantidad;
+
+                                string UnidadMedidaAbreviada;
+
+                                switch (item.UnidadMedida)
+                                {
+                                    case "Unidad (und)":
+                                        UnidadMedidaAbreviada = "und";
+                                        break;
+                                    case "Caja (caja)":
+                                        UnidadMedidaAbreviada = "caja";
+                                        break;
+                                    case "Paquete (paq)":
+                                        UnidadMedidaAbreviada = "paq";
+                                        break;
+                                    case "Bolsa (bol)":
+                                        UnidadMedidaAbreviada = "bol";
+                                        break;
+                                    case "Litro (lt)":
+                                        UnidadMedidaAbreviada = "lt";
+                                        break;
+                                    case "Mililitro (ml)":
+                                        UnidadMedidaAbreviada = "ml";
+                                        break;
+                                    case "Kilogramo (kg)":
+                                        UnidadMedidaAbreviada = "kg";
+                                        break;
+                                    case "Gramo (g)":
+                                        UnidadMedidaAbreviada = "g";
+                                        break;
+                                    case "Metro (m)":
+                                        UnidadMedidaAbreviada = "m";
+                                        break;
+                                    case "Par (par)":
+                                        UnidadMedidaAbreviada = "par";
+                                        break;
+                                    default:
+                                        UnidadMedidaAbreviada = "";
+                                        break;
+                                }
+
+                                var ItemCotizacion = new ItemCotizacionEntitie
+                                {
+                                    Codigo = item.IdProducto,
+                                    Descripcion = item.NombreProducto,
+                                    Cantidad = item.Cantidad,
+                                    UnidadMedida = UnidadMedidaAbreviada,
+                                    PrecioUnitario = item.PrecioUnitario,
+                                    Descuento = item.Descuento,
+                                    Impuesto = item.Impuesto,
+                                    Total = total
+                                };
+
+                                ListItemCotizacionEntitie.Add(ItemCotizacion);
+                            }
+
+                            DtCotizacion.Items = ListItemCotizacionEntitie;
+
+                            var DataParametros = await _IParametros.List("");
+
+                            if (DataParametros.Data != null)
+                            {
+                                if (DataParametros.Data.Count > 0)
+                                {
+                                    int ANCHO_TIRILLA = 0;
+                                    string Impresora = "";
+                                    foreach (var itemParametros in DataParametros.Data)
+                                    {
+                                        switch (itemParametros.Nombre)
+                                        {
+                                            case "Ancho tirilla":
+                                                ANCHO_TIRILLA = Convert.ToInt32(itemParametros.Value);
+                                                break;
+                                            case "Impresora":
+                                                Impresora = itemParametros.Value;
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+
+                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaCotizacion(DtCotizacion, ANCHO_TIRILLA);
+
+                                    string carpetaCotizaciones = "Cotizaciones";
+                                    if (!Directory.Exists(carpetaCotizaciones))
+                                    {
+                                        Directory.CreateDirectory(carpetaCotizaciones);
+                                    }
+
+                                    File.WriteAllText(Path.Combine(carpetaCotizaciones, $"cotizacion_{DtCotizacion.NumeroCotizacion}.txt"),
+                                                      tirilla.ToString(),
+                                                      Encoding.UTF8);
+
+                                    RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(respGuardado.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se creo la cotizacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btn_lista_cotizaciones_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _Cotizacion = _serviceProvider.GetRequiredService<Cotizacion>();
+                _Cotizacion.Permisos = _Permisos;
+                _Cotizacion.EnviaId += _Buscador_Id_cotizacion;
+                _Cotizacion.FormClosed += (s, args) => _Ventas = null;
+                _Cotizacion.ShowDialog();
+            }
+        }
+
+        private async void _Buscador_Id_cotizacion(int id)
+        {
+            decimal Cantidad = 0;
+            decimal Subtotal = 0;
+            decimal Descuento = 0;
+            decimal Impuesto = 0;
+            dtg_producto.Rows.Clear();
+
+            var respCotizacion = await _ICotizacion.List(id);
+
+            if (respCotizacion.Data != null)
+            {
+                if (respCotizacion.Data.Count > 0)
+                {
+                    IdCotizacion = id;
+
+                    cbx_lista_precio.SelectedValue = respCotizacion.Data[0].IdListaPrecio;
+
+                    cbx_vendedor.SelectedValue = respCotizacion.Data[0].IdVendedor;
+
+                    agregaVentaEntitie.IdCliente = Convert.ToInt32(respCotizacion.Data[0].IdCliente);
+                    txt_busca_cliente.Text = respCotizacion.Data[0].NumeroDocumento;
+                    lbl_nombre_cliente.Text = respCotizacion.Data[0].NombreRazonSocial;
+                    IdTipoCliente = Convert.ToInt32(respCotizacion.Data[0].IdTipoCliente);
+
+                    if (Convert.ToInt32(cbx_lista_precio.SelectedValue) > 1)
+                    {
+                        var resp = await _IListaPrecios.List(Convert.ToInt32(cbx_lista_precio.SelectedValue));
+                        if (resp.Data != null)
+                        {
+                            if (resp.Data.Count > 0)
+                            {
+                                if (IdTipoCliente != Convert.ToInt32(resp.Data[0].IdTipoCliente))
+                                {
+                                    MessageBox.Show($"La lista de precios {cbx_lista_precio.Text} no está disponible para el tipo de cliente asignado a {lbl_nombre_cliente.Text}.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    cbx_lista_precio.SelectedIndex = 0;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    var DataParametros = await _IParametros.List("Validar stock para venta");
+                    foreach (var item in respCotizacion.Data)
+                    {
+                        if (DataParametros.Data != null)
+                        {
+                            if (DataParametros.Data.Count > 0)
+                            {
+                                string ValidaStock = DataParametros.Data[0].Value;
+                                if (ValidaStock == "SI")
+                                {
+                                    var DataProducto = await _IProducto.List(item.IdProducto);
+                                    if (DataProducto.Data != null)
+                                    {
+                                        if (DataProducto.Data.Count > 0)
+                                        {
+                                            decimal Stock = DataProducto.Data[0].Stock;
+                                            if (Stock >= item.Cantidad)
+                                            {
+                                                decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+
+                                                dtg_producto.Rows.Add(
+                                                     item.IdProducto,
+                                                     item.Sku,
+                                                     item.CodigoBarras,
+                                                     item.NombreProducto,
+                                                     item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                     item.Cantidad.ToString(new CultureInfo("es-CO")),
+                                                     item.Descuento.ToString(new CultureInfo("es-CO")),
+                                                     item.Impuesto.ToString(new CultureInfo("es-CO")),
+                                                     Total.ToString("N2", new CultureInfo("es-CO")),
+                                                     item.UnidadMedida,
+                                                     item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} sin Stock suficiente para cantidad {item.Cantidad}, Stock Actual: {Stock}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                                else
+                                {
+                                    var DataProducto = await _IProducto.List(item.IdProducto);
+                                    if (DataProducto.Data != null)
+                                    {
+                                        if (DataProducto.Data.Count > 0)
+                                        {
+                                            decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+
+                                            dtg_producto.Rows.Add(
+                                                 item.IdProducto,
+                                                 item.Sku,
+                                                 item.CodigoBarras,
+                                                 item.NombreProducto,
+                                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                 item.Cantidad.ToString(new CultureInfo("es-CO")),
+                                                 item.Descuento.ToString(new CultureInfo("es-CO")),
+                                                 item.Impuesto.ToString(new CultureInfo("es-CO")),
+                                                 Total.ToString("N2", new CultureInfo("es-CO")),
+                                                 item.UnidadMedida,
+                                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show($"Producto {item.IdProducto} - {item.Sku} - {item.NombreProducto} no encontrado", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (dtg_producto.Rows.Count > 0)
+                    {
+                        foreach (DataGridViewRow fila in dtg_producto.Rows)
+                        {
+                            Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                            Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                            SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                            Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                            DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                        }
+                        Total = (Subtotal - Descuento) + Impuesto;
+
+                        lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
+                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+
+                        cbx_lista_precio.Enabled = false;
+                        txt_busca_cliente.Enabled = false;
+                        btn_busca_cliente.Enabled = false;
+                        pnl_pagos.Enabled = true;
+
+                        cbx_medio_pago.SelectedIndex = 0;
+                        txt_referencia_pago.Text = "";
+                        cbx_banco.SelectedIndex = 0;
+                        txt_valor_pago.Text = "";
+                        lbl_cambio.Text = "_";
+
+                        ValidarModoPagos();
+                    }
+                    else
+                    {
+                        cbx_lista_precio.Enabled = true;
+                        txt_busca_cliente.Enabled = true;
+                        btn_busca_cliente.Enabled = true;
+                        pnl_pagos.Enabled = false;
+                        cbx_lista_precio.Enabled = true;
+                    }
+                }
+            }
+        }
+
+        private void btn_quitar1_Click(object sender, EventArgs e)
+        {
+            if (dtg_producto.Rows.Count > 0)
+            {
+                if (dtg_producto.SelectedRows.Count > 0)
+                {
+                    DialogResult result = MessageBox.Show("¿Está seguro de quitar producto de la lista?",
+                             "Confirmar cancelacion",
+                             MessageBoxButtons.YesNo,
+                             MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        var row = dtg_producto.SelectedRows[0];
+                        if (row.Cells["cl_idProducto"].Value != null)
+                        {
+                            int Id_Producto = Convert.ToInt32(row.Cells["cl_idProducto"].Value);
+
+                            // Quitar la fila seleccionada
+                            dtg_producto.Rows.RemoveAt(row.Index);
+
+                            decimal Cantidad = 0;
+                            decimal Subtotal = 0;
+                            decimal Descuento = 0;
+                            decimal Impuesto = 0;
+
+                            if (dtg_producto.Rows.Count > 0)
+                            {
+                                foreach (DataGridViewRow fila in dtg_producto.Rows)
+                                {
+                                    Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                                    Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                                    SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
+                                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                                }
+                                Total = (Subtotal - Descuento) + Impuesto;
+
+                                lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
+                                lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                                lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
+                                lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
+                                lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+
+                                cbx_lista_precio.Enabled = false;
+                                txt_busca_cliente.Enabled = false;
+                                btn_busca_cliente.Enabled = false;
+                                pnl_pagos.Enabled = true;
+                                ValidarModoPagos();
+                            }
+                            else
+                            {
+                                cbx_lista_precio.Enabled = true;
+                                txt_busca_cliente.Enabled = true;
+                                btn_busca_cliente.Enabled = true;
+                                pnl_pagos.Enabled = false;
+                                cbx_lista_precio.Enabled = true;
+
+                                cbx_medio_pago.SelectedIndex = 0;
+                                txt_referencia_pago.Text = "";
+                                cbx_banco.SelectedIndex = 0;
+                                txt_valor_pago.Text = "";
+                                lbl_cambio.Text = "_";
+
+                                lbl_cantidadProductos.Text = "_";
+                                lbl_subtotal.Text = "_";
+                                lbl_descuento.Text = "_";
+                                lbl_impuesto.Text = "_";
+                                lbl_total.Text = "_";
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay productos para quitar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

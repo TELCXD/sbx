@@ -340,7 +340,7 @@ namespace sbx
                                         }
                                     }
 
-                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirilla(DataFactura, ANCHO_TIRILLA);
+                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA);
 
                                     string carpetaFacturas = "Facturas";
                                     if (!Directory.Exists(carpetaFacturas))

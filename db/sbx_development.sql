@@ -123,8 +123,8 @@ VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'product
 ('Clientes',5,'clientes',1,1), ('Proveedor',6,'proveedor',1,1),('Caja',7,'caja',1,1), ('NotaCredito',8,'notaCredito',1,1), 
 ('Domicilios',9,'domicilios',1,1), ('Reportes',10,'reportes',1,1), ('Ajustes',11,'ajustes',1,1), ('Tienda',12,'tienda',1,1), 
 ('Entrada',13,'entradas',1,1), ('Salida',14,'salidas',1,1),('PreciosClientes',15,'preciosClientes',1,1),
-('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1)
-,('Permisos',19,'permisos',1,1)
+('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1),
+('Permisos',19,'permisos',1,1),('Cotizacion',20,'cotizacion',1,1),('VentasUno',21,'quitarUno',1,1)
 GO
 CREATE TABLE TR_User_Menu
 (
@@ -150,12 +150,14 @@ VALUES(1,1,1,1,1,1,1,GETDATE(),1), (2,1,1,1,1,1,1,GETDATE(),1), (3,1,1,1,1,1,1,G
 (8,1,1,1,1,1,1,GETDATE(),1), (9,1,1,1,1,1,1,GETDATE(),1), (10,1,1,1,1,1,1,GETDATE(),1), (11,1,1,1,1,1,1,GETDATE(),1), 
 (12,1,1,1,1,1,1,GETDATE(),1), (13,1,1,1,1,1,1,GETDATE(),1), (14,1,1,1,1,1,1,GETDATE(),1), (15,1,1,1,1,1,1,GETDATE(),1),
 (16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1), (18,1,1,1,1,1,1,GETDATE(),1), (19,1,1,1,1,1,1,GETDATE(),1),
+(20,1,1,1,1,1,1,GETDATE(),1), (21,1,1,1,1,1,1,GETDATE(),1),
 
 (1,2,1,1,1,1,1,GETDATE(),1), (2,2,1,1,1,1,1,GETDATE(),1), (3,2,1,1,1,1,1,GETDATE(),1), (4,2,1,1,1,1,1,GETDATE(),1), 
 (5,2,1,1,1,1,1,GETDATE(),1), (6,2,1,1,1,1,1,GETDATE(),1), (7,2,1,1,1,1,1,GETDATE(),1),
 (8,2,1,1,1,1,1,GETDATE(),1), (9,2,1,1,1,1,1,GETDATE(),1), (10,2,1,1,1,1,1,GETDATE(),1), (11,2,1,1,1,1,1,GETDATE(),1), 
 (12,2,1,1,1,1,1,GETDATE(),1), (13,2,1,1,1,1,1,GETDATE(),1), (14,2,1,1,1,1,1,GETDATE(),1), (15,2,1,1,1,1,1,GETDATE(),1),
-(16,2,1,1,1,1,1,GETDATE(),1), (17,2,1,1,1,1,1,GETDATE(),1), (18,2,1,1,1,1,1,GETDATE(),1), (19,2,1,1,1,1,1,GETDATE(),1)
+(16,2,1,1,1,1,1,GETDATE(),1), (17,2,1,1,1,1,1,GETDATE(),1), (18,2,1,1,1,1,1,GETDATE(),1), (19,2,1,1,1,1,1,GETDATE(),1),
+(20,2,1,1,1,1,1,GETDATE(),1), (21,2,1,1,1,1,1,GETDATE(),1)
 GO
 CREATE TABLE T_TipoResponsabilidad(
 IdTipoResponsabilidad INT PRIMARY KEY,
@@ -784,5 +786,44 @@ IdUserAction INT,
 FOREIGN KEY (IdVenta_Suspendidas) REFERENCES T_Ventas_Suspendidas(IdVenta_Suspendidas),
 FOREIGN KEY (IdMetodoPago) REFERENCES T_MetodoPago(IdMetodoPago),
 FOREIGN KEY (IdBanco) REFERENCES T_Bancos(IdBanco),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)
+GO
+CREATE TABLE T_Cotizacion(
+IdCotizacion INT IDENTITY(1,1) PRIMARY KEY,
+IdListaPrecio INT,
+IdCliente INT,
+IdVendedor INT,
+Estado VARCHAR(100), --PENDIENTE, --FACTURADA
+IdVenta INT NULL,
+DiasVencimiento INT,
+CreationDate DATETIME,
+FechaVencimiento DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdListaPrecio) REFERENCES T_ListasPrecios(IdListaPrecio),
+FOREIGN KEY (IdCliente) REFERENCES T_Cliente(IdCliente),
+FOREIGN KEY (IdVendedor) REFERENCES T_Vendedor(IdVendedor),
+FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
+)
+GO
+CREATE TABLE T_DetalleCotizacion(
+IdDetalleCotizacion INT IDENTITY(1,1) PRIMARY KEY,
+IdCotizacion INT,
+IdProducto INT,
+Sku VARCHAR(50),
+CodigoBarras VARCHAR(50),
+NombreProducto VARCHAR(MAX) NOT NULL,
+Cantidad DECIMAL(10,2) NOT NULL,
+UnidadMedida VARCHAR(50),
+PrecioUnitario DECIMAL(10,2) NOT NULL,
+CostoUnitario DECIMAL(10,2) NOT NULL,
+Descuento DECIMAL(10,2),
+Impuesto DECIMAL(10,2) NOT NULL,
+CreationDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY (IdCotizacion) REFERENCES T_Cotizacion(IdCotizacion),
+FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )

@@ -92,6 +92,9 @@
             label20 = new Label();
             errorProvider1 = new ErrorProvider(components);
             btn_pagos_en_efectivo = new Button();
+            btn_cotizacion = new Button();
+            btn_lista_cotizaciones = new Button();
+            btn_quitar1 = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             panel3.SuspendLayout();
@@ -264,7 +267,7 @@
             btn_ventas_suspendidas.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_ventas_suspendidas.FlatStyle = FlatStyle.Flat;
             btn_ventas_suspendidas.Image = (Image)resources.GetObject("btn_ventas_suspendidas.Image");
-            btn_ventas_suspendidas.Location = new Point(773, 95);
+            btn_ventas_suspendidas.Location = new Point(795, 95);
             btn_ventas_suspendidas.Name = "btn_ventas_suspendidas";
             btn_ventas_suspendidas.Size = new Size(32, 26);
             btn_ventas_suspendidas.TabIndex = 3;
@@ -304,9 +307,9 @@
             btn_nuevo_producto.Image = (Image)resources.GetObject("btn_nuevo_producto.Image");
             btn_nuevo_producto.Location = new Point(536, 95);
             btn_nuevo_producto.Name = "btn_nuevo_producto";
-            btn_nuevo_producto.Size = new Size(136, 26);
+            btn_nuevo_producto.Size = new Size(86, 26);
             btn_nuevo_producto.TabIndex = 2;
-            btn_nuevo_producto.Text = "Nuevo producto";
+            btn_nuevo_producto.Text = "Producto";
             btn_nuevo_producto.TextAlign = ContentAlignment.BottomCenter;
             btn_nuevo_producto.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_nuevo_producto.UseVisualStyleBackColor = true;
@@ -430,7 +433,7 @@
             btn_suspender.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_suspender.FlatStyle = FlatStyle.Flat;
             btn_suspender.Image = (Image)resources.GetObject("btn_suspender.Image");
-            btn_suspender.Location = new Point(807, 95);
+            btn_suspender.Location = new Point(830, 95);
             btn_suspender.Name = "btn_suspender";
             btn_suspender.Size = new Size(35, 26);
             btn_suspender.TabIndex = 4;
@@ -444,9 +447,9 @@
             btn_cancelar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_cancelar.FlatStyle = FlatStyle.Flat;
             btn_cancelar.Image = (Image)resources.GetObject("btn_cancelar.Image");
-            btn_cancelar.Location = new Point(982, 95);
+            btn_cancelar.Location = new Point(1036, 95);
             btn_cancelar.Name = "btn_cancelar";
-            btn_cancelar.Size = new Size(136, 26);
+            btn_cancelar.Size = new Size(81, 26);
             btn_cancelar.TabIndex = 5;
             btn_cancelar.Text = "Cancelar";
             btn_cancelar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -782,14 +785,57 @@
             btn_pagos_en_efectivo.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_pagos_en_efectivo.FlatStyle = FlatStyle.Flat;
             btn_pagos_en_efectivo.Image = (Image)resources.GetObject("btn_pagos_en_efectivo.Image");
-            btn_pagos_en_efectivo.Location = new Point(844, 95);
+            btn_pagos_en_efectivo.Location = new Point(868, 95);
             btn_pagos_en_efectivo.Name = "btn_pagos_en_efectivo";
-            btn_pagos_en_efectivo.Size = new Size(136, 26);
+            btn_pagos_en_efectivo.Size = new Size(130, 26);
             btn_pagos_en_efectivo.TabIndex = 145;
             btn_pagos_en_efectivo.Text = "Pagos en efectivo";
             btn_pagos_en_efectivo.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_pagos_en_efectivo.UseVisualStyleBackColor = true;
             btn_pagos_en_efectivo.Click += btn_pagos_en_efectivo_Click;
+            // 
+            // btn_cotizacion
+            // 
+            btn_cotizacion.Enabled = false;
+            btn_cotizacion.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_cotizacion.FlatStyle = FlatStyle.Flat;
+            btn_cotizacion.Image = (Image)resources.GetObject("btn_cotizacion.Image");
+            btn_cotizacion.Location = new Point(674, 95);
+            btn_cotizacion.Name = "btn_cotizacion";
+            btn_cotizacion.Size = new Size(118, 26);
+            btn_cotizacion.TabIndex = 147;
+            btn_cotizacion.Text = "Crear cotizacion";
+            btn_cotizacion.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_cotizacion.UseVisualStyleBackColor = true;
+            btn_cotizacion.Click += btn_cotizacion_Click;
+            // 
+            // btn_lista_cotizaciones
+            // 
+            btn_lista_cotizaciones.Enabled = false;
+            btn_lista_cotizaciones.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_lista_cotizaciones.FlatStyle = FlatStyle.Flat;
+            btn_lista_cotizaciones.Image = (Image)resources.GetObject("btn_lista_cotizaciones.Image");
+            btn_lista_cotizaciones.Location = new Point(639, 95);
+            btn_lista_cotizaciones.Name = "btn_lista_cotizaciones";
+            btn_lista_cotizaciones.Size = new Size(32, 26);
+            btn_lista_cotizaciones.TabIndex = 148;
+            btn_lista_cotizaciones.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_lista_cotizaciones.UseVisualStyleBackColor = true;
+            btn_lista_cotizaciones.Click += btn_lista_cotizaciones_Click;
+            // 
+            // btn_quitar1
+            // 
+            btn_quitar1.Enabled = false;
+            btn_quitar1.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_quitar1.FlatStyle = FlatStyle.Flat;
+            btn_quitar1.Image = (Image)resources.GetObject("btn_quitar1.Image");
+            btn_quitar1.Location = new Point(1001, 95);
+            btn_quitar1.Name = "btn_quitar1";
+            btn_quitar1.Size = new Size(32, 26);
+            btn_quitar1.TabIndex = 149;
+            btn_quitar1.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_quitar1.UseVisualStyleBackColor = true;
+            btn_quitar1.Click += btn_quitar1_Click;
             // 
             // AgregarVentas
             // 
@@ -797,6 +843,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
             ClientSize = new Size(1123, 771);
+            Controls.Add(btn_quitar1);
+            Controls.Add(btn_lista_cotizaciones);
+            Controls.Add(btn_cotizacion);
             Controls.Add(btn_pagos_en_efectivo);
             Controls.Add(label20);
             Controls.Add(cbx_busca_por);
@@ -890,5 +939,8 @@
         private DataGridViewTextBoxColumn cl_total;
         private DataGridViewTextBoxColumn cl_unidad_medida;
         private DataGridViewTextBoxColumn cl_costo;
+        private Button btn_cotizacion;
+        private Button btn_lista_cotizaciones;
+        private Button btn_quitar1;
     }
 }

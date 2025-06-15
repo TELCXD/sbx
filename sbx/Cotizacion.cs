@@ -1,22 +1,40 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using sbx.core.Entities.Cotizacion;
 using sbx.core.Entities.Venta;
 using sbx.core.Helper.Impresion;
+using sbx.core.Interfaces.Cotizacion;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Tienda;
-using sbx.core.Interfaces.Venta;
 using System.Globalization;
 using System.Text;
 
 namespace sbx
 {
-    public partial class Ventas : Form
+    public partial class Cotizacion : Form
     {
         private dynamic? _Permisos;
-        private readonly IVenta _IVenta;
-        private readonly IServiceProvider _serviceProvider;
-        private DetalleVenta? _DetalleVenta;
+        private readonly ICotizacion _ICotizacion;
         private readonly ITienda _ITienda;
         private readonly IParametros _IParametros;
+        public delegate void EnviarId(int id);
+        public event EnviarId EnviaId;
+        int fila = 0;
+        int Id = 0;
+        private int Id_Cotizacion = 0;
+
+        public Cotizacion(ICotizacion cotizacion, ITienda tienda, IParametros parametros)
+        {
+            InitializeComponent();
+            _ICotizacion = cotizacion;
+            _ITienda = tienda;
+            _IParametros = parametros;
+        }
+
+        public dynamic? Permisos
+        {
+            get => _Permisos;
+            set => _Permisos = value;
+        }
+
         decimal Cantidad = 0;
         decimal Subtotal = 0;
         decimal SubtotalLinea = 0;
@@ -25,28 +43,12 @@ namespace sbx
         decimal Total = 0;
         decimal DescuentoLinea = 0;
 
-        public Ventas(IVenta venta, IServiceProvider serviceProvider, ITienda tienda, IParametros iParametros)
-        {
-            InitializeComponent();
-            _IVenta = venta;
-            _serviceProvider = serviceProvider;
-            _ITienda = tienda;
-            _IParametros = iParametros;
-        }
-
-        private void Ventas_Load(object sender, EventArgs e)
+        private void Cotizacion_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
-
             cbx_client_venta.SelectedIndex = 0;
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
-        }
-
-        public dynamic? Permisos
-        {
-            get => _Permisos;
-            set => _Permisos = value;
         }
 
         private void ValidaPermisos()
@@ -57,8 +59,8 @@ namespace sbx
                 {
                     switch (item.MenuUrl)
                     {
-                        case "ventas":
-                            btn_imprimir.Enabled = item.ToCreate == 1 ? true : false;
+                        case "cotizacion":
+                            btn_imprimir.Enabled = item.ToRead == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -69,33 +71,6 @@ namespace sbx
             {
                 MessageBox.Show("No hay informacion de permisos", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-        }
-
-        private void cbx_client_producto_SelectedValueChanged(object sender, EventArgs e)
-        {
-            cbx_campo_filtro.Items.Clear();
-            if (cbx_client_venta.Text == "Factura")
-            {
-                cbx_campo_filtro.Items.AddRange(new object[] { "Prefijo-Consecutivo" });
-            }
-            else if (cbx_client_venta.Text == "Cliente")
-            {
-                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Num Doc" });
-            }
-            else if (cbx_client_venta.Text == "Producto")
-            {
-                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            }
-            else if (cbx_client_venta.Text == "Usuario")
-            {
-                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id" });
-            }
-            cbx_campo_filtro.SelectedIndex = 0;
-        }
-
-        private async void btn_buscar_Click(object sender, EventArgs e)
-        {
-            await ConsultaProductos();
         }
 
         private async Task ConsultaProductos()
@@ -112,9 +87,9 @@ namespace sbx
                 }
             }
 
-            var resp = await _IVenta.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_client_venta.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value, Convert.ToInt32(_Permisos?[0]?.IdUser), _Permisos?[0]?.NameRole);
+            var resp = await _ICotizacion.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_client_venta.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value, Convert.ToInt32(_Permisos?[0]?.IdUser), _Permisos?[0]?.NameRole);
 
-            dtg_ventas.Rows.Clear();
+            dtg_cotizaciones.Rows.Clear();
 
             if (resp.Data != null)
             {
@@ -132,20 +107,22 @@ namespace sbx
 
                     foreach (var item in resp.Data)
                     {
-                        if (item.Estado == "FACTURADA") { cantidadTotal += Convert.ToDecimal(item.Cantidad); }
-                        if (item.Estado == "FACTURADA") { Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad); }
+                        cantidadTotal += Convert.ToDecimal(item.Cantidad);
+                        Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                         SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
-                        if (item.Estado == "FACTURADA") { Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento)); }
+                        Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
                         DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                        if (item.Estado == "FACTURADA") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
+                        Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
                         ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
                         TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
 
-                        dtg_ventas.Rows.Add(
-                            item.FechaFactura,
-                            item.IdVenta,
-                            item.Factura,
+                        dtg_cotizaciones.Rows.Add(
+                            item.IdCotizacion,
+                            item.FechaCotizacion,
+                            item.Cotizacion,
                             item.Estado,
+                            item.NumeroDocumento,
+                            item.NombreRazonSocial,
                             item.IdProducto,
                             item.Sku,
                             item.CodigoBarras,
@@ -155,9 +132,7 @@ namespace sbx
                             Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
                             Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
                             TotalLinea.ToString("N2", new CultureInfo("es-CO")),
-                            item.NumeroDocumento,
-                            item.NombreRazonSocial,
-                            item.IdUserActionFactura + " - " + item.UserNameFactura);
+                            item.IdUserActionCotizacion + " - " + item.UserNameCotizacion);
                     }
 
                     Total += (Subtotal - Descuento) + Impuesto;
@@ -176,7 +151,7 @@ namespace sbx
                     lbl_impuesto.Text = "_";
                     lbl_total.Text = "_";
 
-                    MessageBox.Show("No se encuentran datos", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //MessageBox.Show("No se encuentran datos", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             else
@@ -209,65 +184,81 @@ namespace sbx
             return ValorDescuento;
         }
 
-        private void dtg_ventas_DoubleClick(object sender, EventArgs e)
+        private async void btn_buscar_Click(object sender, EventArgs e)
         {
-            if (dtg_ventas.Rows.Count > 0)
+            await ConsultaProductos();
+        }
+
+        private void cbx_client_venta_SelectedValueChanged(object sender, EventArgs e)
+        {
+            cbx_campo_filtro.Items.Clear();
+            if (cbx_client_venta.Text == "Cotizacion")
             {
-                if (dtg_ventas.SelectedRows.Count > 0)
-                {
-                    if (_Permisos != null)
-                    {
-                        _DetalleVenta = _serviceProvider.GetRequiredService<DetalleVenta>();
-                        _DetalleVenta.Permisos = _Permisos;
-                        foreach (DataGridViewRow rows in dtg_ventas.SelectedRows)
-                        {
-                            _DetalleVenta.Id_Venta = Convert.ToInt32(rows.Cells["cl_id_venta"].Value);
-                        }
-                        _DetalleVenta.FormClosed += (s, args) => _DetalleVenta = null;
-                        _DetalleVenta.ShowDialog();
-                    }
-                }
+                cbx_campo_filtro.Items.AddRange(new object[] { "Prefijo-Consecutivo" });
+            }
+            else if (cbx_client_venta.Text == "Cliente")
+            {
+                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Num Doc" });
+            }
+            else if (cbx_client_venta.Text == "Producto")
+            {
+                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
+            }
+            else if (cbx_client_venta.Text == "Usuario")
+            {
+                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id" });
+            }
+            cbx_campo_filtro.SelectedIndex = 0;
+        }
+
+        private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Enter
+            if (e.KeyChar == (char)13)
+            {
+                await ConsultaProductos();
             }
         }
 
         private async void btn_imprimir_Click(object sender, EventArgs e)
         {
-            if (dtg_ventas.Rows.Count > 0)
+            if (dtg_cotizaciones.Rows.Count > 0)
             {
-                DialogResult result = MessageBox.Show("¿Está seguro de imprimir la factura?",
-                        "Confirmar cancelacion",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("¿Está seguro de imprimir la cotizacion?",
+                       "Confirmar cancelacion",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    if (dtg_ventas.SelectedRows.Count > 0)
+                    if (dtg_cotizaciones.SelectedRows.Count > 0)
                     {
-                        var row = dtg_ventas.SelectedRows[0];
-                        if (row.Cells["cl_id_venta"].Value != null)
+                        var row = dtg_cotizaciones.SelectedRows[0];
+                        if (row.Cells["cl_id_cotizacion"].Value != null)
                         {
-                            var Id_venta = Convert.ToInt32(row.Cells["cl_id_venta"].Value);
+                            var Id_cotizacion = Convert.ToInt32(row.Cells["cl_id_cotizacion"].Value);
+
                             //Imprime Tirilla
                             var DataTienda = await _ITienda.List();
                             if (DataTienda.Data != null)
                             {
                                 if (DataTienda.Data.Count > 0)
                                 {
-                                    var DataVenta = await _IVenta.List(Id_venta);
+                                    var DatosCotizacion = await _ICotizacion.List(Id_cotizacion);
 
-                                    FacturaPOSEntitie DataFactura = new FacturaPOSEntitie();
+                                    CotizacionPOSEntitie DtCotizacion = new CotizacionPOSEntitie();
 
-                                    DataFactura.NumeroFactura = DataVenta.Data[0].Factura;
-                                    DataFactura.Fecha = DataVenta.Data[0].FechaFactura;
-                                    DataFactura.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
-                                    DataFactura.DireccionEmpresa = DataTienda.Data[0].Direccion;
-                                    DataFactura.TelefonoEmpresa = DataTienda.Data[0].Telefono;
-                                    DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
-                                    DataFactura.UserNameFactura = DataVenta.Data[0].IdUserActionFactura + " - " + DataVenta.Data[0].UserNameFactura;
-                                    DataFactura.NombreCliente = DataVenta.Data[0].NumeroDocumento + " - " + DataVenta.Data[0].NombreRazonSocial;
-                                    DataFactura.NombreVendedor = DataVenta.Data[0].NumeroDocumentoVendedor + " - " + DataVenta.Data[0].NombreVendedor;
-                                    DataFactura.Estado = DataVenta.Data[0].Estado;
-                                    DataFactura.FormaPago = DataVenta.Data[0].NombreMetodoPago;
-                                    DataFactura.Recibido = DataVenta.Data[0].Recibido;
+                                    DtCotizacion.NumeroCotizacion = DatosCotizacion.Data[0].Cotizacion;
+                                    DtCotizacion.Fecha = DatosCotizacion.Data[0].FechaCotizacion;
+                                    DtCotizacion.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
+                                    DtCotizacion.DireccionEmpresa = DataTienda.Data[0].Direccion;
+                                    DtCotizacion.TelefonoEmpresa = DataTienda.Data[0].Telefono;
+                                    DtCotizacion.NIT = DataTienda.Data[0].NumeroDocumento;
+                                    DtCotizacion.UserNameCotizacion = DatosCotizacion.Data[0].IdUserActionCotizacion + " - " + DatosCotizacion.Data[0].UserNameCotizacion;
+                                    DtCotizacion.NombreCliente = DatosCotizacion.Data[0].NumeroDocumento + " - " + DatosCotizacion.Data[0].NombreRazonSocial;
+                                    DtCotizacion.NombreVendedor = DatosCotizacion.Data[0].NumeroDocumentoVendedor + " - " + DatosCotizacion.Data[0].NombreVendedor;
+                                    DtCotizacion.Estado = DatosCotizacion.Data[0].Estado;
+                                    DtCotizacion.DiasVencimiento = DatosCotizacion.Data[0].DiasVencimiento;
+                                    DtCotizacion.FechaVencimiento = DatosCotizacion.Data[0].FechaVencimiento;
 
                                     Cantidad = 0;
                                     Subtotal = 0;
@@ -276,7 +267,7 @@ namespace sbx
                                     SubtotalLinea = 0;
                                     DescuentoLinea = 0;
 
-                                    foreach (var item in DataVenta.Data)
+                                    foreach (var item in DatosCotizacion.Data)
                                     {
                                         Cantidad += Convert.ToDecimal(item.Cantidad);
                                         Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
@@ -287,14 +278,13 @@ namespace sbx
                                     }
                                     Total = (Subtotal - Descuento) + Impuesto;
 
-                                    DataFactura.CantidadTotal = Cantidad;
-                                    DataFactura.Subtotal = Subtotal;
-                                    DataFactura.Descuento = Descuento;
-                                    DataFactura.Impuesto = Impuesto;
-                                    DataFactura.Total = Total;
-                                    DataFactura.Cambio = DataFactura.Recibido - Total;
+                                    DtCotizacion.CantidadTotal = Cantidad;
+                                    DtCotizacion.Subtotal = Subtotal;
+                                    DtCotizacion.Descuento = Descuento;
+                                    DtCotizacion.Impuesto = Impuesto;
+                                    DtCotizacion.Total = Total;
 
-                                    List<ItemFacturaEntitie> ListItemFacturaEntitie = new List<ItemFacturaEntitie>();
+                                    List<ItemCotizacionEntitie> ListItemCotizacionEntitie = new List<ItemCotizacionEntitie>();
 
                                     decimal precio;
                                     decimal cantidad;
@@ -303,7 +293,7 @@ namespace sbx
                                     decimal totalLinea;
                                     decimal total;
 
-                                    foreach (var item in DataVenta.Data)
+                                    foreach (var item in DatosCotizacion.Data)
                                     {
                                         precio = Convert.ToDecimal(item.PrecioUnitario);
                                         cantidad = Convert.ToDecimal(item.Cantidad);
@@ -318,7 +308,7 @@ namespace sbx
                                         switch (item.UnidadMedida)
                                         {
                                             case "Unidad (und)":
-                                                UnidadMedidaAbreviada = "Unidad (und)";
+                                                UnidadMedidaAbreviada = "und";
                                                 break;
                                             case "Caja (caja)":
                                                 UnidadMedidaAbreviada = "caja";
@@ -352,7 +342,7 @@ namespace sbx
                                                 break;
                                         }
 
-                                        var ItemFactura = new ItemFacturaEntitie
+                                        var ItemCotizacion = new ItemCotizacionEntitie
                                         {
                                             Codigo = item.IdProducto,
                                             Descripcion = item.NombreProducto,
@@ -364,10 +354,10 @@ namespace sbx
                                             Total = total
                                         };
 
-                                        ListItemFacturaEntitie.Add(ItemFactura);
+                                        ListItemCotizacionEntitie.Add(ItemCotizacion);
                                     }
 
-                                    DataFactura.Items = ListItemFacturaEntitie;
+                                    DtCotizacion.Items = ListItemCotizacionEntitie;
 
                                     var DataParametros = await _IParametros.List("");
 
@@ -392,17 +382,17 @@ namespace sbx
                                                 }
                                             }
 
-                                            StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA);
+                                            StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaCotizacion(DtCotizacion, ANCHO_TIRILLA);
 
-                                            string carpetaFacturas = "Facturas";
-                                            if (!Directory.Exists(carpetaFacturas))
+                                            string carpetaCotizaciones = "Cotizaciones";
+                                            if (!Directory.Exists(carpetaCotizaciones))
                                             {
-                                                Directory.CreateDirectory(carpetaFacturas);
+                                                Directory.CreateDirectory(carpetaCotizaciones);
                                             }
 
-                                            File.WriteAllText(Path.Combine(carpetaFacturas, $"factura_{DataFactura.NumeroFactura}.txt"),
-                                                                      tirilla.ToString(),
-                                                                      Encoding.UTF8);
+                                            File.WriteAllText(Path.Combine(carpetaCotizaciones, $"cotizacion_{DtCotizacion.NumeroCotizacion}.txt"),
+                                                              tirilla.ToString(),
+                                                              Encoding.UTF8);
 
                                             RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
                                         }
@@ -429,10 +419,6 @@ namespace sbx
                     }
                 }
             }
-            else
-            {
-                MessageBox.Show("No hay datos", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
         }
 
         private decimal CalcularTotal(decimal valorBase, decimal porcentajeIva, decimal porcentajeDescuento)
@@ -443,12 +429,22 @@ namespace sbx
             return valor + iva;
         }
 
-        private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)
+        private void dtg_cotizaciones_DoubleClick(object sender, EventArgs e)
         {
-            //Enter
-            if (e.KeyChar == (char)13)
+            if (dtg_cotizaciones.Rows.Count > 0)
             {
-                await ConsultaProductos();
+                fila = dtg_cotizaciones.CurrentRow.Index;
+                var Estado = dtg_cotizaciones[3, fila].Value.ToString();
+                if (Estado == "PENDIENTE") 
+                {
+                    Id = Convert.ToInt32(dtg_cotizaciones[0, fila].Value);
+                    EnviaId(Id);
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("La cotizacion ya fue facturada, favor seleccione cotizaciones en estado PENDIENTE", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
     }

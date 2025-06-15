@@ -213,14 +213,17 @@ namespace sbx
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 this.Cursor = Cursors.WaitCursor;
+                panel1.Enabled = false;
+                dtg_producto.Enabled = false;
 
                 DataTable dt = LeerExcel(ofd.FileName);
                 var resp = await _IEntradaInventario.CargueMasivoProductoEntrada(dt, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
-                this.Cursor = Cursors.Default;
-
                 if (resp != null)
                 {
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_producto.Enabled = true;
                     if (resp.Flag == true)
                     {
                         MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
