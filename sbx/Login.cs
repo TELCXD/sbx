@@ -36,7 +36,7 @@ namespace sbx
         #region login
         private async Task mtd_login()
         {
-            btn_login.Enabled = false;
+            panel2.Enabled = false;
             this.Cursor = Cursors.WaitCursor;
             string nombreUsuario = txt_user.Text.Trim();
             string contrasena = txt_password.Text.Trim();
@@ -55,7 +55,7 @@ namespace sbx
             if (string.IsNullOrWhiteSpace(nombreUsuario) || string.IsNullOrWhiteSpace(contrasena))
             {
                 this.Cursor = Cursors.Default;
-                btn_login.Enabled = true;
+                panel2.Enabled = true;
                 return;
             }
 
@@ -76,7 +76,7 @@ namespace sbx
                     MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            btn_login.Enabled = true;
+            panel2.Enabled = true;
             this.Cursor = Cursors.Default;
         }
         #endregion
