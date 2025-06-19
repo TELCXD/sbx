@@ -22,6 +22,7 @@ namespace sbx
         private readonly IParametros _IParametros;
         private readonly IBackup _IBackup;
         private Reportes? _Reportes;
+        private Vendedor? _Vendedor;
 
         public Inicio(IServiceProvider serviceProvider, ITienda iTienda, IParametros iParametros, IBackup backup)
         {
@@ -122,6 +123,12 @@ namespace sbx
                                 if (item.ToRead == 1)
                                 {
                                     btn_reportes.Visible = true;
+                                }
+                                break;
+                            case "vendedores":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_vendedor.Visible = true;
                                 }
                                 break;
                             default:
@@ -315,6 +322,21 @@ namespace sbx
             _Reportes = _serviceProvider.GetRequiredService<Reportes>();
             _Reportes.FormClosed += (s, args) => _Caja = null;
             _Reportes.Show();
+        }
+
+        private void btn_vendedor_Click(object sender, EventArgs e)
+        {
+            if (_Vendedor != null && !_Vendedor.IsDisposed)
+            {
+                _Vendedor.BringToFront();
+                _Vendedor.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Vendedor = _serviceProvider.GetRequiredService<Vendedor>();
+            _Vendedor.Permisos = _Permisos;
+            _Vendedor.FormClosed += (s, args) => _Vendedor = null;
+            _Vendedor.Show();
         }
     }
 }

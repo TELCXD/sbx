@@ -1,6 +1,6 @@
 ﻿namespace sbx
 {
-    partial class Productos
+    partial class ConversionProducto
     {
         /// <summary>
         /// Required designer variable.
@@ -29,14 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Productos));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConversionProducto));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
-            btn_importar = new Button();
-            btn_promociones = new Button();
-            btn_lista_precios = new Button();
+            cbx_padre_hijo = new ComboBox();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
             btn_buscar = new Button();
@@ -45,18 +43,15 @@
             btn_editar = new Button();
             btn_agregar = new Button();
             dtg_producto = new DataGridView();
-            cl_idProducto = new DataGridViewTextBoxColumn();
-            cl_sku = new DataGridViewTextBoxColumn();
-            cl_codigo_barras = new DataGridViewTextBoxColumn();
-            cl_nombre = new DataGridViewTextBoxColumn();
-            cl_stock = new DataGridViewTextBoxColumn();
-            cl_costo = new DataGridViewTextBoxColumn();
-            cl_precio = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
-            cl_esInventariable = new DataGridViewTextBoxColumn();
-            cl_unidadMedida = new DataGridViewTextBoxColumn();
-            cl_marca = new DataGridViewTextBoxColumn();
-            cl_categoria = new DataGridViewTextBoxColumn();
+            cl_id_padre = new DataGridViewTextBoxColumn();
+            cl_sku_padre = new DataGridViewTextBoxColumn();
+            cl_codigoBarras_padre = new DataGridViewTextBoxColumn();
+            cl_nombre_padre = new DataGridViewTextBoxColumn();
+            cl_id_Hijo = new DataGridViewTextBoxColumn();
+            cl_sku_hijo = new DataGridViewTextBoxColumn();
+            cl_codigoBarras_hijo = new DataGridViewTextBoxColumn();
+            cl_nombre_hijo = new DataGridViewTextBoxColumn();
+            cl_cantidad_hijo = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
@@ -67,9 +62,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
-            panel1.Controls.Add(btn_importar);
-            panel1.Controls.Add(btn_promociones);
-            panel1.Controls.Add(btn_lista_precios);
+            panel1.Controls.Add(cbx_padre_hijo);
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
             panel1.Controls.Add(btn_buscar);
@@ -80,53 +73,19 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1148, 56);
-            panel1.TabIndex = 1;
+            panel1.Size = new Size(1045, 56);
+            panel1.TabIndex = 0;
             // 
-            // btn_importar
+            // cbx_padre_hijo
             // 
-            btn_importar.Enabled = false;
-            btn_importar.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_importar.FlatStyle = FlatStyle.Flat;
-            btn_importar.Image = (Image)resources.GetObject("btn_importar.Image");
-            btn_importar.Location = new Point(553, 3);
-            btn_importar.Name = "btn_importar";
-            btn_importar.Size = new Size(111, 45);
-            btn_importar.TabIndex = 13;
-            btn_importar.Text = "Importar";
-            btn_importar.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_importar.UseVisualStyleBackColor = true;
-            btn_importar.Click += btn_importar_Click;
-            // 
-            // btn_promociones
-            // 
-            btn_promociones.Enabled = false;
-            btn_promociones.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_promociones.FlatStyle = FlatStyle.Flat;
-            btn_promociones.Image = (Image)resources.GetObject("btn_promociones.Image");
-            btn_promociones.Location = new Point(436, 3);
-            btn_promociones.Name = "btn_promociones";
-            btn_promociones.Size = new Size(111, 45);
-            btn_promociones.TabIndex = 12;
-            btn_promociones.Text = "Promociones";
-            btn_promociones.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_promociones.UseVisualStyleBackColor = true;
-            btn_promociones.Click += btn_promociones_Click;
-            // 
-            // btn_lista_precios
-            // 
-            btn_lista_precios.Enabled = false;
-            btn_lista_precios.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_lista_precios.FlatStyle = FlatStyle.Flat;
-            btn_lista_precios.Image = (Image)resources.GetObject("btn_lista_precios.Image");
-            btn_lista_precios.Location = new Point(324, 3);
-            btn_lista_precios.Name = "btn_lista_precios";
-            btn_lista_precios.Size = new Size(106, 45);
-            btn_lista_precios.TabIndex = 11;
-            btn_lista_precios.Text = "Lista precios";
-            btn_lista_precios.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_lista_precios.UseVisualStyleBackColor = true;
-            btn_lista_precios.Click += btn_lista_precios_Click;
+            cbx_padre_hijo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cbx_padre_hijo.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_padre_hijo.FormattingEnabled = true;
+            cbx_padre_hijo.Items.AddRange(new object[] { "Padre", "Hijo" });
+            cbx_padre_hijo.Location = new Point(496, 15);
+            cbx_padre_hijo.Name = "cbx_padre_hijo";
+            cbx_padre_hijo.Size = new Size(114, 23);
+            cbx_padre_hijo.TabIndex = 15;
             // 
             // cbx_tipo_filtro
             // 
@@ -134,10 +93,10 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(807, 15);
+            cbx_tipo_filtro.Location = new Point(736, 15);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
-            cbx_tipo_filtro.TabIndex = 10;
+            cbx_tipo_filtro.TabIndex = 14;
             // 
             // cbx_campo_filtro
             // 
@@ -145,10 +104,10 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(687, 15);
+            cbx_campo_filtro.Location = new Point(616, 15);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
-            cbx_campo_filtro.TabIndex = 9;
+            cbx_campo_filtro.TabIndex = 13;
             // 
             // btn_buscar
             // 
@@ -156,10 +115,10 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1083, 13);
+            btn_buscar.Location = new Point(1012, 13);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
-            btn_buscar.TabIndex = 7;
+            btn_buscar.TabIndex = 12;
             btn_buscar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar.UseVisualStyleBackColor = true;
             btn_buscar.Click += btn_buscar_Click;
@@ -167,12 +126,11 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(900, 15);
+            txt_buscar.Location = new Point(829, 15);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
-            txt_buscar.TabIndex = 6;
+            txt_buscar.TabIndex = 11;
             txt_buscar.KeyPress += txt_buscar_KeyPress;
-            txt_buscar.KeyUp += txt_buscar_KeyUp;
             // 
             // btn_eliminar
             // 
@@ -183,7 +141,7 @@
             btn_eliminar.Location = new Point(217, 3);
             btn_eliminar.Name = "btn_eliminar";
             btn_eliminar.Size = new Size(101, 45);
-            btn_eliminar.TabIndex = 4;
+            btn_eliminar.TabIndex = 5;
             btn_eliminar.Text = "Eliminar";
             btn_eliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar.UseVisualStyleBackColor = true;
@@ -198,7 +156,7 @@
             btn_editar.Location = new Point(110, 3);
             btn_editar.Name = "btn_editar";
             btn_editar.Size = new Size(101, 45);
-            btn_editar.TabIndex = 1;
+            btn_editar.TabIndex = 3;
             btn_editar.Text = "Editar";
             btn_editar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_editar.UseVisualStyleBackColor = true;
@@ -213,7 +171,7 @@
             btn_agregar.Location = new Point(3, 3);
             btn_agregar.Name = "btn_agregar";
             btn_agregar.Size = new Size(101, 45);
-            btn_agregar.TabIndex = 0;
+            btn_agregar.TabIndex = 2;
             btn_agregar.Text = "Agregar";
             btn_agregar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_agregar.UseVisualStyleBackColor = true;
@@ -234,7 +192,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_stock, cl_costo, cl_precio, cl_iva, cl_esInventariable, cl_unidadMedida, cl_marca, cl_categoria });
+            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_id_padre, cl_sku_padre, cl_codigoBarras_padre, cl_nombre_padre, cl_id_Hijo, cl_sku_hijo, cl_codigoBarras_hijo, cl_nombre_hijo, cl_cantidad_hijo });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -256,101 +214,85 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_producto.Size = new Size(1148, 496);
-            dtg_producto.TabIndex = 2;
+            dtg_producto.Size = new Size(1045, 456);
+            dtg_producto.TabIndex = 3;
             // 
-            // cl_idProducto
+            // cl_id_padre
             // 
-            cl_idProducto.HeaderText = "Id";
-            cl_idProducto.Name = "cl_idProducto";
-            cl_idProducto.ReadOnly = true;
+            cl_id_padre.HeaderText = "Id padre";
+            cl_id_padre.Name = "cl_id_padre";
+            cl_id_padre.ReadOnly = true;
             // 
-            // cl_sku
+            // cl_sku_padre
             // 
-            cl_sku.HeaderText = "sku";
-            cl_sku.Name = "cl_sku";
-            cl_sku.ReadOnly = true;
+            cl_sku_padre.HeaderText = "Sku padre";
+            cl_sku_padre.Name = "cl_sku_padre";
+            cl_sku_padre.ReadOnly = true;
             // 
-            // cl_codigo_barras
+            // cl_codigoBarras_padre
             // 
-            cl_codigo_barras.HeaderText = "Codigo b";
-            cl_codigo_barras.Name = "cl_codigo_barras";
-            cl_codigo_barras.ReadOnly = true;
+            cl_codigoBarras_padre.HeaderText = "Codigo barras padre";
+            cl_codigoBarras_padre.Name = "cl_codigoBarras_padre";
+            cl_codigoBarras_padre.ReadOnly = true;
+            cl_codigoBarras_padre.Visible = false;
             // 
-            // cl_nombre
+            // cl_nombre_padre
             // 
-            cl_nombre.HeaderText = "Nombre";
-            cl_nombre.Name = "cl_nombre";
-            cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 200;
+            cl_nombre_padre.HeaderText = "Nombre padre";
+            cl_nombre_padre.Name = "cl_nombre_padre";
+            cl_nombre_padre.ReadOnly = true;
+            cl_nombre_padre.Width = 250;
             // 
-            // cl_stock
+            // cl_id_Hijo
             // 
-            cl_stock.HeaderText = "Stock";
-            cl_stock.Name = "cl_stock";
-            cl_stock.ReadOnly = true;
+            cl_id_Hijo.HeaderText = "Id Hijo";
+            cl_id_Hijo.Name = "cl_id_Hijo";
+            cl_id_Hijo.ReadOnly = true;
             // 
-            // cl_costo
+            // cl_sku_hijo
             // 
-            cl_costo.HeaderText = "Costo";
-            cl_costo.Name = "cl_costo";
-            cl_costo.ReadOnly = true;
+            cl_sku_hijo.HeaderText = "Sku hijo";
+            cl_sku_hijo.Name = "cl_sku_hijo";
+            cl_sku_hijo.ReadOnly = true;
             // 
-            // cl_precio
+            // cl_codigoBarras_hijo
             // 
-            cl_precio.HeaderText = "Precio";
-            cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
+            cl_codigoBarras_hijo.HeaderText = "Codigo barras hijo";
+            cl_codigoBarras_hijo.Name = "cl_codigoBarras_hijo";
+            cl_codigoBarras_hijo.ReadOnly = true;
+            cl_codigoBarras_hijo.Visible = false;
             // 
-            // cl_iva
+            // cl_nombre_hijo
             // 
-            cl_iva.HeaderText = "Iva (%)";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
+            cl_nombre_hijo.HeaderText = "Nombre hijo";
+            cl_nombre_hijo.Name = "cl_nombre_hijo";
+            cl_nombre_hijo.ReadOnly = true;
+            cl_nombre_hijo.Width = 250;
             // 
-            // cl_esInventariable
+            // cl_cantidad_hijo
             // 
-            cl_esInventariable.HeaderText = "Inventariable";
-            cl_esInventariable.Name = "cl_esInventariable";
-            cl_esInventariable.ReadOnly = true;
-            // 
-            // cl_unidadMedida
-            // 
-            cl_unidadMedida.HeaderText = "Unidad m";
-            cl_unidadMedida.Name = "cl_unidadMedida";
-            cl_unidadMedida.ReadOnly = true;
-            // 
-            // cl_marca
-            // 
-            cl_marca.HeaderText = "Marca";
-            cl_marca.Name = "cl_marca";
-            cl_marca.ReadOnly = true;
-            // 
-            // cl_categoria
-            // 
-            cl_categoria.HeaderText = "Categoria";
-            cl_categoria.Name = "cl_categoria";
-            cl_categoria.ReadOnly = true;
+            cl_cantidad_hijo.HeaderText = "Cant. hijo";
+            cl_cantidad_hijo.Name = "cl_cantidad_hijo";
+            cl_cantidad_hijo.ReadOnly = true;
             // 
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
             // 
-            // Productos
+            // ConversionProducto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1148, 552);
+            ClientSize = new Size(1045, 512);
             Controls.Add(dtg_producto);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximizeBox = false;
-            MaximumSize = new Size(1164, 591);
-            MinimumSize = new Size(1164, 591);
-            Name = "Productos";
+            MaximumSize = new Size(1061, 551);
+            MinimumSize = new Size(1061, 551);
+            Name = "ConversionProducto";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Productos";
-            Load += Productos_Load;
+            Text = "ConversionProducto";
+            Load += ConversionProducto_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).EndInit();
@@ -361,29 +303,24 @@
         #endregion
 
         private Panel panel1;
-        private Button btn_eliminar;
         private Button btn_editar;
         private Button btn_agregar;
-        private DataGridView dtg_producto;
+        private Button btn_eliminar;
+        private ComboBox cbx_tipo_filtro;
+        private ComboBox cbx_campo_filtro;
         private Button btn_buscar;
         private TextBox txt_buscar;
-        private ComboBox cbx_campo_filtro;
-        private ComboBox cbx_tipo_filtro;
+        private DataGridView dtg_producto;
+        private DataGridViewTextBoxColumn cl_id_padre;
+        private DataGridViewTextBoxColumn cl_sku_padre;
+        private DataGridViewTextBoxColumn cl_codigoBarras_padre;
+        private DataGridViewTextBoxColumn cl_nombre_padre;
+        private DataGridViewTextBoxColumn cl_id_Hijo;
+        private DataGridViewTextBoxColumn cl_sku_hijo;
+        private DataGridViewTextBoxColumn cl_codigoBarras_hijo;
+        private DataGridViewTextBoxColumn cl_nombre_hijo;
+        private DataGridViewTextBoxColumn cl_cantidad_hijo;
         private ErrorProvider errorProvider1;
-        private Button btn_lista_precios;
-        private Button btn_promociones;
-        private DataGridViewTextBoxColumn cl_idProducto;
-        private DataGridViewTextBoxColumn cl_sku;
-        private DataGridViewTextBoxColumn cl_codigo_barras;
-        private DataGridViewTextBoxColumn cl_nombre;
-        private DataGridViewTextBoxColumn cl_stock;
-        private DataGridViewTextBoxColumn cl_costo;
-        private DataGridViewTextBoxColumn cl_precio;
-        private DataGridViewTextBoxColumn cl_iva;
-        private DataGridViewTextBoxColumn cl_esInventariable;
-        private DataGridViewTextBoxColumn cl_unidadMedida;
-        private DataGridViewTextBoxColumn cl_marca;
-        private DataGridViewTextBoxColumn cl_categoria;
-        private Button btn_importar;
+        private ComboBox cbx_padre_hijo;
     }
 }

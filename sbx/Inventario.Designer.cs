@@ -34,6 +34,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            btn_agrupar_productos = new Button();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
             btn_buscar = new Button();
@@ -66,6 +67,7 @@
             // panel1
             // 
             panel1.BackColor = SystemColors.Window;
+            panel1.Controls.Add(btn_agrupar_productos);
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
             panel1.Controls.Add(btn_buscar);
@@ -77,6 +79,21 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1308, 56);
             panel1.TabIndex = 0;
+            // 
+            // btn_agrupar_productos
+            // 
+            btn_agrupar_productos.Enabled = false;
+            btn_agrupar_productos.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_agrupar_productos.FlatStyle = FlatStyle.Flat;
+            btn_agrupar_productos.Image = (Image)resources.GetObject("btn_agrupar_productos.Image");
+            btn_agrupar_productos.Location = new Point(225, 5);
+            btn_agrupar_productos.Name = "btn_agrupar_productos";
+            btn_agrupar_productos.Size = new Size(167, 45);
+            btn_agrupar_productos.TabIndex = 21;
+            btn_agrupar_productos.Text = "Conversion productos";
+            btn_agrupar_productos.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_agrupar_productos.UseVisualStyleBackColor = true;
+            btn_agrupar_productos.Click += btn_agrupar_productos_Click;
             // 
             // cbx_tipo_filtro
             // 
@@ -360,5 +377,6 @@
         private DataGridViewTextBoxColumn cl_codigo_barras;
         private DataGridViewTextBoxColumn cl_codigo_lote;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
+        private Button btn_agrupar_productos;
     }
 }

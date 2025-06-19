@@ -115,7 +115,7 @@ namespace sbx
 
             CargaListaPrecio = true;
 
-            resp = await _IVendedor.List(0);
+            resp = await _IVendedor.ListActivos(0);
             cbx_vendedor.DataSource = resp.Data;
             cbx_vendedor.ValueMember = "IdVendedor";
             cbx_vendedor.DisplayMember = "NombreCompleto";

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using sbx.core.Interfaces.Cliente;
+using sbx.core.Interfaces.ConversionProducto;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
@@ -47,6 +48,8 @@ namespace sbx
 
         private async void btn_buscar_Click(object sender, EventArgs e)
         {
+            panel1.Enabled = false;
+            this.Cursor = Cursors.WaitCursor;
             switch (Origen)
             {
                 case "Entradas_busca_proveedor":
@@ -82,9 +85,17 @@ namespace sbx
                 case "Busca_factura":
                     await ConsultaFactura();
                     break;
+                case "Add_ConversionProductoPadre":
+                    await ConsultaProductoPadre();
+                    break;
+                case "Add_ConversionProductoHijo":
+                    await ConsultaProductoHijo();
+                    break;
                 default:
                     break;
             }
+            this.Cursor = Cursors.Default;
+            panel1.Enabled = true;
         }
 
         private async void CargaDatosIniciales()
@@ -125,6 +136,12 @@ namespace sbx
                     break;
                 case "Busca_factura":
                     opciones = new List<string> { "Factura", "Identificacion cliente", "Nombre cliente" };
+                    break;
+                case "Add_ConversionProductoPadre":
+                    opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
+                    break;
+                case "Add_ConversionProductoHijo":
+                    opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
                     break;
                 default:
                     break;
@@ -312,6 +329,76 @@ namespace sbx
             }
         }
 
+        private async Task ConsultaProductoPadre()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _IProducto.BuscarProductoPadre(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["Nombre"].Width = 500;
+                    dtg_buscador.Columns["IdProducto"].Visible = true;
+                    dtg_buscador.Columns["CostoBase"].Visible = false;
+                    dtg_buscador.Columns["PrecioBase"].Visible = false;
+                    dtg_buscador.Columns["EsInventariable"].Visible = false;
+                    dtg_buscador.Columns["Iva"].Visible = false;
+                    dtg_buscador.Columns["IdCategoria"].Visible = false;
+                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                    dtg_buscador.Columns["IdMarca"].Visible = false;
+                    dtg_buscador.Columns["NombreMarca"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                }
+            }
+        }
+
+        private async Task ConsultaProductoHijo()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _IProducto.BuscarProductoHijo(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["Nombre"].Width = 500;
+                    dtg_buscador.Columns["IdProducto"].Visible = true;
+                    dtg_buscador.Columns["CostoBase"].Visible = false;
+                    dtg_buscador.Columns["PrecioBase"].Visible = false;
+                    dtg_buscador.Columns["EsInventariable"].Visible = false;
+                    dtg_buscador.Columns["Iva"].Visible = false;
+                    dtg_buscador.Columns["IdCategoria"].Visible = false;
+                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                    dtg_buscador.Columns["IdMarca"].Visible = false;
+                    dtg_buscador.Columns["NombreMarca"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                }
+            }
+        }
+
         private void dtg_buscador_DoubleClick(object sender, EventArgs e)
         {
             if (dtg_buscador.Rows.Count > 0)
@@ -328,6 +415,8 @@ namespace sbx
             //Enter
             if (e.KeyChar == (char)13)
             {
+                panel1.Enabled = false;
+                this.Cursor = Cursors.WaitCursor;
                 switch (Origen)
                 {
                     case "Entradas_busca_proveedor":
@@ -363,9 +452,17 @@ namespace sbx
                     case "Busca_factura":
                         await ConsultaFactura();
                         break;
+                    case "Add_ConversionProductoPadre":
+                        await ConsultaProductoPadre();
+                        break;
+                    case "Add_ConversionProductoHijo":
+                        await ConsultaProductoHijo();
+                        break;
                     default:
                         break;
                 }
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
             }
         }
     }

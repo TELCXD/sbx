@@ -282,5 +282,10 @@ namespace sbx
         {
 
         }
+
+        private void txt_buscar_KeyUp(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

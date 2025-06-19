@@ -15,6 +15,7 @@ namespace sbx.core.Entities.SalidaInventario
     public class DetalleSalidaInventarioEntitie
     {
         public int IdDetalleSalidasInventario { get; set; }
+        public int IdSalidasInventario { get; set; }
         public int IdProducto { get; set; }
         public string? Sku { get; set; }
         public string? CodigoBarras { get; set; }

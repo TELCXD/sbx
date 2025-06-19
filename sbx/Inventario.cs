@@ -9,6 +9,7 @@ namespace sbx
         private dynamic? _Permisos;
         private Entradas? _Entradas;
         private Salidas? _Salidas;
+        private ConversionProducto? _ConversionProducto;
         private readonly IServiceProvider _serviceProvider;
         private readonly IEntradaInventario _IEntradaInventario;
         private readonly IParametros _IParametros;
@@ -55,6 +56,9 @@ namespace sbx
                         case "inventario":
                             btn_entrada.Enabled = item.ToCreate == 1 ? true : false;
                             btn_salida.Enabled = item.ToUpdate == 1 ? true : false;
+                            break;
+                        case "conversionProducto":
+                            btn_agrupar_productos.Enabled = item.ToCreate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -164,7 +168,18 @@ namespace sbx
             if (e.KeyChar == (char)13)
             {
                 await ConsultaInventario();
-            }    
+            }
+        }
+
+        private void btn_agrupar_productos_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _ConversionProducto = _serviceProvider.GetRequiredService<ConversionProducto>();
+                _ConversionProducto.Permisos = _Permisos;
+                _ConversionProducto.FormClosed += (s, args) => _ConversionProducto = null;
+                _ConversionProducto.ShowDialog();
+            }
         }
     }
 }
