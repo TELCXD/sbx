@@ -45,6 +45,7 @@
             label1 = new Label();
             txt_total_stock = new TextBox();
             dtg_inventario = new DataGridView();
+            errorProvider1 = new ErrorProvider(components);
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_usuario = new DataGridViewTextBoxColumn();
             cl_documento = new DataGridViewTextBoxColumn();
@@ -54,10 +55,10 @@
             cl_id_producto = new DataGridViewTextBoxColumn();
             cl_nombre = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
+            cl_comentario = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
             cl_codigo_lote = new DataGridViewTextBoxColumn();
             cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
-            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).BeginInit();
@@ -217,7 +218,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_inventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_inventario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_usuario, cl_documento, cl_movimiento, cl_cantidad, cl_tipo, cl_id_producto, cl_nombre, cl_sku, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento });
+            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_usuario, cl_documento, cl_movimiento, cl_cantidad, cl_tipo, cl_id_producto, cl_nombre, cl_sku, cl_comentario, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -241,6 +242,10 @@
             dtg_inventario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_inventario.Size = new Size(1308, 418);
             dtg_inventario.TabIndex = 6;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // cl_fecha
             // 
@@ -301,6 +306,12 @@
             cl_sku.Name = "cl_sku";
             cl_sku.ReadOnly = true;
             // 
+            // cl_comentario
+            // 
+            cl_comentario.HeaderText = "Comentario";
+            cl_comentario.Name = "cl_comentario";
+            cl_comentario.ReadOnly = true;
+            // 
             // cl_codigo_barras
             // 
             cl_codigo_barras.HeaderText = "Codigo Barras";
@@ -320,10 +331,6 @@
             cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
             cl_fecha_vencimiento.ReadOnly = true;
             cl_fecha_vencimiento.Width = 155;
-            // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
             // 
             // Inventario
             // 
@@ -365,6 +372,7 @@
         private Button btn_buscar;
         private TextBox txt_buscar;
         private ErrorProvider errorProvider1;
+        private Button btn_agrupar_productos;
         private DataGridViewTextBoxColumn cl_fecha;
         private DataGridViewTextBoxColumn cl_usuario;
         private DataGridViewTextBoxColumn cl_documento;
@@ -374,9 +382,9 @@
         private DataGridViewTextBoxColumn cl_id_producto;
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_sku;
+        private DataGridViewTextBoxColumn cl_comentario;
         private DataGridViewTextBoxColumn cl_codigo_barras;
         private DataGridViewTextBoxColumn cl_codigo_lote;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
-        private Button btn_agrupar_productos;
     }
 }

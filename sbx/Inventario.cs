@@ -132,6 +132,7 @@ namespace sbx
                             item.IdProducto,
                             item.Nombre,
                             item.Sku,
+                            item.Comentario,
                             item.CodigoBarras,
                             item.CodigoLote,
                             item.FechaVencimiento);
