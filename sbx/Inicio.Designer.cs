@@ -43,6 +43,7 @@
             lbl_usuario = new Label();
             pictureBox1 = new PictureBox();
             panel3 = new Panel();
+            btn_vendedor = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -53,6 +54,7 @@
             // 
             panel1.BackColor = Color.Transparent;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_vendedor);
             panel1.Controls.Add(btn_reportes);
             panel1.Controls.Add(btn_caja);
             panel1.Controls.Add(btn_inventario);
@@ -65,7 +67,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(815, 66);
+            panel1.Size = new Size(934, 66);
             panel1.TabIndex = 0;
             // 
             // btn_reportes
@@ -263,9 +265,9 @@
             panel2.BorderStyle = BorderStyle.FixedSingle;
             panel2.Controls.Add(lbl_usuario);
             panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 426);
+            panel2.Location = new Point(0, 546);
             panel2.Name = "panel2";
-            panel2.Size = new Size(815, 32);
+            panel2.Size = new Size(934, 32);
             panel2.TabIndex = 1;
             // 
             // lbl_usuario
@@ -283,7 +285,7 @@
             // 
             pictureBox1.Dock = DockStyle.Right;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(529, 0);
+            pictureBox1.Location = new Point(648, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(286, 270);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -294,17 +296,38 @@
             // 
             panel3.Controls.Add(pictureBox1);
             panel3.Dock = DockStyle.Bottom;
-            panel3.Location = new Point(0, 156);
+            panel3.Location = new Point(0, 276);
             panel3.Name = "panel3";
-            panel3.Size = new Size(815, 270);
+            panel3.Size = new Size(934, 270);
             panel3.TabIndex = 3;
+            // 
+            // btn_vendedor
+            // 
+            btn_vendedor.BackColor = Color.Transparent;
+            btn_vendedor.Dock = DockStyle.Left;
+            btn_vendedor.FlatAppearance.BorderSize = 0;
+            btn_vendedor.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_vendedor.FlatStyle = FlatStyle.Flat;
+            btn_vendedor.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_vendedor.ForeColor = SystemColors.ControlText;
+            btn_vendedor.Image = (Image)resources.GetObject("btn_vendedor.Image");
+            btn_vendedor.Location = new Point(781, 0);
+            btn_vendedor.Name = "btn_vendedor";
+            btn_vendedor.Size = new Size(84, 62);
+            btn_vendedor.TabIndex = 9;
+            btn_vendedor.Text = "Vendedor";
+            btn_vendedor.TextAlign = ContentAlignment.BottomCenter;
+            btn_vendedor.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_vendedor.UseVisualStyleBackColor = false;
+            btn_vendedor.Visible = false;
+            btn_vendedor.Click += btn_vendedor_Click;
             // 
             // Inicio
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(815, 458);
+            ClientSize = new Size(934, 578);
             Controls.Add(panel3);
             Controls.Add(panel2);
             Controls.Add(panel1);
@@ -338,5 +361,6 @@
         private Button btn_inventario;
         private Button btn_caja;
         private Button btn_reportes;
+        private Button btn_vendedor;
     }
 }

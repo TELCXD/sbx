@@ -118,10 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btn_agrupar_productos.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
+        rwAAAK8BK7AVuQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAHESURBVEhL3ZWx
+        Sh1BFIaXiGBSKdokRSoFlTyB+A5WIWmE2ERRBFHBSoxp7CRd+lQhBAL6GhJDAmnVNHZBxKiFmnzfsruc
+        u7P3VpvGHz44O+ecf2bvzN3J0Dr8gb+BK3gD6in8gJiX72BOvQV7Yl7PNciDz/A68AFuYAA24RwWoMwb
+        O2bOGmvtiR56XkA+mw1RL8HxQdiBI6jLMXPWWGtPlJ6O34MJ3Bx/v+eB93ALD2ELzuAFlHljx8xZY609
+        0UPPS8i2wU1ythIbdkGNwQnEvBzDKKh3YE/M6+kCcnkShgKuqq6Yl7rsiXk9O9QHy5AkgqYLuslePfRK
+        NAm+2lT+1Ky9gm6yVw+9Ej0Dk71WuF/QTfbqoVei/zqBx+oTmPwCryDqEXyEnwXG9YMwB/bqoZeelWag
+        PKp3MAtR/XAI5sXYsSh77DWvl54dssA/3VL+lGoYDgqMm2SvHvUFVqqvqq4HBb2UeDyBVdhoGT0fQ/YN
+        ruF3y+j5FfKNWTRoWXrqne+6n1Z/23loel3xE+DR9MgaN9WIHnol98EI/IKm15VTGIeJIm6qET08ZckE
+        bauawIu5fum3QXXpe5wMnK1N8MxW/gGEW+NLyt1SBQAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="btn_buscar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        dAAAAHQBMYXlgQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADfSURBVDhPpdHN
+        cgAAAHIBsYahGgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADfSURBVDhPpdHN
         CkFBGMbxY4PiFuwVysLWDViQJdmIlYWwtBC5ApYUC1YoQrktNyD+j7E4dY7xcZ765T1T77xjxvFJBiXk
         EdHCt8nhjDGq6OCEFj5GzVuUscPm9dtHFwNYo0lxqCGmhVcq0F+aIakFv6ShY9uSxdCU3hRRM+XbRLEy
         pTe6bV2YLQlMTemNnupoyrfpoWBK/+ip2qb0JIU9Qs8vS/RUum1dWBg6tiYfcMESDVijpxphjQl0bE1e

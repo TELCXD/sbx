@@ -171,6 +171,59 @@ namespace sbx.repositories.Vendedor
             }
         }
 
+        public async Task<Response<dynamic>> ListActivos(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdVendedor
+                                  ,A.IdIdentificationType
+                                  ,B.IdentificationType
+                                  ,A.NumeroDocumento
+                                  ,A.Nombre
+                                  ,A.Apellido
+                                  ,CONCAT(A.Nombre, ' ', A.Apellido) AS NombreCompleto
+                                  ,A.Direccion
+                                  ,A.Telefono
+                                  ,A.Email
+                                  ,A.Estado
+                                  ,A.CreationDate
+                                  ,A.UpdateDate
+                                  ,A.IdUserAction 
+                                  FROM T_Vendedor A
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
+                                  WHERE A.Estado = 1 ";
+
+                    string Where = "";
+
+                    if (Id > 0)
+                    {
+                        Where = $" AND A.IdVendedor = {Id}";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
         public async Task<bool> ExisteNumeroDocumento(string numeroDocumento, int Id_Cliente)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -245,6 +298,7 @@ namespace sbx.repositories.Vendedor
                                   ,A.NumeroDocumento
                                   ,A.Nombre
                                   ,A.Apellido
+                                  ,CONCAT(A.Nombre,' ', A.Apellido) NombreCompletoVendedor
                                   ,A.Direccion
                                   ,A.Telefono
                                   ,A.Email
@@ -264,7 +318,7 @@ namespace sbx.repositories.Vendedor
                             switch (campoFiltro)
                             {
                                 case "Nombre":
-                                    Where = $"WHERE A.Nombre + ' ' + A.Apellido LIKE @Filtro ";
+                                    Where = $"WHERE CONCAT(A.Nombre,' ',A.Apellido) LIKE @Filtro ";
                                     break;
                                 case "Num Doc":
                                     Where = $"WHERE A.NumeroDocumento LIKE @Filtro ";
@@ -279,7 +333,7 @@ namespace sbx.repositories.Vendedor
                             switch (campoFiltro)
                             {
                                 case "Nombre":
-                                    Where = $"WHERE A.Nombre  + ' ' + A.Apellido = @Filtro ";
+                                    Where = $"WHERE CONCAT(A.Nombre,' ',A.Apellido) = @Filtro ";
                                     break;
                                 case "Num Doc":
                                     Where = $"WHERE A.NumeroDocumento = @Filtro ";
@@ -294,7 +348,7 @@ namespace sbx.repositories.Vendedor
                             switch (campoFiltro)
                             {
                                 case "Nombre":
-                                    Where = $"WHERE A.Nombre  + ' ' + A.Apellido LIKE @Filtro ";
+                                    Where = $"WHERE CONCAT(A.Nombre,' ',A.Apellido) LIKE @Filtro ";
                                     break;
                                 case "Num Doc":
                                     Where = $"WHERE A.NumeroDocumento LIKE @Filtro ";

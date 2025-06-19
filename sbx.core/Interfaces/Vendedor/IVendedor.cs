@@ -11,5 +11,6 @@ namespace sbx.core.Interfaces.Vendedor
         Task<bool> ExisteTelefono(string telefono, int Id_Vendedor);
         Task<bool> ExisteEmail(string email, int Id_Vendedor);
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> ListActivos(int Id);
     }
 }

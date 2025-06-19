@@ -9,6 +9,7 @@ using sbx.core.Interfaces.Categoria;
 using sbx.core.Interfaces.Ciudad;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.CodigoPostal;
+using sbx.core.Interfaces.ConversionProducto;
 using sbx.core.Interfaces.Cotizacion;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
@@ -52,6 +53,7 @@ using sbx.repositories.Categorias;
 using sbx.repositories.Ciudad;
 using sbx.repositories.Cliente;
 using sbx.repositories.CodigoPostal;
+using sbx.repositories.ConversionProducto;
 using sbx.repositories.Cotizacion;
 using sbx.repositories.Departamento;
 using sbx.repositories.EntradaInventario;
@@ -194,6 +196,14 @@ namespace sbx
 
                 services.AddTransient<Cotizacion>();
 
+                services.AddTransient<Vendedor>();
+
+                services.AddTransient<AgregarVendedor>();
+
+                services.AddTransient<ConversionProducto>();
+
+                services.AddTransient<AddConversionProducto>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -316,6 +326,13 @@ namespace sbx
 
                 services.AddTransient<ICotizacion>(provider =>
                 new CotizacionRepository(connectionString));
+
+                services.AddTransient<IVendedor>(provider =>
+                new VendedorRepository(connectionString));
+
+                services.AddTransient<IConversionProducto>(provider =>
+                new ConversionProductoRepository(connectionString));
+
             })
             .Build();
 

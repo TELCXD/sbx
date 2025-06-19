@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.SalidaInventario;
+using sbx.core.Entities.Venta;
 using sbx.core.Interfaces.SalidaInventario;
 
 namespace sbx.repositories.SalidaInventario
@@ -166,6 +167,8 @@ namespace sbx.repositories.SalidaInventario
 
                 using var transaction = connection.BeginTransaction();
 
+                bool committed = false;
+
                 try
                 {
                     string sql = "";
@@ -217,7 +220,385 @@ namespace sbx.repositories.SalidaInventario
                     }
 
                     await transaction.CommitAsync();
+                    committed = true;
 
+                    //Verificacion si el producto tiene conversion
+                    int Error = 0;
+                    int Correcto = 0;
+                    int contador = 0;
+                    decimal CantidadSaleRedondeadaTemp = 0;
+
+                    foreach (var detalle in salidaInventarioEntitie.detalleSalidaInventarios)
+                    {
+                        contador = 0;
+                        CantidadSaleRedondeadaTemp = 0;
+
+                        sql = $@" WITH JerarquiaProductos AS (
+                                SELECT
+                                    A.IdProductoPadre,
+                                    A.IdProductoHijo,
+		                            P.Nombre NombreHijo,
+		                            P.Sku SkuHijo,
+		                            P.CodigoBarras CodigoBarrasHijo, 
+                                    A.Cantidad,
+                                    1 AS Nivel
+                                FROM T_ConversionesProducto A
+	                            INNER JOIN T_Productos P ON P.IdProducto = A.IdProductoHijo
+                                WHERE A.IdProductoPadre = {detalle.IdProducto}
+
+                                UNION ALL
+
+                                SELECT
+                                    jp.IdProductoPadre,
+                                    B.IdProductoHijo,
+		                            P.Nombre NombreHijo,
+		                            P.Sku SkuHijo,
+		                            P.CodigoBarras CodigoBarrasHijo, 
+                                    B.Cantidad,
+                                    jp.Nivel + 1
+                                FROM JerarquiaProductos jp
+                                INNER JOIN T_ConversionesProducto B ON jp.IdProductoHijo = B.IdProductoPadre
+	                            INNER JOIN T_Productos P ON P.IdProducto = B.IdProductoHijo
+                            )
+
+                            SELECT *
+                            FROM JerarquiaProductos
+                            ORDER BY Nivel; ";
+
+                        var resultado = await connection.QueryAsync(sql);
+
+                        int cantidadRegistros = resultado.Count();
+
+                        if (cantidadRegistros > 0)
+                        {
+                            contador = 0;
+                            CantidadSaleRedondeadaTemp = 0;
+
+                            foreach (var item in resultado)
+                            {
+                                decimal Cantidad = item.Cantidad;
+                                decimal CantidadVendida = contador == 0 ? detalle.Cantidad : CantidadSaleRedondeadaTemp;
+
+                                decimal CantidadSale = CantidadVendida * Cantidad;
+
+                                decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
+
+                                int IdProductoHijoSale = item.IdProductoHijo;
+
+                                SalidaInventarioEntitie salidaInventarioEntitie2 = new SalidaInventarioEntitie();
+
+                                salidaInventarioEntitie2.IdTipoSalida = salidaInventarioEntitie.IdTipoSalida;
+                                salidaInventarioEntitie2.IdProveedor = salidaInventarioEntitie.IdProveedor;
+                                salidaInventarioEntitie2.OrdenCompra = salidaInventarioEntitie.OrdenCompra;
+                                salidaInventarioEntitie2.NumFactura = salidaInventarioEntitie.OrdenCompra;
+                                salidaInventarioEntitie2.Comentario = salidaInventarioEntitie.Comentario;
+
+                                var nuevoDetalle = new DetalleSalidaInventarioEntitie
+                                {
+                                    IdProducto = IdProductoHijoSale,                             
+                                    CodigoLote = "",
+                                    FechaVencimiento = detalle.FechaVencimiento,
+                                    Cantidad = CantidadSaleRedondeada,
+                                    CostoUnitario = 0,
+                                    Total = 0
+                                };
+
+                                salidaInventarioEntitie2.detalleSalidaInventarios.Add(nuevoDetalle);
+                                var resp = await CreateUpdateAuxiliar(salidaInventarioEntitie2, IdUser);
+
+                                if (resp != null)
+                                {
+                                    if (resp.Flag == true)
+                                    {
+                                        Correcto++;
+                                    }
+                                    else
+                                    {
+                                        Error++;
+                                    }
+                                }
+                                else
+                                {
+                                    Error++;
+                                }
+
+                                contador++;
+                                CantidadSaleRedondeadaTemp = CantidadSaleRedondeada;
+                            }
+
+                            //Se verifica si el producto es Hijo
+                            sql = $@" WITH JerarquiaPadres AS (
+                                        SELECT
+                                            A.IdProductoPadre,
+                                            A.IdProductoHijo,
+                                            P.Nombre AS NombrePadre,
+                                            P.Sku AS SkuPadre,
+                                            P.CodigoBarras AS CodigoBarrasPadre,
+                                            ISNULL(A.Cantidad, 1) AS Cantidad,
+                                            1 AS Nivel
+                                        FROM T_ConversionesProducto A
+                                        INNER JOIN T_Productos P ON P.IdProducto = A.IdProductoPadre
+                                        WHERE A.IdProductoHijo = {detalle.IdProducto}
+
+                                        UNION ALL
+
+                                        SELECT
+                                            B.IdProductoPadre,
+                                            jp.IdProductoPadre AS IdProductoHijo,
+                                            P.Nombre AS NombrePadre,
+                                            P.Sku AS SkuPadre,
+                                            P.CodigoBarras AS CodigoBarrasPadre,
+                                            ISNULL(B.Cantidad, 1) AS Cantidad,
+                                            jp.Nivel + 1
+                                        FROM JerarquiaPadres jp
+                                        INNER JOIN T_ConversionesProducto B ON jp.IdProductoPadre = B.IdProductoHijo
+                                        INNER JOIN T_Productos P ON P.IdProducto = B.IdProductoPadre
+                                    )
+
+                                    SELECT *
+                                    FROM JerarquiaPadres
+                                    ORDER BY Nivel; ";
+
+                            var resultado3 = await connection.QueryAsync(sql);
+
+                            int cantidadRegistros3 = resultado3.Count();
+
+                            if (cantidadRegistros3 > 0)
+                            {
+                                contador = 0;
+                                CantidadSaleRedondeadaTemp = 0;
+
+                                foreach (var item in resultado3)
+                                {
+                                    decimal Cantidad1 = item.Cantidad;
+                                    decimal CantidadVendida = contador == 0 ? detalle.Cantidad : CantidadSaleRedondeadaTemp;
+
+                                    decimal CantidadSale = (decimal)CantidadVendida / Cantidad1;
+
+                                    decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
+
+                                    int IdProductoPadreSale = item.IdProductoPadre;
+
+                                    SalidaInventarioEntitie salidaInventarioEntitie2 = new SalidaInventarioEntitie();
+
+                                    salidaInventarioEntitie2.IdTipoSalida = salidaInventarioEntitie.IdTipoSalida;
+                                    salidaInventarioEntitie2.IdProveedor = salidaInventarioEntitie.IdProveedor;
+                                    salidaInventarioEntitie2.OrdenCompra = salidaInventarioEntitie.OrdenCompra;
+                                    salidaInventarioEntitie2.NumFactura = salidaInventarioEntitie.OrdenCompra;
+                                    salidaInventarioEntitie2.Comentario = salidaInventarioEntitie.Comentario;
+
+                                    var nuevoDetalle = new DetalleSalidaInventarioEntitie
+                                    {
+                                        IdProducto = IdProductoPadreSale,
+                                        CodigoLote = "",
+                                        FechaVencimiento = detalle.FechaVencimiento,
+                                        Cantidad = CantidadSaleRedondeada,
+                                        CostoUnitario = 0,
+                                        Total = 0
+                                    };
+
+                                    salidaInventarioEntitie2.detalleSalidaInventarios.Add(nuevoDetalle);
+                                    var resp = await CreateUpdateAuxiliar(salidaInventarioEntitie2, IdUser);
+
+                                    if (resp != null)
+                                    {
+                                        if (resp.Flag == true)
+                                        {
+                                            Correcto++;
+                                        }
+                                        else
+                                        {
+                                            Error++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Error++;
+                                    }
+
+                                    contador++;
+                                    CantidadSaleRedondeadaTemp = CantidadSaleRedondeada;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            sql = $@" WITH JerarquiaPadres AS (
+                                        SELECT
+                                            A.IdProductoPadre,
+                                            A.IdProductoHijo,
+                                            P.Nombre AS NombrePadre,
+                                            P.Sku AS SkuPadre,
+                                            P.CodigoBarras AS CodigoBarrasPadre,
+                                            ISNULL(A.Cantidad, 1) AS Cantidad,
+                                            1 AS Nivel
+                                        FROM T_ConversionesProducto A
+                                        INNER JOIN T_Productos P ON P.IdProducto = A.IdProductoPadre
+                                        WHERE A.IdProductoHijo = {detalle.IdProducto}
+
+                                        UNION ALL
+
+                                        SELECT
+                                            B.IdProductoPadre,
+                                            jp.IdProductoPadre AS IdProductoHijo,
+                                            P.Nombre AS NombrePadre,
+                                            P.Sku AS SkuPadre,
+                                            P.CodigoBarras AS CodigoBarrasPadre,
+                                            ISNULL(B.Cantidad, 1) AS Cantidad,
+                                            jp.Nivel + 1
+                                        FROM JerarquiaPadres jp
+                                        INNER JOIN T_ConversionesProducto B ON jp.IdProductoPadre = B.IdProductoHijo
+                                        INNER JOIN T_Productos P ON P.IdProducto = B.IdProductoPadre
+                                    )
+
+                                    SELECT *
+                                    FROM JerarquiaPadres
+                                    ORDER BY Nivel; ";
+
+                            var resultado2 = await connection.QueryAsync(sql);
+
+                            int cantidadRegistros2 = resultado2.Count();
+
+                            if (cantidadRegistros2 > 0)
+                            {
+                                contador = 0;
+                                CantidadSaleRedondeadaTemp = 0;
+
+                                foreach (var item in resultado2)
+                                {
+                                    decimal Cantidad1 = item.Cantidad;
+                                    decimal CantidadVendida = contador == 0 ? detalle.Cantidad : CantidadSaleRedondeadaTemp;
+
+                                    decimal CantidadSale = (decimal)CantidadVendida / Cantidad1;
+
+                                    decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
+
+                                    int IdProductoPadreSale = item.IdProductoPadre;
+
+                                    SalidaInventarioEntitie salidaInventarioEntitie2 = new SalidaInventarioEntitie();
+
+                                    salidaInventarioEntitie2.IdTipoSalida = salidaInventarioEntitie.IdTipoSalida;
+                                    salidaInventarioEntitie2.IdProveedor = salidaInventarioEntitie.IdProveedor;
+                                    salidaInventarioEntitie2.OrdenCompra = salidaInventarioEntitie.OrdenCompra;
+                                    salidaInventarioEntitie2.NumFactura = salidaInventarioEntitie.OrdenCompra;
+                                    salidaInventarioEntitie2.Comentario = salidaInventarioEntitie.Comentario;
+
+                                    var nuevoDetalle = new DetalleSalidaInventarioEntitie
+                                    {
+                                        IdProducto = IdProductoPadreSale,
+                                        CodigoLote = "",
+                                        FechaVencimiento = detalle.FechaVencimiento,
+                                        Cantidad = CantidadSaleRedondeada,
+                                        CostoUnitario = 0,
+                                        Total = 0
+                                    };
+
+                                    salidaInventarioEntitie2.detalleSalidaInventarios.Add(nuevoDetalle);
+                                    var resp = await CreateUpdateAuxiliar(salidaInventarioEntitie2, IdUser);
+
+                                    if (resp != null)
+                                    {
+                                        if (resp.Flag == true)
+                                        {
+                                            Correcto++;
+                                        }
+                                        else
+                                        {
+                                            Error++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Error++;
+                                    }
+
+                                    contador++;
+                                    CantidadSaleRedondeadaTemp = CantidadSaleRedondeada;
+                                }
+                            }
+                        }
+                    }
+
+                    response.Flag = true;
+                    response.Message = $"Salida creada correctamente, al momento de realizar salidas de inventario por podructos padres o hijo Correctos: {Correcto} y Errores: {Error} ";
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    if (!committed)
+                    {
+                        await transaction.RollbackAsync();
+                    }
+
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> CreateUpdateAuxiliar(SalidaInventarioEntitie salidaInventarioEntitie, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    string sql = "";
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sql = @"INSERT INTO T_SalidasInventario (IdTipoSalida, IdProveedor, OrdenCompra, NumFactura, Comentario, CreationDate, IdUserAction)
+                            VALUES (@IdTipoSalida, NULLIF(@IdProveedor,0), @OrdenCompra, @NumFactura, @Comentario, @CreationDate,@IdUserAction);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT); ";
+
+                    int idSalida = await connection.ExecuteScalarAsync<int>(sql,
+                    new
+                    {
+                        salidaInventarioEntitie.IdTipoSalida,
+                        salidaInventarioEntitie.IdProveedor,
+                        salidaInventarioEntitie.OrdenCompra,
+                        salidaInventarioEntitie.NumFactura,
+                        salidaInventarioEntitie.Comentario,
+                        CreationDate = FechaActual,
+                        IdUserAction = IdUser
+                    },
+                    transaction);
+
+                    sql = @"INSERT INTO T_DetalleSalidasInventario (
+                            IdSalidasInventario, IdProducto, CodigoLote, FechaVencimiento,
+                            Cantidad, CostoUnitario, CreationDate, IdUserAction)
+                            VALUES (@IdSalidasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
+                                    @Cantidad, @CostoUnitario, @CreationDate, @IdUserAction);"
+                    ;
+
+                    foreach (var detalle in salidaInventarioEntitie.detalleSalidaInventarios)
+                    {
+                        await connection.ExecuteAsync(
+                            sql,
+                            new
+                            {
+                                IdSalidasInventario = idSalida,
+                                detalle.IdProducto,
+                                detalle.CodigoLote,
+                                detalle.FechaVencimiento,
+                                detalle.Cantidad,
+                                detalle.CostoUnitario,
+                                CreationDate = FechaActual,
+                                IdUserAction = IdUser
+                            },
+                            transaction
+                        );
+                    }
+
+                    await transaction.CommitAsync();
+                   
                     response.Flag = true;
                     response.Message = "Salida creada correctamente";
                     return response;
