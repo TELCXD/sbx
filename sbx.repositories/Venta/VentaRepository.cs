@@ -115,6 +115,8 @@ namespace sbx.repositories.Venta
                     int contador = 0;
                     decimal CantidadSaleRedondeadaTemp = 0;
 
+                    string Factura = await ListFactura(idVenta);
+
                     foreach (var detalle in ventaEntitie.detalleVentas)
                     {
                         contador = 0;
@@ -178,7 +180,7 @@ namespace sbx.repositories.Venta
                                 salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(4);
                                 salidaInventarioEntitie.OrdenCompra = "";
                                 salidaInventarioEntitie.NumFactura = "";
-                                salidaInventarioEntitie.Comentario = "Salida por venta de producto padre";
+                                salidaInventarioEntitie.Comentario = $"{Factura} Salida por venta de producto padre";
 
                                 var nuevoDetalle = new DetalleSalidaInventarioEntitie
                                 {
@@ -187,14 +189,14 @@ namespace sbx.repositories.Venta
                                     CodigoBarras = item.CodigoBarrasHijo,
                                     Nombre = item.NombreHijo,
                                     CodigoLote = "",
-                                    FechaVencimiento = null,
+                                    FechaVencimiento = DateTime.Parse("1900-01-01"),
                                     Cantidad = CantidadSaleRedondeada,
                                     CostoUnitario = 0,
                                     Total = 0
                                 };
 
                                 salidaInventarioEntitie.detalleSalidaInventarios.Add(nuevoDetalle);
-                                var resp = await inventarioRepository.CreateUpdate(salidaInventarioEntitie, IdUser);
+                                var resp = await inventarioRepository.CreateUpdateAuxiliar(salidaInventarioEntitie, IdUser);
 
                                 if (resp != null)
                                 {
@@ -275,7 +277,7 @@ namespace sbx.repositories.Venta
                                     salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(4);
                                     salidaInventarioEntitie.OrdenCompra = "";
                                     salidaInventarioEntitie.NumFactura = "";
-                                    salidaInventarioEntitie.Comentario = "Salida por venta de producto hijo";
+                                    salidaInventarioEntitie.Comentario = $"{Factura} Salida por venta de producto hijo";
 
                                     var nuevoDetalle = new DetalleSalidaInventarioEntitie
                                     {
@@ -284,14 +286,14 @@ namespace sbx.repositories.Venta
                                         CodigoBarras = item.CodigoBarrasPadre,
                                         Nombre = item.NombrePadre,
                                         CodigoLote = "",
-                                        FechaVencimiento = null,
+                                        FechaVencimiento = DateTime.Parse("1900-01-01"),
                                         Cantidad = CantidadSaleRedondeada,
                                         CostoUnitario = 0,
                                         Total = 0
                                     };
 
                                     salidaInventarioEntitie.detalleSalidaInventarios.Add(nuevoDetalle);
-                                    var resp = await inventarioRepository.CreateUpdate(salidaInventarioEntitie, IdUser);
+                                    var resp = await inventarioRepository.CreateUpdateAuxiliar(salidaInventarioEntitie, IdUser);
 
                                     if (resp != null)
                                     {
@@ -374,7 +376,7 @@ namespace sbx.repositories.Venta
                                     salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(4);
                                     salidaInventarioEntitie.OrdenCompra = "";
                                     salidaInventarioEntitie.NumFactura = "";
-                                    salidaInventarioEntitie.Comentario = "Salida por venta de producto hijo";
+                                    salidaInventarioEntitie.Comentario = $"{Factura} Salida por venta de producto hijo";
 
                                     var nuevoDetalle = new DetalleSalidaInventarioEntitie
                                     {
@@ -383,14 +385,14 @@ namespace sbx.repositories.Venta
                                         CodigoBarras = item.CodigoBarrasPadre,
                                         Nombre = item.NombrePadre,
                                         CodigoLote = "",
-                                        FechaVencimiento = null,
+                                        FechaVencimiento = DateTime.Parse("1900-01-01"),
                                         Cantidad = CantidadSaleRedondeada,
                                         CostoUnitario = 0,
                                         Total = 0
                                     };
 
                                     salidaInventarioEntitie.detalleSalidaInventarios.Add(nuevoDetalle);
-                                    var resp = await inventarioRepository.CreateUpdate(salidaInventarioEntitie, IdUser);
+                                    var resp = await inventarioRepository.CreateUpdateAuxiliar(salidaInventarioEntitie, IdUser);
 
                                     if (resp != null)
                                     {
@@ -1175,6 +1177,29 @@ namespace sbx.repositories.Venta
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
                     return response;
+                }
+            }
+        }
+
+        public async Task<string> ListFactura(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@" SELECT                                   
+                                    CONCAT(Prefijo,'-',Consecutivo) Factura
+                                    FROM T_Ventas WHERE IdVenta = {Id}";
+
+                    string Factura = await connection.QueryFirstOrDefaultAsync<string>(sql) ?? "";
+
+                    return Factura;
+                }
+                catch (Exception ex)
+                {
+                    return "Error: " + ex.Message;
                 }
             }
         }

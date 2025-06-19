@@ -433,7 +433,8 @@ namespace sbx.repositories.EntradaInventario
 	                                    p.Sku,
 	                                    p.CodigoBarras,
                                         e.CodigoLote,
-                                        e.FechaVencimiento
+                                        e.FechaVencimiento,
+                                        ei.Comentario
                                     FROM T_DetalleEntradasInventario e
                                     INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
                                     INNER JOIN T_TipoEntrada te ON te.IdTipoEntrada = ei.IdTipoEntrada
@@ -456,7 +457,8 @@ namespace sbx.repositories.EntradaInventario
 	                                    p.Sku,
 	                                    p.CodigoBarras,
                                         s.CodigoLote,
-                                        s.FechaVencimiento
+                                        s.FechaVencimiento,
+                                        si.Comentario
                                     FROM T_DetalleSalidasInventario s
                                     INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
                                     INNER JOIN T_TipoSalida ts ON ts.IdTipoSalida = si.IdTipoSalida
@@ -479,7 +481,8 @@ namespace sbx.repositories.EntradaInventario
 	                                    dvt.Sku,
 	                                    dvt.CodigoBarras,
 	                                    '' AS CodigoLote,
-	                                    '' AS FechaVencimiento
+	                                    '' AS FechaVencimiento,
+                                        '' AS Comentario
 	                                FROM T_Ventas vt 
 									INNER JOIN T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta
 									INNER JOIN T_User usr ON usr.IdUser = dvt.IdUserAction
@@ -500,7 +503,8 @@ namespace sbx.repositories.EntradaInventario
 										ncd.Sku,
 										ncd.CodigoBarras,
 										'' AS CodigoLote,
-	                                    '' AS FechaVencimiento
+	                                    '' AS FechaVencimiento,
+                                        nc.Motivo AS Comentario
 									FROM T_NotaCredito nc INNER JOIN T_NotaCreditoDetalle ncd ON nc.IdNotaCredito  = ncd.IdNotaCredito
 									INNER JOIN T_User usr ON usr.IdUser = ncd.IdUserAction
                                     ) R ";
