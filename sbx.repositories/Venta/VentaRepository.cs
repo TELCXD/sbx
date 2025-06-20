@@ -1203,5 +1203,63 @@ namespace sbx.repositories.Venta
                 }
             }
         }
+
+        public async Task<Response<dynamic>> IdentificaProductoPadreNivel1(int IdProducto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@" WITH JerarquiaPadres AS (
+                                        SELECT
+                                            A.IdProductoPadre,
+                                            A.IdProductoHijo,
+                                            P.Nombre AS NombrePadre,
+                                            P.Sku AS SkuPadre,
+                                            P.CodigoBarras AS CodigoBarrasPadre,
+                                            ISNULL(A.Cantidad, 1) AS Cantidad,
+                                            1 AS Nivel
+                                        FROM T_ConversionesProducto A
+                                        INNER JOIN T_Productos P ON P.IdProducto = A.IdProductoPadre
+                                        WHERE A.IdProductoHijo = {IdProducto}
+
+                                        UNION ALL
+
+                                        SELECT
+                                            B.IdProductoPadre,
+                                            jp.IdProductoPadre AS IdProductoHijo,
+                                            P.Nombre AS NombrePadre,
+                                            P.Sku AS SkuPadre,
+                                            P.CodigoBarras AS CodigoBarrasPadre,
+                                            ISNULL(B.Cantidad, 1) AS Cantidad,
+                                            jp.Nivel + 1
+                                        FROM JerarquiaPadres jp
+                                        INNER JOIN T_ConversionesProducto B ON jp.IdProductoPadre = B.IdProductoHijo
+                                        INNER JOIN T_Productos P ON P.IdProducto = B.IdProductoPadre
+                                    )
+
+                                    SELECT *
+                                    FROM JerarquiaPadres
+									WHERE Nivel = 1; ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

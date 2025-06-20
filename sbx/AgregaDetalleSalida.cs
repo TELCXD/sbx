@@ -90,16 +90,16 @@ namespace sbx
             errorProvider1.Clear();
             if (txt_producto.Text.Trim() != "" && txt_costo.Text.Trim() != "" && txt_cantidad.Text.Trim() != "" && txt_total.Text.Trim() != "")
             {
-                if (Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.')) > 0) 
+                if (Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.')) > 0)
                 {
                     var resp = await _IEntradaInventario.Entradas(DetalleSalida.IdProducto);
 
                     if (resp.Data != null)
                     {
-                        if (Convert.ToDecimal(resp.Data[0].Entradas) > 0) 
+                        if (Convert.ToDecimal(resp.Data[0].Entradas) > 0)
                         {
                             DetalleSalida.CodigoLote = txt_lote.Text;
-                            if (chek_fecha_vencimiento.Checked) { DetalleSalida.FechaVencimiento = dtp_fecha_vencimiento.Value; } else { DetalleSalida.FechaVencimiento = null; }
+                            if (chek_fecha_vencimiento.Checked) { DetalleSalida.FechaVencimiento = dtp_fecha_vencimiento.Value; } else { DetalleSalida.FechaVencimiento = DateTime.Parse("1900-01-01"); }
                             DetalleSalida.Cantidad = Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.'));
                             DetalleSalida.CostoUnitario = Convert.ToDecimal(txt_costo.Text, new CultureInfo("es-CO"));
                             DetalleSalida.Total = Convert.ToDecimal(txt_total.Text, new CultureInfo("es-CO"));
@@ -193,6 +193,20 @@ namespace sbx
             if (!decimal.TryParse(txt_costo.Text, out _))
             {
                 errorProvider1.SetError(txt_costo, "Ingrese un valor numerico");
+            }
+        }
+
+        private void chek_fecha_vencimiento_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chek_fecha_vencimiento.Checked)
+            {
+                lbl_fechaVencimiento.Visible = true;
+                dtp_fecha_vencimiento.Visible = true;
+            }
+            else
+            {
+                lbl_fechaVencimiento.Visible = false;
+                dtp_fecha_vencimiento.Visible = false;
             }
         }
     }

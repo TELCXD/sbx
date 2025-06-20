@@ -124,18 +124,18 @@ namespace sbx
 
                         dtg_inventario.Rows.Add(
                             item.Fecha,
-                            item.Usuario,
                             item.Documento,
                             item.TipoMovimiento,
                             item.Cantidad,
-                            item.Tipo,
                             item.IdProducto,
                             item.Nombre,
                             item.Sku,
                             item.Comentario,
+                            item.Tipo,
                             item.CodigoBarras,
                             item.CodigoLote,
-                            item.FechaVencimiento);
+                            item.FechaVencimiento,
+                            item.Usuario);
                     }
 
                     txt_total_stock.Text = TotalStock.ToString();

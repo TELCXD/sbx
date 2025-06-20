@@ -113,6 +113,7 @@
             chek_fecha_vencimiento.TabIndex = 146;
             chek_fecha_vencimiento.Text = "Fecha vencimiento";
             chek_fecha_vencimiento.UseVisualStyleBackColor = true;
+            chek_fecha_vencimiento.CheckedChanged += chek_fecha_vencimiento_CheckedChanged;
             // 
             // lbl_nombre_producto
             // 
@@ -198,6 +199,7 @@
             txt_costo.Name = "txt_costo";
             txt_costo.Size = new Size(193, 23);
             txt_costo.TabIndex = 131;
+            txt_costo.Text = "0";
             txt_costo.KeyPress += txt_costo_KeyPress;
             txt_costo.KeyUp += txt_costo_KeyUp;
             txt_costo.Validating += txt_costo_Validating;

@@ -175,6 +175,7 @@
             txt_costo.Name = "txt_costo";
             txt_costo.Size = new Size(193, 23);
             txt_costo.TabIndex = 7;
+            txt_costo.Text = "0";
             txt_costo.KeyPress += txt_costo_KeyPress;
             txt_costo.KeyUp += txt_costo_KeyUp;
             txt_costo.Leave += txt_costo_Leave;
@@ -237,6 +238,7 @@
             txt_descuento.Name = "txt_descuento";
             txt_descuento.Size = new Size(193, 23);
             txt_descuento.TabIndex = 9;
+            txt_descuento.Text = "0";
             txt_descuento.KeyPress += txt_descuento_KeyPress;
             txt_descuento.KeyUp += txt_descuento_KeyUp;
             txt_descuento.Validating += txt_descuento_Validating;
@@ -257,6 +259,7 @@
             txt_iva.Name = "txt_iva";
             txt_iva.Size = new Size(193, 23);
             txt_iva.TabIndex = 10;
+            txt_iva.Text = "0";
             txt_iva.KeyPress += txt_iva_KeyPress;
             txt_iva.KeyUp += txt_iva_KeyUp;
             txt_iva.Validating += txt_iva_Validating;

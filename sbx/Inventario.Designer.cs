@@ -47,18 +47,18 @@
             dtg_inventario = new DataGridView();
             errorProvider1 = new ErrorProvider(components);
             cl_fecha = new DataGridViewTextBoxColumn();
-            cl_usuario = new DataGridViewTextBoxColumn();
             cl_documento = new DataGridViewTextBoxColumn();
             cl_movimiento = new DataGridViewTextBoxColumn();
             cl_cantidad = new DataGridViewTextBoxColumn();
-            cl_tipo = new DataGridViewTextBoxColumn();
             cl_id_producto = new DataGridViewTextBoxColumn();
             cl_nombre = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_comentario = new DataGridViewTextBoxColumn();
+            cl_tipo = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
             cl_codigo_lote = new DataGridViewTextBoxColumn();
             cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
+            cl_usuario = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).BeginInit();
@@ -78,7 +78,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1308, 56);
+            panel1.Size = new Size(1127, 56);
             panel1.TabIndex = 0;
             // 
             // btn_agrupar_productos
@@ -102,7 +102,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(985, 17);
+            cbx_tipo_filtro.Location = new Point(804, 17);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 20;
@@ -113,7 +113,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(865, 17);
+            cbx_campo_filtro.Location = new Point(684, 17);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 19;
@@ -124,7 +124,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1275, 15);
+            btn_buscar.Location = new Point(1094, 15);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 18;
@@ -135,7 +135,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(1078, 17);
+            txt_buscar.Location = new Point(897, 17);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 17;
@@ -179,7 +179,7 @@
             panel2.Dock = DockStyle.Bottom;
             panel2.Location = new Point(0, 474);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1308, 46);
+            panel2.Size = new Size(1127, 46);
             panel2.TabIndex = 1;
             // 
             // label1
@@ -187,7 +187,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(1006, 9);
+            label1.Location = new Point(825, 9);
             label1.Name = "label1";
             label1.Size = new Size(62, 30);
             label1.TabIndex = 28;
@@ -198,7 +198,7 @@
             txt_total_stock.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             txt_total_stock.Enabled = false;
             txt_total_stock.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_total_stock.Location = new Point(1074, 6);
+            txt_total_stock.Location = new Point(893, 6);
             txt_total_stock.Name = "txt_total_stock";
             txt_total_stock.Size = new Size(226, 35);
             txt_total_stock.TabIndex = 27;
@@ -218,7 +218,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_inventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_inventario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_usuario, cl_documento, cl_movimiento, cl_cantidad, cl_tipo, cl_id_producto, cl_nombre, cl_sku, cl_comentario, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento });
+            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_documento, cl_movimiento, cl_cantidad, cl_id_producto, cl_nombre, cl_sku, cl_comentario, cl_tipo, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento, cl_usuario });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -240,7 +240,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_inventario.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_inventario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_inventario.Size = new Size(1308, 418);
+            dtg_inventario.Size = new Size(1127, 418);
             dtg_inventario.TabIndex = 6;
             // 
             // errorProvider1
@@ -254,12 +254,6 @@
             cl_fecha.ReadOnly = true;
             cl_fecha.Width = 150;
             // 
-            // cl_usuario
-            // 
-            cl_usuario.HeaderText = "Usuario";
-            cl_usuario.Name = "cl_usuario";
-            cl_usuario.ReadOnly = true;
-            // 
             // cl_documento
             // 
             cl_documento.HeaderText = "Doc";
@@ -271,20 +265,13 @@
             cl_movimiento.HeaderText = "Movimiento";
             cl_movimiento.Name = "cl_movimiento";
             cl_movimiento.ReadOnly = true;
-            cl_movimiento.Width = 180;
+            cl_movimiento.Width = 150;
             // 
             // cl_cantidad
             // 
             cl_cantidad.HeaderText = "Cantidad";
             cl_cantidad.Name = "cl_cantidad";
             cl_cantidad.ReadOnly = true;
-            // 
-            // cl_tipo
-            // 
-            cl_tipo.HeaderText = "Tipo";
-            cl_tipo.Name = "cl_tipo";
-            cl_tipo.ReadOnly = true;
-            cl_tipo.Width = 150;
             // 
             // cl_id_producto
             // 
@@ -312,6 +299,13 @@
             cl_comentario.Name = "cl_comentario";
             cl_comentario.ReadOnly = true;
             // 
+            // cl_tipo
+            // 
+            cl_tipo.HeaderText = "Tipo";
+            cl_tipo.Name = "cl_tipo";
+            cl_tipo.ReadOnly = true;
+            cl_tipo.Width = 150;
+            // 
             // cl_codigo_barras
             // 
             cl_codigo_barras.HeaderText = "Codigo Barras";
@@ -332,18 +326,22 @@
             cl_fecha_vencimiento.ReadOnly = true;
             cl_fecha_vencimiento.Width = 155;
             // 
+            // cl_usuario
+            // 
+            cl_usuario.HeaderText = "Usuario";
+            cl_usuario.Name = "cl_usuario";
+            cl_usuario.ReadOnly = true;
+            // 
             // Inventario
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1308, 520);
+            ClientSize = new Size(1127, 520);
             Controls.Add(dtg_inventario);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(1324, 559);
-            MinimumSize = new Size(1324, 559);
             Name = "Inventario";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inventario";
@@ -374,17 +372,17 @@
         private ErrorProvider errorProvider1;
         private Button btn_agrupar_productos;
         private DataGridViewTextBoxColumn cl_fecha;
-        private DataGridViewTextBoxColumn cl_usuario;
         private DataGridViewTextBoxColumn cl_documento;
         private DataGridViewTextBoxColumn cl_movimiento;
         private DataGridViewTextBoxColumn cl_cantidad;
-        private DataGridViewTextBoxColumn cl_tipo;
         private DataGridViewTextBoxColumn cl_id_producto;
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_comentario;
+        private DataGridViewTextBoxColumn cl_tipo;
         private DataGridViewTextBoxColumn cl_codigo_barras;
         private DataGridViewTextBoxColumn cl_codigo_lote;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
+        private DataGridViewTextBoxColumn cl_usuario;
     }
 }
