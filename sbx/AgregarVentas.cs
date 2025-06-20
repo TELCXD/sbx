@@ -19,6 +19,7 @@ using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
+using System.Data;
 using System.Globalization;
 using System.Text;
 
@@ -368,14 +369,60 @@ namespace sbx
                                                     string ValidaStock = DataParametros.Data[0].Value;
                                                     if (ValidaStock == "SI")
                                                     {
+                                                        int Continua = 0;
+                                                        decimal CantidadEquivalenteVentaTemp = 0;
                                                         decimal Stock = DataProducto.Data[0].Stock;
-                                                        if (Stock > 0)
+
+                                                        var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
+
+                                                        if (ProductosPadre != null)
+                                                        {
+                                                            if (ProductosPadre.Data.Count > 0)
+                                                            {
+                                                                foreach (var item in ProductosPadre.Data)
+                                                                {
+                                                                    CantidadEquivalenteVentaTemp = 0;
+                                                                    Continua = 0;
+
+                                                                    foreach (DataGridViewRow row in dtg_producto.Rows)
+                                                                    {
+                                                                        if (Convert.ToInt32(item.IdProductoPadre) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                                        {
+                                                                            decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta  * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+
+                                                                            if (Stock > (CantidadEquivalenteVenta + CantidadEquivalenteVentaTemp)) 
+                                                                            {
+                                                                                Continua++;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                Continua = 0;
+                                                                            }
+
+                                                                            CantidadEquivalenteVentaTemp = CantidadEquivalenteVenta;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                Continua++;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            Continua++;
+                                                        }
+
+                                                        if (Stock > 0 && Continua > 0)
                                                         {
                                                             IdentificarPrecio(DataProducto);
                                                         }
                                                         else
                                                         {
-                                                            MessageBox.Show($"Producto sin Stock", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                            string Mensaje = Continua == 0 ? ", producto padre en lista absorbe parte del stock" : "";
+                                                            MessageBox.Show("Producto sin Stock"+ Mensaje, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                         }
                                                     }
                                                     else

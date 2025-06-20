@@ -27,7 +27,7 @@ namespace sbx.repositories.SalidaInventario
                     await connection.OpenAsync();
 
                     string sql = @" SELECT Fecha, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
-                                    CodigoBarras, CodigoLote, FechaVencimiento
+                                    CodigoBarras, CodigoLote, FechaVencimiento, Comentario 
                                     FROM
                                     (
                                     SELECT 
@@ -40,7 +40,8 @@ namespace sbx.repositories.SalidaInventario
 	                                    p.Sku,
 	                                    p.CodigoBarras,
                                         e.CodigoLote,
-                                        e.FechaVencimiento
+                                        e.FechaVencimiento,
+                                        ei.Comentario 
                                     FROM T_DetalleEntradasInventario e
                                     INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
                                     INNER JOIN T_TipoEntrada te ON te.IdTipoEntrada = ei.IdTipoEntrada
@@ -58,7 +59,8 @@ namespace sbx.repositories.SalidaInventario
 	                                    p.Sku,
 	                                    p.CodigoBarras,
                                         s.CodigoLote,
-                                        s.FechaVencimiento
+                                        s.FechaVencimiento,
+                                        si.Comentario 
                                     FROM T_DetalleSalidasInventario s
                                     INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
                                     INNER JOIN T_TipoSalida ts ON ts.IdTipoSalida = si.IdTipoSalida
@@ -284,6 +286,7 @@ namespace sbx.repositories.SalidaInventario
                                 decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                 int IdProductoHijoSale = item.IdProductoHijo;
+                                string Documento = "SI-"+idSalida;
 
                                 SalidaInventarioEntitie salidaInventarioEntitie2 = new SalidaInventarioEntitie();
 
@@ -291,7 +294,7 @@ namespace sbx.repositories.SalidaInventario
                                 salidaInventarioEntitie2.IdProveedor = salidaInventarioEntitie.IdProveedor;
                                 salidaInventarioEntitie2.OrdenCompra = salidaInventarioEntitie.OrdenCompra;
                                 salidaInventarioEntitie2.NumFactura = salidaInventarioEntitie.OrdenCompra;
-                                salidaInventarioEntitie2.Comentario = salidaInventarioEntitie.Comentario;
+                                salidaInventarioEntitie2.Comentario = Documento + " " + salidaInventarioEntitie.Comentario;
 
                                 var nuevoDetalle = new DetalleSalidaInventarioEntitie
                                 {
@@ -378,6 +381,7 @@ namespace sbx.repositories.SalidaInventario
                                     decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                     int IdProductoPadreSale = item.IdProductoPadre;
+                                    string Documento = "SI-" + idSalida;
 
                                     SalidaInventarioEntitie salidaInventarioEntitie2 = new SalidaInventarioEntitie();
 
@@ -385,7 +389,7 @@ namespace sbx.repositories.SalidaInventario
                                     salidaInventarioEntitie2.IdProveedor = salidaInventarioEntitie.IdProveedor;
                                     salidaInventarioEntitie2.OrdenCompra = salidaInventarioEntitie.OrdenCompra;
                                     salidaInventarioEntitie2.NumFactura = salidaInventarioEntitie.OrdenCompra;
-                                    salidaInventarioEntitie2.Comentario = salidaInventarioEntitie.Comentario;
+                                    salidaInventarioEntitie2.Comentario = Documento + " " + salidaInventarioEntitie.Comentario;
 
                                     var nuevoDetalle = new DetalleSalidaInventarioEntitie
                                     {
@@ -474,6 +478,7 @@ namespace sbx.repositories.SalidaInventario
                                     decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                     int IdProductoPadreSale = item.IdProductoPadre;
+                                    string Documento = "SI-" + idSalida;
 
                                     SalidaInventarioEntitie salidaInventarioEntitie2 = new SalidaInventarioEntitie();
 
@@ -481,7 +486,7 @@ namespace sbx.repositories.SalidaInventario
                                     salidaInventarioEntitie2.IdProveedor = salidaInventarioEntitie.IdProveedor;
                                     salidaInventarioEntitie2.OrdenCompra = salidaInventarioEntitie.OrdenCompra;
                                     salidaInventarioEntitie2.NumFactura = salidaInventarioEntitie.OrdenCompra;
-                                    salidaInventarioEntitie2.Comentario = salidaInventarioEntitie.Comentario;
+                                    salidaInventarioEntitie2.Comentario = Documento + " " + salidaInventarioEntitie.Comentario;
 
                                     var nuevoDetalle = new DetalleSalidaInventarioEntitie
                                     {

@@ -14,5 +14,6 @@ namespace sbx.core.Interfaces.Venta
         Task<Response<dynamic>> VentasSuspendidas(int Id);
         Task<Response<dynamic>> ListVentasSuspendidas();
         Task<Response<dynamic>> EliminarVentasSuspendidas(int Id);
+        Task<Response<dynamic>> IdentificaProductoPadreNivel1(int IdProducto);
     }
 }

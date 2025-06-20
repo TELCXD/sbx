@@ -146,6 +146,7 @@ namespace sbx.repositories.EntradaInventario
                                 decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                 int IdProductoHijoSale = item.IdProductoHijo;
+                                string Documento = "EI-" + idEntrada;
 
                                 EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
 
@@ -153,7 +154,7 @@ namespace sbx.repositories.EntradaInventario
                                 entradasInventarioEntitie2.IdProveedor = entradasInventarioEntitie.IdProveedor;
                                 entradasInventarioEntitie2.OrdenCompra = entradasInventarioEntitie.OrdenCompra;
                                 entradasInventarioEntitie2.NumFactura = entradasInventarioEntitie.NumFactura;
-                                entradasInventarioEntitie2.Comentario = entradasInventarioEntitie.Comentario;
+                                entradasInventarioEntitie2.Comentario = Documento + " " + entradasInventarioEntitie.Comentario;
 
                                 var nuevoDetalle = new DetalleEntradasInventarioEntitie
                                 {
@@ -242,6 +243,7 @@ namespace sbx.repositories.EntradaInventario
                                     decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                     int IdProductoPadreSale = item.IdProductoPadre;
+                                    string Documento = "EI-" + idEntrada;
 
                                     EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
 
@@ -249,7 +251,7 @@ namespace sbx.repositories.EntradaInventario
                                     entradasInventarioEntitie2.IdProveedor = entradasInventarioEntitie.IdProveedor;
                                     entradasInventarioEntitie2.OrdenCompra = entradasInventarioEntitie.OrdenCompra;
                                     entradasInventarioEntitie2.NumFactura = entradasInventarioEntitie.NumFactura;
-                                    entradasInventarioEntitie2.Comentario = entradasInventarioEntitie.Comentario;
+                                    entradasInventarioEntitie2.Comentario = Documento + " " + entradasInventarioEntitie.Comentario;
 
                                     var nuevoDetalle = new DetalleEntradasInventarioEntitie
                                     {
@@ -340,6 +342,7 @@ namespace sbx.repositories.EntradaInventario
                                     decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                     int IdProductoPadreSale = item.IdProductoPadre;
+                                    string Documento = "EI-" + idEntrada;
 
                                     EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
 
@@ -347,7 +350,7 @@ namespace sbx.repositories.EntradaInventario
                                     entradasInventarioEntitie2.IdProveedor = entradasInventarioEntitie.IdProveedor;
                                     entradasInventarioEntitie2.OrdenCompra = entradasInventarioEntitie.OrdenCompra;
                                     entradasInventarioEntitie2.NumFactura = entradasInventarioEntitie.NumFactura;
-                                    entradasInventarioEntitie2.Comentario = entradasInventarioEntitie.Comentario;
+                                    entradasInventarioEntitie2.Comentario = Documento + " " + entradasInventarioEntitie.Comentario;
 
                                     var nuevoDetalle = new DetalleEntradasInventarioEntitie
                                     {
@@ -416,7 +419,7 @@ namespace sbx.repositories.EntradaInventario
                     await connection.OpenAsync();
 
                     string sql = @" SELECT Fecha,IdUserAction,UserName ,Usuario ,Documento, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
-                                    CodigoBarras, CodigoLote, FechaVencimiento
+                                    CodigoBarras, CodigoLote, FechaVencimiento,Comentario 
                                     FROM
                                     (
                                     SELECT 

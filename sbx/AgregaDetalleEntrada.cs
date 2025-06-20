@@ -182,7 +182,7 @@ namespace sbx
                 if (Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.')) > 0)
                 {
                     DetalleEntrada.CodigoLote = txt_lote.Text;
-                    if (chek_fecha_vencimiento.Checked) { DetalleEntrada.FechaVencimiento = dtp_fecha_vencimiento.Value; } else { DetalleEntrada.FechaVencimiento = null; }
+                    if (chek_fecha_vencimiento.Checked) { DetalleEntrada.FechaVencimiento = dtp_fecha_vencimiento.Value; } else { DetalleEntrada.FechaVencimiento = DateTime.Parse("1900-01-01"); }
                     DetalleEntrada.Cantidad = Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.'));
                     DetalleEntrada.CostoUnitario = Convert.ToDecimal(txt_costo.Text, new CultureInfo("es-CO"));
                     DetalleEntrada.Descuento = Convert.ToDecimal(txt_descuento.Text.Replace(',', '.'));
