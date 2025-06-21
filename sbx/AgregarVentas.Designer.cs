@@ -352,6 +352,7 @@
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_producto.Size = new Size(1107, 388);
             dtg_producto.TabIndex = 6;
+            dtg_producto.CellBeginEdit += dtg_producto_CellBeginEdit;
             dtg_producto.CellEndEdit += dtg_producto_CellEndEdit;
             dtg_producto.EditingControlShowing += dtg_producto_EditingControlShowing;
             dtg_producto.KeyPress += dtg_producto_KeyPress;
