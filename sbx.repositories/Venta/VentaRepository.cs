@@ -1244,7 +1244,65 @@ namespace sbx.repositories.Venta
 
                                     SELECT *
                                     FROM JerarquiaPadres
-									WHERE Nivel = 1; ";
+                                    ORDER BY Nivel; ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> IdentificaProductoHijoNivel(int IdProducto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@" WITH JerarquiaProductos AS (
+                                SELECT
+                                    A.IdProductoPadre,
+                                    A.IdProductoHijo,
+		                            P.Nombre NombreHijo,
+		                            P.Sku SkuHijo,
+		                            P.CodigoBarras CodigoBarrasHijo, 
+                                    A.Cantidad,
+                                    1 AS Nivel
+                                FROM T_ConversionesProducto A
+	                            INNER JOIN T_Productos P ON P.IdProducto = A.IdProductoHijo
+                                WHERE A.IdProductoPadre = {IdProducto}
+
+                                UNION ALL
+
+                                SELECT
+                                    jp.IdProductoPadre,
+                                    B.IdProductoHijo,
+		                            P.Nombre NombreHijo,
+		                            P.Sku SkuHijo,
+		                            P.CodigoBarras CodigoBarrasHijo, 
+                                    B.Cantidad,
+                                    jp.Nivel + 1
+                                FROM JerarquiaProductos jp
+                                INNER JOIN T_ConversionesProducto B ON jp.IdProductoHijo = B.IdProductoPadre
+	                            INNER JOIN T_Productos P ON P.IdProducto = B.IdProductoHijo
+                            )
+
+                            SELECT *
+                            FROM JerarquiaProductos
+                            ORDER BY Nivel; ";
 
                     dynamic resultado = await connection.QueryAsync(sql);
 

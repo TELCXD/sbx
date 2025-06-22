@@ -169,6 +169,15 @@ namespace sbx.repositories.Producto
 
                                          UNION ALL
 
+									     SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
                                          SELECT
 	                                     s.IdProducto, 
                                          'Salida' AS TipoMovimiento,
