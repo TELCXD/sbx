@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarVentas));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle14 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle15 = new DataGridViewCellStyle();
             panel1 = new Panel();
             btn_devolucion = new Button();
             btn_ver_ventas = new Button();
@@ -321,34 +321,34 @@
             dtg_producto.AllowUserToDeleteRows = false;
             dtg_producto.AllowUserToOrderColumns = true;
             dtg_producto.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle13.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.BackColor = SystemColors.Control;
+            dataGridViewCellStyle13.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle13.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle13.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle13.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle13.WrapMode = DataGridViewTriState.True;
+            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total, cl_unidad_medida, cl_costo });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_producto.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle14.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = SystemColors.Window;
+            dataGridViewCellStyle14.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle14.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle14.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle14.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle14.WrapMode = DataGridViewTriState.False;
+            dtg_producto.DefaultCellStyle = dataGridViewCellStyle14;
             dtg_producto.Location = new Point(11, 127);
             dtg_producto.Name = "dtg_producto";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle15.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle15.BackColor = SystemColors.Control;
+            dataGridViewCellStyle15.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle15.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle15.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle15.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle15.WrapMode = DataGridViewTriState.True;
+            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle15;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_producto.Size = new Size(1107, 388);
             dtg_producto.TabIndex = 6;
@@ -627,9 +627,9 @@
             btn_completar_venta.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btn_completar_venta.Image = (Image)resources.GetObject("btn_completar_venta.Image");
             btn_completar_venta.ImageAlign = ContentAlignment.MiddleRight;
-            btn_completar_venta.Location = new Point(13, 194);
+            btn_completar_venta.Location = new Point(12, 194);
             btn_completar_venta.Name = "btn_completar_venta";
-            btn_completar_venta.Size = new Size(596, 45);
+            btn_completar_venta.Size = new Size(597, 45);
             btn_completar_venta.TabIndex = 16;
             btn_completar_venta.Text = "Guardar venta";
             btn_completar_venta.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -641,7 +641,7 @@
             lbl_cambio.AutoSize = true;
             lbl_cambio.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lbl_cambio.ForeColor = SystemColors.ControlDarkDark;
-            lbl_cambio.Location = new Point(175, 130);
+            lbl_cambio.Location = new Point(175, 153);
             lbl_cambio.Name = "lbl_cambio";
             lbl_cambio.RightToLeft = RightToLeft.No;
             lbl_cambio.Size = new Size(24, 32);
@@ -653,7 +653,7 @@
             label18.AutoSize = true;
             label18.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label18.ForeColor = SystemColors.ControlDarkDark;
-            label18.Location = new Point(12, 130);
+            label18.Location = new Point(12, 153);
             label18.Name = "label18";
             label18.Size = new Size(157, 32);
             label18.TabIndex = 142;
@@ -662,12 +662,12 @@
             // lbl_metodo_pago
             // 
             lbl_metodo_pago.AutoSize = true;
-            lbl_metodo_pago.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbl_metodo_pago.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lbl_metodo_pago.ForeColor = SystemColors.ControlDarkDark;
-            lbl_metodo_pago.Location = new Point(130, 64);
+            lbl_metodo_pago.Location = new Point(219, 64);
             lbl_metodo_pago.Name = "lbl_metodo_pago";
             lbl_metodo_pago.RightToLeft = RightToLeft.No;
-            lbl_metodo_pago.Size = new Size(13, 17);
+            lbl_metodo_pago.Size = new Size(24, 32);
             lbl_metodo_pago.TabIndex = 141;
             lbl_metodo_pago.Text = "_";
             // 
@@ -676,7 +676,7 @@
             txt_valor_pago.Anchor = AnchorStyles.Top;
             txt_valor_pago.Enabled = false;
             txt_valor_pago.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_valor_pago.Location = new Point(13, 88);
+            txt_valor_pago.Location = new Point(13, 103);
             txt_valor_pago.Name = "txt_valor_pago";
             txt_valor_pago.Size = new Size(596, 39);
             txt_valor_pago.TabIndex = 15;
@@ -686,11 +686,11 @@
             // label17
             // 
             label17.AutoSize = true;
-            label17.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label17.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label17.ForeColor = SystemColors.ControlDarkDark;
             label17.Location = new Point(12, 64);
             label17.Name = "label17";
-            label17.Size = new Size(120, 17);
+            label17.Size = new Size(214, 32);
             label17.TabIndex = 139;
             label17.Text = "Valor del pago con";
             // 

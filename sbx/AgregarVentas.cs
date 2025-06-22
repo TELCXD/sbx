@@ -19,7 +19,6 @@ using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
-using System.Data;
 using System.Globalization;
 using System.Text;
 
@@ -373,7 +372,7 @@ namespace sbx
                                                         decimal CantidadEquivalenteVentaTemp = 0;
                                                         decimal CantidadConversionTemp = 0;
                                                         decimal Stock = DataProducto.Data[0].Stock;
-                                                        //decimal StockInicial = DataProducto.Data[0].Stock;
+                                                        decimal StockInicial = DataProducto.Data[0].Stock;
 
                                                         //Identificar si tiene productos padre en listay restar del stock
                                                         var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
@@ -426,11 +425,11 @@ namespace sbx
                                                                         if (Convert.ToInt32(item.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                                         {
                                                                             decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
 
                                                                             if (CantidadConversionTemp > 0)
                                                                             {
-                                                                                CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                                CantidadEquivalenteVenta /= CantidadConversionTemp;
                                                                             }
 
                                                                             Stock -= CantidadEquivalenteVenta;
@@ -457,9 +456,9 @@ namespace sbx
                                                             }
                                                         }
 
-                                                        if (Stock >= 1)//(StockInicial < 1 ? StockInicial : 1))
+                                                        if (Stock >= (StockInicial > 0 && StockInicial < 1 ? StockInicial : 1))
                                                         {
-                                                            //DataProducto.Data[0].CantidadF = StockInicial < 1 ? StockInicial : 1;
+                                                            DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
 
                                                             IdentificarPrecio(DataProducto);
                                                         }
@@ -593,6 +592,7 @@ namespace sbx
                                                         decimal CantidadEquivalenteVentaTemp = 0;
                                                         decimal CantidadConversionTemp = 0;
                                                         decimal Stock = DataProducto.Data[0].Stock;
+                                                        decimal StockInicial = DataProducto.Data[0].Stock;
 
                                                         //Identificar si tiene productos padre en listay restar del stock
                                                         var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
@@ -645,11 +645,11 @@ namespace sbx
                                                                         if (Convert.ToInt32(item.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                                         {
                                                                             decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
 
                                                                             if (CantidadConversionTemp > 0)
                                                                             {
-                                                                                CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                                CantidadEquivalenteVenta /= CantidadConversionTemp;
                                                                             }
 
                                                                             Stock -= CantidadEquivalenteVenta;
@@ -676,8 +676,10 @@ namespace sbx
                                                             }
                                                         }
 
-                                                        if (Stock >= 1)
+                                                        if (Stock >= (StockInicial > 0 && StockInicial < 1 ? StockInicial : 1))
                                                         {
+                                                            DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
+
                                                             IdentificarPrecio(DataProducto);
                                                         }
                                                         else
@@ -760,6 +762,7 @@ namespace sbx
                                                         decimal CantidadEquivalenteVentaTemp = 0;
                                                         decimal CantidadConversionTemp = 0;
                                                         decimal Stock = DataProducto.Data[0].Stock;
+                                                        decimal StockInicial = DataProducto.Data[0].Stock;
 
                                                         //Identificar si tiene productos padre en listay restar del stock
                                                         var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
@@ -812,11 +815,11 @@ namespace sbx
                                                                         if (Convert.ToInt32(item.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                                         {
                                                                             decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
 
                                                                             if (CantidadConversionTemp > 0)
                                                                             {
-                                                                                CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                                CantidadEquivalenteVenta /= CantidadConversionTemp;
                                                                             }
 
                                                                             Stock -= CantidadEquivalenteVenta;
@@ -843,8 +846,10 @@ namespace sbx
                                                             }
                                                         }
 
-                                                        if (Stock >= 1)
+                                                        if (Stock >= (StockInicial > 0 && StockInicial < 1 ? StockInicial : 1))
                                                         {
+                                                            DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
+
                                                             IdentificarPrecio(DataProducto);
                                                         }
                                                         else
@@ -1014,6 +1019,7 @@ namespace sbx
                                             decimal CantidadEquivalenteVentaTemp = 0;
                                             decimal CantidadConversionTemp = 0;
                                             decimal Stock = DataProducto.Data[0].Stock;
+                                            decimal StockInicial = DataProducto.Data[0].Stock;
 
                                             //Identificar si tiene productos padre en listay restar del stock
                                             var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
@@ -1066,11 +1072,11 @@ namespace sbx
                                                             if (Convert.ToInt32(item.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                             {
                                                                 decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
 
                                                                 if (CantidadConversionTemp > 0)
                                                                 {
-                                                                    CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                    CantidadEquivalenteVenta /= CantidadConversionTemp;
                                                                 }
 
                                                                 Stock -= CantidadEquivalenteVenta;
@@ -1097,8 +1103,10 @@ namespace sbx
                                                 }
                                             }
 
-                                            if (Stock >= 1)
+                                            if (Stock >= (StockInicial > 0 && StockInicial < 1 ? StockInicial : 1))
                                             {
+                                                DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
+
                                                 IdentificarPrecio(DataProducto);
                                             }
                                             else
@@ -1180,19 +1188,20 @@ namespace sbx
                     {
                         decimal Total = CalcularTotal(resp1.Data[0].PrecioEspecial, DataProducto.Data[0].Iva, 0);
 
-                        dtg_producto.Rows.Add(
+                        int rowIndex = dtg_producto.Rows.Add(
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
                              DataProducto.Data[0].Nombre,
                              resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
-                             1,
+                             DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
                              0,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                             );
+                        dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
                         Continuar = false;
                         cbx_lista_precio.SelectedIndex = 0;
@@ -1211,19 +1220,20 @@ namespace sbx
                     {
                         decimal Total = CalcularTotal(resp2.Data[0].Precio, DataProducto.Data[0].Iva, 0);
 
-                        dtg_producto.Rows.Add(
+                        int rowIndex = dtg_producto.Rows.Add(
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
                              DataProducto.Data[0].Nombre,
                              resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
-                             1,
+                             DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
                              0,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                             );
+                        dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
                         Continuar = false;
                     }
@@ -1239,19 +1249,20 @@ namespace sbx
                     {
                         decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, resp3.Data[0].Porcentaje);
 
-                        dtg_producto.Rows.Add(
+                        int rowIndex = dtg_producto.Rows.Add(
                              DataProducto.Data[0].IdProducto,
                              DataProducto.Data[0].Sku,
                              DataProducto.Data[0].CodigoBarras,
                              DataProducto.Data[0].Nombre,
                              DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
-                             1,
+                             DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
                              resp3.Data[0].Porcentaje,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                             );
+                        dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
                         Continuar = false;
                     }
@@ -1262,19 +1273,20 @@ namespace sbx
             {
                 decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, 0);
 
-                dtg_producto.Rows.Add(
+                int rowIndex = dtg_producto.Rows.Add(
                      DataProducto.Data[0].IdProducto,
                      DataProducto.Data[0].Sku,
                      DataProducto.Data[0].CodigoBarras,
                      DataProducto.Data[0].Nombre,
                      DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
-                     1,
+                     DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
                      0,
                      DataProducto.Data[0].Iva,
                      Total.ToString("N2", new CultureInfo("es-CO")),
                      DataProducto.Data[0].NombreUnidadMedida,
                      DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
                     );
+                dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
                 Continuar = false;
             }
@@ -1285,6 +1297,14 @@ namespace sbx
             {
                 foreach (DataGridViewRow fila in dtg_producto.Rows)
                 {
+                    decimal precio = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO"));
+                    decimal cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                    decimal desc = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO"));
+                    decimal iva = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"));
+                    decimal total = CalcularTotal(precio, iva, desc);
+                    total = total * cantidad;
+                    fila.Cells["cl_total"].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
                     Cantidad += Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                     Subtotal += Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                     SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
@@ -1497,11 +1517,11 @@ namespace sbx
                                                             if (Convert.ToInt32(item.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                             {
                                                                 decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
 
                                                                 if (CantidadConversionTemp > 0)
                                                                 {
-                                                                    CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                    CantidadEquivalenteVenta /= CantidadConversionTemp;
                                                                 }
 
                                                                 Stock -= CantidadEquivalenteVenta;
@@ -1697,7 +1717,7 @@ namespace sbx
                                                 }
                                             }
 
-                                            if (Stock > 0)
+                                            if (Stock >= 0)
                                             {
                                                 precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
                                                 cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
@@ -2512,9 +2532,9 @@ namespace sbx
                                     {
                                         if (DataProducto.Data.Count > 0)
                                         {
-                                            decimal Stock = DataProducto.Data[0].Stock;
                                             decimal CantidadEquivalenteVentaTemp = 0;
                                             decimal CantidadConversionTemp = 0;
+                                            decimal Stock = DataProducto.Data[0].Stock;
 
                                             //Identificar si tiene productos padre en listay restar del stock
                                             var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
@@ -2522,16 +2542,16 @@ namespace sbx
                                             {
                                                 if (ProductosPadre.Data.Count > 0)
                                                 {
-                                                    foreach (var itemp in ProductosPadre.Data)
+                                                    foreach (var item2 in ProductosPadre.Data)
                                                     {
                                                         CantidadEquivalenteVentaTemp = 0;
 
                                                         foreach (DataGridViewRow row in dtg_producto.Rows)
                                                         {
-                                                            if (Convert.ToInt32(itemp.IdProductoPadre) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                            if (Convert.ToInt32(item2.IdProductoPadre) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                             {
                                                                 decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(itemp.Cantidad, new CultureInfo("es-CO"));
+                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item2.Cantidad, new CultureInfo("es-CO"));
 
                                                                 if (CantidadConversionTemp > 0)
                                                                 {
@@ -2544,7 +2564,7 @@ namespace sbx
                                                             }
                                                         }
 
-                                                        CantidadConversionTemp = Convert.ToDecimal(itemp.Cantidad, new CultureInfo("es-CO"));
+                                                        CantidadConversionTemp = Convert.ToDecimal(item2.Cantidad, new CultureInfo("es-CO"));
                                                     }
                                                 }
                                             }
@@ -2558,20 +2578,20 @@ namespace sbx
                                             {
                                                 if (ProductosHijo.Data.Count > 0)
                                                 {
-                                                    foreach (var itemh in ProductosHijo.Data)
+                                                    foreach (var item3 in ProductosHijo.Data)
                                                     {
                                                         CantidadEquivalenteVentaTemp = 0;
 
                                                         foreach (DataGridViewRow row in dtg_producto.Rows)
                                                         {
-                                                            if (Convert.ToInt32(itemh.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                            if (Convert.ToInt32(item3.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                             {
                                                                 decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(itemh.Cantidad, new CultureInfo("es-CO"));
+                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item3.Cantidad, new CultureInfo("es-CO"));
 
                                                                 if (CantidadConversionTemp > 0)
                                                                 {
-                                                                    CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                    CantidadEquivalenteVenta /= CantidadConversionTemp;
                                                                 }
 
                                                                 Stock -= CantidadEquivalenteVenta;
@@ -2580,7 +2600,7 @@ namespace sbx
                                                             }
                                                         }
 
-                                                        CantidadConversionTemp = Convert.ToDecimal(itemh.Cantidad, new CultureInfo("es-CO"));
+                                                        CantidadConversionTemp = Convert.ToDecimal(item3.Cantidad, new CultureInfo("es-CO"));
                                                     }
                                                 }
                                             }
@@ -3029,9 +3049,9 @@ namespace sbx
                                     {
                                         if (DataProducto.Data.Count > 0)
                                         {
-                                            decimal Stock = DataProducto.Data[0].Stock;
                                             decimal CantidadEquivalenteVentaTemp = 0;
                                             decimal CantidadConversionTemp = 0;
+                                            decimal Stock = DataProducto.Data[0].Stock;
 
                                             //Identificar si tiene productos padre en listay restar del stock
                                             var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
@@ -3039,16 +3059,16 @@ namespace sbx
                                             {
                                                 if (ProductosPadre.Data.Count > 0)
                                                 {
-                                                    foreach (var itemp in ProductosPadre.Data)
+                                                    foreach (var item2 in ProductosPadre.Data)
                                                     {
                                                         CantidadEquivalenteVentaTemp = 0;
 
                                                         foreach (DataGridViewRow row in dtg_producto.Rows)
                                                         {
-                                                            if (Convert.ToInt32(itemp.IdProductoPadre) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                            if (Convert.ToInt32(item2.IdProductoPadre) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                             {
                                                                 decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(itemp.Cantidad, new CultureInfo("es-CO"));
+                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item2.Cantidad, new CultureInfo("es-CO"));
 
                                                                 if (CantidadConversionTemp > 0)
                                                                 {
@@ -3061,7 +3081,7 @@ namespace sbx
                                                             }
                                                         }
 
-                                                        CantidadConversionTemp = Convert.ToDecimal(itemp.Cantidad, new CultureInfo("es-CO"));
+                                                        CantidadConversionTemp = Convert.ToDecimal(item2.Cantidad, new CultureInfo("es-CO"));
                                                     }
                                                 }
                                             }
@@ -3075,20 +3095,20 @@ namespace sbx
                                             {
                                                 if (ProductosHijo.Data.Count > 0)
                                                 {
-                                                    foreach (var itemh in ProductosHijo.Data)
+                                                    foreach (var item3 in ProductosHijo.Data)
                                                     {
                                                         CantidadEquivalenteVentaTemp = 0;
 
                                                         foreach (DataGridViewRow row in dtg_producto.Rows)
                                                         {
-                                                            if (Convert.ToInt32(itemh.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                            if (Convert.ToInt32(item3.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
                                                             {
                                                                 decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(itemh.Cantidad, new CultureInfo("es-CO"));
+                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item3.Cantidad, new CultureInfo("es-CO"));
 
                                                                 if (CantidadConversionTemp > 0)
                                                                 {
-                                                                    CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                    CantidadEquivalenteVenta /= CantidadConversionTemp;
                                                                 }
 
                                                                 Stock -= CantidadEquivalenteVenta;
@@ -3097,7 +3117,7 @@ namespace sbx
                                                             }
                                                         }
 
-                                                        CantidadConversionTemp = Convert.ToDecimal(itemh.Cantidad, new CultureInfo("es-CO"));
+                                                        CantidadConversionTemp = Convert.ToDecimal(item3.Cantidad, new CultureInfo("es-CO"));
                                                     }
                                                 }
                                             }
