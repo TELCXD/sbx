@@ -246,17 +246,17 @@ namespace sbx
                         string Mensaje = "";
                         foreach (DataRow item in dt.Rows)
                         {
-                            //if (!string.IsNullOrEmpty(item[0]?.ToString()?.Trim()))
-                            //{
-                            //    var Exist = await _IProducto.ExisteSku(item[0].ToString() ?? "", 0);
-                            //    if (Exist == true) { Mensaje = "El sku ya existe, "; Error++;  }
-                            //}
+                            if (!string.IsNullOrEmpty(item[0]?.ToString()?.Trim()))
+                            {
+                                var Exist = await _IProducto.ExisteSku(item[0].ToString() ?? "", 0);
+                                if (Exist == true) { Mensaje = "El sku ya existe, "; Error++; }
+                            }
 
-                            //if (!string.IsNullOrEmpty(item[1]?.ToString()?.Trim()))
-                            //{
-                            //    var Exist = await _IProducto.ExisteCodigoBarras(item[1].ToString() ?? "", 0);
-                            //    if (Exist == true) { Mensaje = "El codigo de barras ya existe, "; Error++; }
-                            //}
+                            if (!string.IsNullOrEmpty(item[1]?.ToString()?.Trim()))
+                            {
+                                var Exist = await _IProducto.ExisteCodigoBarras(item[1].ToString() ?? "", 0);
+                                if (Exist == true) { Mensaje = "El codigo de barras ya existe, "; Error++; }
+                            }
 
                             if (string.IsNullOrEmpty(item[2]?.ToString()?.Trim())) 
                             { 
@@ -264,8 +264,9 @@ namespace sbx
                             }
                             else
                             {
-                                //var Exist = await _IProducto.ExisteNombre(item[2].ToString() ?? "", 0);
-                                //if (Exist == true) { Mensaje = "El nombre ya existe, "; Error++; }
+                                string nombre = item[3].ToString()?.Trim() != "" ? item[2].ToString()?.Trim() + " - " + item[3].ToString()?.Trim() : item[2].ToString()?.Trim() ?? "";
+                                var Exist = await _IProducto.ExisteNombre(nombre, 0);
+                                if (Exist == true) { Mensaje = "El nombre ya existe, "; Error++; }
                             }
 
                             if (string.IsNullOrEmpty(item[4]?.ToString()?.Trim()))
@@ -309,6 +310,11 @@ namespace sbx
                                     if (!decimal.TryParse(valor, out decimal precioVentaUnitario))
                                     {
                                         Mensaje += "El precio de venta unitario debe ser un valor numérico válido, ";
+                                        Error++;
+                                    }
+                                    else if(precioVentaUnitario == 0) 
+                                    {
+                                        Mensaje += "El precio de venta unitario debe ser mayor a cero (0), ";
                                         Error++;
                                     }
                                     else if (precioVentaUnitario < 0)
