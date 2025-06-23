@@ -189,6 +189,9 @@ namespace sbx
                             case "Impresora":
                                 txt_impresora.Text = item.Value;
                                 break;
+                            case "Mensaje final tirilla":
+                                txt_mensaje_final_tirilla.Text = item.Value;
+                                break;
                             case "Ruta backup":
                                 txt_ruta_backup.Text = item.Value;
                                 break;
@@ -204,7 +207,7 @@ namespace sbx
         {
             List<ParametrosEntitie> ListParametros = new List<ParametrosEntitie>();
 
-            for (int i = 0; i <= 5; i++)
+            for (int i = 0; i <= 6; i++)
             {
                 switch (i)
                 {
@@ -263,6 +266,15 @@ namespace sbx
                         ListParametros.Add(Parametros);
                         break;
                     case 6:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Mensaje final tirilla",
+                            Value = txt_mensaje_final_tirilla.Text
+                        };
+
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 7:
                         Parametros = new ParametrosEntitie
                         {
                             Nombre = "Ruta backup",

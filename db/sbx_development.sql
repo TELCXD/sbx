@@ -684,6 +684,7 @@ VALUES
 	('Tipo filtro producto','Inicia con'),
 	('Ancho tirilla','42'),
 	('Impresora','Generic'),
+	('Mensaje final tirilla',''),
 	('Ruta backup','')
 GO
 CREATE TABLE T_AperturaCierreCaja (

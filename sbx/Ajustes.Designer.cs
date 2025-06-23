@@ -40,6 +40,8 @@
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
+            txt_mensaje_final_tirilla = new TextBox();
+            label8 = new Label();
             cbx_parametro_tipo_filtro_producto = new ComboBox();
             label7 = new Label();
             cbx_Buscarenventapor = new ComboBox();
@@ -135,6 +137,8 @@
             // 
             // TabParametros
             // 
+            TabParametros.Controls.Add(txt_mensaje_final_tirilla);
+            TabParametros.Controls.Add(label8);
             TabParametros.Controls.Add(cbx_parametro_tipo_filtro_producto);
             TabParametros.Controls.Add(label7);
             TabParametros.Controls.Add(cbx_Buscarenventapor);
@@ -157,6 +161,23 @@
             TabParametros.TabIndex = 1;
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
+            // 
+            // txt_mensaje_final_tirilla
+            // 
+            txt_mensaje_final_tirilla.Location = new Point(253, 252);
+            txt_mensaje_final_tirilla.MaxLength = 42;
+            txt_mensaje_final_tirilla.Name = "txt_mensaje_final_tirilla";
+            txt_mensaje_final_tirilla.Size = new Size(323, 23);
+            txt_mensaje_final_tirilla.TabIndex = 17;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(8, 255);
+            label8.Name = "label8";
+            label8.Size = new Size(235, 17);
+            label8.TabIndex = 16;
+            label8.Text = "Mensaje Personalizado al final tirilla";
             // 
             // cbx_parametro_tipo_filtro_producto
             // 
@@ -199,9 +220,9 @@
             // txt_ruta_backup
             // 
             txt_ruta_backup.Enabled = false;
-            txt_ruta_backup.Location = new Point(253, 249);
+            txt_ruta_backup.Location = new Point(253, 282);
             txt_ruta_backup.Name = "txt_ruta_backup";
-            txt_ruta_backup.Size = new Size(223, 23);
+            txt_ruta_backup.Size = new Size(323, 23);
             txt_ruta_backup.TabIndex = 11;
             // 
             // txt_impresora
@@ -243,7 +264,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(8, 255);
+            label4.Location = new Point(8, 285);
             label4.Name = "label4";
             label4.Size = new Size(92, 17);
             label4.TabIndex = 6;
@@ -1072,5 +1093,7 @@
         private ComboBox cbx_Buscarenventapor;
         private ComboBox cbx_parametro_tipo_filtro_producto;
         private Label label7;
+        private TextBox txt_mensaje_final_tirilla;
+        private Label label8;
     }
 }
