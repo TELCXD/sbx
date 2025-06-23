@@ -39,11 +39,15 @@ namespace sbx
 
         private async void btn_buscar_Click(object sender, EventArgs e)
         {
-            var resp = await _IReportes.Buscar(txt_buscar.Text,cbx_campo_filtro.Text,cbx_tipo_filtro.Text,cbx_tipo_reporte.Text,dtp_fecha_inicio.Value,dtp_fecha_fin.Value);
+            await Buscar();
+        }
+
+        private async Task Buscar()
+        {
+            var resp = await _IReportes.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_tipo_reporte.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
 
             dtg_reportes.Columns.Clear();
 
-            
             if (resp.Data != null)
             {
                 if (resp.Data.Count > 0)
@@ -57,6 +61,9 @@ namespace sbx
                     decimal SubtotalLinea;
                     decimal Total = 0;
                     decimal TotalLinea;
+                    decimal TotalCostos = 0;
+                    decimal TotalVentas = 0;
+                    decimal Ganancia = 0;
 
                     if (cbx_tipo_reporte.Text == "Resumen - Ganancias y perdidas")
                     {
@@ -84,17 +91,20 @@ namespace sbx
                             Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                             ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                             TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            TotalCostos += Convert.ToDecimal(item.CostoTotal);
+                            TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
+                            Ganancia += Convert.ToDecimal(item.GananciaBruta);
 
                             dtg_reportes.Rows.Add(item.CreationDate, item.Factura, item.IdProducto, item.NombreProducto,
-                                Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")), 
+                                Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 Convert.ToDecimal(item.DescuentoPorcentaje, new CultureInfo("es-CO")),
-                                Convert.ToDecimal(item.ImpuestoPorcentaje, new CultureInfo("es-CO")), 
-                                item.VentaNetaFinal.ToString("N2", new CultureInfo("es-CO")), 
-                                item.CostoTotal.ToString("N2", new CultureInfo("es-CO")), 
+                                Convert.ToDecimal(item.ImpuestoPorcentaje, new CultureInfo("es-CO")),
+                                item.VentaNetaFinal.ToString("N2", new CultureInfo("es-CO")),
+                                item.CostoTotal.ToString("N2", new CultureInfo("es-CO")),
                                 item.GananciaBruta.ToString("N2", new CultureInfo("es-CO")),
-                                Convert.ToDecimal(item.MargenPorcentaje, new CultureInfo("es-CO")));
+                                item.MargenPorcentaje.ToString("N2", new CultureInfo("es-CO")));
                         }
 
                         Total += (Subtotal - Descuento) + Impuesto;
@@ -104,6 +114,9 @@ namespace sbx
                         lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                         lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_costos.Text = TotalCostos.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_ventas.Text = TotalVentas.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_ganancia.Text = Ganancia.ToString("N2", new CultureInfo("es-CO"));
                     }
                     else if (cbx_tipo_reporte.Text == "Detallado -  Ganancias y perdidas")
                     {
@@ -137,9 +150,12 @@ namespace sbx
                             Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                             ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                             TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            TotalCostos += Convert.ToDecimal(item.CostoTotal);
+                            TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
+                            Ganancia += Convert.ToDecimal(item.GananciaBruta);
 
-                            dtg_reportes.Rows.Add(item.CreationDate,item.Usuario, item.Factura,item.Cliente,item.Vendedor, 
-                                item.IdProducto,item.Sku,item.CodigoBarras, item.NombreProducto,item.UnidadMedida,
+                            dtg_reportes.Rows.Add(item.CreationDate, item.Usuario, item.Factura, item.Cliente, item.Vendedor,
+                                item.IdProducto, item.Sku, item.CodigoBarras, item.NombreProducto, item.UnidadMedida,
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
@@ -158,6 +174,9 @@ namespace sbx
                         lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                         lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_costos.Text = TotalCostos.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_ventas.Text = TotalVentas.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_ganancia.Text = Ganancia.ToString("N2", new CultureInfo("es-CO"));
                     }
                 }
                 else
@@ -205,6 +224,15 @@ namespace sbx
             }
 
             return ValorDescuento;
+        }
+
+        private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Enter
+            if (e.KeyChar == (char)13)
+            {
+                await Buscar();
+            }
         }
     }
 }

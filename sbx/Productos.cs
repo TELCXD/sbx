@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
@@ -81,6 +82,7 @@ namespace sbx
                             btn_agregar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_importar.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_exportar.Enabled = item.ToRead == 1 ? true : false;
                             //btn_eliminar.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         case "listaPrecios":
@@ -244,7 +246,28 @@ namespace sbx
                         string Mensaje = "";
                         foreach (DataRow item in dt.Rows)
                         {
-                            if (string.IsNullOrEmpty(item[2]?.ToString()?.Trim())) { Mensaje = "El nombre es obligatorio, "; Error++; }
+                            //if (!string.IsNullOrEmpty(item[0]?.ToString()?.Trim()))
+                            //{
+                            //    var Exist = await _IProducto.ExisteSku(item[0].ToString() ?? "", 0);
+                            //    if (Exist == true) { Mensaje = "El sku ya existe, "; Error++;  }
+                            //}
+
+                            //if (!string.IsNullOrEmpty(item[1]?.ToString()?.Trim()))
+                            //{
+                            //    var Exist = await _IProducto.ExisteCodigoBarras(item[1].ToString() ?? "", 0);
+                            //    if (Exist == true) { Mensaje = "El codigo de barras ya existe, "; Error++; }
+                            //}
+
+                            if (string.IsNullOrEmpty(item[2]?.ToString()?.Trim())) 
+                            { 
+                                Mensaje = "El nombre es obligatorio, "; Error++;
+                            }
+                            else
+                            {
+                                //var Exist = await _IProducto.ExisteNombre(item[2].ToString() ?? "", 0);
+                                //if (Exist == true) { Mensaje = "El nombre ya existe, "; Error++; }
+                            }
+
                             if (string.IsNullOrEmpty(item[4]?.ToString()?.Trim()))
                             {
                                 Mensaje += "El costo unitario es obligatorio, en caso de no tener colocar el valor en cero (0), ";
@@ -372,7 +395,7 @@ namespace sbx
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
                 dtg_producto.Enabled = true;
-                MessageBox.Show("Error: "+ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -487,12 +510,56 @@ namespace sbx
                     worksheet.Columns().AdjustToContents(); // Ajustar ancho de columnas
                     workbook.SaveAs(sfd.FileName);
 
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_producto.Enabled = true;
+
                     MessageBox.Show("Archivo exportado con éxito.", "Exportación completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_producto.Enabled = true;
+
                     MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private async void btn_exportar_Click(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.WaitCursor;
+            panel1.Enabled = false;
+            dtg_producto.Enabled = false;
+
+            var resp = await _IProducto.BuscarExportarExcel(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp != null)
+            {
+                if (resp.Data != null)
+                {
+                    string json = JsonConvert.SerializeObject(resp.Data);
+
+                    DataTable? dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                    if (dataTable != null)
+                    {
+                        ExportarExcel(dataTable);
+                    }
+                }
+                else
+                {
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_producto.Enabled = true;
+                }
+            }
+            else
+            {
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
+                dtg_producto.Enabled = true;
             }
         }
     }

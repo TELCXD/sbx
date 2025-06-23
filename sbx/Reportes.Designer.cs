@@ -45,6 +45,13 @@
             cbx_campo_filtro = new ComboBox();
             txt_buscar = new TextBox();
             panel2 = new Panel();
+            panel4 = new Panel();
+            lbl_ventas = new Label();
+            label9 = new Label();
+            lbl_costos = new Label();
+            label5 = new Label();
+            lbl_ganancia = new Label();
+            label3 = new Label();
             lbl_total = new Label();
             label12 = new Label();
             lbl_impuesto = new Label();
@@ -59,6 +66,7 @@
             dtg_reportes = new DataGridView();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
+            panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_reportes).BeginInit();
             SuspendLayout();
             // 
@@ -92,7 +100,7 @@
             btn_buscar.Location = new Point(1207, 20);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
-            btn_buscar.TabIndex = 159;
+            btn_buscar.TabIndex = 9;
             btn_buscar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar.UseVisualStyleBackColor = true;
             btn_buscar.Click += btn_buscar_Click;
@@ -105,7 +113,7 @@
             btn_exportar_excel.Location = new Point(74, 5);
             btn_exportar_excel.Name = "btn_exportar_excel";
             btn_exportar_excel.Size = new Size(70, 45);
-            btn_exportar_excel.TabIndex = 158;
+            btn_exportar_excel.TabIndex = 2;
             btn_exportar_excel.Text = "Excel";
             btn_exportar_excel.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_exportar_excel.UseVisualStyleBackColor = true;
@@ -117,7 +125,7 @@
             dtp_fecha_fin.Location = new Point(376, 23);
             dtp_fecha_fin.Name = "dtp_fecha_fin";
             dtp_fecha_fin.Size = new Size(187, 23);
-            dtp_fecha_fin.TabIndex = 157;
+            dtp_fecha_fin.TabIndex = 4;
             // 
             // dtp_fecha_inicio
             // 
@@ -125,7 +133,7 @@
             dtp_fecha_inicio.Location = new Point(162, 23);
             dtp_fecha_inicio.Name = "dtp_fecha_inicio";
             dtp_fecha_inicio.Size = new Size(200, 23);
-            dtp_fecha_inicio.TabIndex = 156;
+            dtp_fecha_inicio.TabIndex = 3;
             // 
             // label1
             // 
@@ -153,7 +161,7 @@
             btn_imprimir_pdf.Location = new Point(3, 5);
             btn_imprimir_pdf.Name = "btn_imprimir_pdf";
             btn_imprimir_pdf.Size = new Size(65, 45);
-            btn_imprimir_pdf.TabIndex = 153;
+            btn_imprimir_pdf.TabIndex = 1;
             btn_imprimir_pdf.Text = "Pdf";
             btn_imprimir_pdf.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_imprimir_pdf.UseVisualStyleBackColor = true;
@@ -168,7 +176,7 @@
             cbx_tipo_reporte.Location = new Point(592, 23);
             cbx_tipo_reporte.Name = "cbx_tipo_reporte";
             cbx_tipo_reporte.Size = new Size(213, 23);
-            cbx_tipo_reporte.TabIndex = 152;
+            cbx_tipo_reporte.TabIndex = 5;
             cbx_tipo_reporte.SelectedValueChanged += cbx_client_venta_SelectedValueChanged;
             // 
             // cbx_tipo_filtro
@@ -180,7 +188,7 @@
             cbx_tipo_filtro.Location = new Point(931, 23);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
-            cbx_tipo_filtro.TabIndex = 151;
+            cbx_tipo_filtro.TabIndex = 7;
             // 
             // cbx_campo_filtro
             // 
@@ -190,7 +198,7 @@
             cbx_campo_filtro.Location = new Point(811, 23);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
-            cbx_campo_filtro.TabIndex = 150;
+            cbx_campo_filtro.TabIndex = 6;
             // 
             // txt_buscar
             // 
@@ -198,11 +206,13 @@
             txt_buscar.Location = new Point(1024, 23);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
-            txt_buscar.TabIndex = 148;
+            txt_buscar.TabIndex = 8;
+            txt_buscar.KeyPress += txt_buscar_KeyPress;
             // 
             // panel2
             // 
             panel2.BackColor = SystemColors.Window;
+            panel2.Controls.Add(panel4);
             panel2.Controls.Add(lbl_total);
             panel2.Controls.Add(label12);
             panel2.Controls.Add(lbl_impuesto);
@@ -215,10 +225,100 @@
             panel2.Controls.Add(label4);
             panel2.Controls.Add(panel3);
             panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 478);
+            panel2.Location = new Point(0, 466);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1242, 169);
+            panel2.Size = new Size(1242, 181);
             panel2.TabIndex = 7;
+            // 
+            // panel4
+            // 
+            panel4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel4.BorderStyle = BorderStyle.FixedSingle;
+            panel4.Controls.Add(lbl_ventas);
+            panel4.Controls.Add(label9);
+            panel4.Controls.Add(lbl_costos);
+            panel4.Controls.Add(label5);
+            panel4.Controls.Add(lbl_ganancia);
+            panel4.Controls.Add(label3);
+            panel4.Location = new Point(821, 9);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(414, 166);
+            panel4.TabIndex = 186;
+            // 
+            // lbl_ventas
+            // 
+            lbl_ventas.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_ventas.AutoSize = true;
+            lbl_ventas.Font = new Font("Segoe UI", 12F);
+            lbl_ventas.ForeColor = SystemColors.ControlDarkDark;
+            lbl_ventas.Location = new Point(113, 67);
+            lbl_ventas.Name = "lbl_ventas";
+            lbl_ventas.RightToLeft = RightToLeft.No;
+            lbl_ventas.Size = new Size(17, 21);
+            lbl_ventas.TabIndex = 190;
+            lbl_ventas.Text = "_";
+            // 
+            // label9
+            // 
+            label9.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 12F);
+            label9.ForeColor = SystemColors.ControlDarkDark;
+            label9.Location = new Point(3, 67);
+            label9.Name = "label9";
+            label9.Size = new Size(94, 21);
+            label9.TabIndex = 189;
+            label9.Text = "Total ventas:";
+            // 
+            // lbl_costos
+            // 
+            lbl_costos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_costos.AutoSize = true;
+            lbl_costos.Font = new Font("Segoe UI", 12F);
+            lbl_costos.ForeColor = SystemColors.ControlDarkDark;
+            lbl_costos.Location = new Point(113, 100);
+            lbl_costos.Name = "lbl_costos";
+            lbl_costos.RightToLeft = RightToLeft.No;
+            lbl_costos.Size = new Size(17, 21);
+            lbl_costos.TabIndex = 188;
+            lbl_costos.Text = "_";
+            // 
+            // label5
+            // 
+            label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 12F);
+            label5.ForeColor = SystemColors.ControlDarkDark;
+            label5.Location = new Point(3, 100);
+            label5.Name = "label5";
+            label5.Size = new Size(93, 21);
+            label5.TabIndex = 187;
+            label5.Text = "Total costos:";
+            // 
+            // lbl_ganancia
+            // 
+            lbl_ganancia.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_ganancia.AutoSize = true;
+            lbl_ganancia.Font = new Font("Segoe UI", 12F);
+            lbl_ganancia.ForeColor = SystemColors.ControlDarkDark;
+            lbl_ganancia.Location = new Point(113, 132);
+            lbl_ganancia.Name = "lbl_ganancia";
+            lbl_ganancia.RightToLeft = RightToLeft.No;
+            lbl_ganancia.Size = new Size(17, 21);
+            lbl_ganancia.TabIndex = 186;
+            lbl_ganancia.Text = "_";
+            // 
+            // label3
+            // 
+            label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 12F);
+            label3.ForeColor = SystemColors.ControlDarkDark;
+            label3.Location = new Point(3, 132);
+            label3.Name = "label3";
+            label3.Size = new Size(111, 21);
+            label3.TabIndex = 185;
+            label3.Text = "Total ganancia:";
             // 
             // lbl_total
             // 
@@ -226,7 +326,7 @@
             lbl_total.AutoSize = true;
             lbl_total.Font = new Font("Segoe UI", 12F);
             lbl_total.ForeColor = SystemColors.ControlDarkDark;
-            lbl_total.Location = new Point(912, 138);
+            lbl_total.Location = new Point(493, 142);
             lbl_total.Name = "lbl_total";
             lbl_total.RightToLeft = RightToLeft.No;
             lbl_total.Size = new Size(17, 21);
@@ -239,7 +339,7 @@
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 12F);
             label12.ForeColor = SystemColors.ControlDarkDark;
-            label12.Location = new Point(827, 138);
+            label12.Location = new Point(408, 142);
             label12.Name = "label12";
             label12.Size = new Size(49, 21);
             label12.TabIndex = 183;
@@ -251,7 +351,7 @@
             lbl_impuesto.AutoSize = true;
             lbl_impuesto.Font = new Font("Segoe UI", 12F);
             lbl_impuesto.ForeColor = SystemColors.ControlDarkDark;
-            lbl_impuesto.Location = new Point(912, 106);
+            lbl_impuesto.Location = new Point(493, 110);
             lbl_impuesto.Name = "lbl_impuesto";
             lbl_impuesto.RightToLeft = RightToLeft.No;
             lbl_impuesto.Size = new Size(17, 21);
@@ -264,7 +364,7 @@
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 12F);
             label10.ForeColor = SystemColors.ControlDarkDark;
-            label10.Location = new Point(827, 106);
+            label10.Location = new Point(408, 110);
             label10.Name = "label10";
             label10.Size = new Size(82, 21);
             label10.TabIndex = 181;
@@ -276,7 +376,7 @@
             lbl_descuento.AutoSize = true;
             lbl_descuento.Font = new Font("Segoe UI", 12F);
             lbl_descuento.ForeColor = SystemColors.ControlDarkDark;
-            lbl_descuento.Location = new Point(912, 73);
+            lbl_descuento.Location = new Point(493, 77);
             lbl_descuento.Name = "lbl_descuento";
             lbl_descuento.RightToLeft = RightToLeft.No;
             lbl_descuento.Size = new Size(17, 21);
@@ -289,7 +389,7 @@
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 12F);
             label8.ForeColor = SystemColors.ControlDarkDark;
-            label8.Location = new Point(827, 73);
+            label8.Location = new Point(408, 77);
             label8.Name = "label8";
             label8.Size = new Size(90, 21);
             label8.TabIndex = 179;
@@ -301,7 +401,7 @@
             lbl_subtotal.AutoSize = true;
             lbl_subtotal.Font = new Font("Segoe UI", 12F);
             lbl_subtotal.ForeColor = SystemColors.ControlDarkDark;
-            lbl_subtotal.Location = new Point(912, 42);
+            lbl_subtotal.Location = new Point(493, 46);
             lbl_subtotal.Name = "lbl_subtotal";
             lbl_subtotal.RightToLeft = RightToLeft.No;
             lbl_subtotal.Size = new Size(17, 21);
@@ -314,7 +414,7 @@
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F);
             label6.ForeColor = SystemColors.ControlDarkDark;
-            label6.Location = new Point(827, 42);
+            label6.Location = new Point(408, 46);
             label6.Name = "label6";
             label6.Size = new Size(75, 21);
             label6.TabIndex = 177;
@@ -326,7 +426,7 @@
             lbl_cantidadProductos.AutoSize = true;
             lbl_cantidadProductos.Font = new Font("Segoe UI", 12F);
             lbl_cantidadProductos.ForeColor = SystemColors.ControlDarkDark;
-            lbl_cantidadProductos.Location = new Point(912, 11);
+            lbl_cantidadProductos.Location = new Point(493, 15);
             lbl_cantidadProductos.Name = "lbl_cantidadProductos";
             lbl_cantidadProductos.RightToLeft = RightToLeft.No;
             lbl_cantidadProductos.Size = new Size(17, 21);
@@ -339,7 +439,7 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 12F);
             label4.ForeColor = SystemColors.ControlDarkDark;
-            label4.Location = new Point(827, 11);
+            label4.Location = new Point(408, 15);
             label4.Name = "label4";
             label4.Size = new Size(79, 21);
             label4.TabIndex = 175;
@@ -349,9 +449,9 @@
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel3.BorderStyle = BorderStyle.FixedSingle;
-            panel3.Location = new Point(824, 5);
+            panel3.Location = new Point(405, 9);
             panel3.Name = "panel3";
-            panel3.Size = new Size(414, 160);
+            panel3.Size = new Size(414, 165);
             panel3.TabIndex = 185;
             // 
             // dtg_reportes
@@ -390,7 +490,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_reportes.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_reportes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_reportes.Size = new Size(1242, 422);
+            dtg_reportes.Size = new Size(1242, 410);
             dtg_reportes.TabIndex = 8;
             // 
             // Reportes
@@ -410,6 +510,8 @@
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_reportes).EndInit();
             ResumeLayout(false);
         }
@@ -441,5 +543,12 @@
         private Label lbl_cantidadProductos;
         private Label label4;
         private Panel panel3;
+        private Label lbl_ganancia;
+        private Label label3;
+        private Panel panel4;
+        private Label lbl_costos;
+        private Label label5;
+        private Label lbl_ventas;
+        private Label label9;
     }
 }

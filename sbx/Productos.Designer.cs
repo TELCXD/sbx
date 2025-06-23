@@ -34,6 +34,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            btn_exportar = new Button();
             btn_importar = new Button();
             btn_promociones = new Button();
             btn_lista_precios = new Button();
@@ -67,6 +68,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_exportar);
             panel1.Controls.Add(btn_importar);
             panel1.Controls.Add(btn_promociones);
             panel1.Controls.Add(btn_lista_precios);
@@ -83,6 +85,20 @@
             panel1.Size = new Size(1148, 56);
             panel1.TabIndex = 1;
             // 
+            // btn_exportar
+            // 
+            btn_exportar.Enabled = false;
+            btn_exportar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_exportar.FlatStyle = FlatStyle.Flat;
+            btn_exportar.Image = (Image)resources.GetObject("btn_exportar.Image");
+            btn_exportar.Location = new Point(605, 3);
+            btn_exportar.Name = "btn_exportar";
+            btn_exportar.Size = new Size(46, 45);
+            btn_exportar.TabIndex = 15;
+            btn_exportar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_exportar.UseVisualStyleBackColor = true;
+            btn_exportar.Click += btn_exportar_Click;
+            // 
             // btn_importar
             // 
             btn_importar.Enabled = false;
@@ -91,9 +107,8 @@
             btn_importar.Image = (Image)resources.GetObject("btn_importar.Image");
             btn_importar.Location = new Point(553, 3);
             btn_importar.Name = "btn_importar";
-            btn_importar.Size = new Size(111, 45);
+            btn_importar.Size = new Size(46, 45);
             btn_importar.TabIndex = 13;
-            btn_importar.Text = "Importar";
             btn_importar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_importar.UseVisualStyleBackColor = true;
             btn_importar.Click += btn_importar_Click;
@@ -134,7 +149,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(807, 15);
+            cbx_tipo_filtro.Location = new Point(838, 15);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 10;
@@ -145,7 +160,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(687, 15);
+            cbx_campo_filtro.Location = new Point(718, 15);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 9;
@@ -156,7 +171,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1083, 13);
+            btn_buscar.Location = new Point(1114, 13);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 7;
@@ -167,7 +182,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(900, 15);
+            txt_buscar.Location = new Point(931, 15);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 6;
@@ -385,5 +400,6 @@
         private DataGridViewTextBoxColumn cl_marca;
         private DataGridViewTextBoxColumn cl_categoria;
         private Button btn_importar;
+        private Button btn_exportar;
     }
 }

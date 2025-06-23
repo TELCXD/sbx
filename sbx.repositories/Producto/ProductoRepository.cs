@@ -961,5 +961,164 @@ namespace sbx.repositories.Producto
                 }
             }
         }
+
+        public async Task<Response<dynamic>> BuscarExportarExcel(string dato, string campoFiltro, string tipoFiltro)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdProducto
+                                  ,A.Sku
+                                  ,A.CodigoBarras
+                                  ,A.Nombre
+                                  ,A.CostoBase
+                                  ,A.PrecioBase
+                                  --,A.EsInventariable
+                                  ,A.Iva
+								  ,B.Nombre NombreCategoria
+								  ,C.Nombre NombreMarca
+								  ,D.Nombre NombreUnidadMedida
+                                  ,ISNULL((SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                        (
+                                         SELECT
+	                                     e.IdProducto, 
+                                         'Entrada' AS TipoMovimiento,
+	                                     e.Cantidad
+                                         FROM T_DetalleEntradasInventario e
+                                         INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+                                         SELECT
+	                                     s.IdProducto, 
+                                         'Salida' AS TipoMovimiento,
+	                                     s.Cantidad
+                                         FROM T_DetalleSalidasInventario s
+                                         INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+	                                     UNION ALL
+
+	                                     SELECT
+	                                     dvt.IdProducto,
+	                                     'Salida por Venta' AS TipoMovimiento,
+	                                     dvt.Cantidad
+	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
+										 WHERE vt.Estado = 'FACTURADA'
+                                         ) R
+	                                     WHERE R.IdProducto = A.IdProducto),0) Stock                                 
+                                  FROM T_Productos A
+								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
+								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+
+                    string Where = "";
+                    string Filtro = "";
+
+                    string[] DatoSeparado = dato.Split('+');
+
+                    switch (tipoFiltro)
+                    {
+                        case "Inicia con":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    Where = $"WHERE REPLACE(A.Nombre, ' ', '') LIKE REPLACE(@Filtro, ' ', '') ";
+                                    break;
+                                case "Id":
+                                    Where = $"WHERE A.IdProducto LIKE @Filtro ";
+                                    break;
+                                case "Sku":
+                                    Where = $"WHERE A.Sku LIKE @Filtro ";
+                                    break;
+                                case "Codigo barras":
+                                    Where = $"WHERE A.CodigoBarras LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato + "%";
+                            break;
+                        case "Igual a":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    Where = $"WHERE REPLACE(A.Nombre, ' ', '') = REPLACE(@Filtro, ' ', '') ";
+                                    break;
+                                case "Id":
+                                    Where = $"WHERE A.IdProducto = @Filtro ";
+                                    break;
+                                case "Sku":
+                                    Where = $"WHERE A.Sku = @Filtro ";
+                                    break;
+                                case "Codigo barras":
+                                    Where = $"WHERE A.CodigoBarras = @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato;
+                            break;
+                        case "Contiene":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    Where = $"WHERE  ";
+
+                                    foreach (string parte in DatoSeparado)
+                                    {
+                                        Where += $" REPLACE(A.Nombre, ' ', '') LIKE REPLACE('%{parte}%', ' ', '') AND ";
+                                    }
+
+                                    string conversion = Where.Substring(0, Where.Length - 4);
+                                    Where = conversion;
+                                    break;
+                                case "Id":
+                                    Where = $"WHERE A.IdProducto LIKE @Filtro ";
+                                    break;
+                                case "Sku":
+                                    Where = $"WHERE A.Sku LIKE @Filtro ";
+                                    break;
+                                case "Codigo barras":
+                                    Where = $"WHERE A.CodigoBarras LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = "%" + dato + "%";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    sql += Where + " ORDER BY A.IdProducto DESC ";
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro });
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }
