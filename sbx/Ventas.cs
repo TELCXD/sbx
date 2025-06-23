@@ -377,6 +377,7 @@ namespace sbx
                                         {
                                             int ANCHO_TIRILLA = 0;
                                             string Impresora = "";
+                                            string MensajeFinalTirilla = "";
                                             foreach (var itemParametros in DataParametros.Data)
                                             {
                                                 switch (itemParametros.Nombre)
@@ -387,12 +388,15 @@ namespace sbx
                                                     case "Impresora":
                                                         Impresora = itemParametros.Value;
                                                         break;
+                                                    case "Mensaje final tirilla":
+                                                        MensajeFinalTirilla = itemParametros.Value;
+                                                        break;
                                                     default:
                                                         break;
                                                 }
                                             }
 
-                                            StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA);
+                                            StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA, MensajeFinalTirilla);
 
                                             string carpetaFacturas = "Facturas";
                                             if (!Directory.Exists(carpetaFacturas))

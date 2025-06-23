@@ -649,7 +649,6 @@ namespace sbx.repositories.EntradaInventario
                         DateTime FechaActual = DateTime.Now;
                         FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
-
                         sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
                                   CostoBase,PrecioBase,EsInventariable,Iva,IdCategoria,IdMarca,IdUnidadMedida,CreationDate, IdUserAction)
                                   VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
@@ -659,10 +658,10 @@ namespace sbx.repositories.EntradaInventario
                         var parametrosProducto = new
                         {
                             Sku = item[0],
-                            CodigoBarras = "",
-                            Nombre = item[1].ToString().Trim() + " - " + item[2].ToString().Trim(),
-                            CostoBase = 0,
-                            PrecioBase = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                            CodigoBarras = item[1],
+                            Nombre = item[3].ToString()?.Trim() != "" ? item[2].ToString()?.Trim() + " - " + item[3].ToString()?.Trim() : item[2].ToString()?.Trim(),
+                            CostoBase = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                            PrecioBase = Convert.ToDecimal(item[5], new CultureInfo("es-CO")),
                             EsInventariable = 1,
                             Iva = 0,
                             IdCategoria = 1,
@@ -705,7 +704,7 @@ namespace sbx.repositories.EntradaInventario
                                     idProducto,
                                     CodigoLote = "",
                                     FechaVencimiento = "",
-                                    Cantidad = Convert.ToDecimal(item[3], new CultureInfo("es-CO")),
+                                    Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
                                     CostoUnitario = 0,
                                     Descuento = 0,
                                     Iva = 0,

@@ -8,7 +8,7 @@ namespace sbx.core.Entities.Venta
     {
         private static int ANCHO_TIRILLA = 32;
 
-        public static StringBuilder GenerarTirillaFactura(FacturaPOSEntitie factura, int Pr_ANCHO_TIRILLA)
+        public static StringBuilder GenerarTirillaFactura(FacturaPOSEntitie factura, int Pr_ANCHO_TIRILLA, string MensajeFinalTirilla)
         {
             var sb = new StringBuilder();
 
@@ -80,7 +80,7 @@ namespace sbx.core.Entities.Venta
 
             // Pie de página
             sb.AppendLine(CentrarTexto("GRACIAS POR SU COMPRA"));
-            sb.AppendLine(CentrarTexto("PARTES ELÉCTRICAS NO TIENEN CAMBIÓ"));
+            sb.AppendLine(CentrarTexto(MensajeFinalTirilla));
             sb.AppendLine();
             sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
             sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
@@ -91,7 +91,7 @@ namespace sbx.core.Entities.Venta
             return sb;
         }
 
-        public static StringBuilder GenerarTirillaCotizacion(CotizacionPOSEntitie cotizacion, int Pr_ANCHO_TIRILLA)
+        public static StringBuilder GenerarTirillaCotizacion(CotizacionPOSEntitie cotizacion, int Pr_ANCHO_TIRILLA, string MensajeFinalTirilla)
         {
             var sb = new StringBuilder();
 
@@ -150,7 +150,7 @@ namespace sbx.core.Entities.Venta
 
             // Pie de página
             sb.AppendLine(CentrarTexto($"VALIDEZ DE LA COTIZACION {cotizacion.DiasVencimiento} DIAS."));
-            sb.AppendLine();
+            sb.AppendLine(MensajeFinalTirilla);
             sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
             sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
 
