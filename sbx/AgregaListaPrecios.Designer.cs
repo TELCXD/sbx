@@ -30,17 +30,15 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregaListaPrecios));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel3 = new Panel();
             btn_add_precio_cliente = new Button();
             button1 = new Button();
             textBox1 = new TextBox();
             label4 = new Label();
-            dtp_fecha_fin = new DateTimePicker();
             lbl_fechaVencimiento = new Label();
-            dtp_fecha_inicio = new DateTimePicker();
             cbx_tipo_cliente = new ComboBox();
             label1 = new Label();
             btn_agregar_producto = new Button();
@@ -55,6 +53,8 @@
             label2 = new Label();
             txt_nombre_lista_precios = new TextBox();
             errorProvider1 = new ErrorProvider(components);
+            dtp_fecha_fin = new DateTimePicker();
+            dtp_fecha_inicio = new DateTimePicker();
             panel3.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
@@ -120,15 +120,6 @@
             label4.TabIndex = 128;
             label4.Text = "Fecha fin";
             // 
-            // dtp_fecha_fin
-            // 
-            dtp_fecha_fin.Format = DateTimePickerFormat.Short;
-            dtp_fecha_fin.Location = new Point(463, 131);
-            dtp_fecha_fin.Name = "dtp_fecha_fin";
-            dtp_fecha_fin.Size = new Size(193, 23);
-            dtp_fecha_fin.TabIndex = 125;
-            dtp_fecha_fin.Value = new DateTime(2025, 5, 23, 12, 41, 51, 0);
-            // 
             // lbl_fechaVencimiento
             // 
             lbl_fechaVencimiento.AutoSize = true;
@@ -137,15 +128,6 @@
             lbl_fechaVencimiento.Size = new Size(70, 15);
             lbl_fechaVencimiento.TabIndex = 127;
             lbl_fechaVencimiento.Text = "Fecha inicio";
-            // 
-            // dtp_fecha_inicio
-            // 
-            dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
-            dtp_fecha_inicio.Location = new Point(238, 131);
-            dtp_fecha_inicio.Name = "dtp_fecha_inicio";
-            dtp_fecha_inicio.Size = new Size(193, 23);
-            dtp_fecha_inicio.TabIndex = 124;
-            dtp_fecha_inicio.Value = new DateTime(2025, 5, 23, 12, 41, 44, 0);
             // 
             // cbx_tipo_cliente
             // 
@@ -195,36 +177,36 @@
             dtg_producto.AllowUserToDeleteRows = false;
             dtg_producto.AllowUserToOrderColumns = true;
             dtg_producto.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_producto.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_producto.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_producto.Dock = DockStyle.Fill;
             dtg_producto.Location = new Point(0, 0);
             dtg_producto.Name = "dtg_producto";
             dtg_producto.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_producto.Size = new Size(723, 257);
             dtg_producto.TabIndex = 3;
@@ -299,12 +281,30 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // dtp_fecha_fin
+            // 
+            dtp_fecha_fin.Format = DateTimePickerFormat.Short;
+            dtp_fecha_fin.Location = new Point(463, 131);
+            dtp_fecha_fin.Name = "dtp_fecha_fin";
+            dtp_fecha_fin.Size = new Size(187, 23);
+            dtp_fecha_fin.TabIndex = 139;
+            // 
+            // dtp_fecha_inicio
+            // 
+            dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
+            dtp_fecha_inicio.Location = new Point(238, 131);
+            dtp_fecha_inicio.Name = "dtp_fecha_inicio";
+            dtp_fecha_inicio.Size = new Size(187, 23);
+            dtp_fecha_inicio.TabIndex = 140;
+            // 
             // AgregaListaPrecios
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
             ClientSize = new Size(723, 450);
+            Controls.Add(dtp_fecha_inicio);
+            Controls.Add(dtp_fecha_fin);
             Controls.Add(label2);
             Controls.Add(txt_nombre_lista_precios);
             Controls.Add(btn_quitar_producto);
@@ -313,9 +313,7 @@
             Controls.Add(cbx_tipo_cliente);
             Controls.Add(label1);
             Controls.Add(label4);
-            Controls.Add(dtp_fecha_fin);
             Controls.Add(lbl_fechaVencimiento);
-            Controls.Add(dtp_fecha_inicio);
             Controls.Add(panel3);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -339,9 +337,8 @@
         private Button button1;
         private TextBox textBox1;
         private Label label4;
-        private DateTimePicker dtp_fecha_fin;
         private Label lbl_fechaVencimiento;
-        private DateTimePicker dtp_fecha_inicio;
+        private DateTimePicker dtp_fecha_fin;
         private ComboBox cbx_tipo_cliente;
         private Label label1;
         private Button btn_agregar_producto;
@@ -356,5 +353,6 @@
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_precio;
         private ErrorProvider errorProvider1;
+        private DateTimePicker dtp_fecha_inicio;
     }
 }

@@ -127,8 +127,8 @@ namespace sbx
 
             if (txt_nombre_lista_precios.Text.Trim() != "")
             {
-                DateTime fechaIni = dtp_fecha_inicio.Value;
-                DateTime fechaFin = dtp_fecha_fin.Value;
+                DateTime fechaIni = dtp_fecha_inicio.Value.Date;
+                DateTime fechaFin = dtp_fecha_fin.Value.Date;
 
                 if (fechaIni <= fechaFin)
                 {
