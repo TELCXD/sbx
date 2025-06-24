@@ -531,6 +531,12 @@ namespace sbx
                     MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            else
+            {
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
+                dtg_producto.Enabled = true;
+            }
         }
 
         private async void btn_exportar_Click(object sender, EventArgs e)

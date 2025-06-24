@@ -146,8 +146,8 @@ namespace sbx
                 {
                     if (Convert.ToDecimal(txt_porcj_desc.Text, new CultureInfo("es-CO")) > 0)
                     {
-                        DateTime fechaIni = dtp_fecha_inicio.Value;
-                        DateTime fechaFin = dtp_fecha_fin.Value;
+                        DateTime fechaIni = dtp_fecha_inicio.Value.Date;
+                        DateTime fechaFin = dtp_fecha_fin.Value.Date;
 
                         if (fechaIni <= fechaFin)
                         {

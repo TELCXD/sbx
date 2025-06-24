@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Parametros;
+using System.Globalization;
 
 namespace sbx
 {
@@ -138,7 +139,7 @@ namespace sbx
                             item.Usuario);
                     }
 
-                    txt_total_stock.Text = TotalStock.ToString();
+                    txt_total_stock.Text = TotalStock.ToString("N2",new CultureInfo("es-CO"));
                 }
             }
 

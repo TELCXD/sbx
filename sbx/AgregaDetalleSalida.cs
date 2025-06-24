@@ -111,7 +111,7 @@ namespace sbx
                             txt_lote.Text = "";
                             chek_fecha_vencimiento.Checked = false;
                             txt_cantidad.Text = "";
-                            txt_costo.Text = "";
+                            txt_costo.Text = "0";
                             txt_total.Text = "";
                         }
                         else

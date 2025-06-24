@@ -196,10 +196,10 @@ namespace sbx
                     txt_lote.Text = "";
                     chek_fecha_vencimiento.Checked = false;
                     txt_cantidad.Text = "";
-                    txt_costo.Text = "";
+                    txt_costo.Text = "0";
                     txt_subtotal.Text = "";
-                    txt_descuento.Text = "";
-                    txt_iva.Text = "";
+                    txt_descuento.Text = "0";
+                    txt_iva.Text = "0";
                     txt_total.Text = "";
                 }
                 else

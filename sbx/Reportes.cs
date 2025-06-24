@@ -1,5 +1,7 @@
 ﻿using sbx.core.Interfaces.Reportes;
 using System.Globalization;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Drawing;
 
 namespace sbx
 {
@@ -233,6 +235,101 @@ namespace sbx
             {
                 await Buscar();
             }
+        }
+
+        private void btn_imprimir_pdf_Click(object sender, EventArgs e)
+        {
+            // Mostrar un cuadro de diálogo para elegir la ubicación de guardado
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PDF files (*.pdf)|*.pdf",
+                Title = "Guardar PDF"
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string rutaPdf = saveFileDialog.FileName;
+
+                // Crear el documento PDF
+                PdfDocument documento = new PdfDocument();
+
+                // Datos de ejemplo
+                string[,] datos = {
+                { "Producto A", "2", "50", "100" },
+                { "Producto B", "1", "120", "120" },
+                { "Producto C", "3", "30", "90" }
+            };
+
+                // Dibujar el contenido en el PDF
+                AgregarPaginaConContenido(documento, datos);
+
+                // Guardar el archivo PDF
+                documento.Save(rutaPdf);
+
+                // Informar al usuario que el PDF se ha guardado
+                MessageBox.Show($"PDF guardado en: {rutaPdf}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void AgregarPaginaConContenido(PdfDocument documento, string[,] datos)
+        {
+            // Crear la página
+            PdfPage pagina = documento.AddPage();
+            XGraphics grafico = XGraphics.FromPdfPage(pagina);
+
+            // Definir fuentes
+            XFont fuenteEncabezado = new XFont("Verdana", 14, XFontStyle.Bold);
+            XFont fuenteDetalle = new XFont("Verdana", 10);
+            XFont fuentePie = new XFont("Verdana", 8, XFontStyle.Italic);
+
+            // Cargar la imagen
+            string rutaImagen = @"path\to\your\image.png"; // Cambia esto por la ruta de tu imagen
+            if (File.Exists(rutaImagen))
+            {
+                XImage imagen = XImage.FromFile(rutaImagen);
+                grafico.DrawImage(imagen, 10, 10, 150, 50); // Imagen en la parte superior
+            }
+
+            // Dibujar el encabezado
+            grafico.DrawString("Informe de Ventas", fuenteEncabezado, XBrushes.Black, new XRect(0, 70, pagina.Width, 50), XStringFormats.TopCenter);
+
+            // Dibujar la tabla de detalles
+            float y = 120;
+            string[] columnas = { "Producto", "Cantidad", "Precio Unitario", "Total" };
+            float[] anchos = { 150, 100, 150, 100 };
+
+            // Dibujar cabecera de tabla con colores
+            for (int i = 0; i < columnas.Length; i++)
+            {
+                grafico.DrawRectangle(XBrushes.LightGray, i * anchos[i], y, anchos[i], 20); // Fondo gris claro
+                grafico.DrawString(columnas[i], fuenteDetalle, XBrushes.Black, new XRect(i * anchos[i], y, anchos[i], 20), XStringFormats.Center);
+            }
+
+            y += 20;
+
+            // Dibujar filas de la tabla con colores alternos
+            for (int i = 0; i < datos.GetLength(0); i++)
+            {
+                for (int j = 0; j < columnas.Length; j++)
+                {
+                    // Colorear filas alternadas
+                    XBrush brush = (i % 2 == 0) ? XBrushes.White : XBrushes.LightYellow; // Fondo blanco o amarillo claro
+                    grafico.DrawRectangle(brush, j * anchos[j], y, anchos[j], 20);
+                    grafico.DrawString(datos[i, j], fuenteDetalle, XBrushes.Black, new XRect(j * anchos[j], y, anchos[j], 20), XStringFormats.Center);
+                }
+                y += 20;
+            }
+
+            // Añadir el pie de página con número de página
+            AgregarPieDePagina(grafico, pagina, documento.PageCount);
+        }
+
+        // Método para agregar el pie de página con el número de página
+        private void AgregarPieDePagina(XGraphics grafico, PdfPage pagina, int totalPaginas)
+        {
+            XFont fuentePie = new XFont("Verdana", 8, XFontStyle.Italic);
+            string piePagina = "0";//$"Página {pagina.Number} de {totalPaginas}";
+            grafico.DrawString(piePagina, fuentePie, XBrushes.Black, new XRect(0, pagina.Height - 40, pagina.Width, 30), XStringFormats.TopCenter);
         }
     }
 }
