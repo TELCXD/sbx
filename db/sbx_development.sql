@@ -682,10 +682,11 @@ VALUES
     ('Preguntar imprimir factura en venta','NO'),
 	('Buscar en venta por','Id'),
 	('Tipo filtro producto','Inicia con'),
-	('Ancho tirilla','42'),
+	('Ancho tirilla','80'),
 	('Impresora','Generic'),
 	('Mensaje final tirilla',''),
-	('Ruta backup','')
+	('Ruta backup',''),
+	('lineas abajo de la tirilla','9')
 GO
 CREATE TABLE T_AperturaCierreCaja (
 IdApertura_Cierre_caja INT IDENTITY(1,1) PRIMARY KEY,

@@ -378,6 +378,7 @@ namespace sbx
                                             int ANCHO_TIRILLA = 0;
                                             string Impresora = "";
                                             string MensajeFinalTirilla = "";
+                                            int LineasAbajo = 0;
                                             foreach (var itemParametros in DataParametros.Data)
                                             {
                                                 switch (itemParametros.Nombre)
@@ -390,6 +391,9 @@ namespace sbx
                                                         break;
                                                     case "Mensaje final tirilla":
                                                         MensajeFinalTirilla = itemParametros.Value;
+                                                        break;
+                                                    case "lineas abajo de la tirilla":
+                                                        LineasAbajo = Convert.ToInt32(itemParametros.Value);
                                                         break;
                                                     default:
                                                         break;
@@ -408,7 +412,7 @@ namespace sbx
                                                                       tirilla.ToString(),
                                                                       Encoding.UTF8);
 
-                                            RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                            RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
                                         }
                                         else
                                         {

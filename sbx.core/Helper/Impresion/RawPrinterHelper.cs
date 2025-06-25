@@ -76,11 +76,11 @@ namespace sbx.core.Helper.Impresion
             return bSuccess;
         }
 
-        public static bool SendStringToPrinter(string Impresora, string tirilla)
+        public static bool SendStringToPrinter(string Impresora, string tirilla, int LineasAbajo)
         {
             string initPrinter = "\x1B\x40";
-
-            string feedBottom = "\x1B\x64\x09";
+            //string feedBottom = "\x1B\x64\x03";//"\x1B\x64\x09";
+            string feedBottom = $"\x1B\x64{(char)LineasAbajo}";
 
             /// Construye tirilla final
             string tirillaFinal = initPrinter + tirilla + feedBottom;

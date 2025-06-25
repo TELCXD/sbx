@@ -1177,6 +1177,7 @@ namespace sbx
             Impuesto = 0;
             SubtotalLinea = 0;
             DescuentoLinea = 0;
+            decimal CantidadF = DataProducto?.Data?[0]?.CantidadF ?? 1;
 
             //1. ¿Tiene precio personalizado? => usar PreciosCliente
             if (agregaVentaEntitie.IdCliente > 0)
@@ -1194,7 +1195,7 @@ namespace sbx
                              DataProducto.Data[0].CodigoBarras,
                              DataProducto.Data[0].Nombre,
                              resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
+                             CantidadF.ToString(new CultureInfo("es-CO")),
                              0,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
@@ -1226,7 +1227,7 @@ namespace sbx
                              DataProducto.Data[0].CodigoBarras,
                              DataProducto.Data[0].Nombre,
                              resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
+                             CantidadF.ToString(new CultureInfo("es-CO")),
                              0,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
@@ -1255,7 +1256,7 @@ namespace sbx
                              DataProducto.Data[0].CodigoBarras,
                              DataProducto.Data[0].Nombre,
                              DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
+                             CantidadF.ToString(new CultureInfo("es-CO")),
                              resp3.Data[0].Porcentaje,
                              DataProducto.Data[0].Iva,
                              Total.ToString("N2", new CultureInfo("es-CO")),
@@ -1279,7 +1280,7 @@ namespace sbx
                      DataProducto.Data[0].CodigoBarras,
                      DataProducto.Data[0].Nombre,
                      DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
-                     DataProducto.Data[0].CantidadF.ToString(new CultureInfo("es-CO")),
+                     CantidadF.ToString(new CultureInfo("es-CO")),
                      0,
                      DataProducto.Data[0].Iva,
                      Total.ToString("N2", new CultureInfo("es-CO")),
@@ -2223,6 +2224,16 @@ namespace sbx
                                                                       tirilla.ToString(),
                                                                       Encoding.UTF8);
 
+                                                    var respLineas = await _IParametros.List("lineas abajo de la tirilla");
+                                                    int LineasAbajo = 0;
+                                                    if (respLineas.Data != null)
+                                                    {
+                                                        if (respLineas.Data.Count > 0)
+                                                        {
+                                                            LineasAbajo = Convert.ToInt32(respLineas.Data[0].Value);
+                                                        }
+                                                    }
+
                                                     if (PreguntarParaImprimir == "SI")
                                                     {
                                                         DialogResult result = MessageBox.Show("¿Está seguro de imprimir la factura?",
@@ -2231,12 +2242,12 @@ namespace sbx
                                                         MessageBoxIcon.Question);
                                                         if (result == DialogResult.Yes)
                                                         {
-                                                            RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                                            RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                                        RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
                                                     }
                                                 }
                                                 else
@@ -2925,6 +2936,7 @@ namespace sbx
                                     int ANCHO_TIRILLA = 0;
                                     string Impresora = "";
                                     string MensajeFinalTirilla = "";
+                                    int LineasAbajo = 0;
                                     foreach (var itemParametros in DataParametros.Data)
                                     {
                                         switch (itemParametros.Nombre)
@@ -2937,6 +2949,9 @@ namespace sbx
                                                 break;
                                             case "Mensaje final tirilla":
                                                 MensajeFinalTirilla = itemParametros.Value;
+                                                break;
+                                            case "lineas abajo de la tirilla":
+                                                LineasAbajo = Convert.ToInt32(itemParametros.Value);
                                                 break;
                                             default:
                                                 break;
@@ -2955,7 +2970,7 @@ namespace sbx
                                                       tirilla.ToString(),
                                                       Encoding.UTF8);
 
-                                    RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString());
+                                    RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
                                 }
                                 else
                                 {
