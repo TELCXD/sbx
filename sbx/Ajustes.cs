@@ -22,6 +22,7 @@ namespace sbx
         private int Id_usuario = 0;
         private Buscador? _Buscador;
         PermisosEntitie PermisosEntitie = new PermisosEntitie();
+        string MensajePersonalizado = "";
 
         public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, IParametros parametros, IUsuario usuario, IPermisos permisos)
         {
@@ -45,6 +46,7 @@ namespace sbx
             await ConsultaRangosNumeracion();
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
+            cbx_lineas_abajo.SelectedIndex = 0;
         }
 
         private void ValidaPermisos()
@@ -183,17 +185,21 @@ namespace sbx
                             case "Tipo filtro producto":
                                 cbx_parametro_tipo_filtro_producto.Text = item.Value;
                                 break;
+                            case "Mensaje final tirilla":
+                                txt_mensaje_final_tirilla.Text = item.Value;
+                                MensajePersonalizado = item.Value;
+                                break;
                             case "Ancho tirilla":
-                                txt_ancho_tirilla.Text = item.Value;
+                                if (item.Value == "80") { rb_80mm.Checked = true; } else { rb_58mm.Checked = true; }
                                 break;
                             case "Impresora":
                                 txt_impresora.Text = item.Value;
                                 break;
-                            case "Mensaje final tirilla":
-                                txt_mensaje_final_tirilla.Text = item.Value;
-                                break;
                             case "Ruta backup":
                                 txt_ruta_backup.Text = item.Value;
+                                break;
+                            case "lineas abajo de la tirilla":
+                                cbx_lineas_abajo.Text = item.Value;
                                 break;
                             default:
                                 break;
@@ -207,7 +213,7 @@ namespace sbx
         {
             List<ParametrosEntitie> ListParametros = new List<ParametrosEntitie>();
 
-            for (int i = 0; i <= 6; i++)
+            for (int i = 0; i <= 8; i++)
             {
                 switch (i)
                 {
@@ -251,7 +257,7 @@ namespace sbx
                         Parametros = new ParametrosEntitie
                         {
                             Nombre = "Ancho tirilla",
-                            Value = txt_ancho_tirilla.Text
+                            Value = rb_80mm.Checked == true ? "80" : "58"
                         };
 
                         ListParametros.Add(Parametros);
@@ -280,7 +286,14 @@ namespace sbx
                             Nombre = "Ruta backup",
                             Value = txt_ruta_backup.Text
                         };
-
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 8:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "lineas abajo de la tirilla",
+                            Value = cbx_lineas_abajo.Text
+                        };
                         ListParametros.Add(Parametros);
                         break;
                     default:
@@ -444,10 +457,10 @@ namespace sbx
                     {
                         foreach (DataGridViewRow fila in dtg_permisos.Rows)
                         {
-                            if (Convert.ToInt32(item.IdMenu) == Convert.ToInt32(fila.Cells["cl_id_menu"].Value)) 
+                            if (Convert.ToInt32(item.IdMenu) == Convert.ToInt32(fila.Cells["cl_id_menu"].Value))
                             {
                                 fila.Cells["cl_idUserMenu"].Value = Convert.ToInt32(item.IdUserMenu);
-                                fila.Cells["cl_toRead"].Value = Convert.ToInt32(item.ToRead) == 1 ? true: false;
+                                fila.Cells["cl_toRead"].Value = Convert.ToInt32(item.ToRead) == 1 ? true : false;
                                 fila.Cells["cl_ToCreate"].Value = Convert.ToInt32(item.ToCreate) == 1 ? true : false;
                                 fila.Cells["cl_toUpdate"].Value = Convert.ToInt32(item.ToUpdate) == 1 ? true : false;
                                 fila.Cells["cl_toDelete"].Value = Convert.ToInt32(item.ToDelete) == 1 ? true : false;
@@ -501,6 +514,18 @@ namespace sbx
             {
                 errorProvider1.SetError(txt_busca_usuario, "Debe seleccionar un usuario");
             }
+        }
+
+        private void rb_80mm_CheckedChanged(object sender, EventArgs e)
+        {
+            txt_mensaje_final_tirilla.MaxLength = 42;
+            txt_mensaje_final_tirilla.Text = MensajePersonalizado;
+        }
+
+        private void rb_58mm_CheckedChanged_1(object sender, EventArgs e)
+        {
+            txt_mensaje_final_tirilla.MaxLength = 32;
+            txt_mensaje_final_tirilla.Text = MensajePersonalizado.Length > 32 ? MensajePersonalizado.Substring(0, 32): MensajePersonalizado;
         }
     }
 }

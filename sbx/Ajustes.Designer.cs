@@ -30,16 +30,20 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ajustes));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle14 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle15 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle16 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle17 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle18 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
+            cbx_lineas_abajo = new ComboBox();
+            label9 = new Label();
+            rb_58mm = new RadioButton();
+            rb_80mm = new RadioButton();
             txt_mensaje_final_tirilla = new TextBox();
             label8 = new Label();
             cbx_parametro_tipo_filtro_producto = new ComboBox();
@@ -48,7 +52,6 @@
             label6 = new Label();
             txt_ruta_backup = new TextBox();
             txt_impresora = new TextBox();
-            txt_ancho_tirilla = new TextBox();
             cbx_pregunta_imprimir_venta = new ComboBox();
             cbx_valida_stock_venta = new ComboBox();
             label4 = new Label();
@@ -116,6 +119,7 @@
             btn_busca_usuario = new Button();
             label5 = new Label();
             errorProvider1 = new ErrorProvider(components);
+            label10 = new Label();
             TabParametros.SuspendLayout();
             panel2.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -137,6 +141,11 @@
             // 
             // TabParametros
             // 
+            TabParametros.Controls.Add(label10);
+            TabParametros.Controls.Add(cbx_lineas_abajo);
+            TabParametros.Controls.Add(label9);
+            TabParametros.Controls.Add(rb_58mm);
+            TabParametros.Controls.Add(rb_80mm);
             TabParametros.Controls.Add(txt_mensaje_final_tirilla);
             TabParametros.Controls.Add(label8);
             TabParametros.Controls.Add(cbx_parametro_tipo_filtro_producto);
@@ -145,7 +154,6 @@
             TabParametros.Controls.Add(label6);
             TabParametros.Controls.Add(txt_ruta_backup);
             TabParametros.Controls.Add(txt_impresora);
-            TabParametros.Controls.Add(txt_ancho_tirilla);
             TabParametros.Controls.Add(cbx_pregunta_imprimir_venta);
             TabParametros.Controls.Add(cbx_valida_stock_venta);
             TabParametros.Controls.Add(label4);
@@ -162,13 +170,56 @@
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
             // 
+            // cbx_lineas_abajo
+            // 
+            cbx_lineas_abajo.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_lineas_abajo.FormattingEnabled = true;
+            cbx_lineas_abajo.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+            cbx_lineas_abajo.Location = new Point(253, 311);
+            cbx_lineas_abajo.Name = "cbx_lineas_abajo";
+            cbx_lineas_abajo.Size = new Size(121, 25);
+            cbx_lineas_abajo.TabIndex = 19;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(8, 317);
+            label9.Name = "label9";
+            label9.Size = new Size(158, 17);
+            label9.TabIndex = 18;
+            label9.Text = "lineas abajo de la tirilla";
+            // 
+            // rb_58mm
+            // 
+            rb_58mm.AutoSize = true;
+            rb_58mm.Location = new Point(431, 193);
+            rb_58mm.Name = "rb_58mm";
+            rb_58mm.Size = new Size(172, 21);
+            rb_58mm.TabIndex = 17;
+            rb_58mm.TabStop = true;
+            rb_58mm.Text = "58 mm (32 Caracteres)";
+            rb_58mm.UseVisualStyleBackColor = true;
+            rb_58mm.CheckedChanged += rb_58mm_CheckedChanged_1;
+            // 
+            // rb_80mm
+            // 
+            rb_80mm.AutoSize = true;
+            rb_80mm.Location = new Point(253, 193);
+            rb_80mm.Name = "rb_80mm";
+            rb_80mm.Size = new Size(172, 21);
+            rb_80mm.TabIndex = 6;
+            rb_80mm.TabStop = true;
+            rb_80mm.Text = "80 mm (42 Caracteres)";
+            rb_80mm.UseVisualStyleBackColor = true;
+            rb_80mm.CheckedChanged += rb_80mm_CheckedChanged;
+            // 
             // txt_mensaje_final_tirilla
             // 
             txt_mensaje_final_tirilla.Location = new Point(253, 252);
             txt_mensaje_final_tirilla.MaxLength = 42;
             txt_mensaje_final_tirilla.Name = "txt_mensaje_final_tirilla";
-            txt_mensaje_final_tirilla.Size = new Size(323, 23);
-            txt_mensaje_final_tirilla.TabIndex = 17;
+            txt_mensaje_final_tirilla.Size = new Size(350, 23);
+            txt_mensaje_final_tirilla.TabIndex = 8;
             // 
             // label8
             // 
@@ -187,7 +238,7 @@
             cbx_parametro_tipo_filtro_producto.Location = new Point(253, 160);
             cbx_parametro_tipo_filtro_producto.Name = "cbx_parametro_tipo_filtro_producto";
             cbx_parametro_tipo_filtro_producto.Size = new Size(121, 25);
-            cbx_parametro_tipo_filtro_producto.TabIndex = 15;
+            cbx_parametro_tipo_filtro_producto.TabIndex = 4;
             // 
             // label7
             // 
@@ -206,7 +257,7 @@
             cbx_Buscarenventapor.Location = new Point(253, 128);
             cbx_Buscarenventapor.Name = "cbx_Buscarenventapor";
             cbx_Buscarenventapor.Size = new Size(121, 25);
-            cbx_Buscarenventapor.TabIndex = 13;
+            cbx_Buscarenventapor.TabIndex = 3;
             // 
             // label6
             // 
@@ -222,24 +273,15 @@
             txt_ruta_backup.Enabled = false;
             txt_ruta_backup.Location = new Point(253, 282);
             txt_ruta_backup.Name = "txt_ruta_backup";
-            txt_ruta_backup.Size = new Size(323, 23);
-            txt_ruta_backup.TabIndex = 11;
+            txt_ruta_backup.Size = new Size(350, 23);
+            txt_ruta_backup.TabIndex = 9;
             // 
             // txt_impresora
             // 
             txt_impresora.Location = new Point(253, 220);
             txt_impresora.Name = "txt_impresora";
-            txt_impresora.Size = new Size(223, 23);
-            txt_impresora.TabIndex = 10;
-            // 
-            // txt_ancho_tirilla
-            // 
-            txt_ancho_tirilla.Enabled = false;
-            txt_ancho_tirilla.Location = new Point(253, 191);
-            txt_ancho_tirilla.Name = "txt_ancho_tirilla";
-            txt_ancho_tirilla.Size = new Size(223, 23);
-            txt_ancho_tirilla.TabIndex = 9;
-            txt_ancho_tirilla.KeyPress += txt_ancho_tirilla_KeyPress;
+            txt_impresora.Size = new Size(350, 23);
+            txt_impresora.TabIndex = 7;
             // 
             // cbx_pregunta_imprimir_venta
             // 
@@ -249,7 +291,7 @@
             cbx_pregunta_imprimir_venta.Location = new Point(253, 97);
             cbx_pregunta_imprimir_venta.Name = "cbx_pregunta_imprimir_venta";
             cbx_pregunta_imprimir_venta.Size = new Size(121, 25);
-            cbx_pregunta_imprimir_venta.TabIndex = 8;
+            cbx_pregunta_imprimir_venta.TabIndex = 2;
             // 
             // cbx_valida_stock_venta
             // 
@@ -259,7 +301,7 @@
             cbx_valida_stock_venta.Location = new Point(253, 66);
             cbx_valida_stock_venta.Name = "cbx_valida_stock_venta";
             cbx_valida_stock_venta.Size = new Size(121, 25);
-            cbx_valida_stock_venta.TabIndex = 7;
+            cbx_valida_stock_venta.TabIndex = 1;
             // 
             // label4
             // 
@@ -370,36 +412,36 @@
             dtg_rangos_numeracion.AllowUserToDeleteRows = false;
             dtg_rangos_numeracion.AllowUserToOrderColumns = true;
             dtg_rangos_numeracion.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_rangos_numeracion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = SystemColors.Control;
+            dataGridViewCellStyle10.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle10.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle10.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
+            dtg_rangos_numeracion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
             dtg_rangos_numeracion.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_rangos_numeracion.Columns.AddRange(new DataGridViewColumn[] { cl_Nro, cl_estado_ra, cl_tipo_documento, cl_prefijo, cl_numero_desde, cl_numero_hasta, cl_nro_autorizacion, cl_fecha_vencimiento, cl_numero_actual });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_rangos_numeracion.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = SystemColors.Window;
+            dataGridViewCellStyle11.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle11.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle11.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle11.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
+            dtg_rangos_numeracion.DefaultCellStyle = dataGridViewCellStyle11;
             dtg_rangos_numeracion.Dock = DockStyle.Fill;
             dtg_rangos_numeracion.Location = new Point(3, 59);
             dtg_rangos_numeracion.Name = "dtg_rangos_numeracion";
             dtg_rangos_numeracion.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_rangos_numeracion.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = SystemColors.Control;
+            dataGridViewCellStyle12.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle12.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.True;
+            dtg_rangos_numeracion.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
             dtg_rangos_numeracion.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_rangos_numeracion.Size = new Size(843, 424);
             dtg_rangos_numeracion.TabIndex = 1;
@@ -603,36 +645,36 @@
             dtg_usuario.AllowUserToDeleteRows = false;
             dtg_usuario.AllowUserToOrderColumns = true;
             dtg_usuario.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle13.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.BackColor = SystemColors.Control;
+            dataGridViewCellStyle13.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle13.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle13.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle13.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle13.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
             dtg_usuario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_usuario.Columns.AddRange(new DataGridViewColumn[] { cl_IdUsuario, cl_userName, id_rol, cl_rol, cl_tipo_identificacion, cl_identificacion, cl_nombre, cl_telefono, cl_BirthDate });
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Window;
-            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle14.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = SystemColors.Window;
+            dataGridViewCellStyle14.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle14.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle14.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle14.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle14.WrapMode = DataGridViewTriState.False;
+            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle14;
             dtg_usuario.Dock = DockStyle.Fill;
             dtg_usuario.Location = new Point(3, 59);
             dtg_usuario.Name = "dtg_usuario";
             dtg_usuario.ReadOnly = true;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle15.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle15.BackColor = SystemColors.Control;
+            dataGridViewCellStyle15.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle15.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle15.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle15.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle15.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle15;
             dtg_usuario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_usuario.Size = new Size(843, 424);
             dtg_usuario.TabIndex = 5;
@@ -826,35 +868,35 @@
             dtg_permisos.AllowUserToDeleteRows = false;
             dtg_permisos.AllowUserToOrderColumns = true;
             dtg_permisos.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle16.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle16.BackColor = SystemColors.Control;
+            dataGridViewCellStyle16.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle16.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle16.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle16.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle16.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle16;
             dtg_permisos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_permisos.Columns.AddRange(new DataGridViewColumn[] { cl_idUserMenu, cl_id_menu, cl_menu, cl_id_user, cl_toRead, cl_ToCreate, cl_toUpdate, cl_toDelete, cl_estado });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle17.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = SystemColors.Window;
+            dataGridViewCellStyle17.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle17.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle17.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle17.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle17.WrapMode = DataGridViewTriState.False;
+            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle17;
             dtg_permisos.Dock = DockStyle.Fill;
             dtg_permisos.Location = new Point(3, 58);
             dtg_permisos.Name = "dtg_permisos";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle18.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle18.BackColor = SystemColors.Control;
+            dataGridViewCellStyle18.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle18.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle18.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle18.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle18.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle18;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_permisos.Size = new Size(843, 427);
             dtg_permisos.TabIndex = 140;
@@ -981,6 +1023,15 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(380, 317);
+            label10.Name = "label10";
+            label10.Size = new Size(148, 17);
+            label10.TabIndex = 20;
+            label10.Text = "80 mm (9) - 58 mm (3)";
+            // 
             // Ajustes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1046,7 +1097,6 @@
         private Label label4;
         private ComboBox cbx_valida_stock_venta;
         private ComboBox cbx_pregunta_imprimir_venta;
-        private TextBox txt_ancho_tirilla;
         private TextBox txt_ruta_backup;
         private TextBox txt_impresora;
         private TabPage tabAdministracion;
@@ -1088,12 +1138,16 @@
         private DataGridViewCheckBoxColumn cl_toUpdate;
         private DataGridViewCheckBoxColumn cl_toDelete;
         private DataGridViewTextBoxColumn cl_estado;
-        private ComboBox comboBox1;
+        private ComboBox cbx_lineas_abajo;
         private Label label6;
         private ComboBox cbx_Buscarenventapor;
         private ComboBox cbx_parametro_tipo_filtro_producto;
         private Label label7;
         private TextBox txt_mensaje_final_tirilla;
         private Label label8;
+        private RadioButton rb_80mm;
+        private RadioButton rb_58mm;
+        private Label label9;
+        private Label label10;
     }
 }
