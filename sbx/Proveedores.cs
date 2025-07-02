@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.Promociones;
 using sbx.core.Interfaces.Proveedor;
 
 namespace sbx
@@ -42,7 +43,7 @@ namespace sbx
                         case "proveedor":
                             btn_agregar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
-                            //btn_eliminar.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -125,6 +126,54 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void btn_eliminar_Click(object sender, EventArgs e)
+        {
+            if (dtg_proveedor.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar proveedor seleccionada?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (dtg_proveedor.SelectedRows.Count > 0)
+                    {
+                        var row = dtg_proveedor.SelectedRows[0];
+                        if (row.Cells["cl_IdProveedor"].Value != null)
+                        {
+                            Id_Proveedor = Convert.ToInt32(row.Cells["cl_IdProveedor"].Value);
+
+                            if (Id_Proveedor > 1) 
+                            {
+                                var resp = await _IProveedor.Eliminar(Id_Proveedor);
+
+                                if (resp != null)
+                                {
+                                    if (resp.Flag == true)
+                                    {
+                                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        await ConsultaProveedor();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No es posible eliminar este proveedor", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

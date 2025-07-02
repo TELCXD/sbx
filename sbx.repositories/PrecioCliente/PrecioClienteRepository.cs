@@ -308,5 +308,43 @@ namespace sbx.repositories.PrecioCliente
                 }
             }
         }
+
+        public async Task<Response<dynamic>> Eliminar(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string Mensaje = "";
+                    string sql = $"DELETE FROM T_PreciosCliente WHERE CONCAT(IdCliente, IdProducto) = {Id}";
+
+                    var rowsAffected = await connection.ExecuteAsync(sql);
+
+                    if (rowsAffected > 0)
+                    {
+                        Mensaje = "Se elimino correctamente el precio de cliente";
+                        response.Flag = true;
+                    }
+                    else
+                    {
+                        Mensaje = "Se presento un error al intentar eliminar el precio de cliente";
+                        response.Flag = false;
+                    }
+
+                    response.Message = Mensaje;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

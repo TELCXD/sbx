@@ -380,5 +380,76 @@ namespace sbx.repositories.Vendedor
                 }
             }
         }
+
+        public async Task<Response<dynamic>> Eliminar(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT COUNT(1) FROM T_Ventas WHERE IdVendedor = {Id}; 
+                                    SELECT COUNT(1) FROM T_Ventas_Suspendidas WHERE IdVendedor = {Id};
+                                    SELECT COUNT(1) FROM T_Cotizacion WHERE IdVendedor = {Id}; ";
+
+                    using var multi = await connection.QueryMultipleAsync(sql);
+
+                    var VentasCount = await multi.ReadSingleAsync<int>();
+                    var Ventas_SuspendidasCount = await multi.ReadSingleAsync<int>();
+                    var CotizacionCount = await multi.ReadSingleAsync<int>();
+
+                    string Mensaje = "";
+
+                    if (VentasCount > 0 || Ventas_SuspendidasCount > 0 || CotizacionCount > 0)
+                    {
+                        Mensaje = "No es posible eliminar el vendedor debido a que se encuentra en uso en los siguientes módulos: ";
+
+                        if (VentasCount > 0)
+                        {
+                            Mensaje += " ventas,";
+                        }
+
+                        if (Ventas_SuspendidasCount > 0)
+                        {
+                            Mensaje += " venta suspendida,";
+                        }
+
+                        if (CotizacionCount > 0)
+                        {
+                            Mensaje += " Cotizacion,";
+                        }
+                    }
+                    else
+                    {
+                        sql = $"DELETE FROM T_Vendedor WHERE IdVendedor = {Id}";
+
+                        var rowsAffected = await connection.ExecuteAsync(sql);
+
+                        if (rowsAffected > 0)
+                        {
+                            Mensaje = "Se elimino correctamente vendedor";
+                            response.Flag = true;
+                        }
+                        else
+                        {
+                            Mensaje = "Se presento un error al intentar eliminar vendedor";
+                            response.Flag = false;
+                        }
+                    }
+
+                    response.Message = Mensaje;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inicio));
             panel1 = new Panel();
+            btn_vendedor = new Button();
             btn_reportes = new Button();
             btn_caja = new Button();
             btn_inventario = new Button();
@@ -43,7 +44,6 @@
             lbl_usuario = new Label();
             pictureBox1 = new PictureBox();
             panel3 = new Panel();
-            btn_vendedor = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -52,7 +52,7 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.Transparent;
+            panel1.BackColor = Color.WhiteSmoke;
             panel1.BorderStyle = BorderStyle.Fixed3D;
             panel1.Controls.Add(btn_vendedor);
             panel1.Controls.Add(btn_reportes);
@@ -69,6 +69,27 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(934, 66);
             panel1.TabIndex = 0;
+            // 
+            // btn_vendedor
+            // 
+            btn_vendedor.BackColor = Color.Transparent;
+            btn_vendedor.Dock = DockStyle.Left;
+            btn_vendedor.FlatAppearance.BorderSize = 0;
+            btn_vendedor.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_vendedor.FlatStyle = FlatStyle.Flat;
+            btn_vendedor.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_vendedor.ForeColor = SystemColors.ControlText;
+            btn_vendedor.Image = (Image)resources.GetObject("btn_vendedor.Image");
+            btn_vendedor.Location = new Point(781, 0);
+            btn_vendedor.Name = "btn_vendedor";
+            btn_vendedor.Size = new Size(84, 62);
+            btn_vendedor.TabIndex = 9;
+            btn_vendedor.Text = "Vendedor";
+            btn_vendedor.TextAlign = ContentAlignment.BottomCenter;
+            btn_vendedor.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_vendedor.UseVisualStyleBackColor = false;
+            btn_vendedor.Visible = false;
+            btn_vendedor.Click += btn_vendedor_Click;
             // 
             // btn_reportes
             // 
@@ -300,27 +321,6 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(934, 270);
             panel3.TabIndex = 3;
-            // 
-            // btn_vendedor
-            // 
-            btn_vendedor.BackColor = Color.Transparent;
-            btn_vendedor.Dock = DockStyle.Left;
-            btn_vendedor.FlatAppearance.BorderSize = 0;
-            btn_vendedor.FlatAppearance.MouseDownBackColor = Color.DimGray;
-            btn_vendedor.FlatStyle = FlatStyle.Flat;
-            btn_vendedor.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btn_vendedor.ForeColor = SystemColors.ControlText;
-            btn_vendedor.Image = (Image)resources.GetObject("btn_vendedor.Image");
-            btn_vendedor.Location = new Point(781, 0);
-            btn_vendedor.Name = "btn_vendedor";
-            btn_vendedor.Size = new Size(84, 62);
-            btn_vendedor.TabIndex = 9;
-            btn_vendedor.Text = "Vendedor";
-            btn_vendedor.TextAlign = ContentAlignment.BottomCenter;
-            btn_vendedor.TextImageRelation = TextImageRelation.ImageAboveText;
-            btn_vendedor.UseVisualStyleBackColor = false;
-            btn_vendedor.Visible = false;
-            btn_vendedor.Click += btn_vendedor_Click;
             // 
             // Inicio
             // 

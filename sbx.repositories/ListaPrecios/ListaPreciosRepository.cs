@@ -231,5 +231,76 @@ namespace sbx.repositories.ListaPrecios
                 }
             }
         }
+
+        public async Task<Response<dynamic>> Eliminar(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT COUNT(1) FROM T_PreciosProducto WHERE IdListaPrecio = {Id};
+                                    SELECT COUNT(1) FROM T_Ventas_Suspendidas WHERE IdListaPrecio = {Id};
+                                    SELECT COUNT(1) FROM T_Cotizacion WHERE IdListaPrecio = {Id}";
+
+                    using var multi = await connection.QueryMultipleAsync(sql);
+
+                    var PreciosProductoCount = await multi.ReadSingleAsync<int>();
+                    var VentasSuspendidasCount = await multi.ReadSingleAsync<int>();
+                    var CotizacionCount = await multi.ReadSingleAsync<int>();
+
+                    string Mensaje = "";
+
+                    if (PreciosProductoCount > 0 || VentasSuspendidasCount > 0 || CotizacionCount > 0)
+                    {
+                        Mensaje = "No es posible eliminar la lista de precios debido a que se encuentra en uso en los siguientes módulos: ";
+
+                        if (PreciosProductoCount > 0)
+                        {
+                            Mensaje += " precios de producto,";
+                        }
+
+                        if (VentasSuspendidasCount > 0)
+                        {
+                            Mensaje += " ventas suspendidas,";
+                        }
+
+                        if (CotizacionCount > 0)
+                        {
+                            Mensaje += " Cotizaciones,";
+                        }
+                    }
+                    else
+                    {
+                        sql = $"DELETE FROM T_ListasPrecios WHERE IdListaPrecio = {Id}";
+
+                        var rowsAffected = await connection.ExecuteAsync(sql);
+
+                        if (rowsAffected > 0)
+                        {
+                            Mensaje = "Se elimino correctamente la lista de precios";
+                            response.Flag = true;
+                        }
+                        else
+                        {
+                            Mensaje = "Se presento un error al intentar eliminar la lista de precios";
+                            response.Flag = false;
+                        }
+                    }
+
+                    response.Message = Mensaje;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

@@ -339,5 +339,69 @@ namespace sbx.repositories.Proveedor
                 }
             }
         }
+
+        public async Task<Response<dynamic>> Eliminar(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT COUNT(1) FROM T_EntradasInventario WHERE IdProveedor = {Id}; 
+                                    SELECT COUNT(1) FROM T_SalidasInventario WHERE IdProveedor = {Id}; ";
+
+                    using var multi = await connection.QueryMultipleAsync(sql);
+
+                    var EntradasInventarioCount = await multi.ReadSingleAsync<int>();
+                    var SalidasInventarioCount = await multi.ReadSingleAsync<int>();
+
+                    string Mensaje = "";
+
+                    if (EntradasInventarioCount > 0 || SalidasInventarioCount > 0)
+                    {
+                        Mensaje = "No es posible eliminar el proveedor debido a que se encuentra en uso en los siguientes módulos: ";
+
+                        if (EntradasInventarioCount > 0)
+                        {
+                            Mensaje += " entradas de inventario,";
+                        }
+
+                        if (SalidasInventarioCount > 0)
+                        {
+                            Mensaje += " salidas de inventario,";
+                        }
+                    }
+                    else
+                    {
+                        sql = $"DELETE FROM T_Proveedores WHERE IdProveedor = {Id}";
+
+                        var rowsAffected = await connection.ExecuteAsync(sql);
+
+                        if (rowsAffected > 0)
+                        {
+                            Mensaje = "Se elimino correctamente proveedor";
+                            response.Flag = true;
+                        }
+                        else
+                        {
+                            Mensaje = "Se presento un error al intentar eliminar proveedor";
+                            response.Flag = false;
+                        }
+                    }
+
+                    response.Message = Mensaje;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

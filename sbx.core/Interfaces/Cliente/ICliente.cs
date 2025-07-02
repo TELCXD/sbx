@@ -13,5 +13,8 @@ namespace sbx.core.Interfaces.Cliente
         Task<bool> ExisteEmail(string email, int Id_Proveedor);
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro); 
         Task<Response<dynamic>> ListNumDoc(string NumDoc);
+        Task<Response<dynamic>> BuscarExportar(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> Eliminar(int Id);
+        Task<Response<dynamic>> BuscarPrecio(string dato, string campoFiltro, string tipoFiltro);
     }
 }

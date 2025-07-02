@@ -16,5 +16,6 @@ namespace sbx.core.Interfaces.Producto
         Task<Response<dynamic>> BuscarProductoPadre(string dato, string campoFiltro, string tipoFiltro);
         Task<Response<dynamic>> BuscarProductoHijo(string dato, string campoFiltro, string tipoFiltro);
         Task<Response<dynamic>> BuscarExportarExcel(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> Eliminar(int Id);
     }
 }

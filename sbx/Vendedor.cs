@@ -43,6 +43,7 @@ namespace sbx
                         case "vendedores":
                             btn_agregar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -78,7 +79,7 @@ namespace sbx
                             item.Direccion,
                             item.Telefono,
                             item.Email,
-                            item.Estado == true ? "Activo": "Inactivo");
+                            item.Estado == true ? "Activo" : "Inactivo");
                     }
                 }
             }
@@ -111,13 +112,20 @@ namespace sbx
                     if (row.Cells["cl_IdVendedor"].Value != null)
                     {
                         Id_Vendedor = Convert.ToInt32(row.Cells["cl_IdVendedor"].Value);
-                        if (_Permisos != null)
+                        if (Id_Vendedor > 1)
                         {
-                            _AgregarVendedor = _serviceProvider.GetRequiredService<AgregarVendedor>();
-                            _AgregarVendedor.Permisos = _Permisos;
-                            _AgregarVendedor.Id_Vendedor = Id_Vendedor;
-                            _AgregarVendedor.FormClosed += (s, args) => _AgregarVendedor = null;
-                            _AgregarVendedor.ShowDialog();
+                            if (_Permisos != null)
+                            {
+                                _AgregarVendedor = _serviceProvider.GetRequiredService<AgregarVendedor>();
+                                _AgregarVendedor.Permisos = _Permisos;
+                                _AgregarVendedor.Id_Vendedor = Id_Vendedor;
+                                _AgregarVendedor.FormClosed += (s, args) => _AgregarVendedor = null;
+                                _AgregarVendedor.ShowDialog();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No es posible editar este vendedor", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
@@ -125,6 +133,54 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void btn_eliminar_Click(object sender, EventArgs e)
+        {
+            if (dtg_vendedor.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar vendedor seleccionado?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (dtg_vendedor.SelectedRows.Count > 0)
+                    {
+                        var row = dtg_vendedor.SelectedRows[0];
+                        if (row.Cells["cl_IdVendedor"].Value != null)
+                        {
+                            Id_Vendedor = Convert.ToInt32(row.Cells["cl_IdVendedor"].Value);
+
+                            if (Id_Vendedor > 1)
+                            {
+                                var resp = await _IVendedor.Eliminar(Id_Vendedor);
+
+                                if (resp != null)
+                                {
+                                    if (resp.Flag == true)
+                                    {
+                                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        await ConsultaVendedor();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No es posible eliminar este vendedor", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

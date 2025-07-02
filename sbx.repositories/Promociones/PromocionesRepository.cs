@@ -235,5 +235,62 @@ namespace sbx.repositories.Promociones
                 }
             }
         }
+
+        public async Task<Response<dynamic>> Eliminar(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT COUNT(1) FROM T_PromocionesProductos WHERE IdPromocion = {Id};";
+
+                    using var multi = await connection.QueryMultipleAsync(sql);
+
+                    var PromocionesProductoCount = await multi.ReadSingleAsync<int>();
+
+                    string Mensaje = "";
+
+                    if (PromocionesProductoCount > 0 )
+                    {
+                        Mensaje = "No es posible eliminar la promocion debido a que se encuentra en uso en los siguientes módulos: ";
+
+                        if (PromocionesProductoCount > 0)
+                        {
+                            Mensaje += " promocion de producto,";
+                        }
+                    }
+                    else
+                    {
+                        sql = $"DELETE FROM T_Promociones WHERE IdPromocion = {Id}";
+
+                        var rowsAffected = await connection.ExecuteAsync(sql);
+
+                        if (rowsAffected > 0)
+                        {
+                            Mensaje = "Se elimino correctamente la promocion";
+                            response.Flag = true;
+                        }
+                        else
+                        {
+                            Mensaje = "Se presento un error al intentar eliminar la promocion";
+                            response.Flag = false;
+                        }
+                    }
+
+                    response.Message = Mensaje;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }
