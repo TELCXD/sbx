@@ -8,5 +8,6 @@ namespace sbx.core.Interfaces.ListaPrecios
         Task<Response<dynamic>> CreateUpdate(ListaPreciosEntitie listaPreciosEntitie, int IdUser);
         Task<Response<dynamic>> List(int Id);
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> Eliminar(int Id);
     }
 }

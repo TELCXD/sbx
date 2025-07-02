@@ -7,6 +7,7 @@ using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.Usuario;
 using sbx.core.Interfaces.Venta;
 using System.Data;
+using System.Globalization;
 
 namespace sbx
 {
@@ -65,13 +66,13 @@ namespace sbx
                     await ConsultaProducto();
                     break;
                 case "AgregaPrecios_busca_producto":
-                    await ConsultaProducto();
+                    await ConsultaProductoPrecioCliente();
                     break;
                 case "AgregaPrecios_busca_cliente":
-                    await ConsultaCliente();
+                    await ConsultaClientePrecios();
                     break;
                 case "Add_listaPrecio_busca_producto":
-                    await ConsultaProducto();
+                    await ConsultaProductoPrecioCliente();
                     break;
                 case "Add_AgregaVenta_busca_producto":
                     await ConsultaProducto();
@@ -236,11 +237,87 @@ namespace sbx
             }
         }
 
+        private async Task ConsultaProductoPrecioCliente()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _IProducto.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["Nombre"].Width = 450;
+                    dtg_buscador.Columns["IdProducto"].Visible = true;
+                    dtg_buscador.Columns["CostoBase"].Visible = false;
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                    dtg_buscador.Columns["PrecioBase"].Visible = true;
+                    dtg_buscador.Columns["EsInventariable"].Visible = false;
+                    dtg_buscador.Columns["Iva"].Visible = false;
+                    dtg_buscador.Columns["IdCategoria"].Visible = false;
+                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                    dtg_buscador.Columns["IdMarca"].Visible = false;
+                    dtg_buscador.Columns["NombreMarca"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                }
+            }
+        }
+
         private async Task ConsultaCliente()
         {
             dtg_buscador.DataSource = null;
 
             var resp = await _ICliente.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dataTable.Columns.Add("Activo", typeof(string));
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        if (row["Estado"] != DBNull.Value)
+                        {
+                            bool valor = Convert.ToBoolean(row["Estado"]);
+                            row["Activo"] = valor ? "Sí" : "No";
+                        }
+                        else
+                        {
+                            row["Activo"] = "No";
+                        }
+                    }
+
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["IdCliente"].Visible = false;
+                    dtg_buscador.Columns["IdIdentificationType"].Visible = false;
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    dtg_buscador.Columns["Estado"].Visible = false;
+                }
+            }
+        }
+
+        private async Task ConsultaClientePrecios()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _ICliente.BuscarPrecio(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
 
             if (resp.Data != null)
             {

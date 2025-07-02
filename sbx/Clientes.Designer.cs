@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Clientes));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Clientes));
             panel1 = new Panel();
             btn_mejor_precio = new Button();
             cbx_tipo_filtro = new ComboBox();
@@ -53,6 +53,7 @@
             cl_email = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
+            btn_exportar = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_cliente).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -62,6 +63,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_exportar);
             panel1.Controls.Add(btn_mejor_precio);
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
@@ -148,6 +150,7 @@
             btn_eliminar.Text = "Eliminar";
             btn_eliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar.UseVisualStyleBackColor = true;
+            btn_eliminar.Click += btn_eliminar_Click;
             // 
             // btn_editar
             // 
@@ -281,6 +284,20 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // btn_exportar
+            // 
+            btn_exportar.Enabled = false;
+            btn_exportar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_exportar.FlatStyle = FlatStyle.Flat;
+            btn_exportar.Image = (Image)resources.GetObject("btn_exportar.Image");
+            btn_exportar.Location = new Point(446, 10);
+            btn_exportar.Name = "btn_exportar";
+            btn_exportar.Size = new Size(46, 45);
+            btn_exportar.TabIndex = 31;
+            btn_exportar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_exportar.UseVisualStyleBackColor = true;
+            btn_exportar.Click += btn_exportar_Click;
+            // 
             // Clientes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -325,5 +342,6 @@
         private DataGridViewTextBoxColumn cl_email;
         private DataGridViewTextBoxColumn cl_estado;
         private Button btn_mejor_precio;
+        private Button btn_exportar;
     }
 }

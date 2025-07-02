@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.PrecioCliente;
 using System.Globalization;
 
@@ -46,7 +47,7 @@ namespace sbx
                         case "preciosClientes":
                             btn_agregar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
-                            //btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
+                            btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -156,6 +157,47 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void btn_eliminar_Click(object sender, EventArgs e)
+        {
+            if (dtg_cliente_precio.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar el precio del cliente seleccionado?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (dtg_cliente_precio.SelectedRows.Count > 0)
+                    {
+                        var row = dtg_cliente_precio.SelectedRows[0];
+                        if (row.Cells["cl_id_precio_cliente"].Value != null)
+                        {
+                            Id_precios_cliente = Convert.ToInt32(row.Cells["cl_id_precio_cliente"].Value);
+
+                            var resp = await _IPrecioCliente.Eliminar(Id_precios_cliente);
+
+                            if (resp != null)
+                            {
+                                if (resp.Flag == true)
+                                {
+                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    await ConsultaPrecioCliente();
+                                }
+                                else
+                                {
+                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

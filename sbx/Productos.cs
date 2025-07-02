@@ -83,7 +83,7 @@ namespace sbx
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_importar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_exportar.Enabled = item.ToRead == 1 ? true : false;
-                            //btn_eliminar.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
                             break;
                         case "listaPrecios":
                             btn_lista_precios.Enabled = item.ToRead == 1 ? true : false;
@@ -472,9 +472,45 @@ namespace sbx
             }
         }
 
-        private void btn_eliminar_Click(object sender, EventArgs e)
+        private async void btn_eliminar_Click(object sender, EventArgs e)
         {
+            if (dtg_producto.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar el producto seleccionado?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (dtg_producto.SelectedRows.Count > 0)
+                    {
+                        var row = dtg_producto.SelectedRows[0];
+                        if (row.Cells["cl_idProducto"].Value != null)
+                        {
+                            Id_Producto = Convert.ToInt32(row.Cells["cl_idProducto"].Value);
 
+                            var resp = await _IProducto.Eliminar(Id_Producto);
+
+                            if (resp != null)
+                            {
+                                if (resp.Flag == true)
+                                {
+                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    await ConsultaProductos();
+                                }
+                                else
+                                {
+                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void txt_buscar_KeyUp(object sender, KeyEventArgs e)

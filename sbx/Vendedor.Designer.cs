@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Vendedor));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Vendedor));
             panel1 = new Panel();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
@@ -50,6 +50,7 @@
             cl_email = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
+            btn_eliminar = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_vendedor).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -59,6 +60,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_eliminar);
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
             panel1.Controls.Add(btn_buscar);
@@ -241,6 +243,21 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // btn_eliminar
+            // 
+            btn_eliminar.Enabled = false;
+            btn_eliminar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_eliminar.FlatStyle = FlatStyle.Flat;
+            btn_eliminar.Image = (Image)resources.GetObject("btn_eliminar.Image");
+            btn_eliminar.Location = new Point(217, 3);
+            btn_eliminar.Name = "btn_eliminar";
+            btn_eliminar.Size = new Size(101, 45);
+            btn_eliminar.TabIndex = 34;
+            btn_eliminar.Text = "Eliminar";
+            btn_eliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_eliminar.UseVisualStyleBackColor = true;
+            btn_eliminar.Click += btn_eliminar_Click;
+            // 
             // Vendedor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -281,5 +298,6 @@
         private Button btn_buscar;
         private TextBox txt_buscar;
         private ErrorProvider errorProvider1;
+        private Button btn_eliminar;
     }
 }

@@ -43,7 +43,7 @@ namespace sbx
                         case "promociones":
                             btn_agregar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
-                            //btn_eliminar.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -121,6 +121,46 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void btn_eliminar_Click(object sender, EventArgs e)
+        {
+            if (dtg_promociones.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar promocion seleccionada?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (dtg_promociones.SelectedRows.Count > 0)
+                    {
+                        var row = dtg_promociones.SelectedRows[0];
+                        if (row.Cells["cl_id_promocion"].Value != null)
+                        {
+                            IdPromocion = Convert.ToInt32(row.Cells["cl_id_promocion"].Value);
+                            var resp = await _IPromociones.Eliminar(IdPromocion);
+
+                            if (resp != null)
+                            {
+                                if (resp.Flag == true)
+                                {
+                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    await Consulta();
+                                }
+                                else
+                                {
+                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

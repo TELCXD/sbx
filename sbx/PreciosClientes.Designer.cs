@@ -148,6 +148,7 @@
             btn_eliminar.Text = "Eliminar";
             btn_eliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar.UseVisualStyleBackColor = true;
+            btn_eliminar.Click += btn_eliminar_Click;
             // 
             // btn_editar
             // 
