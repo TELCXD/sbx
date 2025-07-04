@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuestPDF.Infrastructure;
 using sbx.core.Interfaces;
 using sbx.core.Interfaces.ActividadEconomica;
 using sbx.core.Interfaces.Backup;
@@ -102,6 +103,9 @@ namespace sbx
         [STAThread]
         static void Main()
         {
+            // Registrar licencia gratuita
+            QuestPDF.Settings.License = LicenseType.Community;
+
             string connectionString = ConfigurationManager.ConnectionStrings["SbxConnectionString"].ConnectionString;
 
             var host = Host.CreateDefaultBuilder()

@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Interfaces.Reportes;
+using sbx.core.Interfaces.Venta;
 
 namespace sbx.repositories.Reportes
 {
@@ -32,6 +33,22 @@ namespace sbx.repositories.Reportes
                     switch (TipoReporte)
                     {
                         case "Resumen - Ganancias y perdidas":
+                            sql = @"SELECT 
+                                    B.IdProducto,
+                                    B.NombreProducto,
+                                    SUM(B.Cantidad) Cantidad,
+                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) VentaNetaFinal,
+                                    SUM((B.Cantidad * B.CostoUnitario))CostoTotal,
+                                    SUM(((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) GananciaBruta        
+                                    FROM T_Ventas A
+                                    INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
+                                    INNER JOIN T_Cliente C ON A.IdCliente = C.IdCliente
+                                    INNER JOIN T_User D ON D.IdUser = A.IdUserAction
+                                    WHERE 
+                                    (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) 
+                                    AND A.Estado = 'FACTURADA' ";
+                            break;
+                        case "Resumen por factura - Ganancias y perdidas":
                             sql = @"SELECT 
                                     A.CreationDate,
 									CONCAT(A.IdUserAction,'-',D.UserName) Usuario,
@@ -128,6 +145,8 @@ namespace sbx.repositories.Reportes
 
                     string Where = "";
                     string Filtro = "";
+                    string groupby = "";
+                    string orderby = "";
 
                     switch (tipoFiltro)
                     {
@@ -243,7 +262,15 @@ namespace sbx.repositories.Reportes
                             break;
                     }
 
-                    sql += Where + " ORDER BY A.CreationDate DESC, A.IdVenta; ";
+                    orderby = " ORDER BY A.CreationDate DESC, A.IdVenta; ";
+
+                    if (TipoReporte == "Resumen - Ganancias y perdidas") 
+                    {
+                        groupby = " GROUP BY B.IdProducto, B.NombreProducto ";
+                        orderby = " ORDER BY B.IdProducto ";
+                    }
+
+                    sql += Where + groupby + orderby;
 
                     dynamic resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
 
