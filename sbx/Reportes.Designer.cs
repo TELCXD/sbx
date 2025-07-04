@@ -46,6 +46,8 @@
             txt_buscar = new TextBox();
             panel2 = new Panel();
             panel4 = new Panel();
+            lbl_cantidad_resumen = new Label();
+            label7 = new Label();
             lbl_ventas = new Label();
             label9 = new Label();
             lbl_costos = new Label();
@@ -165,7 +167,6 @@
             btn_imprimir_pdf.Text = "Pdf";
             btn_imprimir_pdf.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_imprimir_pdf.UseVisualStyleBackColor = true;
-            btn_imprimir_pdf.Visible = false;
             btn_imprimir_pdf.Click += btn_imprimir_pdf_Click;
             // 
             // cbx_tipo_reporte
@@ -173,12 +174,12 @@
             cbx_tipo_reporte.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cbx_tipo_reporte.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_reporte.FormattingEnabled = true;
-            cbx_tipo_reporte.Items.AddRange(new object[] { "Resumen - Ganancias y perdidas", "Detallado -  Ganancias y perdidas" });
+            cbx_tipo_reporte.Items.AddRange(new object[] { "Resumen por factura - Ganancias y perdidas", "Resumen - Ganancias y perdidas", "Detallado -  Ganancias y perdidas" });
             cbx_tipo_reporte.Location = new Point(592, 23);
             cbx_tipo_reporte.Name = "cbx_tipo_reporte";
             cbx_tipo_reporte.Size = new Size(213, 23);
             cbx_tipo_reporte.TabIndex = 5;
-            cbx_tipo_reporte.SelectedValueChanged += cbx_client_venta_SelectedValueChanged;
+            cbx_tipo_reporte.SelectedValueChanged += cbx_tipo_reporte_SelectedValueChanged;
             // 
             // cbx_tipo_filtro
             // 
@@ -235,6 +236,8 @@
             // 
             panel4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel4.BorderStyle = BorderStyle.FixedSingle;
+            panel4.Controls.Add(lbl_cantidad_resumen);
+            panel4.Controls.Add(label7);
             panel4.Controls.Add(lbl_ventas);
             panel4.Controls.Add(label9);
             panel4.Controls.Add(lbl_costos);
@@ -243,8 +246,35 @@
             panel4.Controls.Add(label3);
             panel4.Location = new Point(821, 9);
             panel4.Name = "panel4";
-            panel4.Size = new Size(414, 166);
+            panel4.Size = new Size(414, 165);
             panel4.TabIndex = 186;
+            // 
+            // lbl_cantidad_resumen
+            // 
+            lbl_cantidad_resumen.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_cantidad_resumen.AutoSize = true;
+            lbl_cantidad_resumen.Font = new Font("Segoe UI", 12F);
+            lbl_cantidad_resumen.ForeColor = SystemColors.ControlDarkDark;
+            lbl_cantidad_resumen.Location = new Point(113, 36);
+            lbl_cantidad_resumen.Name = "lbl_cantidad_resumen";
+            lbl_cantidad_resumen.RightToLeft = RightToLeft.No;
+            lbl_cantidad_resumen.Size = new Size(17, 21);
+            lbl_cantidad_resumen.TabIndex = 192;
+            lbl_cantidad_resumen.Text = "_";
+            lbl_cantidad_resumen.Visible = false;
+            // 
+            // label7
+            // 
+            label7.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 12F);
+            label7.ForeColor = SystemColors.ControlDarkDark;
+            label7.Location = new Point(3, 36);
+            label7.Name = "label7";
+            label7.Size = new Size(112, 21);
+            label7.TabIndex = 191;
+            label7.Text = "Total cantidad: ";
+            label7.Visible = false;
             // 
             // lbl_ventas
             // 
@@ -551,5 +581,7 @@
         private Label label5;
         private Label lbl_ventas;
         private Label label9;
+        private Label lbl_cantidad_resumen;
+        private Label label7;
     }
 }
