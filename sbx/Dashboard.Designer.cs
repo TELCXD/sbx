@@ -46,6 +46,7 @@
             System.Windows.Forms.DataVisualization.Charting.Title title8 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Dashboard));
             panel1 = new Panel();
+            btn_buscar = new Button();
             dtp_fecha_fin = new DateTimePicker();
             dtp_fecha_inicio = new DateTimePicker();
             label1 = new Label();
@@ -73,6 +74,7 @@
             pictureBox4 = new PictureBox();
             lbl_ventas_totales = new Label();
             label3 = new Label();
+            btn_detalle = new Button();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             panel2.SuspendLayout();
@@ -97,6 +99,8 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_detalle);
+            panel1.Controls.Add(btn_buscar);
             panel1.Controls.Add(dtp_fecha_fin);
             panel1.Controls.Add(dtp_fecha_inicio);
             panel1.Controls.Add(label1);
@@ -104,14 +108,24 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1442, 80);
+            panel1.Size = new Size(1442, 74);
             panel1.TabIndex = 0;
+            // 
+            // btn_buscar
+            // 
+            btn_buscar.Location = new Point(874, 26);
+            btn_buscar.Name = "btn_buscar";
+            btn_buscar.Size = new Size(94, 35);
+            btn_buscar.TabIndex = 160;
+            btn_buscar.Text = "Buscar";
+            btn_buscar.UseVisualStyleBackColor = true;
+            btn_buscar.Click += btn_buscar_Click;
             // 
             // dtp_fecha_fin
             // 
             dtp_fecha_fin.Anchor = AnchorStyles.Top;
             dtp_fecha_fin.Format = DateTimePickerFormat.Short;
-            dtp_fecha_fin.Location = new Point(755, 32);
+            dtp_fecha_fin.Location = new Point(655, 30);
             dtp_fecha_fin.Margin = new Padding(3, 4, 3, 4);
             dtp_fecha_fin.Name = "dtp_fecha_fin";
             dtp_fecha_fin.Size = new Size(213, 27);
@@ -121,7 +135,7 @@
             // 
             dtp_fecha_inicio.Anchor = AnchorStyles.Top;
             dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
-            dtp_fecha_inicio.Location = new Point(510, 32);
+            dtp_fecha_inicio.Location = new Point(410, 30);
             dtp_fecha_inicio.Margin = new Padding(3, 4, 3, 4);
             dtp_fecha_inicio.Name = "dtp_fecha_inicio";
             dtp_fecha_inicio.Size = new Size(228, 27);
@@ -131,7 +145,7 @@
             // 
             label1.Anchor = AnchorStyles.Top;
             label1.AutoSize = true;
-            label1.Location = new Point(755, 8);
+            label1.Location = new Point(655, 6);
             label1.Name = "label1";
             label1.Size = new Size(68, 20);
             label1.TabIndex = 159;
@@ -141,7 +155,7 @@
             // 
             lbl_fechaVencimiento.Anchor = AnchorStyles.Top;
             lbl_fechaVencimiento.AutoSize = true;
-            lbl_fechaVencimiento.Location = new Point(510, 8);
+            lbl_fechaVencimiento.Location = new Point(410, 6);
             lbl_fechaVencimiento.Name = "lbl_fechaVencimiento";
             lbl_fechaVencimiento.Size = new Size(87, 20);
             lbl_fechaVencimiento.TabIndex = 158;
@@ -153,9 +167,9 @@
             panel4.Controls.Add(panel3);
             panel4.Controls.Add(panel5);
             panel4.Dock = DockStyle.Fill;
-            panel4.Location = new Point(0, 80);
+            panel4.Location = new Point(0, 74);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1442, 812);
+            panel4.Size = new Size(1442, 818);
             panel4.TabIndex = 3;
             // 
             // panel2
@@ -165,7 +179,7 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 482);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1442, 330);
+            panel2.Size = new Size(1442, 336);
             panel2.TabIndex = 4;
             // 
             // chart4
@@ -184,7 +198,7 @@
             series5.Name = "Series1";
             series5.YValuesPerPoint = 6;
             chart4.Series.Add(series5);
-            chart4.Size = new Size(1438, 326);
+            chart4.Size = new Size(1438, 332);
             chart4.TabIndex = 4;
             chart4.Text = "chart4";
             title5.Name = "Title1";
@@ -279,8 +293,6 @@
             // 
             // chart1
             // 
-            chartArea8.BackColor = Color.White;
-            chartArea8.BorderWidth = 0;
             chartArea8.Name = "ChartArea1";
             chart1.ChartAreas.Add(chartArea8);
             chart1.Dock = DockStyle.Fill;
@@ -295,10 +307,10 @@
             series8.YValuesPerPoint = 6;
             chart1.Series.Add(series8);
             chart1.Size = new Size(476, 375);
-            chart1.TabIndex = 2;
+            chart1.TabIndex = 4;
             chart1.Text = "chart1";
             title8.Name = "Title1";
-            title8.Text = "Ventas Mensuales";
+            title8.Text = "Ventas por mes";
             chart1.Titles.Add(title8);
             // 
             // panel5
@@ -340,7 +352,7 @@
             // lbl_margen_porcentaje
             // 
             lbl_margen_porcentaje.AutoSize = true;
-            lbl_margen_porcentaje.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbl_margen_porcentaje.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbl_margen_porcentaje.Location = new Point(12, 47);
             lbl_margen_porcentaje.Name = "lbl_margen_porcentaje";
             lbl_margen_porcentaje.Size = new Size(20, 28);
@@ -383,7 +395,7 @@
             // lbl_ganancias_totales
             // 
             lbl_ganancias_totales.AutoSize = true;
-            lbl_ganancias_totales.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbl_ganancias_totales.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbl_ganancias_totales.Location = new Point(12, 47);
             lbl_ganancias_totales.Name = "lbl_ganancias_totales";
             lbl_ganancias_totales.Size = new Size(20, 28);
@@ -396,9 +408,9 @@
             label4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.Location = new Point(12, 10);
             label4.Name = "label4";
-            label4.Size = new Size(203, 28);
+            label4.Size = new Size(219, 28);
             label4.TabIndex = 1;
-            label4.Text = "GANANCIAS TOTALES";
+            label4.Text = "GANANCIAS TOTALES $";
             // 
             // panel6
             // 
@@ -426,7 +438,7 @@
             // lbl_ventas_totales
             // 
             lbl_ventas_totales.AutoSize = true;
-            lbl_ventas_totales.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbl_ventas_totales.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbl_ventas_totales.Location = new Point(12, 47);
             lbl_ventas_totales.Name = "lbl_ventas_totales";
             lbl_ventas_totales.Size = new Size(20, 28);
@@ -439,9 +451,19 @@
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.Location = new Point(12, 10);
             label3.Name = "label3";
-            label3.Size = new Size(162, 28);
+            label3.Size = new Size(178, 28);
             label3.TabIndex = 1;
-            label3.Text = "VENTAS TOTALES";
+            label3.Text = "VENTAS TOTALES $";
+            // 
+            // btn_detalle
+            // 
+            btn_detalle.Location = new Point(974, 26);
+            btn_detalle.Name = "btn_detalle";
+            btn_detalle.Size = new Size(94, 35);
+            btn_detalle.TabIndex = 161;
+            btn_detalle.Text = "Ver detalle";
+            btn_detalle.UseVisualStyleBackColor = true;
+            btn_detalle.Click += btn_detalle_Click;
             // 
             // Dashboard
             // 
@@ -493,7 +515,6 @@
         private Panel panel9;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private Panel panel8;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private Panel panel2;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart4;
         private Panel panel6;
@@ -512,5 +533,8 @@
         private DateTimePicker dtp_fecha_inicio;
         private Label label1;
         private Label lbl_fechaVencimiento;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private Button btn_buscar;
+        private Button btn_detalle;
     }
 }
