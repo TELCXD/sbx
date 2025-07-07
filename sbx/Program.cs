@@ -12,6 +12,7 @@ using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.CodigoPostal;
 using sbx.core.Interfaces.ConversionProducto;
 using sbx.core.Interfaces.Cotizacion;
+using sbx.core.Interfaces.Dashboard;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.IdentificationType;
@@ -56,6 +57,7 @@ using sbx.repositories.Cliente;
 using sbx.repositories.CodigoPostal;
 using sbx.repositories.ConversionProducto;
 using sbx.repositories.Cotizacion;
+using sbx.repositories.Dashboard;
 using sbx.repositories.Departamento;
 using sbx.repositories.EntradaInventario;
 using sbx.repositories.IdentificationType;
@@ -208,6 +210,8 @@ namespace sbx
 
                 services.AddTransient<AddConversionProducto>();
 
+                services.AddTransient<Dashboard>(); 
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -336,6 +340,9 @@ namespace sbx
 
                 services.AddTransient<IConversionProducto>(provider =>
                 new ConversionProductoRepository(connectionString));
+
+                services.AddTransient<IDashboard>(provider =>
+                new DashboardRepository(connectionString));
 
             })
             .Build();

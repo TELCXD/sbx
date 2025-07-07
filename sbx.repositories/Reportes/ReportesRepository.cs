@@ -2,7 +2,6 @@
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Interfaces.Reportes;
-using sbx.core.Interfaces.Venta;
 
 namespace sbx.repositories.Reportes
 {
