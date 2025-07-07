@@ -21,8 +21,8 @@ namespace sbx
         private Login? _Login;
         private readonly IParametros _IParametros;
         private readonly IBackup _IBackup;
-        private Reportes? _Reportes;
         private Vendedor? _Vendedor;
+        private Dashboard _Dashboard;
 
         public Inicio(IServiceProvider serviceProvider, ITienda iTienda, IParametros iParametros, IBackup backup)
         {
@@ -319,9 +319,16 @@ namespace sbx
 
         private void btn_reportes_Click(object sender, EventArgs e)
         {
-            _Reportes = _serviceProvider.GetRequiredService<Reportes>();
-            _Reportes.FormClosed += (s, args) => _Caja = null;
-            _Reportes.Show();
+            if (_Dashboard != null && !_Dashboard.IsDisposed)
+            {
+                _Dashboard.BringToFront();
+                _Dashboard.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Dashboard = _serviceProvider.GetRequiredService<Dashboard>();
+            _Dashboard.FormClosed += (s, args) => _Caja = null;
+            _Dashboard.Show();
         }
 
         private void btn_vendedor_Click(object sender, EventArgs e)

@@ -27,7 +27,7 @@ namespace sbx
             cbx_tipo_filtro.SelectedIndex = 0;
         }
 
-        private async void cbx_tipo_reporte_SelectedValueChanged(object sender, EventArgs e)
+        private void cbx_tipo_reporte_SelectedValueChanged(object sender, EventArgs e)
         {
             cbx_campo_filtro.Items.Clear();
 
