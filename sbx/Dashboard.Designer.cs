@@ -28,24 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title6 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title7 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title8 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Dashboard));
             panel1 = new Panel();
+            btn_detalle = new Button();
             btn_buscar = new Button();
             dtp_fecha_fin = new DateTimePicker();
             dtp_fecha_inicio = new DateTimePicker();
@@ -74,7 +75,6 @@
             pictureBox4 = new PictureBox();
             lbl_ventas_totales = new Label();
             label3 = new Label();
-            btn_detalle = new Button();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             panel2.SuspendLayout();
@@ -107,15 +107,30 @@
             panel1.Controls.Add(lbl_fechaVencimiento);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1442, 74);
+            panel1.Size = new Size(1264, 56);
             panel1.TabIndex = 0;
+            // 
+            // btn_detalle
+            // 
+            btn_detalle.FlatStyle = FlatStyle.Flat;
+            btn_detalle.Location = new Point(852, 20);
+            btn_detalle.Margin = new Padding(3, 2, 3, 2);
+            btn_detalle.Name = "btn_detalle";
+            btn_detalle.Size = new Size(82, 26);
+            btn_detalle.TabIndex = 161;
+            btn_detalle.Text = "Ver detalle";
+            btn_detalle.UseVisualStyleBackColor = true;
+            btn_detalle.Click += btn_detalle_Click;
             // 
             // btn_buscar
             // 
-            btn_buscar.Location = new Point(874, 26);
+            btn_buscar.FlatStyle = FlatStyle.Flat;
+            btn_buscar.Location = new Point(765, 20);
+            btn_buscar.Margin = new Padding(3, 2, 3, 2);
             btn_buscar.Name = "btn_buscar";
-            btn_buscar.Size = new Size(94, 35);
+            btn_buscar.Size = new Size(82, 26);
             btn_buscar.TabIndex = 160;
             btn_buscar.Text = "Buscar";
             btn_buscar.UseVisualStyleBackColor = true;
@@ -125,29 +140,27 @@
             // 
             dtp_fecha_fin.Anchor = AnchorStyles.Top;
             dtp_fecha_fin.Format = DateTimePickerFormat.Short;
-            dtp_fecha_fin.Location = new Point(655, 30);
-            dtp_fecha_fin.Margin = new Padding(3, 4, 3, 4);
+            dtp_fecha_fin.Location = new Point(574, 22);
             dtp_fecha_fin.Name = "dtp_fecha_fin";
-            dtp_fecha_fin.Size = new Size(213, 27);
+            dtp_fecha_fin.Size = new Size(187, 23);
             dtp_fecha_fin.TabIndex = 157;
             // 
             // dtp_fecha_inicio
             // 
             dtp_fecha_inicio.Anchor = AnchorStyles.Top;
             dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
-            dtp_fecha_inicio.Location = new Point(410, 30);
-            dtp_fecha_inicio.Margin = new Padding(3, 4, 3, 4);
+            dtp_fecha_inicio.Location = new Point(360, 22);
             dtp_fecha_inicio.Name = "dtp_fecha_inicio";
-            dtp_fecha_inicio.Size = new Size(228, 27);
+            dtp_fecha_inicio.Size = new Size(200, 23);
             dtp_fecha_inicio.TabIndex = 156;
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top;
             label1.AutoSize = true;
-            label1.Location = new Point(655, 6);
+            label1.Location = new Point(574, 4);
             label1.Name = "label1";
-            label1.Size = new Size(68, 20);
+            label1.Size = new Size(55, 15);
             label1.TabIndex = 159;
             label1.Text = "Fecha fin";
             // 
@@ -155,9 +168,9 @@
             // 
             lbl_fechaVencimiento.Anchor = AnchorStyles.Top;
             lbl_fechaVencimiento.AutoSize = true;
-            lbl_fechaVencimiento.Location = new Point(410, 6);
+            lbl_fechaVencimiento.Location = new Point(360, 4);
             lbl_fechaVencimiento.Name = "lbl_fechaVencimiento";
-            lbl_fechaVencimiento.Size = new Size(87, 20);
+            lbl_fechaVencimiento.Size = new Size(70, 15);
             lbl_fechaVencimiento.TabIndex = 158;
             lbl_fechaVencimiento.Text = "Fecha inicio";
             // 
@@ -167,9 +180,10 @@
             panel4.Controls.Add(panel3);
             panel4.Controls.Add(panel5);
             panel4.Dock = DockStyle.Fill;
-            panel4.Location = new Point(0, 74);
+            panel4.Location = new Point(0, 56);
+            panel4.Margin = new Padding(3, 2, 3, 2);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1442, 818);
+            panel4.Size = new Size(1264, 619);
             panel4.TabIndex = 3;
             // 
             // panel2
@@ -177,33 +191,35 @@
             panel2.BorderStyle = BorderStyle.Fixed3D;
             panel2.Controls.Add(chart4);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(0, 482);
+            panel2.Location = new Point(0, 362);
+            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1442, 336);
+            panel2.Size = new Size(1264, 257);
             panel2.TabIndex = 4;
             // 
             // chart4
             // 
-            chartArea5.Name = "ChartArea1";
-            chart4.ChartAreas.Add(chartArea5);
+            chartArea1.Name = "ChartArea1";
+            chart4.ChartAreas.Add(chartArea1);
             chart4.Dock = DockStyle.Fill;
-            legend5.Name = "Legend1";
-            chart4.Legends.Add(legend5);
+            legend1.Name = "Legend1";
+            chart4.Legends.Add(legend1);
             chart4.Location = new Point(0, 0);
+            chart4.Margin = new Padding(3, 2, 3, 2);
             chart4.Name = "chart4";
             chart4.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            series5.YValuesPerPoint = 6;
-            chart4.Series.Add(series5);
-            chart4.Size = new Size(1438, 332);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            series1.YValuesPerPoint = 6;
+            chart4.Series.Add(series1);
+            chart4.Size = new Size(1260, 253);
             chart4.TabIndex = 4;
             chart4.Text = "chart4";
-            title5.Name = "Title1";
-            title5.Text = "Ventas diarias";
-            chart4.Titles.Add(title5);
+            title1.Name = "Title1";
+            title1.Text = "Ventas diarias";
+            chart4.Titles.Add(title1);
             // 
             // panel3
             // 
@@ -211,9 +227,10 @@
             panel3.Controls.Add(panel9);
             panel3.Controls.Add(panel8);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 103);
+            panel3.Location = new Point(0, 78);
+            panel3.Margin = new Padding(3, 2, 3, 2);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1442, 379);
+            panel3.Size = new Size(1264, 284);
             panel3.TabIndex = 3;
             // 
             // panel10
@@ -221,65 +238,69 @@
             panel10.BorderStyle = BorderStyle.Fixed3D;
             panel10.Controls.Add(chart3);
             panel10.Dock = DockStyle.Fill;
-            panel10.Location = new Point(990, 0);
+            panel10.Location = new Point(867, 0);
+            panel10.Margin = new Padding(3, 2, 3, 2);
             panel10.Name = "panel10";
-            panel10.Size = new Size(452, 379);
+            panel10.Size = new Size(397, 284);
             panel10.TabIndex = 2;
             // 
             // chart3
             // 
-            chartArea6.Name = "ChartArea1";
-            chart3.ChartAreas.Add(chartArea6);
+            chartArea2.Name = "ChartArea1";
+            chart3.ChartAreas.Add(chartArea2);
             chart3.Dock = DockStyle.Fill;
-            legend6.Name = "Legend1";
-            chart3.Legends.Add(legend6);
+            legend2.Name = "Legend1";
+            chart3.Legends.Add(legend2);
             chart3.Location = new Point(0, 0);
+            chart3.Margin = new Padding(3, 2, 3, 2);
             chart3.Name = "chart3";
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut;
-            series6.Legend = "Legend1";
-            series6.Name = "Series1";
-            series6.YValuesPerPoint = 6;
-            chart3.Series.Add(series6);
-            chart3.Size = new Size(448, 375);
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut;
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            series2.YValuesPerPoint = 6;
+            chart3.Series.Add(series2);
+            chart3.Size = new Size(393, 280);
             chart3.TabIndex = 3;
             chart3.Text = "chart3";
-            title6.Name = "Title1";
-            title6.Text = "Medios de pago";
-            chart3.Titles.Add(title6);
+            title2.Name = "Title1";
+            title2.Text = "Medios de pago";
+            chart3.Titles.Add(title2);
             // 
             // panel9
             // 
             panel9.BorderStyle = BorderStyle.Fixed3D;
             panel9.Controls.Add(chart2);
             panel9.Dock = DockStyle.Left;
-            panel9.Location = new Point(480, 0);
+            panel9.Location = new Point(420, 0);
+            panel9.Margin = new Padding(3, 2, 3, 2);
             panel9.Name = "panel9";
-            panel9.Size = new Size(510, 379);
+            panel9.Size = new Size(447, 284);
             panel9.TabIndex = 1;
             // 
             // chart2
             // 
-            chartArea7.Name = "ChartArea1";
-            chart2.ChartAreas.Add(chartArea7);
+            chartArea3.Name = "ChartArea1";
+            chart2.ChartAreas.Add(chartArea3);
             chart2.Dock = DockStyle.Fill;
-            legend7.Name = "Legend1";
-            chart2.Legends.Add(legend7);
+            legend3.Name = "Legend1";
+            chart2.Legends.Add(legend3);
             chart2.Location = new Point(0, 0);
+            chart2.Margin = new Padding(3, 2, 3, 2);
             chart2.Name = "chart2";
             chart2.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
-            series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
-            series7.Legend = "Legend1";
-            series7.Name = "Series1";
-            series7.YValuesPerPoint = 6;
-            chart2.Series.Add(series7);
-            chart2.Size = new Size(506, 375);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            series3.YValuesPerPoint = 6;
+            chart2.Series.Add(series3);
+            chart2.Size = new Size(443, 280);
             chart2.TabIndex = 3;
             chart2.Text = "chart2";
-            title7.Name = "Title1";
-            title7.Text = "Ventas por producto";
-            chart2.Titles.Add(title7);
+            title3.Name = "Title1";
+            title3.Text = "Productos más vendidos";
+            chart2.Titles.Add(title3);
             // 
             // panel8
             // 
@@ -287,31 +308,33 @@
             panel8.Controls.Add(chart1);
             panel8.Dock = DockStyle.Left;
             panel8.Location = new Point(0, 0);
+            panel8.Margin = new Padding(3, 2, 3, 2);
             panel8.Name = "panel8";
-            panel8.Size = new Size(480, 379);
+            panel8.Size = new Size(420, 284);
             panel8.TabIndex = 0;
             // 
             // chart1
             // 
-            chartArea8.Name = "ChartArea1";
-            chart1.ChartAreas.Add(chartArea8);
+            chartArea4.Name = "ChartArea1";
+            chart1.ChartAreas.Add(chartArea4);
             chart1.Dock = DockStyle.Fill;
-            legend8.Name = "Legend1";
-            chart1.Legends.Add(legend8);
+            legend4.Name = "Legend1";
+            chart1.Legends.Add(legend4);
             chart1.Location = new Point(0, 0);
+            chart1.Margin = new Padding(3, 2, 3, 2);
             chart1.Name = "chart1";
             chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.EarthTones;
-            series8.ChartArea = "ChartArea1";
-            series8.Legend = "Legend1";
-            series8.Name = "Series1";
-            series8.YValuesPerPoint = 6;
-            chart1.Series.Add(series8);
-            chart1.Size = new Size(476, 375);
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            series4.YValuesPerPoint = 6;
+            chart1.Series.Add(series4);
+            chart1.Size = new Size(416, 280);
             chart1.TabIndex = 4;
             chart1.Text = "chart1";
-            title8.Name = "Title1";
-            title8.Text = "Ventas por mes";
-            chart1.Titles.Add(title8);
+            title4.Name = "Title1";
+            title4.Text = "Ventas por mes";
+            chart1.Titles.Add(title4);
             // 
             // panel5
             // 
@@ -322,8 +345,9 @@
             panel5.Controls.Add(panel6);
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
+            panel5.Margin = new Padding(3, 2, 3, 2);
             panel5.Name = "panel5";
-            panel5.Size = new Size(1442, 103);
+            panel5.Size = new Size(1264, 78);
             panel5.TabIndex = 0;
             // 
             // panel11
@@ -334,17 +358,19 @@
             panel11.Controls.Add(lbl_margen_porcentaje);
             panel11.Controls.Add(label6);
             panel11.Dock = DockStyle.Fill;
-            panel11.Location = new Point(989, 0);
+            panel11.Location = new Point(867, 0);
+            panel11.Margin = new Padding(3, 2, 3, 2);
             panel11.Name = "panel11";
-            panel11.Size = new Size(451, 101);
+            panel11.Size = new Size(395, 76);
             panel11.TabIndex = 10;
             // 
             // pictureBox3
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(374, 17);
+            pictureBox3.Location = new Point(327, 13);
+            pictureBox3.Margin = new Padding(3, 2, 3, 2);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(64, 64);
+            pictureBox3.Size = new Size(56, 48);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 3;
             pictureBox3.TabStop = false;
@@ -353,9 +379,9 @@
             // 
             lbl_margen_porcentaje.AutoSize = true;
             lbl_margen_porcentaje.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lbl_margen_porcentaje.Location = new Point(12, 47);
+            lbl_margen_porcentaje.Location = new Point(10, 35);
             lbl_margen_porcentaje.Name = "lbl_margen_porcentaje";
-            lbl_margen_porcentaje.Size = new Size(20, 28);
+            lbl_margen_porcentaje.Size = new Size(17, 21);
             lbl_margen_porcentaje.TabIndex = 2;
             lbl_margen_porcentaje.Text = "_";
             // 
@@ -363,9 +389,9 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.Location = new Point(12, 10);
+            label6.Location = new Point(10, 8);
             label6.Name = "label6";
-            label6.Size = new Size(115, 28);
+            label6.Size = new Size(92, 21);
             label6.TabIndex = 1;
             label6.Text = "MARGEN %";
             // 
@@ -377,17 +403,19 @@
             panel7.Controls.Add(lbl_ganancias_totales);
             panel7.Controls.Add(label4);
             panel7.Dock = DockStyle.Left;
-            panel7.Location = new Point(479, 0);
+            panel7.Location = new Point(420, 0);
+            panel7.Margin = new Padding(3, 2, 3, 2);
             panel7.Name = "panel7";
-            panel7.Size = new Size(510, 101);
+            panel7.Size = new Size(447, 76);
             panel7.TabIndex = 9;
             // 
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(434, 17);
+            pictureBox2.Location = new Point(380, 13);
+            pictureBox2.Margin = new Padding(3, 2, 3, 2);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(64, 64);
+            pictureBox2.Size = new Size(56, 48);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 3;
             pictureBox2.TabStop = false;
@@ -396,9 +424,9 @@
             // 
             lbl_ganancias_totales.AutoSize = true;
             lbl_ganancias_totales.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lbl_ganancias_totales.Location = new Point(12, 47);
+            lbl_ganancias_totales.Location = new Point(10, 35);
             lbl_ganancias_totales.Name = "lbl_ganancias_totales";
-            lbl_ganancias_totales.Size = new Size(20, 28);
+            lbl_ganancias_totales.Size = new Size(17, 21);
             lbl_ganancias_totales.TabIndex = 2;
             lbl_ganancias_totales.Text = "_";
             // 
@@ -406,9 +434,9 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(12, 10);
+            label4.Location = new Point(10, 8);
             label4.Name = "label4";
-            label4.Size = new Size(219, 28);
+            label4.Size = new Size(175, 21);
             label4.TabIndex = 1;
             label4.Text = "GANANCIAS TOTALES $";
             // 
@@ -421,16 +449,18 @@
             panel6.Controls.Add(label3);
             panel6.Dock = DockStyle.Left;
             panel6.Location = new Point(0, 0);
+            panel6.Margin = new Padding(3, 2, 3, 2);
             panel6.Name = "panel6";
-            panel6.Size = new Size(479, 101);
+            panel6.Size = new Size(420, 76);
             panel6.TabIndex = 8;
             // 
             // pictureBox4
             // 
             pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            pictureBox4.Location = new Point(393, 17);
+            pictureBox4.Location = new Point(344, 13);
+            pictureBox4.Margin = new Padding(3, 2, 3, 2);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(74, 64);
+            pictureBox4.Size = new Size(65, 48);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 3;
             pictureBox4.TabStop = false;
@@ -439,9 +469,9 @@
             // 
             lbl_ventas_totales.AutoSize = true;
             lbl_ventas_totales.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lbl_ventas_totales.Location = new Point(12, 47);
+            lbl_ventas_totales.Location = new Point(10, 35);
             lbl_ventas_totales.Name = "lbl_ventas_totales";
-            lbl_ventas_totales.Size = new Size(20, 28);
+            lbl_ventas_totales.Size = new Size(17, 21);
             lbl_ventas_totales.TabIndex = 2;
             lbl_ventas_totales.Text = "_";
             // 
@@ -449,32 +479,23 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.Location = new Point(12, 10);
+            label3.Location = new Point(10, 8);
             label3.Name = "label3";
-            label3.Size = new Size(178, 28);
+            label3.Size = new Size(143, 21);
             label3.TabIndex = 1;
             label3.Text = "VENTAS TOTALES $";
             // 
-            // btn_detalle
-            // 
-            btn_detalle.Location = new Point(974, 26);
-            btn_detalle.Name = "btn_detalle";
-            btn_detalle.Size = new Size(94, 35);
-            btn_detalle.TabIndex = 161;
-            btn_detalle.Text = "Ver detalle";
-            btn_detalle.UseVisualStyleBackColor = true;
-            btn_detalle.Click += btn_detalle_Click;
-            // 
             // Dashboard
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1442, 892);
+            ClientSize = new Size(1264, 675);
             Controls.Add(panel4);
             Controls.Add(panel1);
+            Margin = new Padding(3, 2, 3, 2);
             MaximizeBox = false;
-            MaximumSize = new Size(1460, 939);
-            MinimumSize = new Size(1460, 939);
+            MaximumSize = new Size(1280, 714);
+            MinimumSize = new Size(1280, 714);
             Name = "Dashboard";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Dashboard";
