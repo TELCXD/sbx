@@ -1150,6 +1150,7 @@ namespace sbx.repositories.Producto
                     var PromocionesProductosCount = await multi.ReadSingleAsync<int>();
                     var DetalleEntradasCount = await multi.ReadSingleAsync<int>();
                     var DetalleSalidasCount = await multi.ReadSingleAsync<int>();
+                    var DetalleVentaCount = await multi.ReadSingleAsync<int>();
                     var NotaCreditoDetalleCount = await multi.ReadSingleAsync<int>();
                     var DetalleVenta_SuspendidasCount = await multi.ReadSingleAsync<int>();
                     var ConversionesProductoHijoCount = await multi.ReadSingleAsync<int>();
@@ -1159,7 +1160,7 @@ namespace sbx.repositories.Producto
                     string Mensaje = "";
 
                     if (PreciosProductoCount > 0 || PreciosClienteCount > 0 || PromocionesProductosCount > 0
-                        || DetalleEntradasCount > 0 || DetalleSalidasCount > 0 || NotaCreditoDetalleCount > 0
+                        || DetalleEntradasCount > 0 || DetalleSalidasCount > 0 || DetalleVentaCount > 0 || NotaCreditoDetalleCount > 0
                         || DetalleVenta_SuspendidasCount > 0 || ConversionesProductoHijoCount > 0 ||
                         ConversionesProductoPadreCount > 0 || DetalleCotizacionPadreCount > 0) 
                     {
@@ -1188,6 +1189,11 @@ namespace sbx.repositories.Producto
                         if (DetalleSalidasCount > 0)
                         {
                             Mensaje += " Salidas de producto,";
+                        }
+
+                        if (DetalleVentaCount > 0)
+                        {
+                            Mensaje += " Ventas,";
                         }
 
                         if (NotaCreditoDetalleCount > 0)
