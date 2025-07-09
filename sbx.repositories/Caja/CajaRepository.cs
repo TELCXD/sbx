@@ -155,7 +155,6 @@ namespace sbx.repositories.Caja
             {
                 var response = new Response<dynamic>();
 
-
                 try
                 {
                     await connection.OpenAsync();
@@ -283,6 +282,56 @@ namespace sbx.repositories.Caja
                                     FROM T_AperturaCierreCaja
                                     WHERE IdUserAction = {IdUser} 
                                     AND IdApertura_Cierre_caja = (SELECT MAX(IdApertura_Cierre_caja) FROM T_AperturaCierreCaja WHERE IdUserAction = {IdUser}) ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListForId(int Id_Cierre_Apertura)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdApertura_Cierre_caja,
+                                   A.IdUserAction,
+                                   B.UserName,
+                                   CONCAT(A.IdUserAction,'-',B.UserName) Usuario,
+                                   A.FechaHoraApertura,
+                                   A.MontoInicialDeclarado,
+                                   A.FechaHoraCierre,
+                                   ISNULL(A.MontoFinalDeclarado,0) MontoFinalDeclarado,
+                                   ISNULL(A.VentasTotales,0) VentasTotales,
+                                   ISNULL(A.PagosEnEfectivo,0) PagosEnEfectivo,
+                                   ISNULL(A.Diferencia,0) Diferencia,
+                                   A.Estado
+                                   FROM T_AperturaCierreCaja A
+                                   INNER JOIN T_User B ON A.IdUserAction = B.IdUser ";
+
+                    string Where = "";
+
+                    if (Id_Cierre_Apertura > 0)
+                    {
+                        Where = $"WHERE IdApertura_Cierre_caja = {Id_Cierre_Apertura}";
+                        sql += Where;
+                    }
 
                     dynamic resultado = await connection.QueryAsync(sql);
 

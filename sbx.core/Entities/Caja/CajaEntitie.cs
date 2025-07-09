@@ -13,5 +13,6 @@ namespace sbx.core.Entities.Caja
         public decimal PagosEnEfectivo { get; set; }
         public decimal Diferencia { get; set; }
         public string Estado { get; set; }
+        public string Usuario { get; set; }
     }
 }
