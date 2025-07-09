@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Producto;
 using System.Globalization;
 
 namespace sbx
@@ -124,6 +125,7 @@ namespace sbx
                         { TotalStock += item.Cantidad; }
 
                         dtg_inventario.Rows.Add(
+                            item.IdDocumento,
                             item.Fecha,
                             item.Documento,
                             item.TipoMovimiento,
@@ -139,7 +141,7 @@ namespace sbx
                             item.Usuario);
                     }
 
-                    txt_total_stock.Text = TotalStock.ToString("N2",new CultureInfo("es-CO"));
+                    txt_total_stock.Text = TotalStock.ToString("N2", new CultureInfo("es-CO"));
                 }
             }
 
@@ -181,6 +183,65 @@ namespace sbx
                 _ConversionProducto.Permisos = _Permisos;
                 _ConversionProducto.FormClosed += (s, args) => _ConversionProducto = null;
                 _ConversionProducto.ShowDialog();
+            }
+        }
+
+        private void btn_eliminar_Click(object sender, EventArgs e)
+        {
+            if (dtg_inventario.Rows.Count > 0) 
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar fila seleccionada?",
+                       "Confirmar",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (dtg_inventario.SelectedRows.Count > 0)
+                    {
+                        var row = dtg_inventario.SelectedRows[0];
+                        if (row.Cells["cl_id_documento"].Value != null && row.Cells["cl_movimiento"].Value != null)
+                        {
+                            int Id_documento = Convert.ToInt32(row.Cells["cl_id_documento"].Value);
+                            string TipoMovimiento = row.Cells["cl_movimiento"].Value.ToString() ?? "";
+
+                            if (TipoMovimiento == "Entrada")
+                            { 
+                            
+                            }
+                            else if (TipoMovimiento == "Salida")
+                            { 
+                            
+                            }
+                            else if (TipoMovimiento == "Salida por Venta")
+                            { 
+                            
+                            }
+                            else if (TipoMovimiento == "Entrada por Nota credito")
+                            {
+
+                            }
+
+                            //var resp = await _IProducto.Eliminar(Id_documento);
+
+                            //if (resp != null)
+                            //{
+                            //    if (resp.Flag == true)
+                            //    {
+                            //        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //        await ConsultaProductos();
+                            //    }
+                            //    else
+                            //    {
+                            //        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            //    }
+                            //}
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

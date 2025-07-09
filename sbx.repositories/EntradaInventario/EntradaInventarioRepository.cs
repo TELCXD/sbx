@@ -418,11 +418,12 @@ namespace sbx.repositories.EntradaInventario
                 {
                     await connection.OpenAsync();
 
-                    string sql = @" SELECT Fecha,IdUserAction,UserName ,Usuario ,Documento, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
+                    string sql = @" SELECT Fecha,IdUserAction,UserName ,Usuario , IdDocumento,Documento, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
                                     CodigoBarras, CodigoLote, FechaVencimiento,Comentario 
                                     FROM
                                     (
                                     SELECT 
+                                        e.IdEntradasInventario IdDocumento,
                                         e.CreationDate AS Fecha,
 										e.IdUserAction,
 										usr.UserName,
@@ -447,6 +448,7 @@ namespace sbx.repositories.EntradaInventario
                                     UNION ALL
 
                                     SELECT 
+                                        s.IdSalidasInventario IdDocumento,
                                         s.CreationDate AS Fecha,
 										s.IdUserAction,
 										usr.UserName,
@@ -471,6 +473,7 @@ namespace sbx.repositories.EntradaInventario
                                     UNION ALL
 
 	                                SELECT
+                                        vt.IdVenta IdDocumento,
 	                                    dvt.CreationDate AS Fecha,
 										dvt.IdUserAction,
 										usr.UserName,
@@ -493,6 +496,7 @@ namespace sbx.repositories.EntradaInventario
 									UNION ALL
 
 									SELECT
+                                        nc.IdNotaCredito IdDocumento,
 									    ncd.CreationDate AS Fecha,
 										ncd.IdUserAction,
 										usr.UserName,

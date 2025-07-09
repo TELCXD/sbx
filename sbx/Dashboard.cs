@@ -46,9 +46,9 @@ namespace sbx
                     double TotalGanancias = dataTable.AsEnumerable().Sum(row => row.Field<double>("GananciaBruta"));
                     lbl_ganancias_totales.Text = TotalGanancias.ToString("N2", new CultureInfo("es-CO"));
 
-                    //Margen promedio
-                    double MargenPromedio = dataTable.AsEnumerable().Average(row => row.Field<double>("MargenPorcentaje"));
-                    lbl_margen_porcentaje.Text = MargenPromedio.ToString("N2", new CultureInfo("es-CO"));
+                    //Total Costos
+                    double TotalCosto = dataTable.AsEnumerable().Sum(row => row.Field<double>("CostoTotal"));
+                    lbl_costos_totales.Text = TotalCosto.ToString("N2", new CultureInfo("es-CO"));
 
                     //Ventas por mes
                     var agrupado = from row in dataTable.AsEnumerable()
@@ -70,7 +70,7 @@ namespace sbx
                         serie.Points.AddXY(x, y);
                     }
 
-                    serie.IsValueShownAsLabel = true;
+                    serie.IsValueShownAsLabel = false;
                     serie.LabelFormat = "#,0";
                     chart1.ChartAreas[0].AxisY.LabelStyle.Format = "#,0";
                     chart1.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
@@ -205,7 +205,7 @@ namespace sbx
                 {
                     lbl_ventas_totales.Text = "-";
                     lbl_ganancias_totales.Text = "-";
-                    lbl_margen_porcentaje.Text = "-";
+                    lbl_costos_totales.Text = "-";
 
                     chart1.Series.Clear();
                     chart2.Series.Clear();
@@ -218,7 +218,7 @@ namespace sbx
             {
                 lbl_ventas_totales.Text = "-";
                 lbl_ganancias_totales.Text = "-";
-                lbl_margen_porcentaje.Text = "-";
+                lbl_costos_totales.Text = "-";
 
                 chart1.Series.Clear();
                 chart2.Series.Clear();
