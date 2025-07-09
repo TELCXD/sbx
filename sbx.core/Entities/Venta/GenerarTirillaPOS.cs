@@ -1,4 +1,6 @@
-﻿using sbx.core.Entities.Cotizacion;
+﻿using sbx.core.Entities.Caja;
+using sbx.core.Entities.Cotizacion;
+using sbx.core.Interfaces.Cotizacion;
 using System.Globalization;
 using System.Text;
 
@@ -239,6 +241,30 @@ namespace sbx.core.Entities.Venta
             return sb;
         }
 
+        public static StringBuilder GenerarTirillaCajaCierre(CajaEntitie caja, int Pr_ANCHO_TIRILLA) 
+        {
+            var sb = new StringBuilder();
+
+            ANCHO_TIRILLA = Pr_ANCHO_TIRILLA == 58 ? 32 : Pr_ANCHO_TIRILLA == 80 ? 42 : 0;
+
+            sb.AppendLine(CentrarTexto("CIERRE DE CAJA"));
+            sb.AppendLine("");
+            sb.AppendLine($"Estado: {caja.Estado}");
+            sb.AppendLine($"Usuario: {caja.Usuario}");
+            sb.AppendLine(new string('=', ANCHO_TIRILLA));
+            sb.AppendLine($"Fecha apertura: {caja.FechaHoraApertura.ToString("yyyy-MM-dd")}");
+            sb.AppendLine($"Hora apertura: {caja.FechaHoraApertura.ToString("HH:mm:ss")}");
+            sb.AppendLine($"Fecha cierre: {caja.FechaHoraCierre.ToString("yyyy-MM-dd")}");
+            sb.AppendLine($"Hora cierre: {caja.FechaHoraCierre.ToString("HH:mm:ss")}");
+            sb.AppendLine($"Monto inicial: {caja.MontoInicialDeclarado.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Total ventas: {caja.VentasTotales.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos en efectivo: {caja.PagosEnEfectivo.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Monto final: {caja.MontoFinalDeclarado.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Diferencia: {caja.Diferencia.ToString("N0", new CultureInfo("es-CO"))}");
+
+            return sb;
+        }
+
         private static string CentrarTexto(string texto)
         {
             if (texto.Length >= ANCHO_TIRILLA) return texto.Substring(0, ANCHO_TIRILLA);
@@ -279,7 +305,6 @@ namespace sbx.core.Entities.Venta
             // Unir todas las líneas con salto de línea
             return string.Join("\n", lineasCentradas);
         }
-
 
         private static List<string> DividirTexto(string texto, int maxAncho)
         {

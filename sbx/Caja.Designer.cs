@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Caja));
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             panel1 = new Panel();
             label2 = new Label();
             label1 = new Label();
@@ -57,6 +57,7 @@
             cl_diferencia = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
+            btn_imprimir = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_aperturas_cierres_caja).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -66,6 +67,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_imprimir);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(dtp_F_f);
@@ -196,36 +198,36 @@
             dtg_aperturas_cierres_caja.AllowUserToDeleteRows = false;
             dtg_aperturas_cierres_caja.AllowUserToOrderColumns = true;
             dtg_aperturas_cierres_caja.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dtg_aperturas_cierres_caja.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dtg_aperturas_cierres_caja.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_aperturas_cierres_caja.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_aperturas_cierres_caja.Columns.AddRange(new DataGridViewColumn[] { cl_IdApertura_Cierre_caja, cl_IdUser, cl_usuario, cl_fecha_apertura, cl_monto_inicial, cl_fecha_cierre, cl_montoFinal, cl_ventasTotales, cl_pago_en_efectivo, cl_diferencia, cl_estado });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dtg_aperturas_cierres_caja.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dtg_aperturas_cierres_caja.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_aperturas_cierres_caja.Dock = DockStyle.Fill;
             dtg_aperturas_cierres_caja.Location = new Point(0, 56);
             dtg_aperturas_cierres_caja.Name = "dtg_aperturas_cierres_caja";
             dtg_aperturas_cierres_caja.ReadOnly = true;
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dtg_aperturas_cierres_caja.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dtg_aperturas_cierres_caja.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_aperturas_cierres_caja.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_aperturas_cierres_caja.Size = new Size(1211, 443);
             dtg_aperturas_cierres_caja.TabIndex = 3;
@@ -310,6 +312,21 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // btn_imprimir
+            // 
+            btn_imprimir.Enabled = false;
+            btn_imprimir.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_imprimir.FlatStyle = FlatStyle.Flat;
+            btn_imprimir.Image = (Image)resources.GetObject("btn_imprimir.Image");
+            btn_imprimir.Location = new Point(217, 4);
+            btn_imprimir.Name = "btn_imprimir";
+            btn_imprimir.Size = new Size(101, 45);
+            btn_imprimir.TabIndex = 41;
+            btn_imprimir.Text = "Imprimir";
+            btn_imprimir.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_imprimir.UseVisualStyleBackColor = true;
+            btn_imprimir.Click += btn_imprimir_Click;
+            // 
             // Caja
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -358,5 +375,6 @@
         private DataGridViewTextBoxColumn cl_pago_en_efectivo;
         private DataGridViewTextBoxColumn cl_diferencia;
         private DataGridViewTextBoxColumn cl_estado;
+        private Button btn_imprimir;
     }
 }

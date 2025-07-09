@@ -9,5 +9,6 @@ namespace sbx.core.Interfaces.Caja
         Task<Response<dynamic>> List(int IdUser);
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, DateTime Finicio, DateTime Ffin, int idUser, string RolName);
         Task<Response<dynamic>> EstadoCaja(int IdUser);
+        Task<Response<dynamic>> ListForId(int Id_Cierre_Apertura);
     }
 }
