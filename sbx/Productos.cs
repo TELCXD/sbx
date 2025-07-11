@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using sbx.core.Entities.Reportes;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;

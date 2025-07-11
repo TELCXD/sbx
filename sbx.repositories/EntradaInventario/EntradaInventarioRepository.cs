@@ -2,7 +2,6 @@
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.EntradaInventario;
-using sbx.core.Entities.SalidaInventario;
 using sbx.core.Interfaces.EntradaInventario;
 using System.Data;
 using System.Globalization;
@@ -391,7 +390,15 @@ namespace sbx.repositories.EntradaInventario
                     }
 
                     response.Flag = true;
-                    response.Message = $"Entrada creada correctamente, al momento de realizar entradas de inventario por podructos padres o hijo Correctos: {Correcto} y Errores: {Error}";
+                    if (Correcto > 0 || Error > 0) 
+                    {
+                        response.Message = $"Entrada creada correctamente, al momento de realizar entradas de inventario por podructos padres o hijo Correctos: {Correcto} y Errores: {Error}";
+                    }
+                    else
+                    {
+                        response.Message = $"Entrada creada correctamente";
+                    }
+                    
                     return response;
                 }
                 catch (Exception ex)
@@ -806,6 +813,61 @@ namespace sbx.repositories.EntradaInventario
                 {
                     await transaction.RollbackAsync();
 
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> List(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@" SELECT A.IdEntradasInventario
+                                      ,A.IdTipoEntrada
+	                                  ,C.Nombre TipoEntrada
+                                      ,A.IdProveedor
+	                                  ,D.NumeroDocumento
+	                                  ,D.NombreRazonSocial
+                                      ,A.OrdenCompra
+                                      ,A.NumFactura
+                                      ,A.Comentario
+                                      ,A.CreationDate
+                                      ,A.UpdateDate
+                                      ,A.IdUserAction
+	                                  ,B.IdProducto
+	                                  ,E.Sku
+	                                  ,E.CodigoBarras
+	                                  ,E.Nombre
+                                      ,B.CodigoLote
+                                      ,B.FechaVencimiento
+                                      ,B.Cantidad
+                                      ,B.CostoUnitario
+                                      ,B.Descuento
+                                      ,B.Iva
+                                  FROM T_EntradasInventario A
+                                  INNER JOIN T_DetalleEntradasInventario B ON A.IdEntradasInventario = B.IdEntradasInventario
+                                  INNER JOIN T_TipoEntrada C ON C.IdTipoEntrada = A.IdTipoEntrada
+                                  INNER JOIN T_Proveedores D ON D.IdProveedor = A.IdProveedor
+                                  INNER JOIN T_Productos E ON E.IdProducto = B.IdProducto
+                                  WHERE A.IdEntradasInventario = {Id} ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
                     return response;

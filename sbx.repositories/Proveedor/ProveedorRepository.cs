@@ -403,5 +403,48 @@ namespace sbx.repositories.Proveedor
                 }
             }
         }
+
+        public async Task<Response<dynamic>> ListNumeroDocumento(string NumeroDoc)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT 
+                                   A.IdProveedor
+                                  ,A.IdIdentificationType
+                                  ,B.IdentificationType
+                                  ,A.NumeroDocumento
+                                  ,A.NombreRazonSocial
+                                  ,A.Direccion
+                                  ,A.Telefono
+                                  ,A.Email
+                                  ,A.Estado
+                                  ,A.CreationDate
+                                  ,A.UpdateDate
+                                  ,A.IdUserAction 
+                                  FROM T_Proveedores A
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
+                                  WHERE A.NumeroDocumento = '{NumeroDoc}' ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

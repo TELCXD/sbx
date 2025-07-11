@@ -15,6 +15,7 @@ using sbx.core.Interfaces.Cotizacion;
 using sbx.core.Interfaces.Dashboard;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.Gastos;
 using sbx.core.Interfaces.IdentificationType;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.Marca;
@@ -60,6 +61,7 @@ using sbx.repositories.Cotizacion;
 using sbx.repositories.Dashboard;
 using sbx.repositories.Departamento;
 using sbx.repositories.EntradaInventario;
+using sbx.repositories.Gastos;
 using sbx.repositories.IdentificationType;
 using sbx.repositories.ListaPrecios;
 using sbx.repositories.LoginRepository;
@@ -210,7 +212,13 @@ namespace sbx
 
                 services.AddTransient<AddConversionProducto>();
 
-                services.AddTransient<Dashboard>(); 
+                services.AddTransient<Dashboard>();
+
+                services.AddTransient<Gastos>();
+
+                services.AddTransient<DetalleGastos>();
+
+                services.AddTransient<AgregaGasto>();
 
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
@@ -343,6 +351,9 @@ namespace sbx
 
                 services.AddTransient<IDashboard>(provider =>
                 new DashboardRepository(connectionString));
+
+                services.AddTransient<IGastos>(provider =>
+               new GastosRepository(connectionString));
 
             })
             .Build();

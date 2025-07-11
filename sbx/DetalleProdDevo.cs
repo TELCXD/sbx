@@ -1,4 +1,5 @@
-﻿using sbx.core.Interfaces.NotaCredito;
+﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.NotaCredito;
 using System.Globalization;
 
 namespace sbx
@@ -8,11 +9,16 @@ namespace sbx
         private int _Id_Nota_credito;
         private dynamic? _Permisos;
         private readonly INotaCredito _INotaCredito;
+        private DetalleVenta? _DetalleVenta;
+        private readonly IServiceProvider _serviceProvider;
+        int IdVenta = 0;
+        private string _Origen;
 
-        public DetalleProdDevo(INotaCredito notaCredito)
+        public DetalleProdDevo(INotaCredito notaCredito, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _INotaCredito = notaCredito;
+            _serviceProvider = serviceProvider;
         }
 
         public dynamic? Permisos
@@ -25,6 +31,12 @@ namespace sbx
         {
             get => _Id_Nota_credito;
             set => _Id_Nota_credito = value;
+        }
+
+        public string Origen
+        {
+            get => _Origen;
+            set => _Origen = value;
         }
 
         private async void DetalleProdDevo_Load(object sender, EventArgs e)
@@ -42,10 +54,12 @@ namespace sbx
                 {
                     if (resp.Data.Count > 0)
                     {
-                        lbl_nota_credito.Text = "NC-"+ resp.Data[0].IdNotaCredito;
+                        lbl_nota_credito.Text = "NC-" + resp.Data[0].IdNotaCredito;
                         lbl_usuario.Text = resp.Data[0].Usuario;
                         txt_motivo_devolucion.Text = resp.Data[0].Motivo;
-
+                        lbl_factura.Text = resp.Data[0].Factura;
+                        if (Origen != "DetalleVenta") { btn_ver_factura.Enabled = true; }
+                        IdVenta = Convert.ToInt32(resp.Data[0].IdVenta);
                         decimal Subtotal = 0;
                         decimal cantidadTotal = 0;
                         decimal DescuentoLinea;
@@ -123,6 +137,19 @@ namespace sbx
             }
 
             return ValorIva;
+        }
+
+        private void btn_ver_factura_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _DetalleVenta = _serviceProvider.GetRequiredService<DetalleVenta>();
+                _DetalleVenta.Permisos = _Permisos;
+                _DetalleVenta.Origen = "Inventario";
+                _DetalleVenta.Id_Venta = Convert.ToInt32(IdVenta);
+                _DetalleVenta.FormClosed += (s, args) => _DetalleVenta = null;
+                _DetalleVenta.ShowDialog();
+            }
         }
     }
 }

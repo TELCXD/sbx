@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Salidas));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel3 = new Panel();
             btn_guardar = new Button();
             panel1 = new Panel();
@@ -50,8 +50,8 @@
             panel2 = new Panel();
             btn_add_producto = new Button();
             panel4 = new Panel();
+            lbl_total = new Label();
             label4 = new Label();
-            txt_total = new TextBox();
             dtg_detalle_salida = new DataGridView();
             cl_id_producto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
@@ -62,6 +62,7 @@
             cl_cantidad = new DataGridViewTextBoxColumn();
             cl_costo_unitario = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
+            btn_quitar = new Button();
             panel3.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -71,7 +72,7 @@
             // 
             // panel3
             // 
-            panel3.BackColor = SystemColors.Window;
+            panel3.BackColor = Color.WhiteSmoke;
             panel3.BorderStyle = BorderStyle.Fixed3D;
             panel3.Controls.Add(btn_guardar);
             panel3.Dock = DockStyle.Top;
@@ -231,6 +232,7 @@
             // 
             panel2.BackColor = SystemColors.Window;
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(btn_quitar);
             panel2.Controls.Add(btn_add_producto);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 177);
@@ -255,33 +257,35 @@
             // 
             // panel4
             // 
-            panel4.BackColor = SystemColors.Window;
+            panel4.BackColor = Color.WhiteSmoke;
             panel4.BorderStyle = BorderStyle.Fixed3D;
+            panel4.Controls.Add(lbl_total);
             panel4.Controls.Add(label4);
-            panel4.Controls.Add(txt_total);
             panel4.Dock = DockStyle.Bottom;
             panel4.Location = new Point(0, 530);
             panel4.Name = "panel4";
             panel4.Size = new Size(1015, 45);
             panel4.TabIndex = 69;
             // 
+            // lbl_total
+            // 
+            lbl_total.AutoSize = true;
+            lbl_total.Font = new Font("Segoe UI", 14F);
+            lbl_total.Location = new Point(785, 9);
+            lbl_total.Name = "lbl_total";
+            lbl_total.Size = new Size(20, 25);
+            lbl_total.TabIndex = 33;
+            lbl_total.Text = "_";
+            // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(805, 12);
+            label4.Font = new Font("Segoe UI", 14F);
+            label4.Location = new Point(727, 9);
             label4.Name = "label4";
-            label4.Size = new Size(32, 15);
+            label4.Size = new Size(52, 25);
             label4.TabIndex = 32;
             label4.Text = "Total";
-            // 
-            // txt_total
-            // 
-            txt_total.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_total.Enabled = false;
-            txt_total.Location = new Point(843, 9);
-            txt_total.Name = "txt_total";
-            txt_total.Size = new Size(158, 23);
-            txt_total.TabIndex = 31;
             // 
             // dtg_detalle_salida
             // 
@@ -289,36 +293,36 @@
             dtg_detalle_salida.AllowUserToDeleteRows = false;
             dtg_detalle_salida.AllowUserToOrderColumns = true;
             dtg_detalle_salida.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_detalle_salida.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_detalle_salida.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_detalle_salida.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_detalle_salida.Columns.AddRange(new DataGridViewColumn[] { cl_id_producto, cl_sku, cl_codigo_barras, cl_Nombre, cl_lote, cl_fecha_vencimiento, cl_cantidad, cl_costo_unitario, cl_total });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_detalle_salida.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_detalle_salida.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_detalle_salida.Dock = DockStyle.Fill;
             dtg_detalle_salida.Location = new Point(0, 233);
             dtg_detalle_salida.Name = "dtg_detalle_salida";
             dtg_detalle_salida.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_detalle_salida.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_detalle_salida.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_detalle_salida.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_detalle_salida.Size = new Size(1015, 297);
             dtg_detalle_salida.TabIndex = 70;
@@ -382,6 +386,21 @@
             cl_total.ReadOnly = true;
             cl_total.Width = 130;
             // 
+            // btn_quitar
+            // 
+            btn_quitar.Enabled = false;
+            btn_quitar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_quitar.FlatStyle = FlatStyle.Flat;
+            btn_quitar.Image = (Image)resources.GetObject("btn_quitar.Image");
+            btn_quitar.Location = new Point(112, 5);
+            btn_quitar.Name = "btn_quitar";
+            btn_quitar.Size = new Size(101, 45);
+            btn_quitar.TabIndex = 9;
+            btn_quitar.Text = "Quitar";
+            btn_quitar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_quitar.UseVisualStyleBackColor = true;
+            btn_quitar.Click += btn_quitar_Click;
+            // 
             // Salidas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -433,7 +452,6 @@
 
         private DataGridView dtg_detalle_salida;
         private Label label4;
-        private TextBox txt_total;
         private DataGridViewTextBoxColumn cl_id_producto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -443,5 +461,7 @@
         private DataGridViewTextBoxColumn cl_cantidad;
         private DataGridViewTextBoxColumn cl_costo_unitario;
         private DataGridViewTextBoxColumn cl_total;
+        private Label lbl_total;
+        private Button btn_quitar;
     }
 }

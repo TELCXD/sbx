@@ -27,6 +27,7 @@ namespace sbx
         decimal Total = 0;
         decimal DescuentoLinea = 0;
         int IdNotaCredito = 0;
+        private string _Origen;
 
         public DetalleVenta(IVenta venta, ITienda tienda, IParametros iParametros, IServiceProvider serviceProvider)
         {
@@ -47,6 +48,12 @@ namespace sbx
         {
             get => _Id_Venta;
             set => _Id_Venta = value;
+        }
+
+        public string Origen
+        {
+            get => _Origen;
+            set => _Origen = value;
         }
 
         private async void DetalleVenta_Load(object sender, EventArgs e)
@@ -100,7 +107,7 @@ namespace sbx
                         {
                             lbl_nota_credito.Text = "NC - " + resp.Data[0].IdNotaCredito;
                             IdNotaCredito = resp.Data[0].IdNotaCredito;
-                            btn_ver_productos.Enabled = true;
+                            if (Origen != "Inventario") { btn_ver_productos.Enabled = true; }   
                         }
 
                         decimal Subtotal = 0;
@@ -404,6 +411,7 @@ namespace sbx
                 _DetalleProdDevo = _serviceProvider.GetRequiredService<DetalleProdDevo>();
                 _DetalleProdDevo.Id_NotaCredito = IdNotaCredito;
                 _DetalleProdDevo.Permisos = _Permisos;
+                _DetalleProdDevo.Origen = "DetalleVenta";
                 _DetalleProdDevo.FormClosed += (s, args) => _DetalleProdDevo = null;
                 _DetalleProdDevo.ShowDialog();
             }

@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inicio));
             panel1 = new Panel();
+            btn_reporte_general = new Button();
+            btn_gastos = new Button();
             btn_vendedor = new Button();
             btn_reportes = new Button();
             btn_caja = new Button();
@@ -54,6 +56,8 @@
             // 
             panel1.BackColor = Color.WhiteSmoke;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_reporte_general);
+            panel1.Controls.Add(btn_gastos);
             panel1.Controls.Add(btn_vendedor);
             panel1.Controls.Add(btn_reportes);
             panel1.Controls.Add(btn_caja);
@@ -67,8 +71,50 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(934, 66);
+            panel1.Size = new Size(1053, 66);
             panel1.TabIndex = 0;
+            // 
+            // btn_reporte_general
+            // 
+            btn_reporte_general.BackColor = Color.Transparent;
+            btn_reporte_general.Dock = DockStyle.Left;
+            btn_reporte_general.FlatAppearance.BorderSize = 0;
+            btn_reporte_general.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_reporte_general.FlatStyle = FlatStyle.Flat;
+            btn_reporte_general.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_reporte_general.ForeColor = SystemColors.ControlText;
+            btn_reporte_general.Image = (Image)resources.GetObject("btn_reporte_general.Image");
+            btn_reporte_general.Location = new Point(949, 0);
+            btn_reporte_general.Name = "btn_reporte_general";
+            btn_reporte_general.Size = new Size(84, 62);
+            btn_reporte_general.TabIndex = 11;
+            btn_reporte_general.Text = "Reportes";
+            btn_reporte_general.TextAlign = ContentAlignment.BottomCenter;
+            btn_reporte_general.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_reporte_general.UseVisualStyleBackColor = false;
+            btn_reporte_general.Visible = false;
+            btn_reporte_general.Click += btn_reporte_general_Click;
+            // 
+            // btn_gastos
+            // 
+            btn_gastos.BackColor = Color.Transparent;
+            btn_gastos.Dock = DockStyle.Left;
+            btn_gastos.FlatAppearance.BorderSize = 0;
+            btn_gastos.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_gastos.FlatStyle = FlatStyle.Flat;
+            btn_gastos.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_gastos.ForeColor = SystemColors.ControlText;
+            btn_gastos.Image = (Image)resources.GetObject("btn_gastos.Image");
+            btn_gastos.Location = new Point(865, 0);
+            btn_gastos.Name = "btn_gastos";
+            btn_gastos.Size = new Size(84, 62);
+            btn_gastos.TabIndex = 10;
+            btn_gastos.Text = "Gastos";
+            btn_gastos.TextAlign = ContentAlignment.BottomCenter;
+            btn_gastos.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_gastos.UseVisualStyleBackColor = false;
+            btn_gastos.Visible = false;
+            btn_gastos.Click += btn_gastos_Click;
             // 
             // btn_vendedor
             // 
@@ -105,7 +151,7 @@
             btn_reportes.Name = "btn_reportes";
             btn_reportes.Size = new Size(84, 62);
             btn_reportes.TabIndex = 8;
-            btn_reportes.Text = "Reportes";
+            btn_reportes.Text = "Inf. Ventas";
             btn_reportes.TextAlign = ContentAlignment.BottomCenter;
             btn_reportes.TextImageRelation = TextImageRelation.ImageAboveText;
             btn_reportes.UseVisualStyleBackColor = false;
@@ -288,7 +334,7 @@
             panel2.Dock = DockStyle.Bottom;
             panel2.Location = new Point(0, 546);
             panel2.Name = "panel2";
-            panel2.Size = new Size(934, 32);
+            panel2.Size = new Size(1053, 32);
             panel2.TabIndex = 1;
             // 
             // lbl_usuario
@@ -306,7 +352,7 @@
             // 
             pictureBox1.Dock = DockStyle.Right;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(648, 0);
+            pictureBox1.Location = new Point(767, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(286, 270);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -319,7 +365,7 @@
             panel3.Dock = DockStyle.Bottom;
             panel3.Location = new Point(0, 276);
             panel3.Name = "panel3";
-            panel3.Size = new Size(934, 270);
+            panel3.Size = new Size(1053, 270);
             panel3.TabIndex = 3;
             // 
             // Inicio
@@ -327,7 +373,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(934, 578);
+            ClientSize = new Size(1053, 578);
             Controls.Add(panel3);
             Controls.Add(panel2);
             Controls.Add(panel1);
@@ -362,5 +408,7 @@
         private Button btn_caja;
         private Button btn_reportes;
         private Button btn_vendedor;
+        private Button btn_gastos;
+        private Button btn_reporte_general;
     }
 }

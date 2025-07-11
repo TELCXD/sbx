@@ -125,7 +125,7 @@ VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'product
 ('Entrada',13,'entradas',1,1), ('Salida',14,'salidas',1,1),('PreciosClientes',15,'preciosClientes',1,1),
 ('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1),
 ('Permisos',19,'permisos',1,1),('Cotizacion',20,'cotizacion',1,1),('VentasUno',21,'quitarUno',1,1),
-('Vendedores',22,'vendedores',1,1),('ConversionProducto',23,'conversionProducto',1,1)
+('Vendedores',22,'vendedores',1,1),('ConversionProducto',23,'conversionProducto',1,1),('Gasto',24,'Gastos',1,1)
 GO
 CREATE TABLE TR_User_Menu
 (
@@ -152,13 +152,15 @@ VALUES(1,1,1,1,1,1,1,GETDATE(),1), (2,1,1,1,1,1,1,GETDATE(),1), (3,1,1,1,1,1,1,G
 (12,1,1,1,1,1,1,GETDATE(),1), (13,1,1,1,1,1,1,GETDATE(),1), (14,1,1,1,1,1,1,GETDATE(),1), (15,1,1,1,1,1,1,GETDATE(),1),
 (16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1), (18,1,1,1,1,1,1,GETDATE(),1), (19,1,1,1,1,1,1,GETDATE(),1),
 (20,1,1,1,1,1,1,GETDATE(),1), (21,1,1,1,1,1,1,GETDATE(),1), (22,1,1,1,1,1,1,GETDATE(),1), (23,1,1,1,1,1,1,GETDATE(),1),
+(24,1,1,1,1,1,1,GETDATE(),1),
 
 (1,2,1,1,1,1,1,GETDATE(),1), (2,2,1,1,1,1,1,GETDATE(),1), (3,2,1,1,1,1,1,GETDATE(),1), (4,2,1,1,1,1,1,GETDATE(),1), 
 (5,2,1,1,1,1,1,GETDATE(),1), (6,2,1,1,1,1,1,GETDATE(),1), (7,2,1,1,1,1,1,GETDATE(),1),
 (8,2,1,1,1,1,1,GETDATE(),1), (9,2,1,1,1,1,1,GETDATE(),1), (10,2,1,1,1,1,1,GETDATE(),1), (11,2,1,1,1,1,1,GETDATE(),1), 
 (12,2,1,1,1,1,1,GETDATE(),1), (13,2,1,1,1,1,1,GETDATE(),1), (14,2,1,1,1,1,1,GETDATE(),1), (15,2,1,1,1,1,1,GETDATE(),1),
 (16,2,1,1,1,1,1,GETDATE(),1), (17,2,1,1,1,1,1,GETDATE(),1), (18,2,1,1,1,1,1,GETDATE(),1), (19,2,1,1,1,1,1,GETDATE(),1),
-(20,2,1,1,1,1,1,GETDATE(),1), (21,2,1,1,1,1,1,GETDATE(),1), (22,2,1,1,1,1,1,GETDATE(),1), (23,2,1,1,1,1,1,GETDATE(),1)
+(20,2,1,1,1,1,1,GETDATE(),1), (21,2,1,1,1,1,1,GETDATE(),1), (22,2,1,1,1,1,1,GETDATE(),1), (23,2,1,1,1,1,1,GETDATE(),1),
+(24,2,1,1,1,1,1,GETDATE(),1)
 GO
 CREATE TABLE T_TipoResponsabilidad(
 IdTipoResponsabilidad INT PRIMARY KEY,
@@ -474,7 +476,7 @@ IdTipoEntrada  INT IDENTITY(1,1) PRIMARY KEY,
 Nombre VARCHAR(50) UNIQUE
 )
 GO
-INSERT INTO T_TipoEntrada(Nombre) VALUES('Compra a proveedor'),('Devolución de cliente'),('Ajuste positivo')
+INSERT INTO T_TipoEntrada(Nombre) VALUES('Compra a proveedor'),('Ajuste positivo')
 GO
 CREATE TABLE T_EntradasInventario (
 IdEntradasInventario INT IDENTITY(1,1) PRIMARY KEY,
@@ -513,7 +515,7 @@ IdTipoSalida  INT IDENTITY(1,1) PRIMARY KEY,
 Nombre VARCHAR(50) UNIQUE
 )
 GO
-INSERT INTO T_TipoSalida(Nombre) VALUES('Devolución a proveedor'),('Ajuste negativo'),('Consumo interno'),('Venta a cliente')
+INSERT INTO T_TipoSalida(Nombre) VALUES('Devolución a proveedor'),('Ajuste negativo'),('Consumo interno')
 GO
 CREATE TABLE T_SalidasInventario (
 IdSalidasInventario INT IDENTITY(1,1) PRIMARY KEY,
@@ -833,4 +835,16 @@ IdUserAction INT,
 FOREIGN KEY (IdCotizacion) REFERENCES T_Cotizacion(IdCotizacion),
 FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
+)
+GO
+CREATE TABLE T_Gastos (
+IdGasto INT PRIMARY KEY IDENTITY,
+Categoria VARCHAR(100),
+Subcategoria VARCHAR(100),
+Detalle VARCHAR(100),
+ValorGasto DECIMAL(10,2),
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
 )

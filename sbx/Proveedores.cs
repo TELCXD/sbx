@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Promociones;
 using sbx.core.Interfaces.Proveedor;
 
@@ -112,13 +113,21 @@ namespace sbx
                     if (row.Cells["cl_IdProveedor"].Value != null)
                     {
                         Id_Proveedor = Convert.ToInt32(row.Cells["cl_IdProveedor"].Value);
-                        if (_Permisos != null)
+
+                        if (Id_Proveedor > 1)
                         {
-                            _AgregaProveedor = _serviceProvider.GetRequiredService<AgregaProveedor>();
-                            _AgregaProveedor.Permisos = _Permisos;
-                            _AgregaProveedor.Id_Proveedor = Id_Proveedor;
-                            _AgregaProveedor.FormClosed += (s, args) => _AgregaProveedor = null;
-                            _AgregaProveedor.ShowDialog();
+                            if (_Permisos != null)
+                            {
+                                _AgregaProveedor = _serviceProvider.GetRequiredService<AgregaProveedor>();
+                                _AgregaProveedor.Permisos = _Permisos;
+                                _AgregaProveedor.Id_Proveedor = Id_Proveedor;
+                                _AgregaProveedor.FormClosed += (s, args) => _AgregaProveedor = null;
+                                _AgregaProveedor.ShowDialog();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("El proveedor por defecto no puede ser modificado", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }

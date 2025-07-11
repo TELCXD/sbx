@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
@@ -15,6 +16,8 @@ namespace sbx
         private readonly IServiceProvider _serviceProvider;
         private readonly IEntradaInventario _IEntradaInventario;
         private readonly IParametros _IParametros;
+        private DetalleVenta? _DetalleVenta;
+        private DetalleProdDevo? _DetalleProdDevo;
 
         public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros)
         {
@@ -141,7 +144,7 @@ namespace sbx
                             item.Usuario);
                     }
 
-                    txt_total_stock.Text = TotalStock.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_total.Text = TotalStock.ToString("N2", new CultureInfo("es-CO"));
                 }
             }
 
@@ -188,7 +191,7 @@ namespace sbx
 
         private void btn_eliminar_Click(object sender, EventArgs e)
         {
-            if (dtg_inventario.Rows.Count > 0) 
+            if (dtg_inventario.Rows.Count > 0)
             {
                 DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar fila seleccionada?",
                        "Confirmar",
@@ -205,16 +208,16 @@ namespace sbx
                             string TipoMovimiento = row.Cells["cl_movimiento"].Value.ToString() ?? "";
 
                             if (TipoMovimiento == "Entrada")
-                            { 
-                            
+                            {
+
                             }
                             else if (TipoMovimiento == "Salida")
-                            { 
-                            
+                            {
+
                             }
                             else if (TipoMovimiento == "Salida por Venta")
-                            { 
-                            
+                            {
+
                             }
                             else if (TipoMovimiento == "Entrada por Nota credito")
                             {
@@ -242,6 +245,56 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void dtg_inventario_DoubleClick(object sender, EventArgs e)
+        {
+            if (dtg_inventario.Rows.Count > 0)
+            {
+                if (dtg_inventario.SelectedRows.Count > 0)
+                {
+                    if (_Permisos != null)
+                    {
+                        foreach (DataGridViewRow rows in dtg_inventario.SelectedRows)
+                        {
+                            string TipoMovimiento = rows.Cells["cl_movimiento"].Value.ToString() ?? "";
+
+                            if (TipoMovimiento == "Entrada")
+                            {
+                                _Entradas = _serviceProvider.GetRequiredService<Entradas>();
+                                _Entradas.Permisos = _Permisos;
+                                _Entradas.Id_Entrada = Convert.ToInt32(rows.Cells["cl_id_documento"].Value);
+                                _Entradas.FormClosed += (s, args) => _Entradas = null;
+                                _Entradas.ShowDialog();
+                            }
+                            else if (TipoMovimiento == "Salida")
+                            {
+                                _Salidas = _serviceProvider.GetRequiredService<Salidas>();
+                                _Salidas.Permisos = _Permisos;
+                                _Salidas.Id_Salida = Convert.ToInt32(rows.Cells["cl_id_documento"].Value);
+                                _Salidas.FormClosed += (s, args) => _Salidas = null;
+                                _Salidas.ShowDialog();
+                            }
+                            else if (TipoMovimiento == "Salida por Venta")
+                            {
+                                _DetalleVenta = _serviceProvider.GetRequiredService<DetalleVenta>();
+                                _DetalleVenta.Permisos = _Permisos;
+                                _DetalleVenta.Id_Venta = Convert.ToInt32(rows.Cells["cl_id_documento"].Value);
+                                _DetalleVenta.FormClosed += (s, args) => _DetalleVenta = null;
+                                _DetalleVenta.ShowDialog();
+                            }
+                            else if (TipoMovimiento == "Entrada por Nota credito")
+                            {
+                                _DetalleProdDevo = _serviceProvider.GetRequiredService<DetalleProdDevo>();
+                                _DetalleProdDevo.Permisos = _Permisos;
+                                _DetalleProdDevo.Id_NotaCredito = Convert.ToInt32(rows.Cells["cl_id_documento"].Value);
+                                _DetalleProdDevo.FormClosed += (s, args) => _DetalleProdDevo = null;
+                                _DetalleProdDevo.ShowDialog();
+                            }
+                        }
+                    }
+                }
             }
         }
     }

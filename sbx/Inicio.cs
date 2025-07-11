@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Interfaces.Backup;
+using sbx.core.Interfaces.Gastos;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Tienda;
 
@@ -23,6 +24,7 @@ namespace sbx
         private readonly IBackup _IBackup;
         private Vendedor? _Vendedor;
         private Dashboard _Dashboard;
+        private Gastos? _Gastos;
 
         public Inicio(IServiceProvider serviceProvider, ITienda iTienda, IParametros iParametros, IBackup backup)
         {
@@ -123,12 +125,19 @@ namespace sbx
                                 if (item.ToRead == 1)
                                 {
                                     btn_reportes.Visible = true;
+                                    btn_reporte_general.Visible = true;
                                 }
                                 break;
                             case "vendedores":
                                 if (item.ToRead == 1)
                                 {
                                     btn_vendedor.Visible = true;
+                                }
+                                break;
+                            case "Gastos":
+                                if (item.ToRead == 1)
+                                {
+                                    btn_gastos.Visible = true;
                                 }
                                 break;
                             default:
@@ -327,6 +336,7 @@ namespace sbx
             }
 
             _Dashboard = _serviceProvider.GetRequiredService<Dashboard>();
+            _Dashboard.Permisos = _Permisos;
             _Dashboard.FormClosed += (s, args) => _Caja = null;
             _Dashboard.Show();
         }
@@ -344,6 +354,26 @@ namespace sbx
             _Vendedor.Permisos = _Permisos;
             _Vendedor.FormClosed += (s, args) => _Vendedor = null;
             _Vendedor.Show();
+        }
+
+        private void btn_gastos_Click(object sender, EventArgs e)
+        {
+            if (_Gastos != null && !_Gastos.IsDisposed)
+            {
+                _Gastos.BringToFront();
+                _Gastos.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Gastos = _serviceProvider.GetRequiredService<Gastos>();
+            _Gastos.Permisos = _Permisos;
+            _Gastos.FormClosed += (s, args) => _Gastos = null;
+            _Gastos.Show();
+        }
+
+        private void btn_reporte_general_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
