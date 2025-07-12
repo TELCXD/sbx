@@ -40,6 +40,7 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Gastos));
             panel1 = new Panel();
             btn_detalle = new Button();
             btn_buscar = new Button();
@@ -173,9 +174,9 @@
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.Location = new Point(10, 6);
             label3.Name = "label3";
-            label3.Size = new Size(145, 21);
+            label3.Size = new Size(154, 21);
             label3.TabIndex = 4;
-            label3.Text = "GASTOS TOTALES $";
+            label3.Text = "EGRESOS TOTALES $";
             // 
             // panel3
             // 
@@ -206,7 +207,7 @@
             chart1.TabIndex = 5;
             chart1.Text = "chart1";
             title1.Name = "Title1";
-            title1.Text = "Gastos por mes";
+            title1.Text = "Egresos por mes";
             chart1.Titles.Add(title1);
             // 
             // panel4
@@ -238,7 +239,7 @@
             chart2.TabIndex = 4;
             chart2.Text = "chart2";
             title2.Name = "Title1";
-            title2.Text = "Gastos";
+            title2.Text = "Egresos";
             chart2.Titles.Add(title2);
             // 
             // panel5
@@ -271,7 +272,7 @@
             chart3.TabIndex = 5;
             chart3.Text = "chart3";
             title3.Name = "Title1";
-            title3.Text = "Gastos";
+            title3.Text = "Egresos";
             chart3.Titles.Add(title3);
             // 
             // Gastos
@@ -285,6 +286,7 @@
             Controls.Add(panel3);
             Controls.Add(panel2);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(1120, 688);
             MinimumSize = new Size(1120, 688);

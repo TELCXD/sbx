@@ -165,12 +165,13 @@
             Controls.Add(cbx_categoria);
             Controls.Add(label6);
             Controls.Add(panel3);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(487, 208);
             MinimumSize = new Size(487, 208);
             Name = "AgregaGasto";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "AgregaGasto";
+            Text = "AgregaEgreso";
             Load += AgregaGasto_Load;
             panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();

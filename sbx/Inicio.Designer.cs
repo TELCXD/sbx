@@ -109,7 +109,7 @@
             btn_gastos.Name = "btn_gastos";
             btn_gastos.Size = new Size(84, 62);
             btn_gastos.TabIndex = 10;
-            btn_gastos.Text = "Gastos";
+            btn_gastos.Text = "Egresos";
             btn_gastos.TextAlign = ContentAlignment.BottomCenter;
             btn_gastos.TextImageRelation = TextImageRelation.ImageAboveText;
             btn_gastos.UseVisualStyleBackColor = false;
