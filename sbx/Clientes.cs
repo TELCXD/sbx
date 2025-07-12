@@ -247,7 +247,7 @@ namespace sbx
             {
                 Title = "Guardar archivo Excel",
                 Filter = "Archivos de Excel (*.xlsx)|*.xlsx",
-                FileName = "Exportado.xlsx"
+                FileName = "ExportadoClientes.xlsx"
             };
 
             if (sfd.ShowDialog() == DialogResult.OK)

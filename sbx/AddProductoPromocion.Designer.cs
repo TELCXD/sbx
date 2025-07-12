@@ -45,7 +45,7 @@
             // 
             // panel3
             // 
-            panel3.BackColor = SystemColors.Window;
+            panel3.BackColor = Color.WhiteSmoke;
             panel3.BorderStyle = BorderStyle.Fixed3D;
             panel3.Controls.Add(btn_add_producto);
             panel3.Controls.Add(button1);
@@ -142,6 +142,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.Window;
             ClientSize = new Size(351, 149);
             Controls.Add(label2);
             Controls.Add(lbl_nombre_producto);

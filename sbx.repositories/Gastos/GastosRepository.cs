@@ -105,11 +105,14 @@ namespace sbx.repositories.Gastos
             }
         }
 
-        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro)
+        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, DateTime FechaInicio, DateTime FechaFin)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 var response = new Response<dynamic>();
+
+                DateTime FechaIni = Convert.ToDateTime(FechaInicio.ToString("yyyy-MM-dd"));
+                DateTime FechaFn = Convert.ToDateTime(FechaFin.ToString("yyyy-MM-dd"));
 
                 try
                 {
@@ -215,9 +218,12 @@ namespace sbx.repositories.Gastos
                             break;
                     }
 
-                    sql += Where + " ORDER BY REPLACE(A.Categoria, ' ', '') ";
+                    string filtroFechas = @" AND (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) 
+									        AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) ";
 
-                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro });
+                    sql += Where + filtroFechas + " ORDER BY REPLACE(A.Categoria, ' ', '') ";
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

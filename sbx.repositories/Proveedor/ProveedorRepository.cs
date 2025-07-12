@@ -446,5 +446,98 @@ namespace sbx.repositories.Proveedor
                 }
             }
         }
+
+        public async Task<Response<dynamic>> BuscarExportar(string dato, string campoFiltro, string tipoFiltro)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   B.IdentificationType
+                                  ,A.NumeroDocumento
+                                  ,A.NombreRazonSocial
+                                  ,A.Direccion
+                                  ,A.Telefono
+                                  ,A.Email
+                                  ,CASE WHEN A.Estado = 1 THEN 'Activo' ELSE 'Inactivo' END Estado
+                                  FROM T_Proveedores A
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType ";
+
+                    string Where = "";
+                    string Filtro = "";
+
+                    switch (tipoFiltro)
+                    {
+                        case "Inicia con":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    Where = $"WHERE A.NombreRazonSocial LIKE @Filtro ";
+                                    break;
+                                case "Num Doc":
+                                    Where = $"WHERE A.NumeroDocumento LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato + "%";
+                            break;
+                        case "Igual a":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    Where = $"WHERE A.NombreRazonSocial = @Filtro ";
+                                    break;
+                                case "Num Doc":
+                                    Where = $"WHERE A.NumeroDocumento = @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato;
+                            break;
+                        case "Contiene":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    Where = $"WHERE A.NombreRazonSocial LIKE @Filtro ";
+                                    break;
+                                case "Num Doc":
+                                    Where = $"WHERE A.NumeroDocumento LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = "%" + dato + "%";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    sql += Where;
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro });
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

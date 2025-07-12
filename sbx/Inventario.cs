@@ -1,8 +1,11 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
+using System.Data;
 using System.Globalization;
 
 namespace sbx
@@ -18,6 +21,8 @@ namespace sbx
         private readonly IParametros _IParametros;
         private DetalleVenta? _DetalleVenta;
         private DetalleProdDevo? _DetalleProdDevo;
+        private DateTime _FechaIni, _FechaFin;
+        private string _TipoMovimiento;
 
         public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros)
         {
@@ -33,10 +38,29 @@ namespace sbx
             set => _Permisos = value;
         }
 
+        public DateTime FechaIni
+        {
+            get => _FechaIni;
+            set => _FechaIni = value;
+        }
+
+        public DateTime FechaFin
+        {
+            get => _FechaFin;
+            set => _FechaFin = value;
+        }
+
+        public string TipoMovimiento
+        {
+            get => _TipoMovimiento;
+            set => _TipoMovimiento = value;
+        }
+
         private async void Inventario_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
             cbx_campo_filtro.SelectedIndex = 0;
+            cbx_tipo.SelectedIndex = 0;
 
             var DataParametros = await _IParametros.List("Tipo filtro producto");
 
@@ -47,6 +71,15 @@ namespace sbx
                     string BuscarPor = DataParametros.Data[0].Value;
                     cbx_tipo_filtro.Text = BuscarPor;
                 }
+            }
+
+            if (TipoMovimiento != null) 
+            {
+                cbx_tipo.Text = TipoMovimiento;
+                dtp_fecha_inicio.Value = FechaIni;
+                dtp_fecha_fin.Value = FechaFin;
+
+                await ConsultaInventario();
             }
         }
 
@@ -61,6 +94,7 @@ namespace sbx
                         case "inventario":
                             btn_entrada.Enabled = item.ToCreate == 1 ? true : false;
                             btn_salida.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_exportar.Enabled = item.ToRead == 1 ? true : false;
                             break;
                         case "conversionProducto":
                             btn_agrupar_productos.Enabled = item.ToCreate == 1 ? true : false;
@@ -106,7 +140,7 @@ namespace sbx
                 }
             }
 
-            var resp = await _IEntradaInventario.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+            var resp = await _IEntradaInventario.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_tipo.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
 
             dtg_inventario.Rows.Clear();
 
@@ -141,7 +175,26 @@ namespace sbx
                             item.CodigoBarras,
                             item.CodigoLote,
                             item.FechaVencimiento,
-                            item.Usuario);
+                            item.Usuario,
+                            item.Costo,
+                            item.Valor,
+                            item.Descuento,
+                            item.Iva,
+                            0);
+                    }
+
+                    if (dtg_inventario.Rows.Count > 0)
+                    {
+                        foreach (DataGridViewRow fila in dtg_inventario.Rows)
+                        {
+                            decimal precio = Convert.ToDecimal(fila.Cells["cl_valor"].Value, new CultureInfo("es-CO"));
+                            decimal cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                            decimal desc = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO"));
+                            decimal iva = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"));
+                            decimal total = CalcularTotal(precio, iva, desc);
+                            total = total * cantidad;
+                            fila.Cells["cl_total"].Value = total.ToString("N2", new CultureInfo("es-CO"));
+                        }
                     }
 
                     lbl_total.Text = TotalStock.ToString("N2", new CultureInfo("es-CO"));
@@ -151,6 +204,38 @@ namespace sbx
             this.Cursor = Cursors.Default;
             btn_buscar.Enabled = true;
             txt_buscar.Enabled = true;
+        }
+
+        private decimal CalcularTotal(decimal valorBase, decimal porcentajeIva, decimal porcentajeDescuento)
+        {
+            var descuento = CalcularDescuento(valorBase, porcentajeDescuento);
+            var valor = valorBase - descuento;
+            var iva = CalcularIva(valor, porcentajeIva);
+            return valor + iva;
+        }
+
+        private decimal CalcularIva(decimal valorBase, decimal porcentajeIva)
+        {
+            decimal ValorIva = 0;
+
+            if (valorBase >= 0 && porcentajeIva >= 0)
+            {
+                ValorIva = Math.Round(valorBase * (porcentajeIva / 100m), 2);
+            }
+
+            return ValorIva;
+        }
+
+        private decimal CalcularDescuento(decimal valorBase, decimal porcentajeDescuento)
+        {
+            decimal ValorDescuento = 0;
+
+            if (valorBase >= 0 && porcentajeDescuento >= 0)
+            {
+                ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
+            }
+
+            return ValorDescuento;
         }
 
         private async void btn_buscar_Click(object sender, EventArgs e)
@@ -295,6 +380,99 @@ namespace sbx
                         }
                     }
                 }
+            }
+        }
+
+        private async void btn_exportar_Click(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.WaitCursor;
+            panel1.Enabled = false;
+            dtg_inventario.Enabled = false;
+
+            var resp = await _IEntradaInventario.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_tipo.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+
+            if (resp != null)
+            {
+                if (resp.Data != null)
+                {
+                    string json = JsonConvert.SerializeObject(resp.Data);
+
+                    DataTable? dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                    if (dataTable != null)
+                    {
+                        ExportarExcel(dataTable);
+                    }
+                }
+                else
+                {
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_inventario.Enabled = true;
+                }
+            }
+            else
+            {
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
+                dtg_inventario.Enabled = true;
+            }
+        }
+
+        public void ExportarExcel(DataTable dataTable)
+        {
+            using var sfd = new SaveFileDialog
+            {
+                Title = "Guardar archivo Excel",
+                Filter = "Archivos de Excel (*.xlsx)|*.xlsx",
+                FileName = "ExportadoInventario.xlsx"
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    using var workbook = new XLWorkbook();
+                    var worksheet = workbook.Worksheets.Add("Datos");
+
+                    // Encabezados
+                    for (int col = 0; col < dataTable.Columns.Count; col++)
+                    {
+                        worksheet.Cell(1, col + 1).Value = dataTable.Columns[col].ColumnName;
+                    }
+
+                    // Datos
+                    for (int row = 0; row < dataTable.Rows.Count; row++)
+                    {
+                        for (int col = 0; col < dataTable.Columns.Count; col++)
+                        {
+                            worksheet.Cell(row + 2, col + 1).Value = dataTable.Rows[row][col]?.ToString() ?? string.Empty;
+                        }
+                    }
+
+                    worksheet.Columns().AdjustToContents(); // Ajustar ancho de columnas
+                    workbook.SaveAs(sfd.FileName);
+
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_inventario.Enabled = true;
+
+                    MessageBox.Show("Archivo exportado con éxito.", "Exportación completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_inventario.Enabled = true;
+
+                    MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
+                dtg_inventario.Enabled = true;
             }
         }
     }

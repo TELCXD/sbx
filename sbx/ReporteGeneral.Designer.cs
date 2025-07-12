@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReporteGeneral));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             panel1 = new Panel();
             btn_buscar = new Button();
             dtp_fecha_fin = new DateTimePicker();
@@ -41,15 +41,15 @@
             lbl_fechaVencimiento = new Label();
             panel2 = new Panel();
             panel5 = new Panel();
-            pictureBox3 = new PictureBox();
+            btn_egresos = new Button();
             lbl_gastos = new Label();
             label6 = new Label();
             panel4 = new Panel();
-            pictureBox1 = new PictureBox();
+            btn_detalle_venta = new Button();
             label3 = new Label();
             lbl_ventas_totales = new Label();
             panel3 = new Panel();
-            pictureBox2 = new PictureBox();
+            btn_detalle_compras = new Button();
             lbl_compras = new Label();
             label4 = new Label();
             panel6 = new Panel();
@@ -60,11 +60,8 @@
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)chart1).BeginInit();
             panel8.SuspendLayout();
@@ -72,7 +69,7 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.WhiteSmoke;
+            panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
             panel1.Controls.Add(btn_buscar);
             panel1.Controls.Add(dtp_fecha_fin);
@@ -152,7 +149,7 @@
             // 
             panel5.BackColor = SystemColors.Window;
             panel5.BorderStyle = BorderStyle.Fixed3D;
-            panel5.Controls.Add(pictureBox3);
+            panel5.Controls.Add(btn_egresos);
             panel5.Controls.Add(lbl_gastos);
             panel5.Controls.Add(label6);
             panel5.Dock = DockStyle.Fill;
@@ -161,16 +158,24 @@
             panel5.Size = new Size(344, 63);
             panel5.TabIndex = 2;
             // 
-            // pictureBox3
+            // btn_egresos
             // 
-            pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(281, 6);
-            pictureBox3.Margin = new Padding(3, 2, 3, 2);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(56, 48);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 5;
-            pictureBox3.TabStop = false;
+            btn_egresos.BackColor = Color.Transparent;
+            btn_egresos.Dock = DockStyle.Right;
+            btn_egresos.FlatAppearance.BorderSize = 0;
+            btn_egresos.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_egresos.FlatStyle = FlatStyle.Flat;
+            btn_egresos.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_egresos.ForeColor = SystemColors.ControlText;
+            btn_egresos.Image = (Image)resources.GetObject("btn_egresos.Image");
+            btn_egresos.Location = new Point(256, 0);
+            btn_egresos.Name = "btn_egresos";
+            btn_egresos.Size = new Size(84, 59);
+            btn_egresos.TabIndex = 10;
+            btn_egresos.TextAlign = ContentAlignment.BottomCenter;
+            btn_egresos.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_egresos.UseVisualStyleBackColor = false;
+            btn_egresos.Click += btn_egresos_Click;
             // 
             // lbl_gastos
             // 
@@ -196,7 +201,7 @@
             // 
             panel4.BackColor = SystemColors.Window;
             panel4.BorderStyle = BorderStyle.Fixed3D;
-            panel4.Controls.Add(pictureBox1);
+            panel4.Controls.Add(btn_detalle_venta);
             panel4.Controls.Add(label3);
             panel4.Controls.Add(lbl_ventas_totales);
             panel4.Dock = DockStyle.Left;
@@ -205,16 +210,24 @@
             panel4.Size = new Size(408, 63);
             panel4.TabIndex = 1;
             // 
-            // pictureBox1
+            // btn_detalle_venta
             // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(344, 6);
-            pictureBox1.Margin = new Padding(3, 2, 3, 2);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(56, 48);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 5;
-            pictureBox1.TabStop = false;
+            btn_detalle_venta.BackColor = Color.Transparent;
+            btn_detalle_venta.Dock = DockStyle.Right;
+            btn_detalle_venta.FlatAppearance.BorderSize = 0;
+            btn_detalle_venta.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_detalle_venta.FlatStyle = FlatStyle.Flat;
+            btn_detalle_venta.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_detalle_venta.ForeColor = SystemColors.ControlText;
+            btn_detalle_venta.Image = (Image)resources.GetObject("btn_detalle_venta.Image");
+            btn_detalle_venta.Location = new Point(320, 0);
+            btn_detalle_venta.Name = "btn_detalle_venta";
+            btn_detalle_venta.Size = new Size(84, 59);
+            btn_detalle_venta.TabIndex = 9;
+            btn_detalle_venta.TextAlign = ContentAlignment.BottomCenter;
+            btn_detalle_venta.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_detalle_venta.UseVisualStyleBackColor = false;
+            btn_detalle_venta.Click += btn_detalle_venta_Click;
             // 
             // label3
             // 
@@ -240,7 +253,7 @@
             // 
             panel3.BackColor = SystemColors.Window;
             panel3.BorderStyle = BorderStyle.Fixed3D;
-            panel3.Controls.Add(pictureBox2);
+            panel3.Controls.Add(btn_detalle_compras);
             panel3.Controls.Add(lbl_compras);
             panel3.Controls.Add(label4);
             panel3.Dock = DockStyle.Left;
@@ -249,16 +262,24 @@
             panel3.Size = new Size(385, 63);
             panel3.TabIndex = 0;
             // 
-            // pictureBox2
+            // btn_detalle_compras
             // 
-            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(321, 6);
-            pictureBox2.Margin = new Padding(3, 2, 3, 2);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(56, 48);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 5;
-            pictureBox2.TabStop = false;
+            btn_detalle_compras.BackColor = Color.Transparent;
+            btn_detalle_compras.Dock = DockStyle.Right;
+            btn_detalle_compras.FlatAppearance.BorderSize = 0;
+            btn_detalle_compras.FlatAppearance.MouseDownBackColor = Color.DimGray;
+            btn_detalle_compras.FlatStyle = FlatStyle.Flat;
+            btn_detalle_compras.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btn_detalle_compras.ForeColor = SystemColors.ControlText;
+            btn_detalle_compras.Image = (Image)resources.GetObject("btn_detalle_compras.Image");
+            btn_detalle_compras.Location = new Point(297, 0);
+            btn_detalle_compras.Name = "btn_detalle_compras";
+            btn_detalle_compras.Size = new Size(84, 59);
+            btn_detalle_compras.TabIndex = 10;
+            btn_detalle_compras.TextAlign = ContentAlignment.BottomCenter;
+            btn_detalle_compras.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_detalle_compras.UseVisualStyleBackColor = false;
+            btn_detalle_compras.Click += btn_detalle_compras_Click;
             // 
             // lbl_compras
             // 
@@ -314,26 +335,26 @@
             // 
             // chart1
             // 
-            chartArea2.Name = "ChartArea1";
-            chart1.ChartAreas.Add(chartArea2);
+            chartArea1.Name = "ChartArea1";
+            chart1.ChartAreas.Add(chartArea1);
             chart1.Dock = DockStyle.Fill;
-            legend2.Name = "Legend1";
-            chart1.Legends.Add(legend2);
+            legend1.Name = "Legend1";
+            chart1.Legends.Add(legend1);
             chart1.Location = new Point(0, 0);
             chart1.Margin = new Padding(3, 2, 3, 2);
             chart1.Name = "chart1";
             chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            series2.YValuesPerPoint = 6;
-            chart1.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            series1.YValuesPerPoint = 6;
+            chart1.Series.Add(series1);
             chart1.Size = new Size(1137, 378);
             chart1.TabIndex = 5;
             chart1.Text = "chart1";
-            title2.Name = "Title1";
-            title2.Text = "Resumen";
-            chart1.Titles.Add(title2);
+            title1.Name = "Title1";
+            title1.Text = "Resumen";
+            chart1.Titles.Add(title1);
             // 
             // panel8
             // 
@@ -364,13 +385,10 @@
             panel2.ResumeLayout(false);
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)chart1).EndInit();
@@ -401,8 +419,8 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private Label label2;
         private Label lbl_resultado;
-        private PictureBox pictureBox3;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
+        private Button btn_detalle_venta;
+        private Button btn_egresos;
+        private Button btn_detalle_compras;
     }
 }

@@ -14,6 +14,7 @@ namespace sbx
         private readonly IReportes _IReportes;
         private dynamic? _Permisos;
         List<ResumenGananciasPerdidas> ListResumenGananciasPerdidas = new List<ResumenGananciasPerdidas>();
+        private DateTime _FechaIni, _FechaFin;
 
         public Reportes(IReportes reportes)
         {
@@ -27,11 +28,31 @@ namespace sbx
             set => _Permisos = value;
         }
 
-        private void Reportes_Load(object sender, EventArgs e)
+        public DateTime FechaIni
+        {
+            get => _FechaIni;
+            set => _FechaIni = value;
+        }
+
+        public DateTime FechaFin
+        {
+            get => _FechaFin;
+            set => _FechaFin = value;
+        }
+
+        private async void Reportes_Load(object sender, EventArgs e)
         {
             cbx_tipo_reporte.SelectedIndex = 0;
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
+
+            if (FechaIni.Year != 0001 && FechaFin.Year != 0001) 
+            {
+                dtp_fecha_inicio.Value = FechaIni;
+                dtp_fecha_fin.Value = FechaFin;
+            }
+
+            await Buscar();
         }
 
         private void cbx_tipo_reporte_SelectedValueChanged(object sender, EventArgs e)

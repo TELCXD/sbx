@@ -43,7 +43,7 @@
             // 
             // panel1
             // 
-            panel1.BackColor = SystemColors.Window;
+            panel1.BackColor = Color.WhiteSmoke;
             panel1.BorderStyle = BorderStyle.Fixed3D;
             panel1.Controls.Add(btn_guardar);
             panel1.Dock = DockStyle.Top;

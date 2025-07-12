@@ -59,7 +59,7 @@
             // 
             // panel3
             // 
-            panel3.BackColor = SystemColors.Window;
+            panel3.BackColor = Color.WhiteSmoke;
             panel3.BorderStyle = BorderStyle.Fixed3D;
             panel3.Controls.Add(button1);
             panel3.Controls.Add(textBox3);
@@ -110,6 +110,7 @@
             // panel4
             // 
             panel4.BackColor = SystemColors.Window;
+            panel4.BorderStyle = BorderStyle.Fixed3D;
             panel4.Controls.Add(cbx_numeracion_autorizada);
             panel4.Controls.Add(dtpk_fecha_vencimiento);
             panel4.Controls.Add(cbx_tipo_documento);

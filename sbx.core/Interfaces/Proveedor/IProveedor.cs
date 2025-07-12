@@ -14,5 +14,6 @@ namespace sbx.core.Interfaces.Proveedor
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro);
         Task<Response<dynamic>> Eliminar(int Id);
         Task<Response<dynamic>> ListNumeroDocumento(string NumeroDoc);
+        Task<Response<dynamic>> BuscarExportar(string dato, string campoFiltro, string tipoFiltro);
     }
 }

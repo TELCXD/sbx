@@ -260,6 +260,8 @@ namespace sbx
 
             _Reportes = _serviceProvider.GetRequiredService<Reportes>();
             _Reportes.Permisos = _Permisos;
+            _Reportes.FechaIni = dtp_fecha_inicio.Value;
+            _Reportes.FechaFin = dtp_fecha_fin.Value;
             _Reportes.FormClosed += (s, args) => _Reportes = null;
             _Reportes.Show();
         }

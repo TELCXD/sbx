@@ -12,6 +12,7 @@ namespace sbx
         private dynamic? _Permisos;
         private readonly IServiceProvider _serviceProvider;
         private AgregaGasto? _AgregaGasto;
+        private DateTime _FechaIni, _FechaFin;
 
         public DetalleGastos(IGastos gastos, IParametros parametros, IServiceProvider serviceProvider)
         {
@@ -29,6 +30,18 @@ namespace sbx
             set => _Permisos = value;
         }
 
+        public DateTime FechaIni
+        {
+            get => _FechaIni;
+            set => _FechaIni = value;
+        }
+
+        public DateTime FechaFin
+        {
+            get => _FechaFin;
+            set => _FechaFin = value;
+        }
+
         private async void DetalleGastos_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
@@ -44,6 +57,14 @@ namespace sbx
                     cbx_tipo_filtro.Text = BuscarPor;
                 }
             }
+
+            if (FechaIni.Year != 0001 && FechaFin.Year != 0001)
+            {
+                dtp_fecha_inicio.Value = FechaIni;
+                dtp_fecha_fin.Value = FechaFin;
+            }
+
+            await Consulta();
         }
 
         private void ValidaPermisos()
@@ -82,7 +103,7 @@ namespace sbx
             this.Cursor = Cursors.WaitCursor;
             decimal Total = 0;
 
-            var resp = await _IGastos.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+            var resp = await _IGastos.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
 
             dtg_gastos.Rows.Clear();
 

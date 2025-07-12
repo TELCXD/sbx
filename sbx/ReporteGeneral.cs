@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using sbx.core.Interfaces.ReporteGeneral;
 using System.Data;
 using System.Globalization;
@@ -10,11 +11,16 @@ namespace sbx
     {
         private readonly IReporteGeneral _IReporteGeneral;
         private dynamic? _Permisos;
+        private Reportes? _Reportes;
+        private DetalleGastos? _DetalleGastos;
+        private readonly IServiceProvider _serviceProvider;
+        private Inventario? _Inventario;
 
-        public ReporteGeneral(IReporteGeneral reporteGeneral)
+        public ReporteGeneral(IReporteGeneral reporteGeneral, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _IReporteGeneral = reporteGeneral;
+            _serviceProvider = serviceProvider;
         }
 
         public dynamic? Permisos
@@ -78,12 +84,13 @@ namespace sbx
                         var y = Convert.ToDecimal(row.Suma, new CultureInfo("es-CO"));
                         serie.Points.AddXY(x, y);
                         serie.Points[index].AxisLabel = row.Modulo;
-                        if (index == 0) 
+                        if (index == 0)
                         {
                             serie.Points[index].Color = Color.SteelBlue;
-                        }else if(index == 1)
+                        }
+                        else if (index == 1)
                         {
-                            serie.Points[index].Color= Color.SeaGreen;
+                            serie.Points[index].Color = Color.SeaGreen;
                         }
                         else if (index == 2)
                         {
@@ -159,7 +166,7 @@ namespace sbx
 
             lbl_resultado.Text = Resultado.ToString("N2", new CultureInfo("es-CO"));
 
-            if (Resultado > 0) 
+            if (Resultado > 0)
             {
                 lbl_resultado.ForeColor = Color.SeaGreen;
             }
@@ -169,6 +176,58 @@ namespace sbx
             }
 
             this.Cursor = Cursors.Default;
+        }
+
+        private void btn_detalle_venta_Click(object sender, EventArgs e)
+        {
+            if (_Reportes != null && !_Reportes.IsDisposed)
+            {
+                _Reportes.BringToFront();
+                _Reportes.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Reportes = _serviceProvider.GetRequiredService<Reportes>();
+            _Reportes.Permisos = _Permisos;
+            _Reportes.FechaIni = dtp_fecha_inicio.Value;
+            _Reportes.FechaFin = dtp_fecha_fin.Value;
+            _Reportes.FormClosed += (s, args) => _Reportes = null;
+            _Reportes.Show();
+        }
+
+        private void btn_egresos_Click(object sender, EventArgs e)
+        {
+            if (_DetalleGastos != null && !_DetalleGastos.IsDisposed)
+            {
+                _DetalleGastos.BringToFront();
+                _DetalleGastos.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _DetalleGastos = _serviceProvider.GetRequiredService<DetalleGastos>();
+            _DetalleGastos.Permisos = _Permisos;
+            _DetalleGastos.FechaIni = dtp_fecha_inicio.Value;
+            _DetalleGastos.FechaFin = dtp_fecha_fin.Value;
+            _DetalleGastos.FormClosed += (s, args) => _DetalleGastos = null;
+            _DetalleGastos.Show();
+        }
+
+        private void btn_detalle_compras_Click(object sender, EventArgs e)
+        {
+            if (_Inventario != null && !_Inventario.IsDisposed)
+            {
+                _Inventario.BringToFront();
+                _Inventario.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Inventario = _serviceProvider.GetRequiredService<Inventario>();
+            _Inventario.Permisos = _Permisos;
+            _Inventario.TipoMovimiento = "Entrada";
+            _Inventario.FechaIni = dtp_fecha_inicio.Value;
+            _Inventario.FechaFin = dtp_fecha_fin.Value;
+            _Inventario.FormClosed += (s, args) => _Inventario = null;
+            _Inventario.Show();
         }
     }
 }
