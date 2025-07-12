@@ -23,8 +23,9 @@ namespace sbx
         private readonly IParametros _IParametros;
         private readonly IBackup _IBackup;
         private Vendedor? _Vendedor;
-        private Dashboard _Dashboard;
+        private Dashboard? _Dashboard;
         private Gastos? _Gastos;
+        private ReporteGeneral? _ReporteGeneral;
 
         public Inicio(IServiceProvider serviceProvider, ITienda iTienda, IParametros iParametros, IBackup backup)
         {
@@ -337,7 +338,7 @@ namespace sbx
 
             _Dashboard = _serviceProvider.GetRequiredService<Dashboard>();
             _Dashboard.Permisos = _Permisos;
-            _Dashboard.FormClosed += (s, args) => _Caja = null;
+            _Dashboard.FormClosed += (s, args) => _Dashboard = null;
             _Dashboard.Show();
         }
 
@@ -373,7 +374,17 @@ namespace sbx
 
         private void btn_reporte_general_Click(object sender, EventArgs e)
         {
+            if (_ReporteGeneral != null && !_ReporteGeneral.IsDisposed)
+            {
+                _ReporteGeneral.BringToFront();
+                _ReporteGeneral.WindowState = FormWindowState.Normal;
+                return;
+            }
 
+            _ReporteGeneral = _serviceProvider.GetRequiredService<ReporteGeneral>();
+            _ReporteGeneral.Permisos = _Permisos;
+            _ReporteGeneral.FormClosed += (s, args) => _ReporteGeneral = null;
+            _ReporteGeneral.Show();
         }
     }
 }

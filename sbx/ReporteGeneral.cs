@@ -1,20 +1,174 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using sbx.core.Interfaces.ReporteGeneral;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Globalization;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace sbx
 {
     public partial class ReporteGeneral : Form
     {
-        public ReporteGeneral()
+        private readonly IReporteGeneral _IReporteGeneral;
+        private dynamic? _Permisos;
+
+        public ReporteGeneral(IReporteGeneral reporteGeneral)
         {
             InitializeComponent();
+            _IReporteGeneral = reporteGeneral;
+        }
+
+        public dynamic? Permisos
+        {
+            get => _Permisos;
+            set => _Permisos = value;
+        }
+
+        private async void ReporteGeneral_Load(object sender, EventArgs e)
+        {
+            await Buscar();
+        }
+
+        private async void btn_buscar_Click(object sender, EventArgs e)
+        {
+            await Buscar();
+        }
+
+        private async Task Buscar()
+        {
+            this.Cursor = Cursors.WaitCursor;
+
+            double VentasTotales = 0;
+            double ComprasTotales = 0;
+            double GastosTotales = 0;
+
+            chart1.Series.Clear();
+
+            lbl_compras.Text = "0";
+            lbl_ventas_totales.Text = "0";
+            lbl_gastos.Text = "0";
+
+            //VENTAS - COMPRAS - GASTOS
+            var respVentasComprasGastos = await _IReporteGeneral.BuscarReporteGeneral(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+
+            string jsonVentasComprasGastos = JsonConvert.SerializeObject(respVentasComprasGastos.Data);
+
+            DataTable? dataTableVentasComprasGastos = JsonConvert.DeserializeObject<DataTable>(jsonVentasComprasGastos);
+
+            if (dataTableVentasComprasGastos != null)
+            {
+                if (dataTableVentasComprasGastos.Rows.Count > 0)
+                {
+                    var agrupado = from row in dataTableVentasComprasGastos.AsEnumerable()
+                                   let IdModulo = row.Field<Int64>("Id")
+                                   group row by IdModulo into g
+                                   select new
+                                   {
+                                       IdModulo = g.Key,
+                                       Modulo = g.First().Field<string>("Modulo"),
+                                       Suma = g.Sum(r => r.Field<double>("Valor"))
+                                   };
+
+                    Series serie = new Series("_");
+                    serie.ChartType = SeriesChartType.Column;
+
+                    int index = 0;
+                    foreach (var row in agrupado.OrderBy(x => x.IdModulo))
+                    {
+                        var x = row.IdModulo;
+                        var y = Convert.ToDecimal(row.Suma, new CultureInfo("es-CO"));
+                        serie.Points.AddXY(x, y);
+                        serie.Points[index].AxisLabel = row.Modulo;
+                        if (index == 0) 
+                        {
+                            serie.Points[index].Color = Color.SteelBlue;
+                        }else if(index == 1)
+                        {
+                            serie.Points[index].Color= Color.SeaGreen;
+                        }
+                        else if (index == 2)
+                        {
+                            serie.Points[index].Color = Color.IndianRed;
+                        }
+
+                        index++;
+                    }
+
+                    serie.IsValueShownAsLabel = true;
+                    serie.LabelFormat = "#,0";
+                    chart1.ChartAreas[0].AxisY.LabelStyle.Format = "#,0";
+                    chart1.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+                    chart1.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
+
+                    chart1.Series.Clear();
+                    chart1.Series.Add(serie);
+                    chart1.ChartAreas[0].RecalculateAxesScale();
+                    chart1.Invalidate();
+                }
+            }
+
+            //VENTAS
+            var respVentas = await _IReporteGeneral.BuscarReporteVentas(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+
+            string jsonVentas = JsonConvert.SerializeObject(respVentas.Data);
+
+            DataTable? dataTableVentas = JsonConvert.DeserializeObject<DataTable>(jsonVentas);
+
+            if (dataTableVentas != null)
+            {
+                if (dataTableVentas.Rows.Count > 0)
+                {
+                    VentasTotales = dataTableVentas.AsEnumerable().Sum(row => row.Field<double>("VentaNetaFinal"));
+                    lbl_ventas_totales.Text = VentasTotales.ToString("N2", new CultureInfo("es-CO"));
+                }
+            }
+
+            //COMPRAS
+            var respCompras = await _IReporteGeneral.BuscarReporteCompras(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+
+            string jsonCompras = JsonConvert.SerializeObject(respCompras.Data);
+
+            DataTable? dataTableCompras = JsonConvert.DeserializeObject<DataTable>(jsonCompras);
+
+            if (dataTableCompras != null)
+            {
+                if (dataTableCompras.Rows.Count > 0)
+                {
+                    ComprasTotales = dataTableCompras.AsEnumerable().Sum(row => row.Field<double>("CostoNetoFinal"));
+                    lbl_compras.Text = ComprasTotales.ToString("N2", new CultureInfo("es-CO"));
+                }
+            }
+
+            //GASTOS
+            var respGastos = await _IReporteGeneral.BuscarReporteGastos(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+
+            string jsonGastos = JsonConvert.SerializeObject(respGastos.Data);
+
+            DataTable? dataTableGastos = JsonConvert.DeserializeObject<DataTable>(jsonGastos);
+
+            if (dataTableGastos != null)
+            {
+                if (dataTableGastos.Rows.Count > 0)
+                {
+                    GastosTotales = dataTableGastos.AsEnumerable().Sum(row => row.Field<double>("ValorGasto"));
+                    lbl_gastos.Text = GastosTotales.ToString("N2", new CultureInfo("es-CO"));
+                }
+            }
+
+            //RESULTADO
+            double Resultado = VentasTotales - ComprasTotales - GastosTotales;
+
+            lbl_resultado.Text = Resultado.ToString("N2", new CultureInfo("es-CO"));
+
+            if (Resultado > 0) 
+            {
+                lbl_resultado.ForeColor = Color.SeaGreen;
+            }
+            else
+            {
+                lbl_resultado.ForeColor = Color.Red;
+            }
+
+            this.Cursor = Cursors.Default;
         }
     }
 }
