@@ -94,7 +94,7 @@
             // 
             // panel3
             // 
-            panel3.BackColor = SystemColors.Window;
+            panel3.BackColor = Color.WhiteSmoke;
             panel3.BorderStyle = BorderStyle.Fixed3D;
             panel3.Controls.Add(btn_add_producto);
             panel3.Controls.Add(button1);

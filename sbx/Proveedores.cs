@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ClosedXML.Excel;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Promociones;
 using sbx.core.Interfaces.Proveedor;
+using System.Data;
 
 namespace sbx
 {
@@ -45,6 +48,7 @@ namespace sbx
                             btn_agregar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_editar.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
+                            btn_exportar.Enabled = item.ToRead == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -155,7 +159,7 @@ namespace sbx
                         {
                             Id_Proveedor = Convert.ToInt32(row.Cells["cl_IdProveedor"].Value);
 
-                            if (Id_Proveedor > 1) 
+                            if (Id_Proveedor > 1)
                             {
                                 var resp = await _IProveedor.Eliminar(Id_Proveedor);
 
@@ -183,6 +187,99 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void btn_exportar_Click(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.WaitCursor;
+            panel1.Enabled = false;
+            dtg_proveedor.Enabled = false;
+
+            var resp = await _IProveedor.BuscarExportar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp != null)
+            {
+                if (resp.Data != null)
+                {
+                    string json = JsonConvert.SerializeObject(resp.Data);
+
+                    DataTable? dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                    if (dataTable != null)
+                    {
+                        ExportarExcel(dataTable);
+                    }
+                }
+                else
+                {
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_proveedor.Enabled = true;
+                }
+            }
+            else
+            {
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
+                dtg_proveedor.Enabled = true;
+            }
+        }
+
+        public void ExportarExcel(DataTable dataTable)
+        {
+            using var sfd = new SaveFileDialog
+            {
+                Title = "Guardar archivo Excel",
+                Filter = "Archivos de Excel (*.xlsx)|*.xlsx",
+                FileName = "ExportadoProveedor.xlsx"
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    using var workbook = new XLWorkbook();
+                    var worksheet = workbook.Worksheets.Add("Datos");
+
+                    // Encabezados
+                    for (int col = 0; col < dataTable.Columns.Count; col++)
+                    {
+                        worksheet.Cell(1, col + 1).Value = dataTable.Columns[col].ColumnName;
+                    }
+
+                    // Datos
+                    for (int row = 0; row < dataTable.Rows.Count; row++)
+                    {
+                        for (int col = 0; col < dataTable.Columns.Count; col++)
+                        {
+                            worksheet.Cell(row + 2, col + 1).Value = dataTable.Rows[row][col]?.ToString() ?? string.Empty;
+                        }
+                    }
+
+                    worksheet.Columns().AdjustToContents(); // Ajustar ancho de columnas
+                    workbook.SaveAs(sfd.FileName);
+
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_proveedor.Enabled = true;
+
+                    MessageBox.Show("Archivo exportado con éxito.", "Exportación completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    this.Cursor = Cursors.Default;
+                    panel1.Enabled = true;
+                    dtg_proveedor.Enabled = true;
+
+                    MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
+                dtg_proveedor.Enabled = true;
             }
         }
     }

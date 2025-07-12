@@ -47,7 +47,7 @@
             // 
             // panel3
             // 
-            panel3.BackColor = SystemColors.Window;
+            panel3.BackColor = Color.WhiteSmoke;
             panel3.BorderStyle = BorderStyle.Fixed3D;
             panel3.Controls.Add(btn_add_precio_producto_lista);
             panel3.Controls.Add(button1);
@@ -162,6 +162,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.Window;
             ClientSize = new Size(347, 200);
             Controls.Add(label3);
             Controls.Add(txt_precio);

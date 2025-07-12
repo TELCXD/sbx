@@ -34,6 +34,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            btn_exportar = new Button();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
             btn_buscar = new Button();
@@ -60,6 +61,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_exportar);
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
             panel1.Controls.Add(btn_buscar);
@@ -70,8 +72,22 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(914, 70);
+            panel1.Size = new Size(914, 58);
             panel1.TabIndex = 0;
+            // 
+            // btn_exportar
+            // 
+            btn_exportar.Enabled = false;
+            btn_exportar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_exportar.FlatStyle = FlatStyle.Flat;
+            btn_exportar.Image = (Image)resources.GetObject("btn_exportar.Image");
+            btn_exportar.Location = new Point(326, 5);
+            btn_exportar.Name = "btn_exportar";
+            btn_exportar.Size = new Size(46, 45);
+            btn_exportar.TabIndex = 32;
+            btn_exportar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_exportar.UseVisualStyleBackColor = true;
+            btn_exportar.Click += btn_exportar_Click;
             // 
             // cbx_tipo_filtro
             // 
@@ -79,7 +95,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(589, 23);
+            cbx_tipo_filtro.Location = new Point(589, 16);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 21;
@@ -90,7 +106,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Num Doc" });
-            cbx_campo_filtro.Location = new Point(469, 23);
+            cbx_campo_filtro.Location = new Point(469, 16);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 20;
@@ -101,7 +117,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(879, 21);
+            btn_buscar.Location = new Point(879, 14);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 19;
@@ -112,7 +128,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(682, 23);
+            txt_buscar.Location = new Point(682, 16);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 18;
@@ -123,7 +139,7 @@
             btn_eliminar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar.FlatStyle = FlatStyle.Flat;
             btn_eliminar.Image = (Image)resources.GetObject("btn_eliminar.Image");
-            btn_eliminar.Location = new Point(226, 12);
+            btn_eliminar.Location = new Point(219, 5);
             btn_eliminar.Name = "btn_eliminar";
             btn_eliminar.Size = new Size(101, 45);
             btn_eliminar.TabIndex = 13;
@@ -138,7 +154,7 @@
             btn_editar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar.FlatStyle = FlatStyle.Flat;
             btn_editar.Image = (Image)resources.GetObject("btn_editar.Image");
-            btn_editar.Location = new Point(119, 12);
+            btn_editar.Location = new Point(112, 5);
             btn_editar.Name = "btn_editar";
             btn_editar.Size = new Size(101, 45);
             btn_editar.TabIndex = 12;
@@ -153,7 +169,7 @@
             btn_agregar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar.FlatStyle = FlatStyle.Flat;
             btn_agregar.Image = (Image)resources.GetObject("btn_agregar.Image");
-            btn_agregar.Location = new Point(12, 12);
+            btn_agregar.Location = new Point(5, 5);
             btn_agregar.Name = "btn_agregar";
             btn_agregar.Size = new Size(101, 45);
             btn_agregar.TabIndex = 11;
@@ -187,7 +203,7 @@
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dtg_proveedor.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_proveedor.Dock = DockStyle.Fill;
-            dtg_proveedor.Location = new Point(0, 70);
+            dtg_proveedor.Location = new Point(0, 58);
             dtg_proveedor.Name = "dtg_proveedor";
             dtg_proveedor.ReadOnly = true;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -199,7 +215,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_proveedor.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_proveedor.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_proveedor.Size = new Size(914, 380);
+            dtg_proveedor.Size = new Size(914, 392);
             dtg_proveedor.TabIndex = 3;
             // 
             // cl_IdProveedor
@@ -298,5 +314,6 @@
         private DataGridViewTextBoxColumn cl_telefono;
         private DataGridViewTextBoxColumn cl_email;
         private DataGridViewTextBoxColumn cl_estado;
+        private Button btn_exportar;
     }
 }

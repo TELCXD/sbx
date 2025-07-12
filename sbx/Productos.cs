@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using sbx.core.Interfaces.EntradaInventario;
@@ -258,8 +259,8 @@ namespace sbx
                                 if (Exist == true) { Mensaje = "El codigo de barras ya existe, "; Error++; }
                             }
 
-                            if (string.IsNullOrEmpty(item[2]?.ToString()?.Trim())) 
-                            { 
+                            if (string.IsNullOrEmpty(item[2]?.ToString()?.Trim()))
+                            {
                                 Mensaje = "El nombre es obligatorio, "; Error++;
                             }
                             else
@@ -312,7 +313,7 @@ namespace sbx
                                         Mensaje += "El precio de venta unitario debe ser un valor numérico válido, ";
                                         Error++;
                                     }
-                                    else if(precioVentaUnitario == 0) 
+                                    else if (precioVentaUnitario == 0)
                                     {
                                         Mensaje += "El precio de venta unitario debe ser mayor a cero (0), ";
                                         Error++;
@@ -524,7 +525,7 @@ namespace sbx
             {
                 Title = "Guardar archivo Excel",
                 Filter = "Archivos de Excel (*.xlsx)|*.xlsx",
-                FileName = "Exportado.xlsx"
+                FileName = "ExportadoProductos.xlsx"
             };
 
             if (sfd.ShowDialog() == DialogResult.OK)
@@ -608,6 +609,27 @@ namespace sbx
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
                 dtg_producto.Enabled = true;
+            }
+        }
+
+        private void dtg_producto_DoubleClick(object sender, EventArgs e)
+        {
+            if (dtg_producto.Rows.Count > 0)
+            {
+                if (dtg_producto.SelectedRows.Count > 0)
+                {
+                    if (_Permisos != null)
+                    {
+                        _AgregarProducto = _serviceProvider.GetRequiredService<AgregarProducto>();
+                        _AgregarProducto.Permisos = _Permisos;
+                        foreach (DataGridViewRow rows in dtg_producto.SelectedRows)
+                        {
+                            _AgregarProducto.Id_Producto = Convert.ToInt32(rows.Cells["cl_idProducto"].Value);
+                        }
+                        _AgregarProducto.FormClosed += (s, args) => _AgregarProducto = null;
+                        _AgregarProducto.ShowDialog();
+                    }
+                }
             }
         }
     }

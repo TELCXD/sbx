@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Gastos;
 using System.Data;
 using System.Globalization;
@@ -44,6 +43,8 @@ namespace sbx
 
             _DetalleGastos = _serviceProvider.GetRequiredService<DetalleGastos>();
             _DetalleGastos.Permisos = _Permisos;
+            _DetalleGastos.FechaIni = dtp_fecha_inicio.Value;
+            _DetalleGastos.FechaFin = dtp_fecha_fin.Value;
             _DetalleGastos.FormClosed += (s, args) => _DetalleGastos = null;
             _DetalleGastos.Show();
         }

@@ -44,6 +44,10 @@
             lbl_total_gastos = new Label();
             label1 = new Label();
             dtg_gastos = new DataGridView();
+            dtp_fecha_fin = new DateTimePicker();
+            dtp_fecha_inicio = new DateTimePicker();
+            label2 = new Label();
+            lbl_fechaVencimiento = new Label();
             cl_idGasto = new DataGridViewTextBoxColumn();
             cl_Categoria = new DataGridViewTextBoxColumn();
             cl_SubCategoria = new DataGridViewTextBoxColumn();
@@ -58,8 +62,12 @@
             // 
             // panel1
             // 
-            panel1.BackColor = SystemColors.Window;
+            panel1.BackColor = Color.White;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(dtp_fecha_fin);
+            panel1.Controls.Add(dtp_fecha_inicio);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(lbl_fechaVencimiento);
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
             panel1.Controls.Add(btn_buscar);
@@ -70,7 +78,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(955, 57);
+            panel1.Size = new Size(1154, 57);
             panel1.TabIndex = 0;
             // 
             // cbx_tipo_filtro
@@ -79,7 +87,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(592, 17);
+            cbx_tipo_filtro.Location = new Point(791, 24);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 12;
@@ -90,7 +98,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Categoria", "Subcategoria", "Detalle" });
-            cbx_campo_filtro.Location = new Point(472, 17);
+            cbx_campo_filtro.Location = new Point(671, 24);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 11;
@@ -101,7 +109,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(913, 15);
+            btn_buscar.Location = new Point(1112, 22);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 9;
@@ -112,7 +120,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(685, 17);
+            txt_buscar.Location = new Point(884, 24);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(222, 23);
             txt_buscar.TabIndex = 8;
@@ -124,7 +132,7 @@
             btn_eliminar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar.FlatStyle = FlatStyle.Flat;
             btn_eliminar.Image = (Image)resources.GetObject("btn_eliminar.Image");
-            btn_eliminar.Location = new Point(224, 4);
+            btn_eliminar.Location = new Point(219, 4);
             btn_eliminar.Name = "btn_eliminar";
             btn_eliminar.Size = new Size(101, 45);
             btn_eliminar.TabIndex = 7;
@@ -139,7 +147,7 @@
             btn_editar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar.FlatStyle = FlatStyle.Flat;
             btn_editar.Image = (Image)resources.GetObject("btn_editar.Image");
-            btn_editar.Location = new Point(117, 4);
+            btn_editar.Location = new Point(112, 4);
             btn_editar.Name = "btn_editar";
             btn_editar.Size = new Size(101, 45);
             btn_editar.TabIndex = 6;
@@ -154,7 +162,7 @@
             btn_agregar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar.FlatStyle = FlatStyle.Flat;
             btn_agregar.Image = (Image)resources.GetObject("btn_agregar.Image");
-            btn_agregar.Location = new Point(10, 4);
+            btn_agregar.Location = new Point(5, 4);
             btn_agregar.Name = "btn_agregar";
             btn_agregar.Size = new Size(101, 45);
             btn_agregar.TabIndex = 5;
@@ -171,7 +179,7 @@
             panel2.Dock = DockStyle.Bottom;
             panel2.Location = new Point(0, 409);
             panel2.Name = "panel2";
-            panel2.Size = new Size(955, 41);
+            panel2.Size = new Size(1154, 41);
             panel2.TabIndex = 4;
             // 
             // lbl_total_gastos
@@ -179,7 +187,7 @@
             lbl_total_gastos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbl_total_gastos.AutoSize = true;
             lbl_total_gastos.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lbl_total_gastos.Location = new Point(712, 6);
+            lbl_total_gastos.Location = new Point(911, 6);
             lbl_total_gastos.Name = "lbl_total_gastos";
             lbl_total_gastos.Size = new Size(22, 30);
             lbl_total_gastos.TabIndex = 31;
@@ -190,7 +198,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(649, 6);
+            label1.Location = new Point(848, 6);
             label1.Name = "label1";
             label1.Size = new Size(57, 30);
             label1.TabIndex = 30;
@@ -233,8 +241,46 @@
             dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
             dtg_gastos.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_gastos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_gastos.Size = new Size(955, 352);
+            dtg_gastos.Size = new Size(1154, 352);
             dtg_gastos.TabIndex = 5;
+            // 
+            // dtp_fecha_fin
+            // 
+            dtp_fecha_fin.Anchor = AnchorStyles.Top;
+            dtp_fecha_fin.Format = DateTimePickerFormat.Short;
+            dtp_fecha_fin.Location = new Point(506, 24);
+            dtp_fecha_fin.Name = "dtp_fecha_fin";
+            dtp_fecha_fin.Size = new Size(160, 23);
+            dtp_fecha_fin.TabIndex = 166;
+            // 
+            // dtp_fecha_inicio
+            // 
+            dtp_fecha_inicio.Anchor = AnchorStyles.Top;
+            dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
+            dtp_fecha_inicio.Location = new Point(332, 24);
+            dtp_fecha_inicio.Name = "dtp_fecha_inicio";
+            dtp_fecha_inicio.Size = new Size(168, 23);
+            dtp_fecha_inicio.TabIndex = 165;
+            // 
+            // label2
+            // 
+            label2.Anchor = AnchorStyles.Top;
+            label2.AutoSize = true;
+            label2.Location = new Point(506, 6);
+            label2.Name = "label2";
+            label2.Size = new Size(55, 15);
+            label2.TabIndex = 168;
+            label2.Text = "Fecha fin";
+            // 
+            // lbl_fechaVencimiento
+            // 
+            lbl_fechaVencimiento.Anchor = AnchorStyles.Top;
+            lbl_fechaVencimiento.AutoSize = true;
+            lbl_fechaVencimiento.Location = new Point(332, 6);
+            lbl_fechaVencimiento.Name = "lbl_fechaVencimiento";
+            lbl_fechaVencimiento.Size = new Size(70, 15);
+            lbl_fechaVencimiento.TabIndex = 167;
+            lbl_fechaVencimiento.Text = "Fecha inicio";
             // 
             // cl_idGasto
             // 
@@ -248,20 +294,21 @@
             cl_Categoria.HeaderText = "Categoria";
             cl_Categoria.Name = "cl_Categoria";
             cl_Categoria.ReadOnly = true;
-            cl_Categoria.Width = 180;
+            cl_Categoria.Width = 300;
             // 
             // cl_SubCategoria
             // 
             cl_SubCategoria.HeaderText = "Sub categoria";
             cl_SubCategoria.Name = "cl_SubCategoria";
             cl_SubCategoria.ReadOnly = true;
-            cl_SubCategoria.Width = 180;
+            cl_SubCategoria.Width = 250;
             // 
             // cl_detalle
             // 
             cl_detalle.HeaderText = "Detalle";
             cl_detalle.Name = "cl_detalle";
             cl_detalle.ReadOnly = true;
+            cl_detalle.Width = 170;
             // 
             // cl_valor_gasto
             // 
@@ -286,13 +333,13 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(955, 450);
+            ClientSize = new Size(1154, 450);
             Controls.Add(dtg_gastos);
             Controls.Add(panel2);
             Controls.Add(panel1);
             MaximizeBox = false;
-            MaximumSize = new Size(971, 489);
-            MinimumSize = new Size(971, 489);
+            MaximumSize = new Size(1170, 489);
+            MinimumSize = new Size(1170, 489);
             Name = "DetalleGastos";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "DetalleGastos";
@@ -315,6 +362,14 @@
         private TextBox txt_buscar;
         private Panel panel2;
         private DataGridView dtg_gastos;
+        private Label lbl_total_gastos;
+        private Label label1;
+        private ComboBox cbx_tipo_filtro;
+        private ComboBox cbx_campo_filtro;
+        private DateTimePicker dtp_fecha_fin;
+        private DateTimePicker dtp_fecha_inicio;
+        private Label label2;
+        private Label lbl_fechaVencimiento;
         private DataGridViewTextBoxColumn cl_idGasto;
         private DataGridViewTextBoxColumn cl_Categoria;
         private DataGridViewTextBoxColumn cl_SubCategoria;
@@ -322,9 +377,5 @@
         private DataGridViewTextBoxColumn cl_valor_gasto;
         private DataGridViewTextBoxColumn cl_fecha;
         private DataGridViewTextBoxColumn cl_usuario;
-        private Label lbl_total_gastos;
-        private Label label1;
-        private ComboBox cbx_tipo_filtro;
-        private ComboBox cbx_campo_filtro;
     }
 }

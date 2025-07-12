@@ -415,18 +415,21 @@ namespace sbx.repositories.EntradaInventario
             }
         }
 
-        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro)
+        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, string tipo, DateTime FechaInicio, DateTime FechaFin)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 var response = new Response<dynamic>();
+
+                DateTime FechaIni = Convert.ToDateTime(FechaInicio.ToString("yyyy-MM-dd"));
+                DateTime FechaFn = Convert.ToDateTime(FechaFin.ToString("yyyy-MM-dd"));
 
                 try
                 {
                     await connection.OpenAsync();
 
                     string sql = @" SELECT Fecha,IdUserAction,UserName ,Usuario , IdDocumento,Documento, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
-                                    CodigoBarras, CodigoLote, FechaVencimiento,Comentario 
+                                    CodigoBarras, CodigoLote, FechaVencimiento,Costo,Valor,Descuento,Iva,Total,Comentario 
                                     FROM
                                     (
                                     SELECT 
@@ -445,7 +448,12 @@ namespace sbx.repositories.EntradaInventario
 	                                    p.CodigoBarras,
                                         e.CodigoLote,
                                         e.FechaVencimiento,
-                                        ei.Comentario
+										0 Costo,
+										e.CostoUnitario Valor,
+										e.Descuento,
+										e.Iva,
+                                        ei.Comentario,
+										(e.Cantidad * e.CostoUnitario) * (1 - ISNULL(e.Descuento, 0) / 100) * (1 + e.Iva / 100) Total
                                     FROM T_DetalleEntradasInventario e
                                     INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
                                     INNER JOIN T_TipoEntrada te ON te.IdTipoEntrada = ei.IdTipoEntrada
@@ -470,7 +478,12 @@ namespace sbx.repositories.EntradaInventario
 	                                    p.CodigoBarras,
                                         s.CodigoLote,
                                         s.FechaVencimiento,
-                                        si.Comentario
+										0 Costo,
+										s.CostoUnitario Valor,
+										0 Descuento,
+										0 Iva,
+                                        si.Comentario,
+										(s.Cantidad * s.CostoUnitario) * (1 - ISNULL(0, 0) / 100) * (1 + 0 / 100) Total
                                     FROM T_DetalleSalidasInventario s
                                     INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
                                     INNER JOIN T_TipoSalida ts ON ts.IdTipoSalida = si.IdTipoSalida
@@ -495,7 +508,12 @@ namespace sbx.repositories.EntradaInventario
 	                                    dvt.CodigoBarras,
 	                                    '' AS CodigoLote,
 	                                    '' AS FechaVencimiento,
-                                        '' AS Comentario
+										dvt.CostoUnitario Costo,
+										dvt.PrecioUnitario Valor,
+										dvt.Descuento,
+										dvt.Impuesto Iva,
+                                        '' AS Comentario,
+										(dvt.Cantidad * dvt.PrecioUnitario) * (1 - ISNULL(dvt.Descuento, 0) / 100) * (1 + dvt.Impuesto / 100) Total
 	                                FROM T_Ventas vt 
 									INNER JOIN T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta
 									INNER JOIN T_User usr ON usr.IdUser = dvt.IdUserAction
@@ -518,10 +536,15 @@ namespace sbx.repositories.EntradaInventario
 										ncd.CodigoBarras,
 										'' AS CodigoLote,
 	                                    '' AS FechaVencimiento,
-                                        nc.Motivo AS Comentario
+										0 Costo,
+										ncd.PrecioUnitario,
+										ncd.Descuento,
+										ncd.Impuesto Iva,
+                                        nc.Motivo AS Comentario,
+										(ncd.Cantidad * ncd.PrecioUnitario) * (1 - ISNULL(ncd.Descuento, 0) / 100) * (1 + ncd.Impuesto / 100) Total
 									FROM T_NotaCredito nc INNER JOIN T_NotaCreditoDetalle ncd ON nc.IdNotaCredito  = ncd.IdNotaCredito
 									INNER JOIN T_User usr ON usr.IdUser = ncd.IdUserAction
-                                    ) R ";
+                                    ) R  ";
 
                     string Where = "";
                     string Filtro = "";
@@ -596,10 +619,19 @@ namespace sbx.repositories.EntradaInventario
                             break;
                     }
 
-                    sql += Where ;
+                    string filtroPorTipo = "";
+                    if (tipo != "Todo") 
+                    {
+                    filtroPorTipo = $" AND TipoMovimiento = '{tipo}'";
+                    }
+
+                    string filtroFechas = @" AND (Fecha BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) 
+									        AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) ";
+
+                    sql += Where + filtroFechas + filtroPorTipo;
                     sql += Orderby;
 
-                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro });
+                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

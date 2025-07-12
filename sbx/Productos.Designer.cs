@@ -273,6 +273,7 @@
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_producto.Size = new Size(1148, 496);
             dtg_producto.TabIndex = 2;
+            dtg_producto.DoubleClick += dtg_producto_DoubleClick;
             // 
             // cl_idProducto
             // 
