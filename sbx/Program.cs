@@ -15,6 +15,7 @@ using sbx.core.Interfaces.Cotizacion;
 using sbx.core.Interfaces.Dashboard;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.Gastos;
 using sbx.core.Interfaces.IdentificationType;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.Marca;
@@ -31,6 +32,7 @@ using sbx.core.Interfaces.Promociones;
 using sbx.core.Interfaces.PromocionProducto;
 using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.RangoNumeracion;
+using sbx.core.Interfaces.ReporteGeneral;
 using sbx.core.Interfaces.Reportes;
 using sbx.core.Interfaces.ResponsabilidadTributaria;
 using sbx.core.Interfaces.Rol;
@@ -60,6 +62,7 @@ using sbx.repositories.Cotizacion;
 using sbx.repositories.Dashboard;
 using sbx.repositories.Departamento;
 using sbx.repositories.EntradaInventario;
+using sbx.repositories.Gastos;
 using sbx.repositories.IdentificationType;
 using sbx.repositories.ListaPrecios;
 using sbx.repositories.LoginRepository;
@@ -77,6 +80,7 @@ using sbx.repositories.Promociones;
 using sbx.repositories.PromocionProducto;
 using sbx.repositories.Proveedor;
 using sbx.repositories.RangoNumeracion;
+using sbx.repositories.ReporteGeneral;
 using sbx.repositories.Reportes;
 using sbx.repositories.ResponsabilidadTributaria;
 using sbx.repositories.Rol;
@@ -210,7 +214,15 @@ namespace sbx
 
                 services.AddTransient<AddConversionProducto>();
 
-                services.AddTransient<Dashboard>(); 
+                services.AddTransient<Dashboard>();
+
+                services.AddTransient<Gastos>();
+
+                services.AddTransient<DetalleGastos>();
+
+                services.AddTransient<AgregaGasto>();
+
+                services.AddTransient<ReporteGeneral>();
 
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
@@ -343,6 +355,12 @@ namespace sbx
 
                 services.AddTransient<IDashboard>(provider =>
                 new DashboardRepository(connectionString));
+
+                services.AddTransient<IGastos>(provider =>
+                new GastosRepository(connectionString));
+
+                services.AddTransient<IReporteGeneral>(provider =>
+                new ReporteGeneralRepository(connectionString));
 
             })
             .Build();

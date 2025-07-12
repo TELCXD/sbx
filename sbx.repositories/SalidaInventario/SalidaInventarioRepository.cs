@@ -618,5 +618,58 @@ namespace sbx.repositories.SalidaInventario
                 }
             }
         }
+
+        public async Task<Response<dynamic>> List(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@" SELECT A.IdSalidasInventario
+                                      ,A.IdTipoSalida
+	                                  ,C.Nombre TipoEntrada
+                                      ,A.IdProveedor
+	                                  ,D.NumeroDocumento
+	                                  ,D.NombreRazonSocial
+                                      ,A.OrdenCompra
+                                      ,A.NumFactura
+                                      ,A.Comentario
+                                      ,A.CreationDate
+                                      ,A.UpdateDate
+                                      ,A.IdUserAction
+	                                  ,B.IdProducto
+	                                  ,E.Sku
+	                                  ,E.CodigoBarras
+	                                  ,E.Nombre
+                                      ,B.CodigoLote
+                                      ,B.FechaVencimiento
+                                      ,B.Cantidad
+                                      ,B.CostoUnitario
+                                 FROM T_SalidasInventario A
+                                  INNER JOIN T_DetalleSalidasInventario B ON A.IdSalidasInventario = B.IdSalidasInventario
+                                  INNER JOIN T_TipoSalida C ON C.IdTipoSalida = A.IdTipoSalida
+                                  INNER JOIN T_Proveedores D ON D.IdProveedor = A.IdProveedor
+                                  INNER JOIN T_Productos E ON E.IdProducto = B.IdProducto 
+                                  WHERE A.IdSalidasInventario = {Id} ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

@@ -12,11 +12,19 @@ namespace sbx
         private readonly IDashboard _IDashboard;
         private Reportes? _Reportes;
         private readonly IServiceProvider _serviceProvider;
+        private dynamic? _Permisos;
+
         public Dashboard(IDashboard dashboard, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _IDashboard = dashboard;
             _serviceProvider = serviceProvider;
+        }
+
+        public dynamic? Permisos
+        {
+            get => _Permisos;
+            set => _Permisos = value;
         }
 
         private async void Dashboard_Load(object sender, EventArgs e)
@@ -78,6 +86,8 @@ namespace sbx
 
                     chart1.Series.Clear();
                     chart1.Series.Add(serie);
+                    chart1.ChartAreas[0].RecalculateAxesScale();
+                    chart1.Invalidate();
 
                     chart1.ChartAreas[0].AxisX.CustomLabels.Clear();
                     foreach (var row in agrupado.OrderBy(x => x.Mes))
@@ -136,6 +146,8 @@ namespace sbx
 
                     chart2.Series.Clear();
                     chart2.Series.Add(serieXproducto);
+                    chart2.ChartAreas[0].RecalculateAxesScale();
+                    chart2.Invalidate();
 
                     //Medio de pago
                     var agrupadoXMedioPago = from row in dataTable.AsEnumerable()
@@ -171,6 +183,8 @@ namespace sbx
 
                     chart3.Series.Clear();
                     chart3.Series.Add(serieXMedioPago);
+                    chart3.ChartAreas[0].RecalculateAxesScale();
+                    chart3.Invalidate();
 
                     //Ventas diarias
                     var agrupadoXVentasDiarias = from row in dataTable.AsEnumerable()
@@ -245,6 +259,7 @@ namespace sbx
             }
 
             _Reportes = _serviceProvider.GetRequiredService<Reportes>();
+            _Reportes.Permisos = _Permisos;
             _Reportes.FormClosed += (s, args) => _Reportes = null;
             _Reportes.Show();
         }

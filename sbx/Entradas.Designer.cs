@@ -48,10 +48,11 @@
             cbx_tipo_entrada = new ComboBox();
             label6 = new Label();
             panel2 = new Panel();
+            btn_quitar = new Button();
             btn_add_producto = new Button();
             panel4 = new Panel();
+            lbl_total = new Label();
             label4 = new Label();
-            txt_total = new TextBox();
             dtg_detalle_entrada = new DataGridView();
             cl_id_producto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
@@ -73,7 +74,7 @@
             // 
             // panel3
             // 
-            panel3.BackColor = SystemColors.Window;
+            panel3.BackColor = Color.WhiteSmoke;
             panel3.BorderStyle = BorderStyle.Fixed3D;
             panel3.Controls.Add(btn_guardar);
             panel3.Dock = DockStyle.Top;
@@ -159,7 +160,7 @@
             txt_comentario.Location = new Point(12, 80);
             txt_comentario.MaxLength = 150;
             txt_comentario.Name = "txt_comentario";
-            txt_comentario.Size = new Size(613, 23);
+            txt_comentario.Size = new Size(825, 23);
             txt_comentario.TabIndex = 6;
             // 
             // label2
@@ -233,12 +234,28 @@
             // 
             panel2.BackColor = SystemColors.Window;
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(btn_quitar);
             panel2.Controls.Add(btn_add_producto);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 177);
             panel2.Name = "panel2";
             panel2.Size = new Size(1138, 56);
             panel2.TabIndex = 66;
+            // 
+            // btn_quitar
+            // 
+            btn_quitar.Enabled = false;
+            btn_quitar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_quitar.FlatStyle = FlatStyle.Flat;
+            btn_quitar.Image = (Image)resources.GetObject("btn_quitar.Image");
+            btn_quitar.Location = new Point(112, 5);
+            btn_quitar.Name = "btn_quitar";
+            btn_quitar.Size = new Size(101, 45);
+            btn_quitar.TabIndex = 8;
+            btn_quitar.Text = "Quitar";
+            btn_quitar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_quitar.UseVisualStyleBackColor = true;
+            btn_quitar.Click += btn_quitar_Click;
             // 
             // btn_add_producto
             // 
@@ -257,33 +274,35 @@
             // 
             // panel4
             // 
-            panel4.BackColor = SystemColors.Window;
+            panel4.BackColor = Color.WhiteSmoke;
             panel4.BorderStyle = BorderStyle.Fixed3D;
+            panel4.Controls.Add(lbl_total);
             panel4.Controls.Add(label4);
-            panel4.Controls.Add(txt_total);
             panel4.Dock = DockStyle.Bottom;
-            panel4.Location = new Point(0, 612);
+            panel4.Location = new Point(0, 608);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1138, 35);
+            panel4.Size = new Size(1138, 39);
             panel4.TabIndex = 68;
+            // 
+            // lbl_total
+            // 
+            lbl_total.AutoSize = true;
+            lbl_total.Font = new Font("Segoe UI", 14F);
+            lbl_total.Location = new Point(922, 5);
+            lbl_total.Name = "lbl_total";
+            lbl_total.Size = new Size(20, 25);
+            lbl_total.TabIndex = 31;
+            lbl_total.Text = "_";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(935, 6);
+            label4.Font = new Font("Segoe UI", 14F);
+            label4.Location = new Point(863, 5);
             label4.Name = "label4";
-            label4.Size = new Size(32, 15);
+            label4.Size = new Size(52, 25);
             label4.TabIndex = 30;
             label4.Text = "Total";
-            // 
-            // txt_total
-            // 
-            txt_total.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_total.Enabled = false;
-            txt_total.Location = new Point(973, 3);
-            txt_total.Name = "txt_total";
-            txt_total.Size = new Size(158, 23);
-            txt_total.TabIndex = 29;
             // 
             // dtg_detalle_entrada
             // 
@@ -322,7 +341,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_detalle_entrada.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_detalle_entrada.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_detalle_entrada.Size = new Size(1138, 379);
+            dtg_detalle_entrada.Size = new Size(1138, 375);
             dtg_detalle_entrada.TabIndex = 69;
             // 
             // cl_id_producto
@@ -459,6 +478,7 @@
         private DataGridViewTextBoxColumn cl_iva;
         private DataGridViewTextBoxColumn cl_total;
         private Label label4;
-        private TextBox txt_total;
+        private Button btn_quitar;
+        private Label lbl_total;
     }
 }

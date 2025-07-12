@@ -12,12 +12,19 @@ namespace sbx
     public partial class Reportes : Form
     {
         private readonly IReportes _IReportes;
+        private dynamic? _Permisos;
         List<ResumenGananciasPerdidas> ListResumenGananciasPerdidas = new List<ResumenGananciasPerdidas>();
 
         public Reportes(IReportes reportes)
         {
             InitializeComponent();
             _IReportes = reportes;
+        }
+
+        public dynamic? Permisos
+        {
+            get => _Permisos;
+            set => _Permisos = value;
         }
 
         private void Reportes_Load(object sender, EventArgs e)

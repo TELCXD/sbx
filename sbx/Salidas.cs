@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Entities.EntradaInventario;
 using sbx.core.Entities.SalidaInventario;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
@@ -19,6 +20,7 @@ namespace sbx
         SalidaInventarioEntitie salidaInventarioEntitie = new SalidaInventarioEntitie();
         private AgregaDetalleSalida? _AgregaDetalleSalida;
         private readonly ISalidaInventario _ISalidaInventario;
+        private int _Id_Salida;
 
         public Salidas(ITipoSalida tipoSalida, IServiceProvider serviceProvider, IProveedor proveedor, IProducto producto, ISalidaInventario salidaInventario)
         {
@@ -34,6 +36,12 @@ namespace sbx
         {
             get => _Permisos;
             set => _Permisos = value;
+        }
+
+        public int Id_Salida
+        {
+            get => _Id_Salida;
+            set => _Id_Salida = value;
         }
 
         private async void Salidas_Load(object sender, EventArgs e)
@@ -54,6 +62,7 @@ namespace sbx
                             btn_guardar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_add_producto.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_busca_pv.Enabled = item.ToRead == 1 ? true : false;
+                            btn_quitar.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -73,6 +82,52 @@ namespace sbx
             cbx_tipo_salida.ValueMember = "IdTipoSalida";
             cbx_tipo_salida.DisplayMember = "Nombre";
             cbx_tipo_salida.SelectedIndex = 0;
+
+            if (Id_Salida > 0)
+            {
+                panel3.Enabled = false;
+                panel1.Enabled = false;
+                panel2.Enabled = false;
+
+                var DataSalida = await _ISalidaInventario.List(Id_Salida);
+                if (DataSalida.Data != null)
+                {
+                    if (DataSalida.Data.Count > 0)
+                    {
+                        cbx_tipo_salida.SelectedValue = DataSalida.Data[0].IdTipoSalida;
+                        txt_orden_compra.Text = DataSalida.Data[0].OrdenCompra.ToString();
+                        txt_num_factura.Text = DataSalida.Data[0].NumFactura.ToString();
+                        txt_documento_proveedor.Text = DataSalida.Data[0].NumeroDocumento.ToString();
+                        lbl_nombre_proveedor.Text = DataSalida.Data[0].NombreRazonSocial.ToString();
+                        txt_comentario.Text = DataSalida.Data[0].Comentario.ToString();
+
+                        decimal Total = 0;
+                        decimal Subtotal = 0;
+                        decimal SubtotalLinea = 0;
+
+                        foreach (var item in DataSalida.Data)
+                        {
+                            Subtotal += Convert.ToDecimal(item.CostoUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                            SubtotalLinea = Convert.ToDecimal(item.CostoUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+
+                            dtg_detalle_salida.Rows.Add(
+                                item.IdProducto,
+                                item.Sku,
+                                item.CodigoBarras,
+                                item.Nombre,
+                                item.CodigoLote,
+                                item.FechaVencimiento,
+                                item.Cantidad.ToString(new CultureInfo("es-CO")),
+                                item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                SubtotalLinea.ToString("N2", new CultureInfo("es-CO")));
+                        }
+
+                        Total = Subtotal;
+
+                        lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                    }
+                }
+            }
         }
 
         private void btn_busca_pv_Click(object sender, EventArgs e)
@@ -107,46 +162,63 @@ namespace sbx
             }
         }
 
-        private void _ObtenerDetalleSalida(DetalleSalidaInventarioEntitie detalleEntradasInv)
+        private void _ObtenerDetalleSalida(DetalleSalidaInventarioEntitie detalleSalidasInv)
         {
             var nuevoDetalle = new DetalleSalidaInventarioEntitie
             {
-                IdProducto = detalleEntradasInv.IdProducto,
-                Sku = detalleEntradasInv.Sku,
-                CodigoBarras = detalleEntradasInv.CodigoBarras,
-                Nombre = detalleEntradasInv.Nombre,
-                CodigoLote = detalleEntradasInv.CodigoLote,
-                FechaVencimiento = detalleEntradasInv.FechaVencimiento,
-                Cantidad = detalleEntradasInv.Cantidad,
-                CostoUnitario = detalleEntradasInv.CostoUnitario,
-                Total = detalleEntradasInv.Total
+                IdProducto = detalleSalidasInv.IdProducto,
+                Sku = detalleSalidasInv.Sku,
+                CodigoBarras = detalleSalidasInv.CodigoBarras,
+                Nombre = detalleSalidasInv.Nombre,
+                CodigoLote = detalleSalidasInv.CodigoLote,
+                FechaVencimiento = detalleSalidasInv.FechaVencimiento,
+                Cantidad = detalleSalidasInv.Cantidad,
+                CostoUnitario = detalleSalidasInv.CostoUnitario,
+                Total = detalleSalidasInv.Total
             };
 
-            salidaInventarioEntitie.detalleSalidaInventarios.Add(nuevoDetalle);
-            dtg_detalle_salida.Rows.Clear();
-            foreach (var item in salidaInventarioEntitie.detalleSalidaInventarios)
+            bool Existe = false;
+
+            foreach (DataGridViewRow fila in dtg_detalle_salida.Rows)
             {
-                dtg_detalle_salida.Rows.Add(
-                    item.IdProducto,
-                    item.Sku,
-                    item.CodigoBarras,
-                    item.Nombre,
-                    item.CodigoLote,
-                    item.FechaVencimiento,
-                    item.Cantidad.ToString().Replace('.', ','),
-                    item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
-                    item.Total.ToString("N2", new CultureInfo("es-CO"))
-                );
+                if (Convert.ToInt32(fila.Cells["cl_id_producto"].Value) == nuevoDetalle.IdProducto)
+                {
+                    Existe = true;
+                }
             }
 
-            if (salidaInventarioEntitie.detalleSalidaInventarios.Count > 0)
+            if (!Existe)
             {
-                decimal Total = salidaInventarioEntitie.detalleSalidaInventarios.Sum(d => d.Total);
-                txt_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                salidaInventarioEntitie.detalleSalidaInventarios.Add(nuevoDetalle);
+                dtg_detalle_salida.Rows.Clear();
+                foreach (var item in salidaInventarioEntitie.detalleSalidaInventarios)
+                {
+                    dtg_detalle_salida.Rows.Add(
+                        item.IdProducto,
+                        item.Sku,
+                        item.CodigoBarras,
+                        item.Nombre,
+                        item.CodigoLote,
+                        item.FechaVencimiento,
+                        item.Cantidad.ToString().Replace('.', ','),
+                        item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
+                        item.Total.ToString("N2", new CultureInfo("es-CO"))
+                    );
+                }
+
+                if (salidaInventarioEntitie.detalleSalidaInventarios.Count > 0)
+                {
+                    decimal Total = salidaInventarioEntitie.detalleSalidaInventarios.Sum(d => d.Total);
+                    lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                }
+                else
+                {
+                    lbl_total.Text = "";
+                }
             }
             else
             {
-                txt_total.Text = "";
+                MessageBox.Show("Este producto ya está en la lista, no se puede agregar nuevamente.", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -158,6 +230,19 @@ namespace sbx
                 salidaInventarioEntitie.OrdenCompra = txt_orden_compra.Text;
                 salidaInventarioEntitie.NumFactura = txt_num_factura.Text;
                 salidaInventarioEntitie.Comentario = txt_comentario.Text;
+                if (txt_documento_proveedor.Text != "")
+                {
+                    var respProvee = await _IProveedor.ListNumeroDocumento(txt_documento_proveedor.Text);
+                    if (respProvee.Data != null)
+                    {
+                        salidaInventarioEntitie.IdProveedor = respProvee.Data[0].IdProveedor;
+                    }
+                }
+                else
+                {
+                    salidaInventarioEntitie.IdProveedor = 1;
+                }
+
                 var resp = await _ISalidaInventario.CreateUpdate(salidaInventarioEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
                 if (resp != null)
@@ -176,6 +261,80 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para guardar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private decimal CalcularIva(decimal valorBase, decimal porcentajeIva)
+        {
+            decimal ValorIva = 0;
+
+            if (valorBase >= 0 && porcentajeIva >= 0)
+            {
+                ValorIva = Math.Round(valorBase * (porcentajeIva / 100m), 2);
+            }
+
+            return ValorIva;
+        }
+
+        private decimal CalcularDescuento(decimal valorBase, decimal porcentajeDescuento)
+        {
+            decimal ValorDescuento = 0;
+
+            if (valorBase >= 0 && porcentajeDescuento >= 0)
+            {
+                ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
+            }
+
+            return ValorDescuento;
+        }
+
+        private void btn_quitar_Click(object sender, EventArgs e)
+        {
+            if (dtg_detalle_salida.Rows.Count > 0)
+            {
+                if (dtg_detalle_salida.SelectedRows.Count > 0)
+                {
+                    DialogResult result = MessageBox.Show("¿Está seguro de quitar producto de la lista?",
+                             "Confirmar cancelacion",
+                             MessageBoxButtons.YesNo,
+                             MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        var row = dtg_detalle_salida.SelectedRows[0];
+                        if (row.Cells["cl_id_producto"].Value != null)
+                        {
+                            int Id_Producto = Convert.ToInt32(row.Cells["cl_id_producto"].Value);
+                            dtg_detalle_salida.Rows.RemoveAt(row.Index);
+
+                            var item = salidaInventarioEntitie.detalleSalidaInventarios
+                            .FirstOrDefault(d => d.IdProducto == Id_Producto);
+
+                            if (item != null)
+                            {
+                                salidaInventarioEntitie.detalleSalidaInventarios.Remove(item);
+                            }
+
+                            decimal Total = 0;
+                            decimal Subtotal = 0;
+
+                            foreach (DataGridViewRow fila in dtg_detalle_salida.Rows)
+                            {
+                                Subtotal += Convert.ToDecimal(fila.Cells["cl_costo_unitario"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")); 
+                            }
+                            Total = Subtotal;
+
+                            lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No hay productos para quitar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay productos para quitar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

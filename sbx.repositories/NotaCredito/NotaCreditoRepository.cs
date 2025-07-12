@@ -434,6 +434,9 @@ namespace sbx.repositories.NotaCredito
                     string sql = @"SELECT 
                                     A.Motivo,
                                     A.IdVenta,
+                                    D.Prefijo,
+									D.Consecutivo,
+                                    CONCAT(D.Prefijo,'-',D.Consecutivo) Factura,
 									A.IdUserAction AS IdUserActionNotaCredito,
 									CONCAT(A.IdUserAction, '-', C.UserName) AS Usuario,
                                     B.IdNotaCreditoDetalle,
@@ -452,6 +455,7 @@ namespace sbx.repositories.NotaCredito
                                     B.IdUserAction AS IdUserActionNotaCreditoDetalle
                                     FROM T_NotaCredito A 
                                     INNER JOIN T_NotaCreditoDetalle B ON B.IdNotaCredito = A.IdNotaCredito
+                                    INNER JOIN T_Ventas D ON D.IdVenta = A.IdVenta
 									INNER JOIN T_User C ON C.IdUser = A.IdUserAction ";
 
                     string Where = "";

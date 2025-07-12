@@ -145,6 +145,16 @@
     <value>True</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btn_ver_factura.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAH
+        XgAAB14BODEn8gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADkSURBVDhP3dFf
+        SgJRFMfxeQoKimwTarYFfQpdSWTQH3QRKRS1gHQzmj1GvhrkYy2j73fmjIwwzALmBx+Ye+aew+XepJ45
+        wgM+8BdWuIf/KjPAN57QshBp4xn+61soyw2+0MQBptiGSdQc6p5r7GWMBU7TVdb8hsMwg0NMA+8YpSvS
+        xSeO01WWH9iYx29redxrj71JLxZVA7y84oAT7AYYj7OExzMe12M7xOY5HmHO4Kv4UnsZYg1v3AtzSH6J
+        Nls7h3uuUBqfyKd6QcdC5AKv2ODSQlU89h286d/g9y2K91KPJMk/8zEs4ic9nmEAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAYAAAAAAAEAIACFcAAAZgAAAICAAAABACAAKAgBAOtwAABAQAAAAQAgAChCAAATeQEAMDAAAAEA

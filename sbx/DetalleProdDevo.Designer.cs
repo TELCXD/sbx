@@ -51,6 +51,9 @@
             lbl_nota_credito = new Label();
             label15 = new Label();
             panel1 = new Panel();
+            btn_ver_factura = new Button();
+            lbl_factura = new Label();
+            label3 = new Label();
             lbl_usuario = new Label();
             label2 = new Label();
             ((System.ComponentModel.ISupportInitialize)dtg_detalle_nota_credito).BeginInit();
@@ -248,6 +251,9 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(btn_ver_factura);
+            panel1.Controls.Add(lbl_factura);
+            panel1.Controls.Add(label3);
             panel1.Controls.Add(lbl_usuario);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(txt_motivo_devolucion);
@@ -256,6 +262,44 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1104, 134);
             panel1.TabIndex = 183;
+            // 
+            // btn_ver_factura
+            // 
+            btn_ver_factura.Enabled = false;
+            btn_ver_factura.FlatAppearance.BorderSize = 0;
+            btn_ver_factura.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_ver_factura.FlatStyle = FlatStyle.Flat;
+            btn_ver_factura.Image = (Image)resources.GetObject("btn_ver_factura.Image");
+            btn_ver_factura.Location = new Point(360, 3);
+            btn_ver_factura.Name = "btn_ver_factura";
+            btn_ver_factura.Size = new Size(26, 26);
+            btn_ver_factura.TabIndex = 187;
+            btn_ver_factura.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_ver_factura.UseVisualStyleBackColor = true;
+            btn_ver_factura.Click += btn_ver_factura_Click;
+            // 
+            // lbl_factura
+            // 
+            lbl_factura.AutoSize = true;
+            lbl_factura.Font = new Font("Segoe UI", 9.75F);
+            lbl_factura.ForeColor = SystemColors.InfoText;
+            lbl_factura.Location = new Point(392, 5);
+            lbl_factura.Name = "lbl_factura";
+            lbl_factura.RightToLeft = RightToLeft.No;
+            lbl_factura.Size = new Size(13, 17);
+            lbl_factura.TabIndex = 186;
+            lbl_factura.Text = "_";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9.75F);
+            label3.ForeColor = SystemColors.InfoText;
+            label3.Location = new Point(312, 5);
+            label3.Name = "label3";
+            label3.Size = new Size(57, 17);
+            label3.TabIndex = 185;
+            label3.Text = "Factura: ";
             // 
             // lbl_usuario
             // 
@@ -331,5 +375,8 @@
         private Panel panel1;
         private Label lbl_usuario;
         private Label label2;
+        private Button btn_ver_factura;
+        private Label lbl_factura;
+        private Label label3;
     }
 }
