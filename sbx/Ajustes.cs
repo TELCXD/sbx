@@ -89,7 +89,9 @@ namespace sbx
                 foreach (var item in resp.Data)
                 {
                     dtg_rangos_numeracion.Rows.Add(
+                        item.EnUso == true ? "SI":"NO",
                         item.Id_RangoNumeracion,
+                        item.Vencido == true ? "SI" : "NO",
                         item.Active == true ? "Active" : "Inactivo",
                         item.Id_TipoDocumentoRangoNumeracion == 1 ? "Factura Electrónica de Venta"
                         : item.Id_TipoDocumentoRangoNumeracion == 2 ? "Nota de Crédito"

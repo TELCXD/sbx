@@ -1,6 +1,5 @@
 ﻿using sbx.core.Entities;
 using sbx.core.Entities.RangoNumeracion;
-using sbx.core.Entities.Tienda;
 
 namespace sbx.core.Interfaces.RangoNumeracion
 {
@@ -8,5 +7,6 @@ namespace sbx.core.Interfaces.RangoNumeracion
     {
         Task<Response<dynamic>> CreateUpdate(RangoNumeracionEntitie rangoNumeracionEntitie, int IdUser);
         Task<Response<dynamic>> List(int Id);
+        Task<Response<dynamic>> ListEnUso(int Id);
     }
 }
