@@ -248,14 +248,18 @@ VALUES(1,'Factura'),(2,'Factura Electrónica de Venta'),(3,'Nota de Crédito'),(4,
 GO
 CREATE TABLE T_RangoNumeracion(
 Id_RangoNumeracion INT IDENTITY(1,1) PRIMARY KEY,
+IdRangoDIAN INT,
 Id_TipoDocumentoRangoNumeracion INT,
 Prefijo VARCHAR(10) UNIQUE,
 NumeroDesde BIGINT,
 NumeroHasta BIGINT,
 NumeroAutorizacion VARCHAR(50) UNIQUE,
+ClaveTecnica VARCHAR(100),
+FechaExpedicion DATE,
 FechaVencimiento DATE,
+Vencido BIT,
 Active BIT,
-NumeracionAutorizada BIT,
+EnUso BIT,
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
@@ -263,8 +267,9 @@ FOREIGN KEY(Id_TipoDocumentoRangoNumeracion) REFERENCES T_TipoDocumentoRangoNume
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
-INSERT INTO T_RangoNumeracion (Id_TipoDocumentoRangoNumeracion, Prefijo, NumeroDesde,NumeroHasta,FechaVencimiento,Active,CreationDate,IdUserAction)
-VALUES(1,'FV',1,9999999,'2030-01-01',1,GETDATE(),1)
+INSERT INTO T_RangoNumeracion (IdRangoDIAN,Id_TipoDocumentoRangoNumeracion, Prefijo, NumeroDesde,NumeroHasta,NumeroAutorizacion
+,ClaveTecnica,FechaExpedicion,FechaVencimiento,Vencido,Active,EnUso,CreationDate,IdUserAction)
+VALUES(0,1,'FV',1,9999999,'','','2030-01-01','2030-01-01',0,1,1,GETDATE(),1)
 GO
 CREATE TABLE T_Categorias(
 IdCategoria INT IDENTITY(1,1) PRIMARY KEY,

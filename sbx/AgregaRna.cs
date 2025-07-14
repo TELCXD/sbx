@@ -2,7 +2,6 @@
 using sbx.core.Interfaces.TipoDocumentoRangoNumeracion;
 using sbx.core.Interfaces.RangoNumeracion;
 using System.ComponentModel.DataAnnotations;
-using sbx.core.Interfaces.Tienda;
 
 namespace sbx
 {
@@ -67,24 +66,28 @@ namespace sbx
             cbx_tipo_documento.ValueMember = "Id_TipoDocumentoRangoNumeracion";
             cbx_tipo_documento.DisplayMember = "Nombre";
             cbx_tipo_documento.SelectedIndex = 0;
-
+            cbx_expired.SelectedIndex = 0;
             cbx_estado.SelectedIndex = 0;
-            cbx_numeracion_autorizada.SelectedIndex = 0;
+            cbx_en_uso.SelectedIndex = 0;
 
-            if (Id_RangoNumeracion > 0) 
+            if (Id_RangoNumeracion > 0)
             {
                 resp = await _IRangoNumeracion.List(Id_RangoNumeracion);
 
-                if (resp.Data != null) 
+                if (resp.Data != null)
                 {
+                    txt_id_dian.Text = resp.Data[0].IdRangoDIAN.ToString();
                     cbx_tipo_documento.SelectedValue = resp.Data[0].Id_TipoDocumentoRangoNumeracion;
                     txt_prefijo.Text = resp.Data[0].Prefijo;
-                    txt_numero_desde.Text = resp.Data[0].NumeroDesde;
-                    txt_numero_hasta.Text = resp.Data[0].NumeroHasta;
+                    txt_numero_desde.Text = resp.Data[0].NumeroDesde.ToString();
+                    txt_numero_hasta.Text = resp.Data[0].NumeroHasta.ToString();
                     txt_numero_autorizacion.Text = resp.Data[0].NumeroAutorizacion;
+                    txt_clave_Tecnica.Text = resp.Data[0].ClaveTecnica.ToString();
+                    dtpFechaExpedicion.Value = resp.Data[0].FechaExpedicion;
                     dtpk_fecha_vencimiento.Value = resp.Data[0].FechaVencimiento;
-                    cbx_estado.SelectedIndex = resp.Data[0].Active == true ? 0: 1;
-                    cbx_numeracion_autorizada.SelectedIndex = resp.Data[0].NumeracionAutorizada == true ? 0 : 1;
+                    cbx_expired.SelectedIndex = resp.Data[0].Vencido == true ? 0 : 1;
+                    cbx_estado.SelectedIndex = resp.Data[0].Active == true ? 0 : 1;
+                    cbx_en_uso.SelectedIndex = resp.Data[0].EnUso == true ? 0 : 1;
                 }
                 else
                 {
@@ -95,17 +98,27 @@ namespace sbx
 
         private async void btn_guardar_Click(object sender, EventArgs e)
         {
+            if (txt_id_dian.Text.Trim() == "") 
+            {
+                errorProvider1.SetError(txt_id_dian, "Debe ingresar un id");
+                return;
+            }
+
             var Datos = new RangoNumeracionEntitie
             {
                 Id_RangoNumeracion = Id_RangoNumeracion,
+                Id_RangoDIAN = Convert.ToInt32(txt_id_dian.Text),
                 Id_TipoDocumentoRangoNumeracion = Convert.ToInt32(cbx_tipo_documento.SelectedValue),
                 Prefijo = txt_prefijo.Text,
                 NumeroDesde = txt_numero_desde.Text,
                 NumeroHasta = txt_numero_hasta.Text,
                 NumeroAutorizacion = txt_numero_autorizacion.Text,
+                ClaveTecnica = txt_clave_Tecnica.Text,
+                FechaExpedicion = dtpFechaExpedicion.Value,
                 FechaVencimiento = dtpk_fecha_vencimiento.Value,
+                Vencido = cbx_expired.SelectedIndex == 0 ? 1 : 0,
                 Active = cbx_estado.SelectedIndex == 0 ? 1 : 0,
-                NumeracionAutorizada = Convert.ToInt32(cbx_numeracion_autorizada.SelectedValue)
+                EnUso = cbx_en_uso.SelectedIndex == 0 ? 1 : 0
             };
 
             var validationContext = new ValidationContext(Datos);
@@ -117,19 +130,77 @@ namespace sbx
 
             if (esValido)
             {
-                var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                if (resp != null)
+                if (cbx_en_uso.SelectedIndex == 0) 
                 {
-                    if (resp.Flag == true)
+                    var respEnUso = await _IRangoNumeracion.ListEnUso(Datos.Id_RangoNumeracion);
+
+                    if (respEnUso.Data != null)
                     {
-                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        //Limpiar();
-                        this.Close();
+                        if (respEnUso.Data.Count > 0)
+                        {
+                            DialogResult result = MessageBox.Show("Otro rango de numeracion esta en uso, esta seguro que desea cambiarlo? si no desea cambiarlo seleccione en campo En uso en NO",
+                           "Confirmar",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question);
+                            if (result == DialogResult.Yes)
+                            {
+                                var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                if (resp != null)
+                                {
+                                    if (resp.Flag == true)
+                                    {
+                                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        //Limpiar();
+                                        this.Close();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                            if (resp != null)
+                            {
+                                if (resp.Flag == true)
+                                {
+                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    //Limpiar();
+                                    this.Close();
+                                }
+                                else
+                                {
+                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("No se encontro data", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                    if (resp != null)
+                    {
+                        if (resp.Flag == true)
+                        {
+                            MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //Limpiar();
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
                     }
                 }
             }
@@ -164,7 +235,7 @@ namespace sbx
 
                     if (validationResult.MemberNames.Contains("NumeracionAutorizada"))
                     {
-                        errorProvider1.SetError(cbx_numeracion_autorizada, validationResult.ErrorMessage);
+                        errorProvider1.SetError(cbx_en_uso, validationResult.ErrorMessage);
                     }
                 }
             }
@@ -179,7 +250,7 @@ namespace sbx
             txt_numero_autorizacion.Text = "";
             dtpk_fecha_vencimiento.Value = DateTime.Now;
             cbx_estado.SelectedIndex = 0;
-            cbx_numeracion_autorizada.SelectedIndex = 0;
+            cbx_en_uso.SelectedIndex = 0;
         }
 
         private void txt_numero_desde_KeyPress(object sender, KeyPressEventArgs e)
@@ -191,6 +262,13 @@ namespace sbx
         }
 
         private void txt_numero_hasta_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != 8)
+            {
+                e.Handled = true;
+            }
+        }
+        private void txt_id_dian_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != 8)
             {

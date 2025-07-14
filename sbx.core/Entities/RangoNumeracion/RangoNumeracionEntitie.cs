@@ -6,6 +6,7 @@ namespace sbx.core.Entities.RangoNumeracion
     public class RangoNumeracionEntitie
     {
         public int Id_RangoNumeracion { get; set; }
+        public int Id_RangoDIAN { get; set; }
         [Required(ErrorMessage = "El tipo de documento es obligatorio")]
         public int Id_TipoDocumentoRangoNumeracion { get; set; }
         [Required(ErrorMessage = "El Prefijo es obligatorio")]
@@ -15,10 +16,11 @@ namespace sbx.core.Entities.RangoNumeracion
         [Required(ErrorMessage = "El Numero hasta es obligatorio")]
         public string NumeroHasta { get; set; }
         public string? NumeroAutorizacion { get; set; }
+        public string? ClaveTecnica { get; set; }
+        public DateTime FechaExpedicion { get; set; }
         public DateTime? FechaVencimiento { get; set; }
-        [Required(ErrorMessage = "El estado es obligatorio")]
         public int Active { get; set; }
-        [Required(ErrorMessage = "Debe indicar si es Numeracion autorizada o no")]
-        public int NumeracionAutorizada { get; set; }
+        public int Vencido { get; set; }
+        public int EnUso { get; set; }
     }
 }
