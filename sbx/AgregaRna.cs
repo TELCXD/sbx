@@ -2,6 +2,7 @@
 using sbx.core.Interfaces.TipoDocumentoRangoNumeracion;
 using sbx.core.Interfaces.RangoNumeracion;
 using System.ComponentModel.DataAnnotations;
+using sbx.core.Interfaces.Producto;
 
 namespace sbx
 {
@@ -98,51 +99,111 @@ namespace sbx
 
         private async void btn_guardar_Click(object sender, EventArgs e)
         {
+            bool Valido = true;
+            errorProvider1.Clear();
+
             if (txt_id_dian.Text.Trim() == "") 
             {
                 errorProvider1.SetError(txt_id_dian, "Debe ingresar un id");
-                return;
+                Valido = false;
             }
 
-            var Datos = new RangoNumeracionEntitie
+            if (txt_prefijo.Text.Trim() == "")
             {
-                Id_RangoNumeracion = Id_RangoNumeracion,
-                Id_RangoDIAN = Convert.ToInt32(txt_id_dian.Text),
-                Id_TipoDocumentoRangoNumeracion = Convert.ToInt32(cbx_tipo_documento.SelectedValue),
-                Prefijo = txt_prefijo.Text,
-                NumeroDesde = txt_numero_desde.Text,
-                NumeroHasta = txt_numero_hasta.Text,
-                NumeroAutorizacion = txt_numero_autorizacion.Text,
-                ClaveTecnica = txt_clave_Tecnica.Text,
-                FechaExpedicion = dtpFechaExpedicion.Value,
-                FechaVencimiento = dtpk_fecha_vencimiento.Value,
-                Vencido = cbx_expired.SelectedIndex == 0 ? 1 : 0,
-                Active = cbx_estado.SelectedIndex == 0 ? 1 : 0,
-                EnUso = cbx_en_uso.SelectedIndex == 0 ? 1 : 0
-            };
+                errorProvider1.SetError(txt_prefijo, "Debe ingresar un prefijo");
+                Valido = false;
+            }
 
-            var validationContext = new ValidationContext(Datos);
-            var validationResults = new System.Collections.Generic.List<ValidationResult>();
-
-            errorProvider1.Clear();
-
-            bool esValido = Validator.TryValidateObject(Datos, validationContext, validationResults, true);
-
-            if (esValido)
+            if (txt_numero_desde.Text.Trim() == "")
             {
-                if (cbx_en_uso.SelectedIndex == 0) 
+                errorProvider1.SetError(txt_numero_desde, "Debe ingresar numero desde");
+                Valido = false;
+            }
+
+            if (txt_numero_hasta.Text.Trim() == "")
+            {
+                errorProvider1.SetError(txt_numero_hasta, "Debe ingresar numero hasta");
+                Valido = false;
+            }
+
+            if (Valido)
+            {
+                var Exist = await _IRangoNumeracion.ExisteIdRangoDIAN(txt_id_dian.Text.Trim(), Id_RangoNumeracion);
+                if (Exist) { errorProvider1.SetError(txt_id_dian, "Id rango numeracion ya existe"); Valido = false; }
+                Exist = await _IRangoNumeracion.ExistePrefijo(txt_prefijo.Text.Trim(), Id_RangoNumeracion);
+                if (Exist) { errorProvider1.SetError(txt_prefijo, "Prefijo ya existe"); Valido = false; }
+                if (txt_numero_autorizacion.Text.Trim() != "") 
                 {
-                    var respEnUso = await _IRangoNumeracion.ListEnUso(Datos.Id_RangoNumeracion);
+                    Exist = await _IRangoNumeracion.ExisteResolucion(txt_numero_autorizacion.Text.Trim(), Id_RangoNumeracion);
+                    if (Exist) { errorProvider1.SetError(txt_numero_autorizacion, "Numero resolucion ya existe"); Valido = false; }
+                }
+                if (txt_clave_Tecnica.Text.Trim() != "") 
+                {
+                    Exist = await _IRangoNumeracion.ExisteClaveTecnica(txt_clave_Tecnica.Text.Trim(), Id_RangoNumeracion);
+                    if (Exist) { errorProvider1.SetError(txt_clave_Tecnica, "Clave tecnica ya existe"); Valido = false; }
+                }
+            }
 
-                    if (respEnUso.Data != null)
+            if (Valido) 
+            {
+                var Datos = new RangoNumeracionEntitie
+                {
+                    Id_RangoNumeracion = Id_RangoNumeracion,
+                    Id_RangoDIAN = Convert.ToInt32(txt_id_dian.Text),
+                    Id_TipoDocumentoRangoNumeracion = Convert.ToInt32(cbx_tipo_documento.SelectedValue),
+                    Prefijo = txt_prefijo.Text,
+                    NumeroDesde = txt_numero_desde.Text,
+                    NumeroHasta = txt_numero_hasta.Text,
+                    NumeroAutorizacion = txt_numero_autorizacion.Text,
+                    ClaveTecnica = txt_clave_Tecnica.Text,
+                    FechaExpedicion = dtpFechaExpedicion.Value,
+                    FechaVencimiento = dtpk_fecha_vencimiento.Value,
+                    Vencido = cbx_expired.SelectedIndex == 0 ? 1 : 0,
+                    Active = cbx_estado.SelectedIndex == 0 ? 1 : 0,
+                    EnUso = cbx_en_uso.SelectedIndex == 0 ? 1 : 0
+                };
+
+                var validationContext = new ValidationContext(Datos);
+                var validationResults = new System.Collections.Generic.List<ValidationResult>();
+
+                errorProvider1.Clear();
+
+                bool esValido = Validator.TryValidateObject(Datos, validationContext, validationResults, true);
+
+                if (esValido)
+                {
+                    if (cbx_en_uso.SelectedIndex == 0)
                     {
-                        if (respEnUso.Data.Count > 0)
+                        var respEnUso = await _IRangoNumeracion.ListEnUso(Datos.Id_RangoNumeracion, Datos.Id_TipoDocumentoRangoNumeracion);
+
+                        if (respEnUso.Data != null)
                         {
-                            DialogResult result = MessageBox.Show("Otro rango de numeracion esta en uso, esta seguro que desea cambiarlo? si no desea cambiarlo seleccione en campo En uso en NO",
-                           "Confirmar",
-                           MessageBoxButtons.YesNo,
-                           MessageBoxIcon.Question);
-                            if (result == DialogResult.Yes)
+                            if (respEnUso.Data.Count > 0)
+                            {
+                                DialogResult result = MessageBox.Show("Otro rango de numeracion esta en uso, esta seguro que desea cambiarlo? si no desea cambiarlo seleccione en campo En uso en NO",
+                               "Confirmar",
+                               MessageBoxButtons.YesNo,
+                               MessageBoxIcon.Question);
+                                if (result == DialogResult.Yes)
+                                {
+                                    var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                    if (resp != null)
+                                    {
+                                        if (resp.Flag == true)
+                                        {
+                                            MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            //Limpiar();
+                                            this.Close();
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                }
+                            }
+                            else
                             {
                                 var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
@@ -163,79 +224,61 @@ namespace sbx
                         }
                         else
                         {
-                            var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                            if (resp != null)
-                            {
-                                if (resp.Flag == true)
-                                {
-                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    //Limpiar();
-                                    this.Close();
-                                }
-                                else
-                                {
-                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                }
-                            }
+                            MessageBox.Show("No se encontro data", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("No se encontro data", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                        if (resp != null)
+                        {
+                            if (resp.Flag == true)
+                            {
+                                MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                //Limpiar();
+                                this.Close();
+                            }
+                            else
+                            {
+                                MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                    if (resp != null)
+                    foreach (var validationResult in validationResults)
                     {
-                        if (resp.Flag == true)
+                        if (validationResult.MemberNames.Contains("Id_TipoDocumentoRangoNumeracion"))
                         {
-                            MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            //Limpiar();
-                            this.Close();
+                            errorProvider1.SetError(cbx_tipo_documento, validationResult.ErrorMessage);
                         }
-                        else
+
+                        if (validationResult.MemberNames.Contains("Prefijo"))
                         {
-                            MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            errorProvider1.SetError(txt_prefijo, validationResult.ErrorMessage);
                         }
-                    }
-                }
-            }
-            else
-            {
-                foreach (var validationResult in validationResults)
-                {
-                    if (validationResult.MemberNames.Contains("Id_TipoDocumentoRangoNumeracion"))
-                    {
-                        errorProvider1.SetError(cbx_tipo_documento, validationResult.ErrorMessage);
-                    }
 
-                    if (validationResult.MemberNames.Contains("Prefijo"))
-                    {
-                        errorProvider1.SetError(txt_prefijo, validationResult.ErrorMessage);
-                    }
+                        if (validationResult.MemberNames.Contains("NumeroDesde"))
+                        {
+                            errorProvider1.SetError(txt_numero_desde, validationResult.ErrorMessage);
+                        }
 
-                    if (validationResult.MemberNames.Contains("NumeroDesde"))
-                    {
-                        errorProvider1.SetError(txt_numero_desde, validationResult.ErrorMessage);
-                    }
+                        if (validationResult.MemberNames.Contains("NumeroHasta"))
+                        {
+                            errorProvider1.SetError(txt_numero_hasta, validationResult.ErrorMessage);
+                        }
 
-                    if (validationResult.MemberNames.Contains("NumeroHasta"))
-                    {
-                        errorProvider1.SetError(txt_numero_hasta, validationResult.ErrorMessage);
-                    }
+                        if (validationResult.MemberNames.Contains("Active"))
+                        {
+                            errorProvider1.SetError(cbx_estado, validationResult.ErrorMessage);
+                        }
 
-                    if (validationResult.MemberNames.Contains("Active"))
-                    {
-                        errorProvider1.SetError(cbx_estado, validationResult.ErrorMessage);
-                    }
-
-                    if (validationResult.MemberNames.Contains("NumeracionAutorizada"))
-                    {
-                        errorProvider1.SetError(cbx_en_uso, validationResult.ErrorMessage);
+                        if (validationResult.MemberNames.Contains("NumeracionAutorizada"))
+                        {
+                            errorProvider1.SetError(cbx_en_uso, validationResult.ErrorMessage);
+                        }
                     }
                 }
             }
@@ -268,6 +311,7 @@ namespace sbx
                 e.Handled = true;
             }
         }
+
         private void txt_id_dian_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != 8)

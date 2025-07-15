@@ -12,6 +12,7 @@ using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.CodigoPostal;
 using sbx.core.Interfaces.ConversionProducto;
 using sbx.core.Interfaces.Cotizacion;
+using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.Dashboard;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
@@ -59,6 +60,7 @@ using sbx.repositories.Cliente;
 using sbx.repositories.CodigoPostal;
 using sbx.repositories.ConversionProducto;
 using sbx.repositories.Cotizacion;
+using sbx.repositories.CredencialesApi;
 using sbx.repositories.Dashboard;
 using sbx.repositories.Departamento;
 using sbx.repositories.EntradaInventario;
@@ -361,6 +363,9 @@ namespace sbx
 
                 services.AddTransient<IReporteGeneral>(provider =>
                 new ReporteGeneralRepository(connectionString));
+
+                services.AddTransient<ICredencialesApi>(provider =>
+                new CredencialesApiRepository(connectionString));
 
             })
             .Build();

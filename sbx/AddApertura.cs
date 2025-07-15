@@ -55,6 +55,13 @@ namespace sbx
 
         private void txt_monto_inicial_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (e.KeyChar == (char)Keys.Enter) // o (char)13
+            {
+                AbrirCaja();
+                e.Handled = true; // opcional: evita beep
+                return;
+            }
+
             if (char.IsControl(e.KeyChar))
                 return;
 
@@ -67,12 +74,12 @@ namespace sbx
             e.Handled = true;
         }
 
-        private async void btn_apertura_Click(object sender, EventArgs e)
+        private void btn_apertura_Click(object sender, EventArgs e)
         {
-            await AbrirCaja();
+            AbrirCaja();
         }
 
-        private async Task AbrirCaja()
+        private async void AbrirCaja()
         {
             if (txt_monto_inicial.Text.Trim() != "")
             {

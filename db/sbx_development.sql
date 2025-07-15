@@ -125,7 +125,8 @@ VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'product
 ('Entrada',13,'entradas',1,1), ('Salida',14,'salidas',1,1),('PreciosClientes',15,'preciosClientes',1,1),
 ('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1),
 ('Permisos',19,'permisos',1,1),('Cotizacion',20,'cotizacion',1,1),('VentasUno',21,'quitarUno',1,1),
-('Vendedores',22,'vendedores',1,1),('ConversionProducto',23,'conversionProducto',1,1),('Gasto',24,'Gastos',1,1)
+('Vendedores',22,'vendedores',1,1),('ConversionProducto',23,'conversionProducto',1,1),('Gasto',24,'Gastos',1,1),
+('CredencialesApi',25,'credencialesApi',1,1)
 GO
 CREATE TABLE TR_User_Menu
 (
@@ -152,7 +153,7 @@ VALUES(1,1,1,1,1,1,1,GETDATE(),1), (2,1,1,1,1,1,1,GETDATE(),1), (3,1,1,1,1,1,1,G
 (12,1,1,1,1,1,1,GETDATE(),1), (13,1,1,1,1,1,1,GETDATE(),1), (14,1,1,1,1,1,1,GETDATE(),1), (15,1,1,1,1,1,1,GETDATE(),1),
 (16,1,1,1,1,1,1,GETDATE(),1), (17,1,1,1,1,1,1,GETDATE(),1), (18,1,1,1,1,1,1,GETDATE(),1), (19,1,1,1,1,1,1,GETDATE(),1),
 (20,1,1,1,1,1,1,GETDATE(),1), (21,1,1,1,1,1,1,GETDATE(),1), (22,1,1,1,1,1,1,GETDATE(),1), (23,1,1,1,1,1,1,GETDATE(),1),
-(24,1,1,1,1,1,1,GETDATE(),1),
+(24,1,1,1,1,1,1,GETDATE(),1),(25,1,1,1,1,1,1,GETDATE(),1),
 
 (1,2,1,1,1,1,1,GETDATE(),1), (2,2,1,1,1,1,1,GETDATE(),1), (3,2,1,1,1,1,1,GETDATE(),1), (4,2,1,1,1,1,1,GETDATE(),1), 
 (5,2,1,1,1,1,1,GETDATE(),1), (6,2,1,1,1,1,1,GETDATE(),1), (7,2,1,1,1,1,1,GETDATE(),1),
@@ -160,7 +161,7 @@ VALUES(1,1,1,1,1,1,1,GETDATE(),1), (2,1,1,1,1,1,1,GETDATE(),1), (3,1,1,1,1,1,1,G
 (12,2,1,1,1,1,1,GETDATE(),1), (13,2,1,1,1,1,1,GETDATE(),1), (14,2,1,1,1,1,1,GETDATE(),1), (15,2,1,1,1,1,1,GETDATE(),1),
 (16,2,1,1,1,1,1,GETDATE(),1), (17,2,1,1,1,1,1,GETDATE(),1), (18,2,1,1,1,1,1,GETDATE(),1), (19,2,1,1,1,1,1,GETDATE(),1),
 (20,2,1,1,1,1,1,GETDATE(),1), (21,2,1,1,1,1,1,GETDATE(),1), (22,2,1,1,1,1,1,GETDATE(),1), (23,2,1,1,1,1,1,GETDATE(),1),
-(24,2,1,1,1,1,1,GETDATE(),1)
+(24,2,1,1,1,1,1,GETDATE(),1), (25,2,1,1,1,1,1,GETDATE(),1)
 GO
 CREATE TABLE T_TipoResponsabilidad(
 IdTipoResponsabilidad INT PRIMARY KEY,
@@ -253,7 +254,7 @@ Id_TipoDocumentoRangoNumeracion INT,
 Prefijo VARCHAR(10) UNIQUE,
 NumeroDesde BIGINT,
 NumeroHasta BIGINT,
-NumeroAutorizacion VARCHAR(50) UNIQUE,
+NumeroAutorizacion VARCHAR(50),
 ClaveTecnica VARCHAR(100),
 FechaExpedicion DATE,
 FechaVencimiento DATE,
@@ -393,7 +394,7 @@ ON dbo.T_Cliente(Email)
 WHERE Email IS NOT NULL;
 GO
 INSERT INTO T_Cliente (IdIdentificationType, NumeroDocumento, NombreRazonSocial,IdTipoCliente,Estado,CreationDate,IdUserAction)
-VALUES(1,'222','Consumidor final',1,1,GETDATE(),1)
+VALUES(1,'222222222222','Consumidor final',1,1,GETDATE(),1)
 GO
 CREATE TABLE T_ListasPrecios (
 IdListaPrecio INT IDENTITY(1,1) PRIMARY KEY,
@@ -848,6 +849,19 @@ Categoria VARCHAR(100),
 Subcategoria VARCHAR(100),
 Detalle VARCHAR(100),
 ValorGasto DECIMAL(10,2),
+CreationDate DATETIME,
+UpdateDate DATETIME,
+IdUserAction INT,
+FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
+)
+GO
+CREATE TABLE T_CredencialesApi (
+IdCredencialesApi INT PRIMARY KEY IDENTITY,
+grant_type VARCHAR(50),
+client_id VARCHAR(200),
+client_secret VARCHAR(200),
+username VARCHAR(50),
+Passwords VARCHAR(50),
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
