@@ -13,5 +13,6 @@ namespace sbx.core.Entities.Venta
         public string Estado { get; set; }
         public List<DetalleVentaEntitie> detalleVentas { get; set; } = new();
         public List<PagosVentaEntitie> pagosVenta { get; set; } = new();
+        public int Id_RangoNumeracion { get; set; }
     }
 }

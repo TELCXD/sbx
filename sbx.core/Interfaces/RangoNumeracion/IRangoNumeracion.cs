@@ -12,5 +12,7 @@ namespace sbx.core.Interfaces.RangoNumeracion
         Task<bool> ExistePrefijo(string prefijo, int Id);
         Task<bool> ExisteResolucion(string Resolucion, int Id);
         Task<bool> ExisteClaveTecnica(string ClaveTecnica, int Id);
+        Task<Response<dynamic>> IdentificaDocumento(int IdTipoDocumento);
+        Task<Response<dynamic>> ValidaRango(int Id);
     }
 }

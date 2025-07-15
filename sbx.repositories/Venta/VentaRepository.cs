@@ -36,11 +36,22 @@ namespace sbx.repositories.Venta
                     DateTime FechaActual = DateTime.Now;
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
+                    if (ventaEntitie.Id_RangoNumeracion == 1) 
+                    {
+                        sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
                                   VALUES(@Prefijo,
                                         (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
                                         @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
                                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                    }
+                    else if(ventaEntitie.Id_RangoNumeracion == 2)
+                    {
+                        sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
+                                  VALUES(@Prefijo,
+                                        (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
+                                        @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
+                                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                    }
 
                     var parametros = new
                     {

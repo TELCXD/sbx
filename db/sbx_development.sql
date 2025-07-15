@@ -394,7 +394,7 @@ ON dbo.T_Cliente(Email)
 WHERE Email IS NOT NULL;
 GO
 INSERT INTO T_Cliente (IdIdentificationType, NumeroDocumento, NombreRazonSocial,IdTipoCliente,Estado,CreationDate,IdUserAction)
-VALUES(1,'222','Consumidor final',1,1,GETDATE(),1)
+VALUES(1,'222222222222','Consumidor final',1,1,GETDATE(),1)
 GO
 CREATE TABLE T_ListasPrecios (
 IdListaPrecio INT IDENTITY(1,1) PRIMARY KEY,

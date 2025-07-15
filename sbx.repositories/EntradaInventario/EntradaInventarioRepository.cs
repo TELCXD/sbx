@@ -748,7 +748,7 @@ namespace sbx.repositories.EntradaInventario
                                     CodigoLote = "",
                                     FechaVencimiento = "",
                                     Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
-                                    CostoUnitario = 0,
+                                    CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
                                     Descuento = 0,
                                     Iva = 0,
                                     CreationDate = FechaActual,

@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Interfaces.RangoNumeracion;
+using sbx.core.Interfaces.TipoDocumentoRangoNumeracion;
 
 namespace sbx.repositories.RangoNumeracion
 {
@@ -193,7 +194,7 @@ namespace sbx.repositories.RangoNumeracion
 
                     if (Id > 0) 
                     {
-                        Where = $"WHERE Id_RangoNumeracion = {Id}";
+                        Where = $"WHERE Id_RangoNumeracion = {Id} ";
                         sql += Where;
                     }
 
@@ -484,6 +485,113 @@ namespace sbx.repositories.RangoNumeracion
                     }
 
                     response.Message = Mensaje;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> IdentificaDocumento(int IdTipoDocumento)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   Id_RangoNumeracion
+                                  ,IdRangoDIAN
+                                  ,Id_TipoDocumentoRangoNumeracion
+                                  ,Prefijo
+                                  ,ISNULL(NumeroDesde,0) NumeroDesde
+                                  ,ISNULL(NumeroHasta,0) NumeroHasta
+                                  ,NumeroAutorizacion
+                                  ,ClaveTecnica
+                                  ,FechaExpedicion
+                                  ,FechaVencimiento
+                                  ,Vencido
+                                  ,Active
+                                  ,ISNULL(EnUso, 0) EnUso
+                                  ,CreationDate
+                                  ,UpdateDate
+                                  ,IdUserAction
+                                  FROM T_RangoNumeracion ";
+
+                    string Where = "";
+
+                    if (IdTipoDocumento > 0)
+                    {
+                        Where = $"WHERE EnUso = 1 ";
+                        if (IdTipoDocumento == 1 || IdTipoDocumento == 2)
+                        {
+                            Where += $"AND (Id_TipoDocumentoRangoNumeracion = 1 OR Id_TipoDocumentoRangoNumeracion = 2) ";
+                        }
+                        else
+                        {
+                            Where += $"AND Id_TipoDocumentoRangoNumeracion = {IdTipoDocumento} ";
+                        }
+
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ValidaRango(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT 
+                                   Id_RangoNumeracion
+                                  ,IdRangoDIAN
+                                  ,Id_TipoDocumentoRangoNumeracion
+                                  ,Prefijo
+                                  ,ISNULL(NumeroDesde,0) NumeroDesde
+                                  ,ISNULL(NumeroHasta,0) NumeroHasta
+                                  ,NumeroAutorizacion
+                                  ,ClaveTecnica
+                                  ,FechaExpedicion
+                                  ,FechaVencimiento
+                                  ,Vencido
+                                  ,Active
+                                  ,ISNULL(EnUso, 0) EnUso
+                                  ,CreationDate
+                                  ,UpdateDate
+                                  ,IdUserAction
+                                  FROM T_RangoNumeracion WHERE EnUso = 1 AND Id_RangoNumeracion = {Id} ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
                     return response;
                 }
                 catch (Exception ex)
