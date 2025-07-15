@@ -1,9 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Entities.CrendencialesApi;
 using sbx.core.Entities.Parametros;
 using sbx.core.Entities.Permiso;
+using sbx.core.Entities.Tienda;
+using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Permisos;
 using sbx.core.Interfaces.RangoNumeracion;
+using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Usuario;
 
 namespace sbx
@@ -23,8 +27,11 @@ namespace sbx
         private Buscador? _Buscador;
         PermisosEntitie PermisosEntitie = new PermisosEntitie();
         string MensajePersonalizado = "";
+        private readonly ICredencialesApi _ICredencialesApi;
+        int v_Id_credencialesApi = 0;
 
-        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, IParametros parametros, IUsuario usuario, IPermisos permisos)
+        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, 
+            IParametros parametros, IUsuario usuario, IPermisos permisos, ICredencialesApi credencialesApi)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
@@ -32,6 +39,7 @@ namespace sbx
             _IParametros = parametros;
             _IUsuario = usuario;
             _IPermisos = permisos;
+            _ICredencialesApi = credencialesApi;
         }
 
         public dynamic? Permisos
@@ -44,6 +52,7 @@ namespace sbx
         {
             ValidaPermisos();
             await ConsultaRangosNumeracion();
+            await CargaDatosCredenciales();
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
             cbx_lineas_abajo.SelectedIndex = 0;
@@ -68,6 +77,9 @@ namespace sbx
                             btn_guardar_permisos.Enabled = item.ToCreate == 1 ? true : false;
                             btn_busca_usuario.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
+                        case "credencialesApi":
+                            btn_guardar_api.Enabled = item.ToCreate == 1 ? true : false;
+                            break;
                         default:
                             break;
                     }
@@ -89,13 +101,13 @@ namespace sbx
                 foreach (var item in resp.Data)
                 {
                     dtg_rangos_numeracion.Rows.Add(
-                        item.EnUso == true ? "SI":"NO",
+                        item.EnUso == true ? "SI" : "NO",
                         item.Id_RangoNumeracion,
                         item.Vencido == true ? "SI" : "NO",
                         item.Active == true ? "Active" : "Inactivo",
-                        item.Id_TipoDocumentoRangoNumeracion == 1 ? "Factura Electrónica de Venta"
-                        : item.Id_TipoDocumentoRangoNumeracion == 2 ? "Nota de Crédito"
-                        : item.Id_TipoDocumentoRangoNumeracion == 3 ? "Factura" : "",
+                        item.Id_TipoDocumentoRangoNumeracion == 1 ? "Factura"
+                        : item.Id_TipoDocumentoRangoNumeracion == 2 ? "Factura Electrónica de Venta"
+                        : item.Id_TipoDocumentoRangoNumeracion == 3 ? "Nota de Crédito" : "Nota de debito",
                         item.Prefijo,
                         item.NumeroDesde,
                         item.NumeroHasta,
@@ -527,7 +539,89 @@ namespace sbx
         private void rb_58mm_CheckedChanged_1(object sender, EventArgs e)
         {
             txt_mensaje_final_tirilla.MaxLength = 32;
-            txt_mensaje_final_tirilla.Text = MensajePersonalizado.Length > 32 ? MensajePersonalizado.Substring(0, 32): MensajePersonalizado;
+            txt_mensaje_final_tirilla.Text = MensajePersonalizado.Length > 32 ? MensajePersonalizado.Substring(0, 32) : MensajePersonalizado;
+        }
+
+        private async void btn_guardar_api_Click(object sender, EventArgs e)
+        {
+            errorProvider1.Clear();
+
+            bool Valido = true;
+
+            if (txt_grant_type.Text == "") 
+            {
+                errorProvider1.SetError(txt_grant_type, "Debe ingresar grant_type");
+                Valido = false;
+            }
+
+            if (txt_client_id.Text == "")
+            {
+                errorProvider1.SetError(txt_client_id, "Debe ingresar client_id");
+                Valido = false;
+            }
+
+            if (txt_client_secret.Text == "")
+            {
+                errorProvider1.SetError(txt_client_secret, "Debe ingresar client_secret");
+                Valido = false;
+            }
+
+            if (txt_username.Text == "")
+            {
+                errorProvider1.SetError(txt_username, "Debe ingresar username");
+                Valido = false;
+            }
+
+            if (txt_password.Text == "")
+            {
+                errorProvider1.SetError(txt_password, "Debe ingresar password");
+                Valido = false;
+            }
+
+            if (Valido == true)
+            {
+                var Datos = new CredencialesApiEntitie
+                {
+                   IdCredencialesApi = v_Id_credencialesApi,
+                   grant_type = txt_grant_type.Text,
+                   client_id = txt_client_id.Text,
+                   client_secret = txt_client_secret.Text,
+                   username = txt_username.Text,
+                   Passwords = txt_password.Text,
+                 };
+
+                var resp = await _ICredencialesApi.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                if (resp != null)
+                {
+                    if (resp.Flag == true)
+                    {
+                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        private async Task CargaDatosCredenciales()
+        {
+            var resp = await _ICredencialesApi.List();
+
+            if (resp.Data != null) 
+            {
+                if (resp.Data.Count > 0)
+                {
+                    v_Id_credencialesApi = resp.Data[0]?.IdCredencialesApi;
+                    txt_grant_type.Text = resp.Data[0].grant_type.ToString();
+                    txt_client_id.Text = resp.Data[0].client_id.ToString();
+                    txt_client_secret.Text = resp.Data[0].client_secret.ToString();
+                    txt_username.Text = resp.Data[0].username.ToString();
+                    txt_password.Text = resp.Data[0].Passwords.ToString();
+                }
+            }
         }
     }
 }

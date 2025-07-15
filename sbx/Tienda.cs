@@ -264,23 +264,26 @@ namespace sbx
         {
             var resp = await _ITienda.List();
 
-            if (resp.Data.Count > 0)
+            if (resp.Data != null) 
             {
-                vg_IdTienda = resp.Data[0]?.IdTienda;
-                cbx_tipo_documento.SelectedValue = resp.Data[0]?.IdIdentificationType;
-                txt_numero_documento.Text = resp.Data[0]?.NumeroDocumento;
-                txt_nombre_razon_social.Text = resp.Data[0]?.NombreRazonSocial;
-                cbx_tipo_responsabilidad.SelectedValue = resp.Data[0]?.IdTipoResponsabilidad;
-                cbx_responsabilidad_tributaria.SelectedValue = resp.Data[0]?.IdResponsabilidadTributaria;
-                cbx_tipo_contribuyente.SelectedValue = resp.Data[0]?.IdTipoContribuyente;
-                txt_correo_distribucion.Text = resp.Data[0]?.CorreoDistribucion;
-                txt_telefono.Text = resp.Data[0]?.Telefono;
-                txt_direccion.Text = resp.Data[0]?.Direccion;
-                cbx_pais.SelectedValue = resp.Data[0]?.IdCountry;
-                cbx_departamento.SelectedValue = resp.Data[0]?.IdDepartament;
-                cbx_municipio.SelectedValue = resp.Data[0]?.IdCity;
-                cbx_codigo_postal.SelectedValue = resp.Data[0]?.IdCodigoPostal;
-                cbx_actividad_economica.SelectedValue = resp.Data[0]?.IdActividadEconomica;
+                if (resp.Data.Count > 0)
+                {
+                    vg_IdTienda = resp.Data[0]?.IdTienda;
+                    cbx_tipo_documento.SelectedValue = resp.Data[0]?.IdIdentificationType;
+                    txt_numero_documento.Text = resp.Data[0]?.NumeroDocumento;
+                    txt_nombre_razon_social.Text = resp.Data[0]?.NombreRazonSocial;
+                    cbx_tipo_responsabilidad.SelectedValue = resp.Data[0]?.IdTipoResponsabilidad;
+                    cbx_responsabilidad_tributaria.SelectedValue = resp.Data[0]?.IdResponsabilidadTributaria;
+                    cbx_tipo_contribuyente.SelectedValue = resp.Data[0]?.IdTipoContribuyente;
+                    txt_correo_distribucion.Text = resp.Data[0]?.CorreoDistribucion;
+                    txt_telefono.Text = resp.Data[0]?.Telefono;
+                    txt_direccion.Text = resp.Data[0]?.Direccion;
+                    cbx_pais.SelectedValue = resp.Data[0]?.IdCountry;
+                    cbx_departamento.SelectedValue = resp.Data[0]?.IdDepartament;
+                    cbx_municipio.SelectedValue = resp.Data[0]?.IdCity;
+                    cbx_codigo_postal.SelectedValue = resp.Data[0]?.IdCodigoPostal;
+                    cbx_actividad_economica.SelectedValue = resp.Data[0]?.IdActividadEconomica;
+                }
             }
         }
 

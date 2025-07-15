@@ -30,15 +30,15 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ajustes));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle19 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle20 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle21 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle22 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle23 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle24 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle25 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle26 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle27 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
             label10 = new Label();
             cbx_lineas_abajo = new ComboBox();
@@ -66,11 +66,24 @@
             tabControl2 = new TabControl();
             tabPage2 = new TabPage();
             dtg_rangos_numeracion = new DataGridView();
+            cl_en_uso = new DataGridViewTextBoxColumn();
+            cl_Nro = new DataGridViewTextBoxColumn();
+            cl_vencido = new DataGridViewTextBoxColumn();
+            cl_estado_ra = new DataGridViewTextBoxColumn();
+            cl_tipo_documento = new DataGridViewTextBoxColumn();
+            cl_prefijo = new DataGridViewTextBoxColumn();
+            cl_numero_desde = new DataGridViewTextBoxColumn();
+            cl_numero_hasta = new DataGridViewTextBoxColumn();
+            cl_nro_autorizacion = new DataGridViewTextBoxColumn();
+            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
             panel1 = new Panel();
             btn_buscar_ra = new Button();
             btn_eliminar_ra = new Button();
             btn_editar_ra = new Button();
             btn_agregar_ra = new Button();
+            tabPage4 = new TabPage();
+            txt_grant_type = new TextBox();
+            label11 = new Label();
             Usuarios = new TabControl();
             tabAdministracion = new TabPage();
             tabControl1 = new TabControl();
@@ -111,16 +124,16 @@
             btn_busca_usuario = new Button();
             label5 = new Label();
             errorProvider1 = new ErrorProvider(components);
-            cl_en_uso = new DataGridViewTextBoxColumn();
-            cl_Nro = new DataGridViewTextBoxColumn();
-            cl_vencido = new DataGridViewTextBoxColumn();
-            cl_estado_ra = new DataGridViewTextBoxColumn();
-            cl_tipo_documento = new DataGridViewTextBoxColumn();
-            cl_prefijo = new DataGridViewTextBoxColumn();
-            cl_numero_desde = new DataGridViewTextBoxColumn();
-            cl_numero_hasta = new DataGridViewTextBoxColumn();
-            cl_nro_autorizacion = new DataGridViewTextBoxColumn();
-            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
+            panel5 = new Panel();
+            btn_guardar_api = new Button();
+            label12 = new Label();
+            label13 = new Label();
+            label14 = new Label();
+            label15 = new Label();
+            txt_client_id = new TextBox();
+            txt_client_secret = new TextBox();
+            txt_username = new TextBox();
+            txt_password = new TextBox();
             TabParametros.SuspendLayout();
             panel2.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -128,6 +141,7 @@
             tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_rangos_numeracion).BeginInit();
             panel1.SuspendLayout();
+            tabPage4.SuspendLayout();
             Usuarios.SuspendLayout();
             tabAdministracion.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -138,6 +152,7 @@
             ((System.ComponentModel.ISupportInitialize)dtg_permisos).BeginInit();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            panel5.SuspendLayout();
             SuspendLayout();
             // 
             // TabParametros
@@ -163,11 +178,10 @@
             TabParametros.Controls.Add(label1);
             TabParametros.Controls.Add(lbl_valida_stock);
             TabParametros.Controls.Add(panel2);
-            TabParametros.Location = new Point(4, 30);
-            TabParametros.Margin = new Padding(3, 4, 3, 4);
+            TabParametros.Location = new Point(4, 26);
             TabParametros.Name = "TabParametros";
-            TabParametros.Padding = new Padding(3, 4, 3, 4);
-            TabParametros.Size = new Size(1229, 702);
+            TabParametros.Padding = new Padding(3);
+            TabParametros.Size = new Size(1074, 522);
             TabParametros.TabIndex = 1;
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
@@ -175,9 +189,9 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(434, 423);
+            label10.Location = new Point(380, 317);
             label10.Name = "label10";
-            label10.Size = new Size(184, 21);
+            label10.Size = new Size(148, 17);
             label10.TabIndex = 20;
             label10.Text = "80 mm (9) - 58 mm (3)";
             // 
@@ -186,28 +200,26 @@
             cbx_lineas_abajo.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_lineas_abajo.FormattingEnabled = true;
             cbx_lineas_abajo.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
-            cbx_lineas_abajo.Location = new Point(289, 415);
-            cbx_lineas_abajo.Margin = new Padding(3, 4, 3, 4);
+            cbx_lineas_abajo.Location = new Point(253, 311);
             cbx_lineas_abajo.Name = "cbx_lineas_abajo";
-            cbx_lineas_abajo.Size = new Size(138, 29);
+            cbx_lineas_abajo.Size = new Size(121, 25);
             cbx_lineas_abajo.TabIndex = 19;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(9, 423);
+            label9.Location = new Point(8, 317);
             label9.Name = "label9";
-            label9.Size = new Size(200, 21);
+            label9.Size = new Size(158, 17);
             label9.TabIndex = 18;
             label9.Text = "lineas abajo de la tirilla";
             // 
             // rb_58mm
             // 
             rb_58mm.AutoSize = true;
-            rb_58mm.Location = new Point(493, 257);
-            rb_58mm.Margin = new Padding(3, 4, 3, 4);
+            rb_58mm.Location = new Point(431, 193);
             rb_58mm.Name = "rb_58mm";
-            rb_58mm.Size = new Size(219, 25);
+            rb_58mm.Size = new Size(172, 21);
             rb_58mm.TabIndex = 17;
             rb_58mm.TabStop = true;
             rb_58mm.Text = "58 mm (32 Caracteres)";
@@ -217,10 +229,9 @@
             // rb_80mm
             // 
             rb_80mm.AutoSize = true;
-            rb_80mm.Location = new Point(289, 257);
-            rb_80mm.Margin = new Padding(3, 4, 3, 4);
+            rb_80mm.Location = new Point(253, 193);
             rb_80mm.Name = "rb_80mm";
-            rb_80mm.Size = new Size(219, 25);
+            rb_80mm.Size = new Size(172, 21);
             rb_80mm.TabIndex = 6;
             rb_80mm.TabStop = true;
             rb_80mm.Text = "80 mm (42 Caracteres)";
@@ -229,19 +240,18 @@
             // 
             // txt_mensaje_final_tirilla
             // 
-            txt_mensaje_final_tirilla.Location = new Point(289, 336);
-            txt_mensaje_final_tirilla.Margin = new Padding(3, 4, 3, 4);
+            txt_mensaje_final_tirilla.Location = new Point(253, 252);
             txt_mensaje_final_tirilla.MaxLength = 42;
             txt_mensaje_final_tirilla.Name = "txt_mensaje_final_tirilla";
-            txt_mensaje_final_tirilla.Size = new Size(399, 27);
+            txt_mensaje_final_tirilla.Size = new Size(350, 23);
             txt_mensaje_final_tirilla.TabIndex = 8;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(9, 340);
+            label8.Location = new Point(8, 255);
             label8.Name = "label8";
-            label8.Size = new Size(299, 21);
+            label8.Size = new Size(235, 17);
             label8.TabIndex = 16;
             label8.Text = "Mensaje Personalizado al final tirilla";
             // 
@@ -250,18 +260,17 @@
             cbx_parametro_tipo_filtro_producto.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_parametro_tipo_filtro_producto.FormattingEnabled = true;
             cbx_parametro_tipo_filtro_producto.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_parametro_tipo_filtro_producto.Location = new Point(289, 213);
-            cbx_parametro_tipo_filtro_producto.Margin = new Padding(3, 4, 3, 4);
+            cbx_parametro_tipo_filtro_producto.Location = new Point(253, 160);
             cbx_parametro_tipo_filtro_producto.Name = "cbx_parametro_tipo_filtro_producto";
-            cbx_parametro_tipo_filtro_producto.Size = new Size(138, 29);
+            cbx_parametro_tipo_filtro_producto.Size = new Size(121, 25);
             cbx_parametro_tipo_filtro_producto.TabIndex = 4;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(9, 220);
+            label7.Location = new Point(8, 165);
             label7.Name = "label7";
-            label7.Size = new Size(167, 21);
+            label7.Size = new Size(131, 17);
             label7.TabIndex = 14;
             label7.Text = "Tipo filtro producto";
             // 
@@ -270,36 +279,33 @@
             cbx_Buscarenventapor.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_Buscarenventapor.FormattingEnabled = true;
             cbx_Buscarenventapor.Items.AddRange(new object[] { "Id", "Sku", "Codigo barras" });
-            cbx_Buscarenventapor.Location = new Point(289, 171);
-            cbx_Buscarenventapor.Margin = new Padding(3, 4, 3, 4);
+            cbx_Buscarenventapor.Location = new Point(253, 128);
             cbx_Buscarenventapor.Name = "cbx_Buscarenventapor";
-            cbx_Buscarenventapor.Size = new Size(138, 29);
+            cbx_Buscarenventapor.Size = new Size(121, 25);
             cbx_Buscarenventapor.TabIndex = 3;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(9, 177);
+            label6.Location = new Point(8, 133);
             label6.Name = "label6";
-            label6.Size = new Size(180, 21);
+            label6.Size = new Size(137, 17);
             label6.TabIndex = 12;
             label6.Text = "Buscar en venta por";
             // 
             // txt_ruta_backup
             // 
             txt_ruta_backup.Enabled = false;
-            txt_ruta_backup.Location = new Point(289, 376);
-            txt_ruta_backup.Margin = new Padding(3, 4, 3, 4);
+            txt_ruta_backup.Location = new Point(253, 282);
             txt_ruta_backup.Name = "txt_ruta_backup";
-            txt_ruta_backup.Size = new Size(399, 27);
+            txt_ruta_backup.Size = new Size(350, 23);
             txt_ruta_backup.TabIndex = 9;
             // 
             // txt_impresora
             // 
-            txt_impresora.Location = new Point(289, 293);
-            txt_impresora.Margin = new Padding(3, 4, 3, 4);
+            txt_impresora.Location = new Point(253, 220);
             txt_impresora.Name = "txt_impresora";
-            txt_impresora.Size = new Size(399, 27);
+            txt_impresora.Size = new Size(350, 23);
             txt_impresora.TabIndex = 7;
             // 
             // cbx_pregunta_imprimir_venta
@@ -307,10 +313,9 @@
             cbx_pregunta_imprimir_venta.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_pregunta_imprimir_venta.FormattingEnabled = true;
             cbx_pregunta_imprimir_venta.Items.AddRange(new object[] { "NO", "SI" });
-            cbx_pregunta_imprimir_venta.Location = new Point(289, 129);
-            cbx_pregunta_imprimir_venta.Margin = new Padding(3, 4, 3, 4);
+            cbx_pregunta_imprimir_venta.Location = new Point(253, 97);
             cbx_pregunta_imprimir_venta.Name = "cbx_pregunta_imprimir_venta";
-            cbx_pregunta_imprimir_venta.Size = new Size(138, 29);
+            cbx_pregunta_imprimir_venta.Size = new Size(121, 25);
             cbx_pregunta_imprimir_venta.TabIndex = 2;
             // 
             // cbx_valida_stock_venta
@@ -318,54 +323,53 @@
             cbx_valida_stock_venta.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_valida_stock_venta.FormattingEnabled = true;
             cbx_valida_stock_venta.Items.AddRange(new object[] { "SI", "NO" });
-            cbx_valida_stock_venta.Location = new Point(289, 88);
-            cbx_valida_stock_venta.Margin = new Padding(3, 4, 3, 4);
+            cbx_valida_stock_venta.Location = new Point(253, 66);
             cbx_valida_stock_venta.Name = "cbx_valida_stock_venta";
-            cbx_valida_stock_venta.Size = new Size(138, 29);
+            cbx_valida_stock_venta.Size = new Size(121, 25);
             cbx_valida_stock_venta.TabIndex = 1;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(9, 380);
+            label4.Location = new Point(8, 285);
             label4.Name = "label4";
-            label4.Size = new Size(120, 21);
+            label4.Size = new Size(92, 17);
             label4.TabIndex = 6;
             label4.Text = "Ruta backup";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(9, 301);
+            label3.Location = new Point(8, 226);
             label3.Name = "label3";
-            label3.Size = new Size(93, 21);
+            label3.Size = new Size(72, 17);
             label3.TabIndex = 5;
             label3.Text = "Impresora";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(9, 263);
+            label2.Location = new Point(8, 197);
             label2.Name = "label2";
-            label2.Size = new Size(106, 21);
+            label2.Size = new Size(84, 17);
             label2.TabIndex = 4;
             label2.Text = "Ancho tirilla";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(9, 136);
+            label1.Location = new Point(8, 102);
             label1.Name = "label1";
-            label1.Size = new Size(306, 21);
+            label1.Size = new Size(240, 17);
             label1.TabIndex = 3;
             label1.Text = "Preguntar imprimir factura en venta";
             // 
             // lbl_valida_stock
             // 
             lbl_valida_stock.AutoSize = true;
-            lbl_valida_stock.Location = new Point(9, 99);
+            lbl_valida_stock.Location = new Point(8, 74);
             lbl_valida_stock.Name = "lbl_valida_stock";
-            lbl_valida_stock.Size = new Size(222, 21);
+            lbl_valida_stock.Size = new Size(169, 17);
             lbl_valida_stock.TabIndex = 2;
             lbl_valida_stock.Text = "Validar stock para venta";
             // 
@@ -374,10 +378,9 @@
             panel2.BorderStyle = BorderStyle.Fixed3D;
             panel2.Controls.Add(btn_guardar_parametros);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(3, 4);
-            panel2.Margin = new Padding(3, 4, 3, 4);
+            panel2.Location = new Point(3, 3);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1223, 73);
+            panel2.Size = new Size(1068, 56);
             panel2.TabIndex = 1;
             // 
             // btn_guardar_parametros
@@ -386,10 +389,9 @@
             btn_guardar_parametros.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_guardar_parametros.FlatStyle = FlatStyle.Flat;
             btn_guardar_parametros.Image = (Image)resources.GetObject("btn_guardar_parametros.Image");
-            btn_guardar_parametros.Location = new Point(3, 4);
-            btn_guardar_parametros.Margin = new Padding(3, 4, 3, 4);
+            btn_guardar_parametros.Location = new Point(3, 3);
             btn_guardar_parametros.Name = "btn_guardar_parametros";
-            btn_guardar_parametros.Size = new Size(115, 60);
+            btn_guardar_parametros.Size = new Size(101, 45);
             btn_guardar_parametros.TabIndex = 0;
             btn_guardar_parametros.Text = "Guardar";
             btn_guardar_parametros.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -399,11 +401,10 @@
             // tabPage1
             // 
             tabPage1.Controls.Add(tabControl2);
-            tabPage1.Location = new Point(4, 30);
-            tabPage1.Margin = new Padding(3, 4, 3, 4);
+            tabPage1.Location = new Point(4, 26);
             tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3, 4, 3, 4);
-            tabPage1.Size = new Size(1229, 702);
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1074, 522);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Rangos de numeración";
             tabPage1.UseVisualStyleBackColor = true;
@@ -411,23 +412,22 @@
             // tabControl2
             // 
             tabControl2.Controls.Add(tabPage2);
+            tabControl2.Controls.Add(tabPage4);
             tabControl2.Dock = DockStyle.Fill;
-            tabControl2.Location = new Point(3, 4);
-            tabControl2.Margin = new Padding(3, 4, 3, 4);
+            tabControl2.Location = new Point(3, 3);
             tabControl2.Name = "tabControl2";
             tabControl2.SelectedIndex = 0;
-            tabControl2.Size = new Size(1223, 694);
+            tabControl2.Size = new Size(1068, 516);
             tabControl2.TabIndex = 0;
             // 
             // tabPage2
             // 
             tabPage2.Controls.Add(dtg_rangos_numeracion);
             tabPage2.Controls.Add(panel1);
-            tabPage2.Location = new Point(4, 30);
-            tabPage2.Margin = new Padding(3, 4, 3, 4);
+            tabPage2.Location = new Point(4, 26);
             tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3, 4, 3, 4);
-            tabPage2.Size = new Size(1215, 660);
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1060, 486);
             tabPage2.TabIndex = 0;
             tabPage2.Text = "Rangos de numeración";
             tabPage2.UseVisualStyleBackColor = true;
@@ -438,41 +438,122 @@
             dtg_rangos_numeracion.AllowUserToDeleteRows = false;
             dtg_rangos_numeracion.AllowUserToOrderColumns = true;
             dtg_rangos_numeracion.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_rangos_numeracion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle19.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle19.BackColor = SystemColors.Control;
+            dataGridViewCellStyle19.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle19.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle19.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle19.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle19.WrapMode = DataGridViewTriState.True;
+            dtg_rangos_numeracion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
             dtg_rangos_numeracion.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_rangos_numeracion.Columns.AddRange(new DataGridViewColumn[] { cl_en_uso, cl_Nro, cl_vencido, cl_estado_ra, cl_tipo_documento, cl_prefijo, cl_numero_desde, cl_numero_hasta, cl_nro_autorizacion, cl_fecha_vencimiento });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_rangos_numeracion.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle20.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle20.BackColor = SystemColors.Window;
+            dataGridViewCellStyle20.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle20.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle20.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle20.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle20.WrapMode = DataGridViewTriState.False;
+            dtg_rangos_numeracion.DefaultCellStyle = dataGridViewCellStyle20;
             dtg_rangos_numeracion.Dock = DockStyle.Fill;
-            dtg_rangos_numeracion.Location = new Point(3, 77);
-            dtg_rangos_numeracion.Margin = new Padding(3, 4, 3, 4);
+            dtg_rangos_numeracion.Location = new Point(3, 59);
             dtg_rangos_numeracion.Name = "dtg_rangos_numeracion";
             dtg_rangos_numeracion.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_rangos_numeracion.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle21.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle21.BackColor = SystemColors.Control;
+            dataGridViewCellStyle21.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle21.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle21.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle21.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle21.WrapMode = DataGridViewTriState.True;
+            dtg_rangos_numeracion.RowHeadersDefaultCellStyle = dataGridViewCellStyle21;
             dtg_rangos_numeracion.RowHeadersWidth = 51;
             dtg_rangos_numeracion.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_rangos_numeracion.Size = new Size(1209, 579);
+            dtg_rangos_numeracion.Size = new Size(1054, 424);
             dtg_rangos_numeracion.TabIndex = 1;
+            // 
+            // cl_en_uso
+            // 
+            cl_en_uso.HeaderText = "En uso";
+            cl_en_uso.MinimumWidth = 6;
+            cl_en_uso.Name = "cl_en_uso";
+            cl_en_uso.ReadOnly = true;
+            cl_en_uso.Width = 95;
+            // 
+            // cl_Nro
+            // 
+            cl_Nro.HeaderText = "Nro.";
+            cl_Nro.MinimumWidth = 60;
+            cl_Nro.Name = "cl_Nro";
+            cl_Nro.ReadOnly = true;
+            cl_Nro.Width = 60;
+            // 
+            // cl_vencido
+            // 
+            cl_vencido.HeaderText = "Vencido";
+            cl_vencido.MinimumWidth = 6;
+            cl_vencido.Name = "cl_vencido";
+            cl_vencido.ReadOnly = true;
+            cl_vencido.Width = 125;
+            // 
+            // cl_estado_ra
+            // 
+            cl_estado_ra.HeaderText = "Estado";
+            cl_estado_ra.MinimumWidth = 70;
+            cl_estado_ra.Name = "cl_estado_ra";
+            cl_estado_ra.ReadOnly = true;
+            cl_estado_ra.Resizable = DataGridViewTriState.True;
+            cl_estado_ra.SortMode = DataGridViewColumnSortMode.NotSortable;
+            cl_estado_ra.Width = 70;
+            // 
+            // cl_tipo_documento
+            // 
+            cl_tipo_documento.HeaderText = "Tipo Documento";
+            cl_tipo_documento.MinimumWidth = 150;
+            cl_tipo_documento.Name = "cl_tipo_documento";
+            cl_tipo_documento.ReadOnly = true;
+            cl_tipo_documento.Width = 150;
+            // 
+            // cl_prefijo
+            // 
+            cl_prefijo.HeaderText = "Prefijo";
+            cl_prefijo.MinimumWidth = 60;
+            cl_prefijo.Name = "cl_prefijo";
+            cl_prefijo.ReadOnly = true;
+            cl_prefijo.Width = 60;
+            // 
+            // cl_numero_desde
+            // 
+            cl_numero_desde.HeaderText = "Número Desde";
+            cl_numero_desde.MinimumWidth = 130;
+            cl_numero_desde.Name = "cl_numero_desde";
+            cl_numero_desde.ReadOnly = true;
+            cl_numero_desde.Width = 130;
+            // 
+            // cl_numero_hasta
+            // 
+            cl_numero_hasta.HeaderText = "Número Hasta";
+            cl_numero_hasta.MinimumWidth = 126;
+            cl_numero_hasta.Name = "cl_numero_hasta";
+            cl_numero_hasta.ReadOnly = true;
+            cl_numero_hasta.Width = 126;
+            // 
+            // cl_nro_autorizacion
+            // 
+            cl_nro_autorizacion.HeaderText = "Nro. Autorización";
+            cl_nro_autorizacion.MinimumWidth = 150;
+            cl_nro_autorizacion.Name = "cl_nro_autorizacion";
+            cl_nro_autorizacion.ReadOnly = true;
+            cl_nro_autorizacion.Width = 150;
+            // 
+            // cl_fecha_vencimiento
+            // 
+            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
+            cl_fecha_vencimiento.MinimumWidth = 160;
+            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
+            cl_fecha_vencimiento.ReadOnly = true;
+            cl_fecha_vencimiento.Width = 160;
             // 
             // panel1
             // 
@@ -482,10 +563,9 @@
             panel1.Controls.Add(btn_editar_ra);
             panel1.Controls.Add(btn_agregar_ra);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(3, 4);
-            panel1.Margin = new Padding(3, 4, 3, 4);
+            panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1209, 73);
+            panel1.Size = new Size(1054, 56);
             panel1.TabIndex = 0;
             // 
             // btn_buscar_ra
@@ -494,10 +574,9 @@
             btn_buscar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_ra.FlatStyle = FlatStyle.Flat;
             btn_buscar_ra.Image = (Image)resources.GetObject("btn_buscar_ra.Image");
-            btn_buscar_ra.Location = new Point(1171, 16);
-            btn_buscar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_buscar_ra.Location = new Point(1021, 12);
             btn_buscar_ra.Name = "btn_buscar_ra";
-            btn_buscar_ra.Size = new Size(30, 35);
+            btn_buscar_ra.Size = new Size(26, 26);
             btn_buscar_ra.TabIndex = 5;
             btn_buscar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar_ra.UseVisualStyleBackColor = true;
@@ -508,10 +587,9 @@
             btn_eliminar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar_ra.FlatStyle = FlatStyle.Flat;
             btn_eliminar_ra.Image = (Image)resources.GetObject("btn_eliminar_ra.Image");
-            btn_eliminar_ra.Location = new Point(248, 4);
-            btn_eliminar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_eliminar_ra.Location = new Point(217, 3);
             btn_eliminar_ra.Name = "btn_eliminar_ra";
-            btn_eliminar_ra.Size = new Size(115, 60);
+            btn_eliminar_ra.Size = new Size(101, 45);
             btn_eliminar_ra.TabIndex = 4;
             btn_eliminar_ra.Text = "Eliminar";
             btn_eliminar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -522,10 +600,9 @@
             btn_editar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar_ra.FlatStyle = FlatStyle.Flat;
             btn_editar_ra.Image = (Image)resources.GetObject("btn_editar_ra.Image");
-            btn_editar_ra.Location = new Point(126, 4);
-            btn_editar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_editar_ra.Location = new Point(110, 3);
             btn_editar_ra.Name = "btn_editar_ra";
-            btn_editar_ra.Size = new Size(115, 60);
+            btn_editar_ra.Size = new Size(101, 45);
             btn_editar_ra.TabIndex = 1;
             btn_editar_ra.Text = "Editar";
             btn_editar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -537,15 +614,51 @@
             btn_agregar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar_ra.FlatStyle = FlatStyle.Flat;
             btn_agregar_ra.Image = (Image)resources.GetObject("btn_agregar_ra.Image");
-            btn_agregar_ra.Location = new Point(3, 4);
-            btn_agregar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_agregar_ra.Location = new Point(3, 3);
             btn_agregar_ra.Name = "btn_agregar_ra";
-            btn_agregar_ra.Size = new Size(115, 60);
+            btn_agregar_ra.Size = new Size(101, 45);
             btn_agregar_ra.TabIndex = 0;
             btn_agregar_ra.Text = "Agregar";
             btn_agregar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_agregar_ra.UseVisualStyleBackColor = true;
             btn_agregar_ra.Click += btn_agregar_ra_Click;
+            // 
+            // tabPage4
+            // 
+            tabPage4.Controls.Add(txt_password);
+            tabPage4.Controls.Add(txt_username);
+            tabPage4.Controls.Add(txt_client_secret);
+            tabPage4.Controls.Add(txt_client_id);
+            tabPage4.Controls.Add(label15);
+            tabPage4.Controls.Add(label14);
+            tabPage4.Controls.Add(label13);
+            tabPage4.Controls.Add(label12);
+            tabPage4.Controls.Add(panel5);
+            tabPage4.Controls.Add(txt_grant_type);
+            tabPage4.Controls.Add(label11);
+            tabPage4.Location = new Point(4, 26);
+            tabPage4.Name = "tabPage4";
+            tabPage4.Padding = new Padding(3);
+            tabPage4.Size = new Size(1060, 486);
+            tabPage4.TabIndex = 1;
+            tabPage4.Text = "Api";
+            tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // txt_grant_type
+            // 
+            txt_grant_type.Location = new Point(104, 78);
+            txt_grant_type.Name = "txt_grant_type";
+            txt_grant_type.Size = new Size(741, 23);
+            txt_grant_type.TabIndex = 9;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(8, 81);
+            label11.Name = "label11";
+            label11.Size = new Size(78, 17);
+            label11.TabIndex = 8;
+            label11.Text = "grant_type";
             // 
             // Usuarios
             // 
@@ -555,21 +668,19 @@
             Usuarios.Dock = DockStyle.Fill;
             Usuarios.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Usuarios.Location = new Point(0, 0);
-            Usuarios.Margin = new Padding(3, 4, 3, 4);
             Usuarios.Name = "Usuarios";
             Usuarios.SelectedIndex = 0;
-            Usuarios.Size = new Size(1237, 736);
+            Usuarios.Size = new Size(1082, 552);
             Usuarios.TabIndex = 0;
             Usuarios.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // tabAdministracion
             // 
             tabAdministracion.Controls.Add(tabControl1);
-            tabAdministracion.Location = new Point(4, 30);
-            tabAdministracion.Margin = new Padding(3, 4, 3, 4);
+            tabAdministracion.Location = new Point(4, 26);
             tabAdministracion.Name = "tabAdministracion";
-            tabAdministracion.Padding = new Padding(3, 4, 3, 4);
-            tabAdministracion.Size = new Size(1229, 702);
+            tabAdministracion.Padding = new Padding(3);
+            tabAdministracion.Size = new Size(1074, 522);
             tabAdministracion.TabIndex = 2;
             tabAdministracion.Text = "Administracion";
             tabAdministracion.UseVisualStyleBackColor = true;
@@ -579,22 +690,20 @@
             tabControl1.Controls.Add(tabPage3);
             tabControl1.Controls.Add(tabPage5);
             tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(3, 4);
-            tabControl1.Margin = new Padding(3, 4, 3, 4);
+            tabControl1.Location = new Point(3, 3);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1223, 694);
+            tabControl1.Size = new Size(1068, 516);
             tabControl1.TabIndex = 0;
             // 
             // tabPage3
             // 
             tabPage3.Controls.Add(dtg_usuario);
             tabPage3.Controls.Add(panel3);
-            tabPage3.Location = new Point(4, 30);
-            tabPage3.Margin = new Padding(3, 4, 3, 4);
+            tabPage3.Location = new Point(4, 26);
             tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3, 4, 3, 4);
-            tabPage3.Size = new Size(1215, 660);
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(1060, 486);
             tabPage3.TabIndex = 0;
             tabPage3.Text = "Usuarios";
             tabPage3.UseVisualStyleBackColor = true;
@@ -605,40 +714,39 @@
             dtg_usuario.AllowUserToDeleteRows = false;
             dtg_usuario.AllowUserToOrderColumns = true;
             dtg_usuario.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle22.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle22.BackColor = SystemColors.Control;
+            dataGridViewCellStyle22.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle22.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle22.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle22.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle22.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle22;
             dtg_usuario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_usuario.Columns.AddRange(new DataGridViewColumn[] { cl_IdUsuario, cl_userName, id_rol, cl_rol, cl_tipo_identificacion, cl_identificacion, cl_nombre, cl_telefono, cl_BirthDate });
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Window;
-            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle23.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle23.BackColor = SystemColors.Window;
+            dataGridViewCellStyle23.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle23.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle23.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle23.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle23.WrapMode = DataGridViewTriState.False;
+            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle23;
             dtg_usuario.Dock = DockStyle.Fill;
-            dtg_usuario.Location = new Point(3, 77);
-            dtg_usuario.Margin = new Padding(3, 4, 3, 4);
+            dtg_usuario.Location = new Point(3, 59);
             dtg_usuario.Name = "dtg_usuario";
             dtg_usuario.ReadOnly = true;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle24.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle24.BackColor = SystemColors.Control;
+            dataGridViewCellStyle24.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle24.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle24.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle24.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle24.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle24;
             dtg_usuario.RowHeadersWidth = 51;
             dtg_usuario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_usuario.Size = new Size(1209, 579);
+            dtg_usuario.Size = new Size(1054, 424);
             dtg_usuario.TabIndex = 5;
             // 
             // cl_IdUsuario
@@ -727,10 +835,9 @@
             panel3.Controls.Add(button2);
             panel3.Controls.Add(textBox3);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(3, 4);
-            panel3.Margin = new Padding(3, 4, 3, 4);
+            panel3.Location = new Point(3, 3);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1209, 73);
+            panel3.Size = new Size(1054, 56);
             panel3.TabIndex = 2;
             // 
             // cbx_tipo_filtro
@@ -739,10 +846,9 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(854, 19);
-            cbx_tipo_filtro.Margin = new Padding(3, 4, 3, 4);
+            cbx_tipo_filtro.Location = new Point(743, 14);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
-            cbx_tipo_filtro.Size = new Size(99, 29);
+            cbx_tipo_filtro.Size = new Size(87, 25);
             cbx_tipo_filtro.TabIndex = 33;
             // 
             // cbx_campo_filtro
@@ -751,10 +857,9 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre usuario", "Id usuario" });
-            cbx_campo_filtro.Location = new Point(717, 19);
-            cbx_campo_filtro.Margin = new Padding(3, 4, 3, 4);
+            cbx_campo_filtro.Location = new Point(623, 14);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
-            cbx_campo_filtro.Size = new Size(130, 29);
+            cbx_campo_filtro.Size = new Size(114, 25);
             cbx_campo_filtro.TabIndex = 32;
             // 
             // btn_buscar_usuario
@@ -763,10 +868,9 @@
             btn_buscar_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_usuario.FlatStyle = FlatStyle.Flat;
             btn_buscar_usuario.Image = (Image)resources.GetObject("btn_buscar_usuario.Image");
-            btn_buscar_usuario.Location = new Point(1169, 16);
-            btn_buscar_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_buscar_usuario.Location = new Point(1019, 12);
             btn_buscar_usuario.Name = "btn_buscar_usuario";
-            btn_buscar_usuario.Size = new Size(30, 35);
+            btn_buscar_usuario.Size = new Size(26, 26);
             btn_buscar_usuario.TabIndex = 31;
             btn_buscar_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar_usuario.UseVisualStyleBackColor = true;
@@ -775,10 +879,9 @@
             // txt_buscar_usuario
             // 
             txt_buscar_usuario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar_usuario.Location = new Point(960, 19);
-            txt_buscar_usuario.Margin = new Padding(3, 4, 3, 4);
+            txt_buscar_usuario.Location = new Point(836, 14);
             txt_buscar_usuario.Name = "txt_buscar_usuario";
-            txt_buscar_usuario.Size = new Size(202, 27);
+            txt_buscar_usuario.Size = new Size(177, 23);
             txt_buscar_usuario.TabIndex = 30;
             // 
             // btn_editar_usuario
@@ -787,10 +890,9 @@
             btn_editar_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar_usuario.FlatStyle = FlatStyle.Flat;
             btn_editar_usuario.Image = (Image)resources.GetObject("btn_editar_usuario.Image");
-            btn_editar_usuario.Location = new Point(126, 4);
-            btn_editar_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_editar_usuario.Location = new Point(110, 3);
             btn_editar_usuario.Name = "btn_editar_usuario";
-            btn_editar_usuario.Size = new Size(115, 60);
+            btn_editar_usuario.Size = new Size(101, 45);
             btn_editar_usuario.TabIndex = 17;
             btn_editar_usuario.Text = "Editar";
             btn_editar_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -803,10 +905,9 @@
             btn_agregar_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar_usuario.FlatStyle = FlatStyle.Flat;
             btn_agregar_usuario.Image = (Image)resources.GetObject("btn_agregar_usuario.Image");
-            btn_agregar_usuario.Location = new Point(3, 4);
-            btn_agregar_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_agregar_usuario.Location = new Point(3, 3);
             btn_agregar_usuario.Name = "btn_agregar_usuario";
-            btn_agregar_usuario.Size = new Size(115, 60);
+            btn_agregar_usuario.Size = new Size(101, 45);
             btn_agregar_usuario.TabIndex = 16;
             btn_agregar_usuario.Text = "Agregar";
             btn_agregar_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -820,10 +921,9 @@
             button2.FlatAppearance.MouseDownBackColor = Color.Gray;
             button2.FlatStyle = FlatStyle.Flat;
             button2.Image = (Image)resources.GetObject("button2.Image");
-            button2.Location = new Point(2630, 4);
-            button2.Margin = new Padding(3, 4, 3, 4);
+            button2.Location = new Point(2297, 3);
             button2.Name = "button2";
-            button2.Size = new Size(48, 60);
+            button2.Size = new Size(42, 45);
             button2.TabIndex = 5;
             button2.TextImageRelation = TextImageRelation.ImageBeforeText;
             button2.UseVisualStyleBackColor = true;
@@ -831,21 +931,19 @@
             // textBox3
             // 
             textBox3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox3.Location = new Point(2405, 19);
-            textBox3.Margin = new Padding(3, 4, 3, 4);
+            textBox3.Location = new Point(2100, 14);
             textBox3.Name = "textBox3";
-            textBox3.Size = new Size(218, 27);
+            textBox3.Size = new Size(191, 23);
             textBox3.TabIndex = 2;
             // 
             // tabPage5
             // 
             tabPage5.Controls.Add(dtg_permisos);
             tabPage5.Controls.Add(panel4);
-            tabPage5.Location = new Point(4, 29);
-            tabPage5.Margin = new Padding(3, 4, 3, 4);
+            tabPage5.Location = new Point(4, 24);
             tabPage5.Name = "tabPage5";
-            tabPage5.Padding = new Padding(3, 4, 3, 4);
-            tabPage5.Size = new Size(1109, 661);
+            tabPage5.Padding = new Padding(3);
+            tabPage5.Size = new Size(1060, 488);
             tabPage5.TabIndex = 2;
             tabPage5.Text = "Permisos";
             tabPage5.UseVisualStyleBackColor = true;
@@ -856,39 +954,38 @@
             dtg_permisos.AllowUserToDeleteRows = false;
             dtg_permisos.AllowUserToOrderColumns = true;
             dtg_permisos.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle25.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle25.BackColor = SystemColors.Control;
+            dataGridViewCellStyle25.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle25.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle25.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle25.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle25.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle25;
             dtg_permisos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_permisos.Columns.AddRange(new DataGridViewColumn[] { cl_idUserMenu, cl_id_menu, cl_menu, cl_id_user, cl_toRead, cl_ToCreate, cl_toUpdate, cl_toDelete, cl_estado });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle26.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle26.BackColor = SystemColors.Window;
+            dataGridViewCellStyle26.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle26.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle26.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle26.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle26.WrapMode = DataGridViewTriState.False;
+            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle26;
             dtg_permisos.Dock = DockStyle.Fill;
-            dtg_permisos.Location = new Point(3, 76);
-            dtg_permisos.Margin = new Padding(3, 4, 3, 4);
+            dtg_permisos.Location = new Point(3, 58);
             dtg_permisos.Name = "dtg_permisos";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle27.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle27.BackColor = SystemColors.Control;
+            dataGridViewCellStyle27.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle27.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle27.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle27.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle27.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle27;
             dtg_permisos.RowHeadersWidth = 51;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_permisos.Size = new Size(1103, 581);
+            dtg_permisos.Size = new Size(1054, 427);
             dtg_permisos.TabIndex = 140;
             // 
             // cl_idUserMenu
@@ -974,10 +1071,9 @@
             panel4.Controls.Add(btn_busca_usuario);
             panel4.Controls.Add(label5);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(3, 4);
-            panel4.Margin = new Padding(3, 4, 3, 4);
+            panel4.Location = new Point(3, 3);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1103, 72);
+            panel4.Size = new Size(1054, 55);
             panel4.TabIndex = 139;
             // 
             // btn_guardar_permisos
@@ -986,10 +1082,9 @@
             btn_guardar_permisos.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_guardar_permisos.FlatStyle = FlatStyle.Flat;
             btn_guardar_permisos.Image = (Image)resources.GetObject("btn_guardar_permisos.Image");
-            btn_guardar_permisos.Location = new Point(3, 4);
-            btn_guardar_permisos.Margin = new Padding(3, 4, 3, 4);
+            btn_guardar_permisos.Location = new Point(3, 3);
             btn_guardar_permisos.Name = "btn_guardar_permisos";
-            btn_guardar_permisos.Size = new Size(115, 60);
+            btn_guardar_permisos.Size = new Size(101, 45);
             btn_guardar_permisos.TabIndex = 17;
             btn_guardar_permisos.Text = "Guardar";
             btn_guardar_permisos.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -1000,10 +1095,9 @@
             // 
             txt_busca_usuario.Anchor = AnchorStyles.Top;
             txt_busca_usuario.Enabled = false;
-            txt_busca_usuario.Location = new Point(678, 19);
-            txt_busca_usuario.Margin = new Padding(3, 4, 3, 4);
+            txt_busca_usuario.Location = new Point(738, 14);
             txt_busca_usuario.Name = "txt_busca_usuario";
-            txt_busca_usuario.Size = new Size(306, 27);
+            txt_busca_usuario.Size = new Size(268, 23);
             txt_busca_usuario.TabIndex = 135;
             // 
             // btn_busca_usuario
@@ -1012,10 +1106,9 @@
             btn_busca_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_busca_usuario.FlatStyle = FlatStyle.Flat;
             btn_busca_usuario.Image = (Image)resources.GetObject("btn_busca_usuario.Image");
-            btn_busca_usuario.Location = new Point(923, 16);
-            btn_busca_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_busca_usuario.Location = new Point(1014, 12);
             btn_busca_usuario.Name = "btn_busca_usuario";
-            btn_busca_usuario.Size = new Size(30, 35);
+            btn_busca_usuario.Size = new Size(26, 26);
             btn_busca_usuario.TabIndex = 136;
             btn_busca_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_busca_usuario.UseVisualStyleBackColor = true;
@@ -1024,9 +1117,9 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(539, 23);
+            label5.Location = new Point(678, 17);
             label5.Name = "label5";
-            label5.Size = new Size(70, 21);
+            label5.Size = new Size(54, 17);
             label5.TabIndex = 137;
             label5.Text = "Usuario";
             // 
@@ -1034,97 +1127,103 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
-            // cl_en_uso
+            // panel5
             // 
-            cl_en_uso.HeaderText = "En uso";
-            cl_en_uso.MinimumWidth = 6;
-            cl_en_uso.Name = "cl_en_uso";
-            cl_en_uso.ReadOnly = true;
-            cl_en_uso.Width = 95;
+            panel5.BorderStyle = BorderStyle.Fixed3D;
+            panel5.Controls.Add(btn_guardar_api);
+            panel5.Dock = DockStyle.Top;
+            panel5.Location = new Point(3, 3);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(1054, 56);
+            panel5.TabIndex = 10;
             // 
-            // cl_Nro
+            // btn_guardar_api
             // 
-            cl_Nro.HeaderText = "Nro.";
-            cl_Nro.MinimumWidth = 60;
-            cl_Nro.Name = "cl_Nro";
-            cl_Nro.ReadOnly = true;
-            cl_Nro.Width = 60;
+            btn_guardar_api.Enabled = false;
+            btn_guardar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_guardar_api.FlatStyle = FlatStyle.Flat;
+            btn_guardar_api.Image = (Image)resources.GetObject("btn_guardar_api.Image");
+            btn_guardar_api.Location = new Point(3, 3);
+            btn_guardar_api.Name = "btn_guardar_api";
+            btn_guardar_api.Size = new Size(101, 45);
+            btn_guardar_api.TabIndex = 1;
+            btn_guardar_api.Text = "Guardar";
+            btn_guardar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_guardar_api.UseVisualStyleBackColor = true;
+            btn_guardar_api.Click += btn_guardar_api_Click;
             // 
-            // cl_vencido
+            // label12
             // 
-            cl_vencido.HeaderText = "Vencido";
-            cl_vencido.MinimumWidth = 6;
-            cl_vencido.Name = "cl_vencido";
-            cl_vencido.ReadOnly = true;
-            cl_vencido.Width = 125;
+            label12.AutoSize = true;
+            label12.Location = new Point(8, 110);
+            label12.Name = "label12";
+            label12.Size = new Size(62, 17);
+            label12.TabIndex = 11;
+            label12.Text = "client_id";
             // 
-            // cl_estado_ra
+            // label13
             // 
-            cl_estado_ra.HeaderText = "Estado";
-            cl_estado_ra.MinimumWidth = 70;
-            cl_estado_ra.Name = "cl_estado_ra";
-            cl_estado_ra.ReadOnly = true;
-            cl_estado_ra.Resizable = DataGridViewTriState.True;
-            cl_estado_ra.SortMode = DataGridViewColumnSortMode.NotSortable;
-            cl_estado_ra.Width = 70;
+            label13.AutoSize = true;
+            label13.Location = new Point(8, 139);
+            label13.Name = "label13";
+            label13.Size = new Size(88, 17);
+            label13.TabIndex = 12;
+            label13.Text = "client_secret";
             // 
-            // cl_tipo_documento
+            // label14
             // 
-            cl_tipo_documento.HeaderText = "Tipo Documento";
-            cl_tipo_documento.MinimumWidth = 150;
-            cl_tipo_documento.Name = "cl_tipo_documento";
-            cl_tipo_documento.ReadOnly = true;
-            cl_tipo_documento.Width = 150;
+            label14.AutoSize = true;
+            label14.Location = new Point(8, 168);
+            label14.Name = "label14";
+            label14.Size = new Size(71, 17);
+            label14.TabIndex = 13;
+            label14.Text = "username";
             // 
-            // cl_prefijo
+            // label15
             // 
-            cl_prefijo.HeaderText = "Prefijo";
-            cl_prefijo.MinimumWidth = 60;
-            cl_prefijo.Name = "cl_prefijo";
-            cl_prefijo.ReadOnly = true;
-            cl_prefijo.Width = 60;
+            label15.AutoSize = true;
+            label15.Location = new Point(8, 197);
+            label15.Name = "label15";
+            label15.Size = new Size(70, 17);
+            label15.TabIndex = 14;
+            label15.Text = "password";
             // 
-            // cl_numero_desde
+            // txt_client_id
             // 
-            cl_numero_desde.HeaderText = "Número Desde";
-            cl_numero_desde.MinimumWidth = 130;
-            cl_numero_desde.Name = "cl_numero_desde";
-            cl_numero_desde.ReadOnly = true;
-            cl_numero_desde.Width = 130;
+            txt_client_id.Location = new Point(104, 107);
+            txt_client_id.Name = "txt_client_id";
+            txt_client_id.Size = new Size(741, 23);
+            txt_client_id.TabIndex = 15;
             // 
-            // cl_numero_hasta
+            // txt_client_secret
             // 
-            cl_numero_hasta.HeaderText = "Número Hasta";
-            cl_numero_hasta.MinimumWidth = 126;
-            cl_numero_hasta.Name = "cl_numero_hasta";
-            cl_numero_hasta.ReadOnly = true;
-            cl_numero_hasta.Width = 126;
+            txt_client_secret.Location = new Point(104, 136);
+            txt_client_secret.Name = "txt_client_secret";
+            txt_client_secret.Size = new Size(741, 23);
+            txt_client_secret.TabIndex = 16;
             // 
-            // cl_nro_autorizacion
+            // txt_username
             // 
-            cl_nro_autorizacion.HeaderText = "Nro. Autorización";
-            cl_nro_autorizacion.MinimumWidth = 150;
-            cl_nro_autorizacion.Name = "cl_nro_autorizacion";
-            cl_nro_autorizacion.ReadOnly = true;
-            cl_nro_autorizacion.Width = 150;
+            txt_username.Location = new Point(104, 165);
+            txt_username.Name = "txt_username";
+            txt_username.Size = new Size(741, 23);
+            txt_username.TabIndex = 17;
             // 
-            // cl_fecha_vencimiento
+            // txt_password
             // 
-            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
-            cl_fecha_vencimiento.MinimumWidth = 160;
-            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
-            cl_fecha_vencimiento.ReadOnly = true;
-            cl_fecha_vencimiento.Width = 160;
+            txt_password.Location = new Point(104, 194);
+            txt_password.Name = "txt_password";
+            txt_password.Size = new Size(741, 23);
+            txt_password.TabIndex = 18;
             // 
             // Ajustes
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1237, 736);
+            ClientSize = new Size(1082, 552);
             Controls.Add(Usuarios);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(3, 4, 3, 4);
-            MinimumSize = new Size(1011, 772);
+            MinimumSize = new Size(887, 589);
             Name = "Ajustes";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Ajustes";
@@ -1137,6 +1236,8 @@
             tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dtg_rangos_numeracion).EndInit();
             panel1.ResumeLayout(false);
+            tabPage4.ResumeLayout(false);
+            tabPage4.PerformLayout();
             Usuarios.ResumeLayout(false);
             tabAdministracion.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
@@ -1149,6 +1250,7 @@
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            panel5.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1235,5 +1337,18 @@
         private DataGridViewTextBoxColumn cl_numero_hasta;
         private DataGridViewTextBoxColumn cl_nro_autorizacion;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
+        private TabPage tabPage4;
+        private TextBox txt_grant_type;
+        private Label label11;
+        private Panel panel5;
+        private Button btn_guardar_api;
+        private Label label12;
+        private Label label13;
+        private Label label14;
+        private Label label15;
+        private TextBox txt_password;
+        private TextBox txt_username;
+        private TextBox txt_client_secret;
+        private TextBox txt_client_id;
     }
 }
