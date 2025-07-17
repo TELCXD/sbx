@@ -7,5 +7,7 @@ namespace sbx.core.Interfaces.CredencialesApi
     {
         Task<Response<dynamic>> List();
         Task<Response<dynamic>> CreateUpdate(CredencialesApiEntitie credencialesApiEntitie, int IdUser);
+        Task<Response<dynamic>> ListId(int Id);
+        Task<Response<dynamic>> Eliminar(int Id);
     }
 }

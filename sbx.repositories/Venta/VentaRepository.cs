@@ -46,6 +46,10 @@ namespace sbx.repositories.Venta
                     }
                     else if(ventaEntitie.Id_RangoNumeracion == 2)
                     {
+                        sql = $@" SELECT * FROM T_RangoNumeracion WHERE Id_RangoNumeracion = ";
+
+                        dynamic resultadoRango = await connection.QueryAsync(sql);
+
                         sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
                                   VALUES(@Prefijo,
                                         (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),

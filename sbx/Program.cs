@@ -226,6 +226,8 @@ namespace sbx
 
                 services.AddTransient<ReporteGeneral>();
 
+                services.AddTransient<AgregaApi>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -366,6 +368,9 @@ namespace sbx
 
                 services.AddTransient<ICredencialesApi>(provider =>
                 new CredencialesApiRepository(connectionString));
+
+                services.AddTransient<ICredencialesApi>(provider =>
+               new CredencialesApiRepository(connectionString));
 
             })
             .Build();

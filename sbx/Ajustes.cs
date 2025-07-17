@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using sbx.core.Entities.CrendencialesApi;
 using sbx.core.Entities.Parametros;
 using sbx.core.Entities.Permiso;
-using sbx.core.Entities.Tienda;
+using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Permisos;
 using sbx.core.Interfaces.RangoNumeracion;
-using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Usuario;
 
 namespace sbx
@@ -29,8 +27,9 @@ namespace sbx
         string MensajePersonalizado = "";
         private readonly ICredencialesApi _ICredencialesApi;
         int v_Id_credencialesApi = 0;
+        private AgregaApi? _AgregaApi;
 
-        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion, 
+        public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion,
             IParametros parametros, IUsuario usuario, IPermisos permisos, ICredencialesApi credencialesApi)
         {
             InitializeComponent();
@@ -78,7 +77,7 @@ namespace sbx
                             btn_busca_usuario.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         case "credencialesApi":
-                            btn_guardar_api.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_agregar_api.Enabled = item.ToCreate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -542,86 +541,126 @@ namespace sbx
             txt_mensaje_final_tirilla.Text = MensajePersonalizado.Length > 32 ? MensajePersonalizado.Substring(0, 32) : MensajePersonalizado;
         }
 
-        private async void btn_guardar_api_Click(object sender, EventArgs e)
+        private async Task CargaDatosCredenciales()
         {
-            errorProvider1.Clear();
+            var resp = await _ICredencialesApi.List();
 
-            bool Valido = true;
+            dtg_api_variables.Rows.Clear();
 
-            if (txt_grant_type.Text == "") 
+            if (resp.Data != null)
             {
-                errorProvider1.SetError(txt_grant_type, "Debe ingresar grant_type");
-                Valido = false;
-            }
-
-            if (txt_client_id.Text == "")
-            {
-                errorProvider1.SetError(txt_client_id, "Debe ingresar client_id");
-                Valido = false;
-            }
-
-            if (txt_client_secret.Text == "")
-            {
-                errorProvider1.SetError(txt_client_secret, "Debe ingresar client_secret");
-                Valido = false;
-            }
-
-            if (txt_username.Text == "")
-            {
-                errorProvider1.SetError(txt_username, "Debe ingresar username");
-                Valido = false;
-            }
-
-            if (txt_password.Text == "")
-            {
-                errorProvider1.SetError(txt_password, "Debe ingresar password");
-                Valido = false;
-            }
-
-            if (Valido == true)
-            {
-                var Datos = new CredencialesApiEntitie
+                if (resp.Data.Count > 0)
                 {
-                   IdCredencialesApi = v_Id_credencialesApi,
-                   grant_type = txt_grant_type.Text,
-                   client_id = txt_client_id.Text,
-                   client_secret = txt_client_secret.Text,
-                   username = txt_username.Text,
-                   Passwords = txt_password.Text,
-                 };
-
-                var resp = await _ICredencialesApi.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                if (resp != null)
-                {
-                    if (resp.Flag == true)
+                    foreach (var item in resp.Data)
                     {
-                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        dtg_api_variables.Rows.Add(
+                            item.IdCredencialesApi,
+                            item.url_api,
+                            item.Descripcion,
+                            item.Variable1,
+                            item.Variable2,
+                            item.Variable3,
+                            item.Variable4,
+                            item.Variable5,
+                            item.Variable6,
+                            item.Variable7,
+                            item.Variable8,
+                            item.Variable9,
+                            item.Variable10,
+                            item.Variable11,
+                            item.Variable12);
                     }
                 }
             }
         }
 
-        private async Task CargaDatosCredenciales()
+        private void btn_editar_api_Click(object sender, EventArgs e)
         {
-            var resp = await _ICredencialesApi.List();
-
-            if (resp.Data != null) 
+            if (dtg_api_variables.Rows.Count > 0)
             {
-                if (resp.Data.Count > 0)
+                if (dtg_api_variables.SelectedRows.Count > 0)
                 {
-                    v_Id_credencialesApi = resp.Data[0]?.IdCredencialesApi;
-                    txt_grant_type.Text = resp.Data[0].grant_type.ToString();
-                    txt_client_id.Text = resp.Data[0].client_id.ToString();
-                    txt_client_secret.Text = resp.Data[0].client_secret.ToString();
-                    txt_username.Text = resp.Data[0].username.ToString();
-                    txt_password.Text = resp.Data[0].Passwords.ToString();
+                    var row = dtg_api_variables.SelectedRows[0];
+                    if (row.Cells["cl_id"].Value != null)
+                    {
+                        int IdCredencialesApi = Convert.ToInt32(row.Cells["cl_id"].Value);
+                        if (_Permisos != null)
+                        {
+                            _AgregaApi = _serviceProvider.GetRequiredService<AgregaApi>();
+                            _AgregaApi.Permisos = _Permisos;
+                            _AgregaApi.Id_credencialesApi = IdCredencialesApi;
+                            _AgregaApi.FormClosed += (s, args) => _AgregaApi = null;
+                            _AgregaApi.ShowDialog();
+                        }
+                    }
                 }
             }
+            else
+            {
+                MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btn_agregar_api_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _AgregaApi = _serviceProvider.GetRequiredService<AgregaApi>();
+                _AgregaApi.Permisos = _Permisos;
+                _AgregaApi.Id_credencialesApi = 0;
+                _AgregaApi.FormClosed += (s, args) => _AgregaApi = null;
+                _AgregaApi.ShowDialog();
+            }
+        }
+
+        private async void btn_eliminar_api_Click(object sender, EventArgs e)
+        {
+            if (dtg_api_variables.Rows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar ?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (dtg_api_variables.SelectedRows.Count > 0)
+                    {
+                        var row = dtg_api_variables.SelectedRows[0];
+                        if (row.Cells["cl_id"].Value != null)
+                        {
+                            int Id= Convert.ToInt32(row.Cells["cl_id"].Value);
+                            var resp = await _ICredencialesApi.Eliminar(Id);
+
+                            if (resp != null)
+                            {
+                                if (resp.Flag == true)
+                                {
+                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    await CargaDatosCredenciales();
+                                }
+                                else
+                                {
+                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private async void btn_buscar_api_Click(object sender, EventArgs e)
+        {
+            await CargaDatosCredenciales();
+        }
+
+        private void btn_eliminar_ra_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
