@@ -30,15 +30,18 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ajustes));
-            DataGridViewCellStyle dataGridViewCellStyle19 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle20 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle21 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle22 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle23 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle24 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle25 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle26 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle27 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
             label10 = new Label();
             cbx_lineas_abajo = new ComboBox();
@@ -82,8 +85,27 @@
             btn_editar_ra = new Button();
             btn_agregar_ra = new Button();
             tabPage4 = new TabPage();
-            txt_grant_type = new TextBox();
-            label11 = new Label();
+            dtg_api_variables = new DataGridView();
+            cl_id = new DataGridViewTextBoxColumn();
+            cl_url_api = new DataGridViewTextBoxColumn();
+            cl_descripcion = new DataGridViewTextBoxColumn();
+            cl_variable1 = new DataGridViewTextBoxColumn();
+            cl_variable2 = new DataGridViewTextBoxColumn();
+            cl_variable3 = new DataGridViewTextBoxColumn();
+            cl_variable4 = new DataGridViewTextBoxColumn();
+            cl_variable5 = new DataGridViewTextBoxColumn();
+            cl_variable6 = new DataGridViewTextBoxColumn();
+            cl_variable7 = new DataGridViewTextBoxColumn();
+            cl_variable8 = new DataGridViewTextBoxColumn();
+            cl_variable9 = new DataGridViewTextBoxColumn();
+            cl_variable10 = new DataGridViewTextBoxColumn();
+            cl_variable11 = new DataGridViewTextBoxColumn();
+            cl_variable12 = new DataGridViewTextBoxColumn();
+            panel5 = new Panel();
+            btn_buscar_api = new Button();
+            btn_eliminar_api = new Button();
+            btn_editar_api = new Button();
+            btn_agregar_api = new Button();
             Usuarios = new TabControl();
             tabAdministracion = new TabPage();
             tabControl1 = new TabControl();
@@ -124,16 +146,6 @@
             btn_busca_usuario = new Button();
             label5 = new Label();
             errorProvider1 = new ErrorProvider(components);
-            panel5 = new Panel();
-            btn_guardar_api = new Button();
-            label12 = new Label();
-            label13 = new Label();
-            label14 = new Label();
-            label15 = new Label();
-            txt_client_id = new TextBox();
-            txt_client_secret = new TextBox();
-            txt_username = new TextBox();
-            txt_password = new TextBox();
             TabParametros.SuspendLayout();
             panel2.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -142,6 +154,8 @@
             ((System.ComponentModel.ISupportInitialize)dtg_rangos_numeracion).BeginInit();
             panel1.SuspendLayout();
             tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dtg_api_variables).BeginInit();
+            panel5.SuspendLayout();
             Usuarios.SuspendLayout();
             tabAdministracion.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -152,7 +166,6 @@
             ((System.ComponentModel.ISupportInitialize)dtg_permisos).BeginInit();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
-            panel5.SuspendLayout();
             SuspendLayout();
             // 
             // TabParametros
@@ -438,36 +451,36 @@
             dtg_rangos_numeracion.AllowUserToDeleteRows = false;
             dtg_rangos_numeracion.AllowUserToOrderColumns = true;
             dtg_rangos_numeracion.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle19.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle19.BackColor = SystemColors.Control;
-            dataGridViewCellStyle19.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle19.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle19.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle19.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle19.WrapMode = DataGridViewTriState.True;
-            dtg_rangos_numeracion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dtg_rangos_numeracion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_rangos_numeracion.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_rangos_numeracion.Columns.AddRange(new DataGridViewColumn[] { cl_en_uso, cl_Nro, cl_vencido, cl_estado_ra, cl_tipo_documento, cl_prefijo, cl_numero_desde, cl_numero_hasta, cl_nro_autorizacion, cl_fecha_vencimiento });
-            dataGridViewCellStyle20.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle20.BackColor = SystemColors.Window;
-            dataGridViewCellStyle20.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle20.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle20.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle20.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle20.WrapMode = DataGridViewTriState.False;
-            dtg_rangos_numeracion.DefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dtg_rangos_numeracion.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_rangos_numeracion.Dock = DockStyle.Fill;
             dtg_rangos_numeracion.Location = new Point(3, 59);
             dtg_rangos_numeracion.Name = "dtg_rangos_numeracion";
             dtg_rangos_numeracion.ReadOnly = true;
-            dataGridViewCellStyle21.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle21.BackColor = SystemColors.Control;
-            dataGridViewCellStyle21.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle21.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle21.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle21.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle21.WrapMode = DataGridViewTriState.True;
-            dtg_rangos_numeracion.RowHeadersDefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dtg_rangos_numeracion.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_rangos_numeracion.RowHeadersWidth = 51;
             dtg_rangos_numeracion.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_rangos_numeracion.Size = new Size(1054, 424);
@@ -594,6 +607,7 @@
             btn_eliminar_ra.Text = "Eliminar";
             btn_eliminar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_eliminar_ra.UseVisualStyleBackColor = true;
+            btn_eliminar_ra.Click += btn_eliminar_ra_Click;
             // 
             // btn_editar_ra
             // 
@@ -625,17 +639,8 @@
             // 
             // tabPage4
             // 
-            tabPage4.Controls.Add(txt_password);
-            tabPage4.Controls.Add(txt_username);
-            tabPage4.Controls.Add(txt_client_secret);
-            tabPage4.Controls.Add(txt_client_id);
-            tabPage4.Controls.Add(label15);
-            tabPage4.Controls.Add(label14);
-            tabPage4.Controls.Add(label13);
-            tabPage4.Controls.Add(label12);
+            tabPage4.Controls.Add(dtg_api_variables);
             tabPage4.Controls.Add(panel5);
-            tabPage4.Controls.Add(txt_grant_type);
-            tabPage4.Controls.Add(label11);
             tabPage4.Location = new Point(4, 26);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new Padding(3);
@@ -644,21 +649,205 @@
             tabPage4.Text = "Api";
             tabPage4.UseVisualStyleBackColor = true;
             // 
-            // txt_grant_type
+            // dtg_api_variables
             // 
-            txt_grant_type.Location = new Point(104, 78);
-            txt_grant_type.Name = "txt_grant_type";
-            txt_grant_type.Size = new Size(741, 23);
-            txt_grant_type.TabIndex = 9;
+            dtg_api_variables.AllowUserToAddRows = false;
+            dtg_api_variables.AllowUserToDeleteRows = false;
+            dtg_api_variables.AllowUserToOrderColumns = true;
+            dtg_api_variables.BackgroundColor = SystemColors.Control;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_api_variables.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dtg_api_variables.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtg_api_variables.Columns.AddRange(new DataGridViewColumn[] { cl_id, cl_url_api, cl_descripcion, cl_variable1, cl_variable2, cl_variable3, cl_variable4, cl_variable5, cl_variable6, cl_variable7, cl_variable8, cl_variable9, cl_variable10, cl_variable11, cl_variable12 });
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_api_variables.DefaultCellStyle = dataGridViewCellStyle5;
+            dtg_api_variables.Dock = DockStyle.Fill;
+            dtg_api_variables.Location = new Point(3, 59);
+            dtg_api_variables.Name = "dtg_api_variables";
+            dtg_api_variables.ReadOnly = true;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_api_variables.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dtg_api_variables.RowHeadersWidth = 51;
+            dtg_api_variables.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dtg_api_variables.Size = new Size(1054, 424);
+            dtg_api_variables.TabIndex = 11;
             // 
-            // label11
+            // cl_id
             // 
-            label11.AutoSize = true;
-            label11.Location = new Point(8, 81);
-            label11.Name = "label11";
-            label11.Size = new Size(78, 17);
-            label11.TabIndex = 8;
-            label11.Text = "grant_type";
+            cl_id.HeaderText = "Id";
+            cl_id.Name = "cl_id";
+            cl_id.ReadOnly = true;
+            // 
+            // cl_url_api
+            // 
+            cl_url_api.HeaderText = "Url Api";
+            cl_url_api.Name = "cl_url_api";
+            cl_url_api.ReadOnly = true;
+            // 
+            // cl_descripcion
+            // 
+            cl_descripcion.HeaderText = "Descripcion";
+            cl_descripcion.Name = "cl_descripcion";
+            cl_descripcion.ReadOnly = true;
+            // 
+            // cl_variable1
+            // 
+            cl_variable1.HeaderText = "Variable1";
+            cl_variable1.Name = "cl_variable1";
+            cl_variable1.ReadOnly = true;
+            // 
+            // cl_variable2
+            // 
+            cl_variable2.HeaderText = "Variable2";
+            cl_variable2.Name = "cl_variable2";
+            cl_variable2.ReadOnly = true;
+            // 
+            // cl_variable3
+            // 
+            cl_variable3.HeaderText = "Variable3";
+            cl_variable3.Name = "cl_variable3";
+            cl_variable3.ReadOnly = true;
+            // 
+            // cl_variable4
+            // 
+            cl_variable4.HeaderText = "Variable4";
+            cl_variable4.Name = "cl_variable4";
+            cl_variable4.ReadOnly = true;
+            // 
+            // cl_variable5
+            // 
+            cl_variable5.HeaderText = "Variable5";
+            cl_variable5.Name = "cl_variable5";
+            cl_variable5.ReadOnly = true;
+            // 
+            // cl_variable6
+            // 
+            cl_variable6.HeaderText = "Variable6";
+            cl_variable6.Name = "cl_variable6";
+            cl_variable6.ReadOnly = true;
+            // 
+            // cl_variable7
+            // 
+            cl_variable7.HeaderText = "Variable7";
+            cl_variable7.Name = "cl_variable7";
+            cl_variable7.ReadOnly = true;
+            // 
+            // cl_variable8
+            // 
+            cl_variable8.HeaderText = "Variable8";
+            cl_variable8.Name = "cl_variable8";
+            cl_variable8.ReadOnly = true;
+            // 
+            // cl_variable9
+            // 
+            cl_variable9.HeaderText = "Variable9";
+            cl_variable9.Name = "cl_variable9";
+            cl_variable9.ReadOnly = true;
+            // 
+            // cl_variable10
+            // 
+            cl_variable10.HeaderText = "Variable10";
+            cl_variable10.Name = "cl_variable10";
+            cl_variable10.ReadOnly = true;
+            // 
+            // cl_variable11
+            // 
+            cl_variable11.HeaderText = "Variable11";
+            cl_variable11.Name = "cl_variable11";
+            cl_variable11.ReadOnly = true;
+            // 
+            // cl_variable12
+            // 
+            cl_variable12.HeaderText = "Variable12";
+            cl_variable12.Name = "cl_variable12";
+            cl_variable12.ReadOnly = true;
+            // 
+            // panel5
+            // 
+            panel5.BorderStyle = BorderStyle.Fixed3D;
+            panel5.Controls.Add(btn_buscar_api);
+            panel5.Controls.Add(btn_eliminar_api);
+            panel5.Controls.Add(btn_editar_api);
+            panel5.Controls.Add(btn_agregar_api);
+            panel5.Dock = DockStyle.Top;
+            panel5.Location = new Point(3, 3);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(1054, 56);
+            panel5.TabIndex = 10;
+            // 
+            // btn_buscar_api
+            // 
+            btn_buscar_api.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btn_buscar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_buscar_api.FlatStyle = FlatStyle.Flat;
+            btn_buscar_api.Image = (Image)resources.GetObject("btn_buscar_api.Image");
+            btn_buscar_api.Location = new Point(1021, 12);
+            btn_buscar_api.Name = "btn_buscar_api";
+            btn_buscar_api.Size = new Size(26, 26);
+            btn_buscar_api.TabIndex = 8;
+            btn_buscar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_buscar_api.UseVisualStyleBackColor = true;
+            btn_buscar_api.Click += btn_buscar_api_Click;
+            // 
+            // btn_eliminar_api
+            // 
+            btn_eliminar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_eliminar_api.FlatStyle = FlatStyle.Flat;
+            btn_eliminar_api.Image = (Image)resources.GetObject("btn_eliminar_api.Image");
+            btn_eliminar_api.Location = new Point(217, 3);
+            btn_eliminar_api.Name = "btn_eliminar_api";
+            btn_eliminar_api.Size = new Size(101, 45);
+            btn_eliminar_api.TabIndex = 7;
+            btn_eliminar_api.Text = "Eliminar";
+            btn_eliminar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_eliminar_api.UseVisualStyleBackColor = true;
+            btn_eliminar_api.Click += btn_eliminar_api_Click;
+            // 
+            // btn_editar_api
+            // 
+            btn_editar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_editar_api.FlatStyle = FlatStyle.Flat;
+            btn_editar_api.Image = (Image)resources.GetObject("btn_editar_api.Image");
+            btn_editar_api.Location = new Point(110, 3);
+            btn_editar_api.Name = "btn_editar_api";
+            btn_editar_api.Size = new Size(101, 45);
+            btn_editar_api.TabIndex = 6;
+            btn_editar_api.Text = "Editar";
+            btn_editar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_editar_api.UseVisualStyleBackColor = true;
+            btn_editar_api.Click += btn_editar_api_Click;
+            // 
+            // btn_agregar_api
+            // 
+            btn_agregar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_agregar_api.FlatStyle = FlatStyle.Flat;
+            btn_agregar_api.Image = (Image)resources.GetObject("btn_agregar_api.Image");
+            btn_agregar_api.Location = new Point(3, 3);
+            btn_agregar_api.Name = "btn_agregar_api";
+            btn_agregar_api.Size = new Size(101, 45);
+            btn_agregar_api.TabIndex = 5;
+            btn_agregar_api.Text = "Agregar";
+            btn_agregar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_agregar_api.UseVisualStyleBackColor = true;
+            btn_agregar_api.Click += btn_agregar_api_Click;
             // 
             // Usuarios
             // 
@@ -714,36 +903,36 @@
             dtg_usuario.AllowUserToDeleteRows = false;
             dtg_usuario.AllowUserToOrderColumns = true;
             dtg_usuario.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle22.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle22.BackColor = SystemColors.Control;
-            dataGridViewCellStyle22.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle22.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle22.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle22.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle22.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = SystemColors.Control;
+            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             dtg_usuario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_usuario.Columns.AddRange(new DataGridViewColumn[] { cl_IdUsuario, cl_userName, id_rol, cl_rol, cl_tipo_identificacion, cl_identificacion, cl_nombre, cl_telefono, cl_BirthDate });
-            dataGridViewCellStyle23.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle23.BackColor = SystemColors.Window;
-            dataGridViewCellStyle23.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle23.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle23.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle23.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle23.WrapMode = DataGridViewTriState.False;
-            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = SystemColors.Window;
+            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
+            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle8;
             dtg_usuario.Dock = DockStyle.Fill;
             dtg_usuario.Location = new Point(3, 59);
             dtg_usuario.Name = "dtg_usuario";
             dtg_usuario.ReadOnly = true;
-            dataGridViewCellStyle24.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle24.BackColor = SystemColors.Control;
-            dataGridViewCellStyle24.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle24.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle24.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle24.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle24.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = SystemColors.Control;
+            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_usuario.RowHeadersWidth = 51;
             dtg_usuario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_usuario.Size = new Size(1054, 424);
@@ -954,35 +1143,35 @@
             dtg_permisos.AllowUserToDeleteRows = false;
             dtg_permisos.AllowUserToOrderColumns = true;
             dtg_permisos.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle25.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle25.BackColor = SystemColors.Control;
-            dataGridViewCellStyle25.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle25.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle25.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle25.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle25.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = SystemColors.Control;
+            dataGridViewCellStyle10.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle10.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle10.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
             dtg_permisos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_permisos.Columns.AddRange(new DataGridViewColumn[] { cl_idUserMenu, cl_id_menu, cl_menu, cl_id_user, cl_toRead, cl_ToCreate, cl_toUpdate, cl_toDelete, cl_estado });
-            dataGridViewCellStyle26.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle26.BackColor = SystemColors.Window;
-            dataGridViewCellStyle26.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle26.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle26.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle26.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle26.WrapMode = DataGridViewTriState.False;
-            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = SystemColors.Window;
+            dataGridViewCellStyle11.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle11.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle11.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle11.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
+            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle11;
             dtg_permisos.Dock = DockStyle.Fill;
             dtg_permisos.Location = new Point(3, 58);
             dtg_permisos.Name = "dtg_permisos";
-            dataGridViewCellStyle27.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle27.BackColor = SystemColors.Control;
-            dataGridViewCellStyle27.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle27.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle27.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle27.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle27.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = SystemColors.Control;
+            dataGridViewCellStyle12.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle12.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
             dtg_permisos.RowHeadersWidth = 51;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_permisos.Size = new Size(1054, 427);
@@ -1127,95 +1316,6 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
-            // panel5
-            // 
-            panel5.BorderStyle = BorderStyle.Fixed3D;
-            panel5.Controls.Add(btn_guardar_api);
-            panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(3, 3);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(1054, 56);
-            panel5.TabIndex = 10;
-            // 
-            // btn_guardar_api
-            // 
-            btn_guardar_api.Enabled = false;
-            btn_guardar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_guardar_api.FlatStyle = FlatStyle.Flat;
-            btn_guardar_api.Image = (Image)resources.GetObject("btn_guardar_api.Image");
-            btn_guardar_api.Location = new Point(3, 3);
-            btn_guardar_api.Name = "btn_guardar_api";
-            btn_guardar_api.Size = new Size(101, 45);
-            btn_guardar_api.TabIndex = 1;
-            btn_guardar_api.Text = "Guardar";
-            btn_guardar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_guardar_api.UseVisualStyleBackColor = true;
-            btn_guardar_api.Click += btn_guardar_api_Click;
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Location = new Point(8, 110);
-            label12.Name = "label12";
-            label12.Size = new Size(62, 17);
-            label12.TabIndex = 11;
-            label12.Text = "client_id";
-            // 
-            // label13
-            // 
-            label13.AutoSize = true;
-            label13.Location = new Point(8, 139);
-            label13.Name = "label13";
-            label13.Size = new Size(88, 17);
-            label13.TabIndex = 12;
-            label13.Text = "client_secret";
-            // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.Location = new Point(8, 168);
-            label14.Name = "label14";
-            label14.Size = new Size(71, 17);
-            label14.TabIndex = 13;
-            label14.Text = "username";
-            // 
-            // label15
-            // 
-            label15.AutoSize = true;
-            label15.Location = new Point(8, 197);
-            label15.Name = "label15";
-            label15.Size = new Size(70, 17);
-            label15.TabIndex = 14;
-            label15.Text = "password";
-            // 
-            // txt_client_id
-            // 
-            txt_client_id.Location = new Point(104, 107);
-            txt_client_id.Name = "txt_client_id";
-            txt_client_id.Size = new Size(741, 23);
-            txt_client_id.TabIndex = 15;
-            // 
-            // txt_client_secret
-            // 
-            txt_client_secret.Location = new Point(104, 136);
-            txt_client_secret.Name = "txt_client_secret";
-            txt_client_secret.Size = new Size(741, 23);
-            txt_client_secret.TabIndex = 16;
-            // 
-            // txt_username
-            // 
-            txt_username.Location = new Point(104, 165);
-            txt_username.Name = "txt_username";
-            txt_username.Size = new Size(741, 23);
-            txt_username.TabIndex = 17;
-            // 
-            // txt_password
-            // 
-            txt_password.Location = new Point(104, 194);
-            txt_password.Name = "txt_password";
-            txt_password.Size = new Size(741, 23);
-            txt_password.TabIndex = 18;
-            // 
             // Ajustes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1237,7 +1337,8 @@
             ((System.ComponentModel.ISupportInitialize)dtg_rangos_numeracion).EndInit();
             panel1.ResumeLayout(false);
             tabPage4.ResumeLayout(false);
-            tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dtg_api_variables).EndInit();
+            panel5.ResumeLayout(false);
             Usuarios.ResumeLayout(false);
             tabAdministracion.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
@@ -1250,7 +1351,6 @@
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
-            panel5.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1338,17 +1438,26 @@
         private DataGridViewTextBoxColumn cl_nro_autorizacion;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
         private TabPage tabPage4;
-        private TextBox txt_grant_type;
-        private Label label11;
         private Panel panel5;
-        private Button btn_guardar_api;
-        private Label label12;
-        private Label label13;
-        private Label label14;
-        private Label label15;
-        private TextBox txt_password;
-        private TextBox txt_username;
-        private TextBox txt_client_secret;
-        private TextBox txt_client_id;
+        private Button btn_eliminar_api;
+        private Button btn_editar_api;
+        private Button btn_agregar_api;
+        private Button btn_buscar_api;
+        private DataGridView dtg_api_variables;
+        private DataGridViewTextBoxColumn cl_id;
+        private DataGridViewTextBoxColumn cl_url_api;
+        private DataGridViewTextBoxColumn cl_descripcion;
+        private DataGridViewTextBoxColumn cl_variable1;
+        private DataGridViewTextBoxColumn cl_variable2;
+        private DataGridViewTextBoxColumn cl_variable3;
+        private DataGridViewTextBoxColumn cl_variable4;
+        private DataGridViewTextBoxColumn cl_variable5;
+        private DataGridViewTextBoxColumn cl_variable6;
+        private DataGridViewTextBoxColumn cl_variable7;
+        private DataGridViewTextBoxColumn cl_variable8;
+        private DataGridViewTextBoxColumn cl_variable9;
+        private DataGridViewTextBoxColumn cl_variable10;
+        private DataGridViewTextBoxColumn cl_variable11;
+        private DataGridViewTextBoxColumn cl_variable12;
     }
 }

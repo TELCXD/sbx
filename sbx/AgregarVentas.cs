@@ -1,13 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.AgregaVenta;
+using sbx.core.Entities.Auth;
 using sbx.core.Entities.Cotizacion;
 using sbx.core.Entities.PagosVenta;
+using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Entities.Venta;
+using sbx.core.Helper.Factus;
 using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.Banco;
 using sbx.core.Interfaces.Caja;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Cotizacion;
+using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.Parametros;
@@ -68,11 +72,12 @@ namespace sbx
         private Cotizacion? _Cotizacion;
         private int IdCotizacion = 0;
         private decimal CantidadInicial = 0;
+        private readonly ICredencialesApi _ICredencialesApi;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
             IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta,
-            ITienda tienda, IParametros parametros, ICaja caja, ICotizacion cotizacion)
+            ITienda tienda, IParametros parametros, ICaja caja, ICotizacion cotizacion, ICredencialesApi credencialesApi)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -92,6 +97,7 @@ namespace sbx
             _IParametros = parametros;
             _ICaja = caja;
             _ICotizacion = cotizacion;
+            _ICredencialesApi = credencialesApi;
         }
 
         public dynamic? Permisos
@@ -1986,12 +1992,14 @@ namespace sbx
                     var respDoc = await _IRangoNumeracion.IdentificaDocumento(1);
 
                     int Id_RangoNumeracion = 0;
+                    int Id_TipoDocumentoRangoNumeracion = 0;
 
                     if (respDoc.Data != null) 
                     {
                         if (respDoc.Data.Count > 0)
                         {
                             Id_RangoNumeracion = respDoc.Data[0].Id_RangoNumeracion;
+                            Id_TipoDocumentoRangoNumeracion = respDoc.Data[0].Id_TipoDocumentoRangoNumeracion;
                         }
                     }
 
@@ -2003,6 +2011,59 @@ namespace sbx
                         {
                             venta.Id_RangoNumeracion = Id_RangoNumeracion;
                             venta.Prefijo = resp.Data[0].Prefijo;
+
+                            string current = "";
+
+                            if (Id_TipoDocumentoRangoNumeracion == 2) 
+                            {
+                                venta.IdRangoDIAN = resp.Data[0].IdRangoDIAN ?? 0;
+                                venta.CodigoDocumento = 21;
+                                venta.resolution_number = resp.Data[0].NumeroAutorizacion ?? "";
+                                venta.technical_key = resp.Data[0].ClaveTecnica ?? "";
+                                venta.is_active = resp.Data[0].Active == true ? 1 : 0;
+
+                                var respCredencialesApi = await _ICredencialesApi.ListId(1);
+                                if (respCredencialesApi.Data != null)
+                                {
+                                    if (respCredencialesApi.Data.Count > 0)
+                                    {
+                                        AuthEntitie authEntitie = new AuthEntitie
+                                        {
+                                            url_api = respCredencialesApi.Data[0].url_api,
+                                            grant_type = respCredencialesApi.Data[0].Variable1.ToString(),
+                                            client_id = respCredencialesApi.Data[0].Variable2.ToString(),
+                                            client_secret = respCredencialesApi.Data[0].Variable3.ToString(),
+                                            username = respCredencialesApi.Data[0].Variable4.ToString(),
+                                            Passwords = respCredencialesApi.Data[0].Variable5.ToString()
+                                        };
+
+                                        Auth auth = new Auth();
+                                        var Token = auth.GeneraToken(authEntitie);
+
+                                        RangoNumeracionEntitie rangoNumeracionEntitie = new RangoNumeracionEntitie
+                                        {
+                                            Id_RangoDIAN = resp.Data[0].IdRangoDIAN ?? 0,
+                                            CodigoDocumento = 21,
+                                            NumeroAutorizacion = resp.Data[0].NumeroAutorizacion ?? "",
+                                            ClaveTecnica = resp.Data[0].ClaveTecnica ?? "",
+                                            Active = resp.Data[0].Active
+                                        };
+
+
+
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No encuentran credenciales para Api", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No encuentran credenciales para Api", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+
+                            }
+
                             FechaVencimiento = Convert.ToDateTime(resp.Data[0].FechaVencimiento);
 
 
