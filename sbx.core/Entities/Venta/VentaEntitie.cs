@@ -6,6 +6,8 @@ namespace sbx.core.Entities.Venta
     {
         public int IdVenta { get; set; }
         public string Prefijo { get; set; } = string.Empty;
+        public Int64 Desde { get; set; }
+        public Int64 Hasta { get; set; }
         public string Consecutivo { get; set; } = string.Empty;
         public int IdCliente { get; set; }
         public int IdVendedor { get; set; }

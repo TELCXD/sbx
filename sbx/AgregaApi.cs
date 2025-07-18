@@ -29,6 +29,12 @@ namespace sbx
 
         private async void AgregaApi_Load(object sender, EventArgs e)
         {
+            var respGrupos = await _ICredencialesApi.ListGrupo(0);
+            cbx_grupo.DataSource = respGrupos.Data;
+            cbx_grupo.ValueMember = "IdGrupoApis";
+            cbx_grupo.DisplayMember = "Nombre";
+            cbx_grupo.SelectedIndex = 0;
+
             if (Id_credencialesApi > 0)
             {
                 var resp = await _ICredencialesApi.ListId(Id_credencialesApi);
@@ -36,6 +42,7 @@ namespace sbx
                 if (resp.Data != null)
                 {
                     txt_url_api.Text = resp.Data[0].url_api;
+                    cbx_grupo.SelectedValue = resp.Data[0].IdGrupoApis;
                     txt_descripcion.Text = resp.Data[0].Descripcion;
                     txt_variable1.Text = resp.Data[0].Variable1;
                     txt_variable2.Text = resp.Data[0].Variable2;
@@ -93,12 +100,16 @@ namespace sbx
                 Valido = false;
             }
 
+            var Exist = await _ICredencialesApi.ExisteUrl(txt_url_api.Text.Trim(), Id_credencialesApi);
+            if (Exist) { errorProvider1.SetError(txt_url_api, "Url ya existe"); Valido = false; }
+
             if (Valido == true)
             {
                 var Datos = new CredencialesApiEntitie
                 {
                     IdCredencialesApi = Id_credencialesApi,
                     url_api = txt_url_api.Text,
+                    IdGrupo = Convert.ToInt32(cbx_grupo.SelectedValue),
                     Descripcion = txt_descripcion.Text,
                     Variable1 = txt_variable1.Text,
                     Variable2 = txt_variable2.Text,

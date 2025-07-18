@@ -2,7 +2,6 @@
 using sbx.core.Interfaces.TipoDocumentoRangoNumeracion;
 using sbx.core.Interfaces.RangoNumeracion;
 using System.ComponentModel.DataAnnotations;
-using sbx.core.Interfaces.Producto;
 
 namespace sbx
 {
@@ -67,7 +66,7 @@ namespace sbx
             cbx_tipo_documento.ValueMember = "Id_TipoDocumentoRangoNumeracion";
             cbx_tipo_documento.DisplayMember = "Nombre";
             cbx_tipo_documento.SelectedIndex = 0;
-            cbx_expired.SelectedIndex = 0;
+            cbx_expired.SelectedIndex = 1;
             cbx_estado.SelectedIndex = 0;
             cbx_en_uso.SelectedIndex = 0;
 
@@ -82,7 +81,7 @@ namespace sbx
                     txt_prefijo.Text = resp.Data[0].Prefijo;
                     txt_numero_desde.Text = resp.Data[0].NumeroDesde.ToString();
                     txt_numero_hasta.Text = resp.Data[0].NumeroHasta.ToString();
-                    txt_numero_autorizacion.Text = resp.Data[0].NumeroAutorizacion;
+                    txt_numero_autorizacion.Text = resp.Data[0].NumeroResolucion;
                     txt_clave_Tecnica.Text = resp.Data[0].ClaveTecnica.ToString();
                     dtpFechaExpedicion.Value = resp.Data[0].FechaExpedicion;
                     dtpk_fecha_vencimiento.Value = resp.Data[0].FechaVencimiento;
@@ -154,7 +153,7 @@ namespace sbx
                     Prefijo = txt_prefijo.Text,
                     NumeroDesde = txt_numero_desde.Text,
                     NumeroHasta = txt_numero_hasta.Text,
-                    NumeroAutorizacion = txt_numero_autorizacion.Text,
+                    NumeroResolucion = txt_numero_autorizacion.Text,
                     ClaveTecnica = txt_clave_Tecnica.Text,
                     FechaExpedicion = dtpFechaExpedicion.Value,
                     FechaVencimiento = dtpk_fecha_vencimiento.Value,

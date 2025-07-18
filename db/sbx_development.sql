@@ -59,7 +59,7 @@ VALUES
 	(41,'HUILA',1)
 GO
 CREATE TABLE T_City(
-IdCity INT IDENTITY(1,1) PRIMARY KEY,
+IdCity INT PRIMARY KEY,
 Code INT NOT NULL UNIQUE,
 CityName VARCHAR(100) NOT NULL UNIQUE,
 IdDepartment INT NOT NULL,
@@ -245,7 +245,7 @@ Nombre VARCHAR(100) UNIQUE
 )
 GO
 INSERT INTO T_TipoDocumentoRangoNumeracion(Id_TipoDocumentoRangoNumeracion,Nombre)
-VALUES(1,'Factura'),(2,'Factura Electrónica de Venta'),(3,'Nota de Crédito'),(4,'Nota de debito')
+VALUES(21,'21=Factura de Venta'),(22,'22=Nota Crédito'),(23,'23=Nota Débito'),(30,'30=Factura de talonario o de papel')
 GO
 CREATE TABLE T_RangoNumeracion(
 Id_RangoNumeracion INT IDENTITY(1,1) PRIMARY KEY,
@@ -254,7 +254,7 @@ Id_TipoDocumentoRangoNumeracion INT,
 Prefijo VARCHAR(10) UNIQUE,
 NumeroDesde BIGINT,
 NumeroHasta BIGINT,
-NumeroAutorizacion VARCHAR(50),
+NumeroResolucion VARCHAR(50),
 ClaveTecnica VARCHAR(100),
 FechaExpedicion DATE,
 FechaVencimiento DATE,
@@ -268,9 +268,9 @@ FOREIGN KEY(Id_TipoDocumentoRangoNumeracion) REFERENCES T_TipoDocumentoRangoNume
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
-INSERT INTO T_RangoNumeracion (IdRangoDIAN,Id_TipoDocumentoRangoNumeracion, Prefijo, NumeroDesde,NumeroHasta,NumeroAutorizacion
+INSERT INTO T_RangoNumeracion (IdRangoDIAN,Id_TipoDocumentoRangoNumeracion, Prefijo, NumeroDesde,NumeroHasta,NumeroResolucion
 ,ClaveTecnica,FechaExpedicion,FechaVencimiento,Vencido,Active,EnUso,CreationDate,IdUserAction)
-VALUES(0,1,'FV',1,9999999,'','','2030-01-01','2030-01-01',0,1,1,GETDATE(),1)
+VALUES(0,21,'FV',1,999999999,'','','2030-01-01','2030-01-01',0,1,1,GETDATE(),1)
 GO
 CREATE TABLE T_Categorias(
 IdCategoria INT IDENTITY(1,1) PRIMARY KEY,
@@ -295,7 +295,7 @@ Nombre VARCHAR(50) UNIQUE
 )
 GO
 INSERT INTO T_UnidadMedida(Nombre) VALUES('Unidad (und)'),('Caja (caja)'),('Paquete (paq)'),('Bolsa (bol)'),('Litro (lt)'),('Mililitro (ml)'),
-									     ('Kilogramo (kg)'),('Gramo (g)'),('Metro (m)'),('Par (par)')
+									     ('Kilogramo (kg)'),('Gramo (g)'),('Metro (m)'),('Par (par)'),('Libra (lbr)'),('Galon (gll)')
 GO
 CREATE TABLE T_Productos(
 IdProducto INT IDENTITY(1,1) PRIMARY KEY,
@@ -373,7 +373,7 @@ GO
 CREATE TABLE T_Cliente (
 IdCliente INT IDENTITY(1,1) PRIMARY KEY,
 IdIdentificationType INT,
-NumeroDocumento VARCHAR(11) UNIQUE,
+NumeroDocumento VARCHAR(20) UNIQUE,
 NombreRazonSocial VARCHAR(100),
 Direccion VARCHAR(150),
 Telefono VARCHAR(20) UNIQUE,
@@ -855,9 +855,20 @@ IdUserAction INT,
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
 )
 GO
-CREATE TABLE T_CredencialesApi (
+CREATE TABLE T_GrupoApis(
+IdGrupoApis INT PRIMARY KEY IDENTITY,
+Nombre VARCHAR(200)
+)
+GO
+INSERT INTO T_GrupoApis
+VALUES('Auth'),('Facturas'),('Notas Crédito'),('Documentos soporte'),('Notas de ajuste a documentos soporte'),
+('Informacion de adquirientes'),('Municipios'),('Rangos de numeracion'),('Tributos'),('Unidades de medida'),
+('Recepción de documentos'),('Países'),('Suscripciones')
+GO
+CREATE TABLE T_CredencialesApi ( 
 IdCredencialesApi INT PRIMARY KEY IDENTITY,
 Url_api VARCHAR(200),
+IdGrupoApis INT,
 Descripcion VARCHAR(200),
 Variable1 VARCHAR(200),
 Variable2 VARCHAR(200),
@@ -875,4 +886,5 @@ CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
+FOREIGN KEY(IdGrupoApis) REFERENCES T_GrupoApis(IdGrupoApis)
 )

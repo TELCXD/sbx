@@ -36,30 +36,31 @@ namespace sbx.repositories.Venta
                     DateTime FechaActual = DateTime.Now;
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    if (ventaEntitie.Id_RangoNumeracion == 1) 
-                    {
-                        sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
-                                  VALUES(@Prefijo,
-                                        (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
-                                        @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
-                                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
-                    }
-                    else if(ventaEntitie.Id_RangoNumeracion == 2)
-                    {
-                        sql = $@" SELECT * FROM T_RangoNumeracion WHERE Id_RangoNumeracion = ";
+                    sql = @$" DECLARE 
+                            @VRegistradas INT 
 
-                        dynamic resultadoRango = await connection.QueryAsync(sql);
+                            SET @VRegistradas = (SELECT COUNT(*) FROM T_Ventas)
 
-                        sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
-                                  VALUES(@Prefijo,
-                                        (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
-                                        @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
-                                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
-                    }
+                            IF @VRegistradas > 0
+                            BEGIN
+                            INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
+                            VALUES(@Prefijo,
+                            (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
+                            @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT);
+                            END
+                            ELSE
+                            BEGIN
+                            INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
+                            VALUES(@Prefijo,@Desde,
+                            @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT);
+                            END ";
 
                     var parametros = new
                     {
                         ventaEntitie.Prefijo,
+                        ventaEntitie.Desde,
                         ventaEntitie.IdCliente,
                         ventaEntitie.IdVendedor,
                         ventaEntitie.IdMetodoPago,
@@ -446,6 +447,7 @@ namespace sbx.repositories.Venta
                     
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
+                    response.Data = 0;
                     return response;
                 }
             }
@@ -465,7 +467,7 @@ namespace sbx.repositories.Venta
                                     A.IdVenta,
                                     A.Prefijo,
                                     A.Consecutivo,
-                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,
+                                    CONCAT(A.Prefijo,A.Consecutivo) Factura,
                                     A.CreationDate FechaFactura,
                                     A.IdUserAction IdUserActionFactura,
                                     A.IdVendedor,
@@ -478,8 +480,10 @@ namespace sbx.repositories.Venta
                                     G.UserName UserNameFactura,
                                     B.IdDetalleVenta,
                                     B.IdProducto,
+                                    P.Nombre NombreProducto,
                                     B.Sku,
                                     B.CodigoBarras,
+                                    P.IdUnidadMedida,
                                     B.UnidadMedida,
                                     B.NombreProducto,
                                     B.PrecioUnitario,
@@ -493,6 +497,10 @@ namespace sbx.repositories.Venta
                                     A.IdCliente,
                                     D.NumeroDocumento,
                                     D.NombreRazonSocial,
+                                    D.IdIdentificationType,
+                                    ISNULL(D.Direccion,'') Direccion,
+									ISNULL(D.Email,'') Email,
+									ISNULL(D.Telefono,'') Telefono,
                                     A.IdMetodoPago,
                                     F.Nombre NombreMetodoPago,
                                     C.Referencia,
@@ -512,7 +520,8 @@ namespace sbx.repositories.Venta
                                     INNER JOIN T_User G ON G.IdUser = A.IdUserAction
                                     --INNER JOIN T_User H ON H.IdUser = B.IdUserAction
                                     --INNER JOIN T_User I ON H.IdUser = C.IdUserAction 
-                                    INNER JOIN T_Vendedor J ON J.IdVendedor = A.IdVendedor ";
+                                    INNER JOIN T_Vendedor J ON J.IdVendedor = A.IdVendedor 
+                                    INNER JOIN T_Productos P ON P.IdProducto = B.IdProducto ";
 
                     string Where = "";
 
@@ -562,7 +571,7 @@ namespace sbx.repositories.Venta
                                     A.IdVenta,
                                     A.Prefijo,
                                     A.Consecutivo,
-                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,
+                                    CONCAT(A.Prefijo,A.Consecutivo) Factura,
                                     A.CreationDate FechaFactura,
                                     A.IdUserAction IdUserActionFactura,
                                     A.IdVendedor,
@@ -839,7 +848,7 @@ namespace sbx.repositories.Venta
                     await connection.OpenAsync();
                    
                     string sql = @"SELECT A.IdVenta,                                
-                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,
+                                    CONCAT(A.Prefijo,A.Consecutivo) Factura,
                                     A.CreationDate FechaFactura,                                                              
                                     A.IdCliente,
                                     D.NumeroDocumento,

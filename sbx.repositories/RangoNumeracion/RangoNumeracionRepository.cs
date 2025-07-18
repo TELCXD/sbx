@@ -3,7 +3,6 @@ using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Interfaces.RangoNumeracion;
-using sbx.core.Interfaces.TipoDocumentoRangoNumeracion;
 
 namespace sbx.repositories.RangoNumeracion
 {
@@ -38,7 +37,7 @@ namespace sbx.repositories.RangoNumeracion
                                   Id_TipoDocumentoRangoNumeracion = @Id_TipoDocumentoRangoNumeracion,
                                   Prefijo = @Prefijo,
                                   NumeroDesde = @NumeroDesde, NumeroHasta = @NumeroHasta,
-                                  NumeroAutorizacion = @NumeroAutorizacion,
+                                  NumeroResolucion = @NumeroResolucion,
                                   ClaveTecnica = @ClaveTecnica,
                                   FechaExpedicion = @FechaExpedicion,
                                   FechaVencimiento = @FechaVencimiento,
@@ -57,7 +56,7 @@ namespace sbx.repositories.RangoNumeracion
                             Prefijo = rangoNumeracionEntitie.Prefijo,
                             NumeroDesde = rangoNumeracionEntitie.NumeroDesde,
                             NumeroHasta = rangoNumeracionEntitie.NumeroHasta,
-                            NumeroAutorizacion = rangoNumeracionEntitie.NumeroAutorizacion,
+                            NumeroResolucion = rangoNumeracionEntitie.NumeroResolucion,
                             rangoNumeracionEntitie.ClaveTecnica,
                             rangoNumeracionEntitie.FechaExpedicion,
                             FechaVencimiento = rangoNumeracionEntitie.FechaVencimiento,
@@ -74,15 +73,7 @@ namespace sbx.repositories.RangoNumeracion
                         {
                             if (parametros.EnUso == 1)
                             {
-                                int Filas = 0;
-                                if (rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion == 1 || rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion == 2)
-                                {
-                                    Filas = await connection.ExecuteAsync($"UPDATE T_RangoNumeracion SET EnUso = 0 WHERE Id_RangoNumeracion != {parametros.Id_RangoNumeracion} AND (Id_TipoDocumentoRangoNumeracion = 1 OR Id_TipoDocumentoRangoNumeracion = 2) ");
-                                }
-                                else
-                                {
-                                    Filas = await connection.ExecuteAsync($"UPDATE T_RangoNumeracion SET EnUso = 0 WHERE Id_RangoNumeracion != {parametros.Id_RangoNumeracion} AND Id_TipoDocumentoRangoNumeracion = {rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion} ");
-                                }
+                                int Filas = await connection.ExecuteAsync($"UPDATE T_RangoNumeracion SET EnUso = 0 WHERE Id_RangoNumeracion != {parametros.Id_RangoNumeracion} AND Id_TipoDocumentoRangoNumeracion = {rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion} ");
                             }
 
                             response.Flag = true;
@@ -97,10 +88,10 @@ namespace sbx.repositories.RangoNumeracion
                     else
                     {
                         sql = @$" INSERT INTO T_RangoNumeracion (IdRangoDIAN,Id_TipoDocumentoRangoNumeracion,
-                                  Prefijo,NumeroDesde,NumeroHasta,NumeroAutorizacion,ClaveTecnica,FechaExpedicion,
+                                  Prefijo,NumeroDesde,NumeroHasta,NumeroResolucion,ClaveTecnica,FechaExpedicion,
                                   FechaVencimiento,Vencido,Active,EnUso,CreationDate,IdUserAction)
                                   VALUES(@Id_RangoDIAN,@Id_TipoDocumentoRangoNumeracion,@Prefijo,@NumeroDesde,
-                                  @NumeroHasta,@NumeroAutorizacion,@ClaveTecnica,@FechaExpedicion,
+                                  @NumeroHasta,@NumeroResolucion,@ClaveTecnica,@FechaExpedicion,
                                   @FechaVencimiento,@Vencido,@Active,@EnUso,
                                   @CreationDate,@IdUserAction); SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
@@ -111,7 +102,7 @@ namespace sbx.repositories.RangoNumeracion
                             Prefijo = rangoNumeracionEntitie.Prefijo,
                             NumeroDesde = rangoNumeracionEntitie.NumeroDesde,
                             NumeroHasta = rangoNumeracionEntitie.NumeroHasta,
-                            NumeroAutorizacion = rangoNumeracionEntitie.NumeroAutorizacion,
+                            NumeroResolucion = rangoNumeracionEntitie.NumeroResolucion,
                             rangoNumeracionEntitie.ClaveTecnica,
                             rangoNumeracionEntitie.FechaExpedicion,
                             FechaVencimiento = rangoNumeracionEntitie.FechaVencimiento,
@@ -129,15 +120,7 @@ namespace sbx.repositories.RangoNumeracion
                         {
                             if (parametros.EnUso == 1) 
                             {
-                                int Filas = 0;
-                                if (rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion == 1 || rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion == 2)
-                                {
-                                    Filas = await connection.ExecuteAsync($"UPDATE T_RangoNumeracion SET EnUso = 0 WHERE Id_RangoNumeracion != {idGenerado} AND (Id_TipoDocumentoRangoNumeracion = 1 OR Id_TipoDocumentoRangoNumeracion = 2) ");
-                                }
-                                else
-                                {
-                                    Filas = await connection.ExecuteAsync($"UPDATE T_RangoNumeracion SET EnUso = 0 WHERE Id_RangoNumeracion != {idGenerado} AND Id_TipoDocumentoRangoNumeracion = {rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion} ");
-                                }
+                                int Filas = await connection.ExecuteAsync($"UPDATE T_RangoNumeracion SET EnUso = 0 WHERE Id_RangoNumeracion != {idGenerado} AND Id_TipoDocumentoRangoNumeracion = {rangoNumeracionEntitie.Id_TipoDocumentoRangoNumeracion} ");
                             }
 
                             response.Flag = true;
@@ -178,7 +161,7 @@ namespace sbx.repositories.RangoNumeracion
                                   ,Prefijo
                                   ,ISNULL(NumeroDesde,0) NumeroDesde
                                   ,ISNULL(NumeroHasta,0) NumeroHasta
-                                  ,NumeroAutorizacion
+                                  ,NumeroResolucion
                                   ,ClaveTecnica
                                   ,FechaExpedicion
                                   ,FechaVencimiento
@@ -231,7 +214,7 @@ namespace sbx.repositories.RangoNumeracion
                                   ,Prefijo
                                   ,ISNULL(NumeroDesde,0) NumeroDesde
                                   ,ISNULL(NumeroHasta,0) NumeroHasta
-                                  ,NumeroAutorizacion
+                                  ,NumeroResolucion
                                   ,ClaveTecnica
                                   ,FechaExpedicion
                                   ,FechaVencimiento
@@ -247,30 +230,12 @@ namespace sbx.repositories.RangoNumeracion
 
                     if (Id > 0)
                     {
-                        Where = $"WHERE Id_RangoNumeracion != {Id} AND EnUso = 1 ";
-                        if (Id_TipoDocumentoRangoNumeracion == 1 || Id_TipoDocumentoRangoNumeracion == 2) 
-                        {
-                            Where += $"AND (Id_TipoDocumentoRangoNumeracion = 1 OR Id_TipoDocumentoRangoNumeracion = 2) ";
-                        }
-                        else
-                        {
-                            Where += $"AND Id_TipoDocumentoRangoNumeracion = {Id_TipoDocumentoRangoNumeracion} ";
-                        }
-
+                        Where = $"WHERE Id_RangoNumeracion != {Id} AND EnUso = 1 AND Id_TipoDocumentoRangoNumeracion = {Id_TipoDocumentoRangoNumeracion} ";                       
                         sql += Where;
                     }
                     else
                     {
-                        Where = $"WHERE EnUso = 1 ";
-                        if (Id_TipoDocumentoRangoNumeracion == 1 || Id_TipoDocumentoRangoNumeracion == 2)
-                        {
-                            Where += $"AND (Id_TipoDocumentoRangoNumeracion = 1 OR Id_TipoDocumentoRangoNumeracion = 2) ";
-                        }
-                        else
-                        {
-                            Where += $"AND Id_TipoDocumentoRangoNumeracion = {Id_TipoDocumentoRangoNumeracion} ";
-                        }
-
+                        Where = $"WHERE EnUso = 1 AND Id_TipoDocumentoRangoNumeracion = {Id_TipoDocumentoRangoNumeracion} ";                      
                         sql += Where;
                     }
 
@@ -513,7 +478,8 @@ namespace sbx.repositories.RangoNumeracion
                                   ,Prefijo
                                   ,ISNULL(NumeroDesde,0) NumeroDesde
                                   ,ISNULL(NumeroHasta,0) NumeroHasta
-                                  ,NumeroAutorizacion
+                                  ,(SELECT ISNULL(MAX(v.Consecutivo), 0) FROM T_Ventas v WHERE v.Prefijo = Prefijo) ConsecutivoActual
+                                  ,NumeroResolucion
                                   ,ClaveTecnica
                                   ,FechaExpedicion
                                   ,FechaVencimiento
@@ -529,16 +495,7 @@ namespace sbx.repositories.RangoNumeracion
 
                     if (IdTipoDocumento > 0)
                     {
-                        Where = $"WHERE EnUso = 1 ";
-                        if (IdTipoDocumento == 1 || IdTipoDocumento == 2)
-                        {
-                            Where += $"AND (Id_TipoDocumentoRangoNumeracion = 1 OR Id_TipoDocumentoRangoNumeracion = 2) ";
-                        }
-                        else
-                        {
-                            Where += $"AND Id_TipoDocumentoRangoNumeracion = {IdTipoDocumento} ";
-                        }
-
+                        Where = $"WHERE EnUso = 1 AND Id_TipoDocumentoRangoNumeracion = {IdTipoDocumento}";                     
                         sql += Where;
                     }
 
