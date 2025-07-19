@@ -19,7 +19,10 @@ namespace ExternalServices.FacturacionElectronica.Factus.Facturas
                 request.Headers.Add("Accept", "application/json");
                 request.Headers.Add("Authorization", "Bearer " + Token);
 
-                string JsonFactura = JsonConvert.SerializeObject(facturaRequest);
+                string JsonFactura = JsonConvert.SerializeObject(facturaRequest, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
 
                 var content = new StringContent(JsonFactura, null, "application/json");
                 request.Content = content;
@@ -33,7 +36,7 @@ namespace ExternalServices.FacturacionElectronica.Factus.Facturas
 
                     if (!string.IsNullOrWhiteSpace(repContent))
                     {
-                        var contentResp = JsonConvert.DeserializeObject<ResponseRanges>(repContent);
+                        var contentResp = JsonConvert.DeserializeObject<dynamic>(repContent);
 
                         response.Flag = true;
                         response.Message = "Consulta de rangos exitosa";
@@ -42,7 +45,7 @@ namespace ExternalServices.FacturacionElectronica.Factus.Facturas
                 }
                 else
                 {
-                    var errorContent = respHttp.Content.ReadAsStringAsync();
+                    var errorContent = respHttp.Content.ReadAsStringAsync().Result;
                     response.Flag = false;
                     response.Message = $"Error: {errorContent} ";
                     response.Data = statusCode;

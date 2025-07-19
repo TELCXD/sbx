@@ -1343,5 +1343,60 @@ namespace sbx.repositories.Venta
                 }
             }
         }
+
+        public async Task<Response<dynamic>> ActualizarDataFacturaElectronica(ActualizarFacturaForFacturaElectronicaEntitie actualizarFacturaForFacturaElectronicaEntitie, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                try
+                {
+                    string sql = "";
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sql = @$" UPDATE T_Ventas SET NumberFacturaDIAN = @NumberFacturaDIAN,
+                              EstadoFacturaDIAN = @EstadoFacturaDIAN, FacturaJSON = @FacturaJSON,
+                              UpdateDate = @UpdateDate, IdUserAction = @IdUserAction
+                              WHERE IdVenta = @IdVenta ";
+
+                    var parametros = new
+                    {
+                        actualizarFacturaForFacturaElectronicaEntitie.IdVenta,
+                        actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN,
+                        actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN,
+                        actualizarFacturaForFacturaElectronicaEntitie.FacturaJSON,
+                        UpdateDate = FechaActual,
+                        IdUserAction = IdUser
+                    };
+
+                    int FilasAfectadas = await connection.ExecuteAsync(sql, parametros);
+
+                    if (FilasAfectadas > 0)
+                    {
+                        response.Flag = true;
+                        response.Message = "Venta actualiza con datos factura electronica correctamente";
+                    }
+                    else
+                    {
+                        response.Flag = false;
+                        response.Message = "Se presento un error al intentar actualiza con datos factura electronica";
+                    }
+
+                    return response;
+                }
+                catch (Exception ex)
+                {                  
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    response.Data = 0;
+                    return response;
+                }
+            }
+        }
     }
 }

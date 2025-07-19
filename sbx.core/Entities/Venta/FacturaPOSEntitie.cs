@@ -22,5 +22,8 @@ namespace sbx.core.Entities.Venta
         public string FormaPago { get; set; } = "EFECTIVO";
         public decimal Recibido { get; set; }
         public decimal Cambio { get; set; }
+        public string NumberFacturaDIAN { get; set; }
+        public string EstadoFacturaDIAN { get; set; }
+        public string FacturaJSON { get; set; }
     }
 }
