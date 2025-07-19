@@ -4,14 +4,11 @@ using sbx.core.Entities.Auth;
 
 namespace sbx.core.Helper.Factus
 {
-    public class Auth
+    public class RefreshToken
     {
-        public Auth() { }
-
-        public Response<dynamic> GeneraAuth(AuthEntitie authEntitie)
+        public Response<dynamic> RefreshAuth(AuthEntitie authEntitie)
         {
             var response = new Response<dynamic>();
-
             try
             {
                 var client = new HttpClient();
@@ -24,7 +21,7 @@ namespace sbx.core.Helper.Factus
                 content.Add(new StringContent(authEntitie.username), "username");
                 content.Add(new StringContent(authEntitie.Passwords), "password");
                 request.Content = content;
-                var respHttp =  client.Send(request);
+                var respHttp = client.Send(request);
 
                 int statusCode = (int)respHttp.StatusCode;
 
@@ -45,16 +42,16 @@ namespace sbx.core.Helper.Factus
                 {
                     var errorContent = respHttp.Content.ReadAsStringAsync();
                     response.Flag = false;
-                    response.Message = $"Error en autenticacion: {errorContent} " ;
+                    response.Message = $"Error en autenticacion: {errorContent} ";
                     response.Data = statusCode;
                 }
-                           
+
                 return response;
             }
             catch (Exception ex)
             {
                 response.Flag = false;
-                response.Message = $"Error en autenticacion: {ex.Message} ";
+                response.Message = $"Error en refresh token: {ex.Message} ";
                 return response;
             }
         }

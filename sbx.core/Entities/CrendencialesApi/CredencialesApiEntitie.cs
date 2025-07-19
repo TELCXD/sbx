@@ -5,6 +5,7 @@ namespace sbx.core.Entities.CrendencialesApi
     {
         public int IdCredencialesApi { get; set; }
         public string url_api { get; set; }
+        public int IdGrupo { get; set; }
         public string Descripcion { get; set; }
         public string Variable1 { get; set; }
         public string Variable2 { get; set; }

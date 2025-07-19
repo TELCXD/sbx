@@ -1,3 +1,5 @@
+using ExternalServices.FacturacionElectronica.Factus.Auth;
+using ExternalServices.FacturacionElectronica.Factus.Facturas;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuestPDF.Infrastructure;
@@ -16,6 +18,7 @@ using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.Dashboard;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.FacturacionElectronica;
 using sbx.core.Interfaces.Gastos;
 using sbx.core.Interfaces.IdentificationType;
 using sbx.core.Interfaces.ListaPrecios;
@@ -370,7 +373,11 @@ namespace sbx
                 new CredencialesApiRepository(connectionString));
 
                 services.AddTransient<ICredencialesApi>(provider =>
-               new CredencialesApiRepository(connectionString));
+                new CredencialesApiRepository(connectionString));
+
+                services.AddTransient<IAuthService, Auth>();
+
+                services.AddTransient<IFacturas, Facturas>();
 
             })
             .Build();

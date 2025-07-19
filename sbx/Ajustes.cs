@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.Parametros;
 using sbx.core.Entities.Permiso;
+using sbx.core.Interfaces.Categoria;
 using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.Parametros;
@@ -100,17 +101,19 @@ namespace sbx
                 foreach (var item in resp.Data)
                 {
                     dtg_rangos_numeracion.Rows.Add(
-                        item.EnUso == true ? "SI" : "NO",
                         item.Id_RangoNumeracion,
+                        item.IdRangoDIAN,
+                        item.EnUso == true ? "SI" : "NO",
                         item.Vencido == true ? "SI" : "NO",
                         item.Active == true ? "Active" : "Inactivo",
-                        item.Id_TipoDocumentoRangoNumeracion == 1 ? "Factura"
-                        : item.Id_TipoDocumentoRangoNumeracion == 2 ? "Factura Electrónica de Venta"
-                        : item.Id_TipoDocumentoRangoNumeracion == 3 ? "Nota de Crédito" : "Nota de debito",
+                        item.Id_TipoDocumentoRangoNumeracion == 21 ? "Factura de Venta"
+                        : item.Id_TipoDocumentoRangoNumeracion == 22 ? "Nota Crédito"
+                        : item.Id_TipoDocumentoRangoNumeracion == 23 ? "Nota Débito"
+                        : item.Id_TipoDocumentoRangoNumeracion == 30 ? "Factura de talonario o de papel":"",
                         item.Prefijo,
                         item.NumeroDesde,
                         item.NumeroHasta,
-                        item.NumeroAutorizacion,
+                        item.NumeroResolucion,
                         item.FechaVencimiento,
                         "0");
                 }
@@ -556,6 +559,7 @@ namespace sbx
                         dtg_api_variables.Rows.Add(
                             item.IdCredencialesApi,
                             item.url_api,
+                            item.NombreGrupo,
                             item.Descripcion,
                             item.Variable1,
                             item.Variable2,

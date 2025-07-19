@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExternalServices\ExternalServices.csproj" />
     <ProjectReference Include="..\sbx.core\sbx.core.csproj" />
     <ProjectReference Include="..\sbx.repositories\sbx.repositories.csproj" />
   </ItemGroup>
