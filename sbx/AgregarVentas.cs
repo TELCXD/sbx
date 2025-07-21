@@ -26,6 +26,7 @@ using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.UnidadMedida;
 using sbx.core.Interfaces.Vendedor;
 using sbx.core.Interfaces.Venta;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Text;
 
@@ -2289,10 +2290,13 @@ namespace sbx
                                                                     = new ActualizarFacturaForFacturaElectronicaEntitie
                                                                     {
                                                                         IdVenta = Convert.ToInt32(DataVenta.Data[0].IdVenta),
-                                                                        NumberFacturaDIAN = responseFacturaElectronica.Data.data.bill.number,
+                                                                        NumberFacturaDIAN = responseFacturaElectronica.Data!.data.bill.number,
                                                                         EstadoFacturaDIAN = "EMITIDA",
-                                                                        FacturaJSON = responseFacturaElectronica.Data.ToString()
+                                                                        FacturaJSON = responseFacturaElectronica.Data.ToString(),
+                                                                        qr_image = responseFacturaElectronica.Data!.data.bill.qr_image
                                                                     };
+
+                                                                DataFactura.NumeroFactura = actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN;
 
                                                                 //Actualizar informacion facturacion electronica
                                                                 var respActualizaDataFacturaElectronica = await _IVenta.ActualizarDataFacturaElectronica(actualizarFacturaForFacturaElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
@@ -2301,7 +2305,9 @@ namespace sbx
                                                                 {
                                                                     if (respActualizaDataFacturaElectronica.Flag)
                                                                     {
+                                                                        DataFactura.FacturaElectronica = FacturaElectronica;
                                                                         DataFactura.FacturaJSON = actualizarFacturaForFacturaElectronicaEntitie.FacturaJSON;
+                                                                        DataFactura.qr_image = actualizarFacturaForFacturaElectronicaEntitie.qr_image;
                                                                     }
                                                                 }
                                                             }
@@ -2437,7 +2443,12 @@ namespace sbx
                                                                     }
                                                                 }
 
-                                                                StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA, MensajeFinalTirilla);
+                                                                StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA, MensajeFinalTirilla, true);
+
+                                                                if (FacturaElectronica) 
+                                                                {
+                                                                    GuardarTirillaComoImagen(tirilla, DataFactura.qr_image, DataFactura.NumeroFactura);
+                                                                }
 
                                                                 string carpetaFacturas = "Facturas";
                                                                 if (!Directory.Exists(carpetaFacturas))
@@ -2472,7 +2483,7 @@ namespace sbx
                                                                 }
                                                                 else
                                                                 {
-                                                                    RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
+                                                                    RawPrinterHelper.SendStringToPrinterConQr(Impresora, tirilla.ToString(), LineasAbajo, DataFactura.qr_image);
                                                                 }
                                                             }
                                                             else
@@ -2536,6 +2547,67 @@ namespace sbx
                 pnl_pagos.Enabled = true;
                 dtg_producto.Enabled = true;
             }
+        }
+
+        public static void GuardarTirillaComoImagen(StringBuilder tirilla, string base64QR, string numeroFactura)
+        {
+            // Configuración de la "impresora"
+            int anchoPx = 384; // 58mm típico
+            int altoEstimado = 2000; // Estimado; puedes ajustar según necesidad
+
+            Bitmap bmp = new Bitmap(anchoPx, altoEstimado);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.White);
+
+                Font fuente = new Font("Consolas", 10);
+                Brush pincel = Brushes.Black;
+                float y = 0;
+
+                // Dibujar texto línea por línea
+                foreach (string linea in tirilla.ToString().Split('\n'))
+                {
+                    g.DrawString(linea.TrimEnd(), fuente, pincel, new PointF(0, y));
+                    y += fuente.GetHeight();
+                }
+
+                // Insertar QR (si viene)
+                if (!string.IsNullOrWhiteSpace(base64QR))
+                {
+                    try
+                    {
+                        string base64QRLimpia = base64QR
+                        .Replace("data:image/png;base64,", "")
+                        .Replace("\r", "")
+                        .Replace("\n", "")
+                        .Trim();
+
+                        byte[] qrBytes = Convert.FromBase64String(base64QRLimpia);
+                        using (MemoryStream ms = new MemoryStream(qrBytes))
+                        using (Image qrImage = Image.FromStream(ms))
+                        {
+                            int qrSize = 100; // Tamaño del QR en px
+                            g.DrawImage(qrImage, new Rectangle((anchoPx - qrSize) / 2, (int)y + 10, qrSize, qrSize));
+                            y += qrSize + 20; // Dejar espacio abajo
+                        }
+                    }
+                    catch
+                    {
+                        g.DrawString("[Error al cargar QR]", fuente, Brushes.Red, new PointF(0, y));
+                    }
+                }
+            }
+
+            // Recortar la imagen al alto usado
+            Rectangle crop = new Rectangle(0, 0, anchoPx, (int)Math.Ceiling((double)altoEstimado));
+            Bitmap tirillaFinal = bmp.Clone(crop, bmp.PixelFormat);
+
+            // Guardar como imagen
+            string carpeta = "Facturas";
+            if (!Directory.Exists(carpeta)) Directory.CreateDirectory(carpeta);
+
+            string ruta = Path.Combine(carpeta, $"factura_{numeroFactura}.png");
+            tirillaFinal.Save(ruta, ImageFormat.Png);
         }
 
         private async void txt_busca_cliente_KeyPress(object sender, KeyPressEventArgs e)

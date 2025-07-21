@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Text;
+using ESCPOS_NET.Emitters;
 
 namespace sbx.core.Helper.Impresion
 {
@@ -79,7 +82,6 @@ namespace sbx.core.Helper.Impresion
         public static bool SendStringToPrinter(string Impresora, string tirilla, int LineasAbajo)
         {
             string initPrinter = "\x1B\x40";
-            //string feedBottom = "\x1B\x64\x03";//"\x1B\x64\x09";
             string feedBottom = $"\x1B\x64{(char)LineasAbajo}";
 
             /// Construye tirilla final
@@ -87,15 +89,64 @@ namespace sbx.core.Helper.Impresion
 
             IntPtr pBytes;
             Int32 dwCount;
-            // How many characters are in the string?
             dwCount = tirillaFinal.Length;
-            // Assume that the printer is expecting ANSI text, and then convert
-            // the string to ANSI text.
             pBytes = Marshal.StringToCoTaskMemAnsi(tirillaFinal);
-            // Send the converted ANSI string to the printer.
             SendBytesToPrinter(Impresora, pBytes, dwCount);
             Marshal.FreeCoTaskMem(pBytes);
             return true;
+        }
+
+        public static bool SendStringToPrinterConQr(string Impresora, string tirilla, int LineasAbajo, string qrBase64)
+        {
+            string initPrinter = "\x1B\x40"; // Reset
+            string feedBottom = $"\x1B\x64{(char)LineasAbajo}";
+
+            // 1. Convertir tirilla de texto a bytes ANSI
+            byte[] textoBytes = Encoding.GetEncoding(1252).GetBytes(initPrinter + tirilla);
+
+            // 2. Convertir imagen base64 a ESC/POS bytes
+            byte[] qrBytes = ConvertBase64QrToEscPos(qrBase64);
+
+            // 3. Agregar feed final
+            byte[] feedBytes = Encoding.GetEncoding(1252).GetBytes(feedBottom);
+
+            // 4. Unir todo
+            byte[] finalBytes = textoBytes
+                .Concat(qrBytes)
+                .Concat(feedBytes)
+                .ToArray();
+
+            // 5. Enviar a impresora
+            IntPtr pBytes = Marshal.AllocCoTaskMem(finalBytes.Length);
+            Marshal.Copy(finalBytes, 0, pBytes, finalBytes.Length);
+            bool result = SendBytesToPrinter(Impresora, pBytes, finalBytes.Length);
+            Marshal.FreeCoTaskMem(pBytes);
+
+            return result;
+        }
+
+        public static byte[] ConvertBase64QrToEscPos(string base64Image)
+        {
+            var e = new ESCPOS_NET.Emitters.EPSON();
+
+            // Quitar encabezado base64
+            string base64 = base64Image.Substring(base64Image.IndexOf(",") + 1);
+            byte[] imageBytes = Convert.FromBase64String(base64);
+
+            using var ms = new MemoryStream(imageBytes);
+            #pragma warning disable CA1416 // Solo Windows
+            using var bmp = new Bitmap(ms);
+            #pragma warning restore CA1416
+
+            // Convertir el Bitmap a un nuevo MemoryStream en formato PNG
+            using var imgStream = new MemoryStream();
+            #pragma warning disable CA1416
+            bmp.Save(imgStream, System.Drawing.Imaging.ImageFormat.Png);
+            #pragma warning restore CA1416
+            byte[] pngBytes = imgStream.ToArray();
+
+            // Ahora sí: pasar los bytes PNG a PrintImage
+            return e.PrintImage(pngBytes,false);
         }
     }
 }

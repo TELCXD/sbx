@@ -9,21 +9,23 @@ namespace sbx.core.Entities.Venta
         public string DireccionEmpresa { get; set; } = "";
         public string TelefonoEmpresa { get; set; } = "";
         public string NIT { get; set; } = "";
-        public string UserNameFactura { get; set; }
+        public string UserNameFactura { get; set; } = string.Empty;
         public string NombreCliente { get; set; } = "CLIENTE GENERAL";
-        public string NombreVendedor { get; set; }
+        public string NombreVendedor { get; set; } = string.Empty;
         public List<ItemFacturaEntitie> Items { get; set; } = new();
         public decimal CantidadTotal { get; set; }
         public decimal Subtotal { get; set; }
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
-        public string Estado { get; set; }
+        public string Estado { get; set; } = string.Empty;
         public string FormaPago { get; set; } = "EFECTIVO";
         public decimal Recibido { get; set; }
         public decimal Cambio { get; set; }
-        public string NumberFacturaDIAN { get; set; }
-        public string EstadoFacturaDIAN { get; set; }
+        public string NumberFacturaDIAN { get; set; } = string.Empty;
+        public string EstadoFacturaDIAN { get; set; } = string.Empty;
         public string FacturaJSON { get; set; }
+        public bool FacturaElectronica { get; set; }
+        public string qr_image { get; set; } = string.Empty;
     }
 }
