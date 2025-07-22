@@ -36,31 +36,16 @@ namespace sbx.repositories.Venta
                     DateTime FechaActual = DateTime.Now;
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    sql = @$" DECLARE 
-                            @VRegistradas INT 
-
-                            SET @VRegistradas = (SELECT COUNT(*) FROM T_Ventas)
-
-                            IF @VRegistradas > 0
-                            BEGIN
-                            INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
+                    sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
                             VALUES(@Prefijo,
                             (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
                             @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
-                            SELECT CAST(SCOPE_IDENTITY() AS INT);
-                            END
-                            ELSE
-                            BEGIN
-                            INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
-                            VALUES(@Prefijo,@Desde,
-                            @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
-                            SELECT CAST(SCOPE_IDENTITY() AS INT);
-                            END ";
+                            SELECT CAST(SCOPE_IDENTITY() AS INT); ";
 
                     var parametros = new
                     {
                         ventaEntitie.Prefijo,
-                        ventaEntitie.Desde,
+                        ventaEntitie.Consecutivo,
                         ventaEntitie.IdCliente,
                         ventaEntitie.IdVendedor,
                         ventaEntitie.IdMetodoPago,

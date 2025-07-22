@@ -77,7 +77,7 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(702, 56);
+            panel3.Size = new Size(660, 56);
             panel3.TabIndex = 3;
             // 
             // button1
@@ -87,7 +87,7 @@
             button1.FlatAppearance.MouseDownBackColor = Color.Gray;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Image = (Image)resources.GetObject("button1.Image");
-            button1.Location = new Point(2462, 3);
+            button1.Location = new Point(2420, 3);
             button1.Name = "button1";
             button1.Size = new Size(42, 45);
             button1.TabIndex = 5;
@@ -97,7 +97,7 @@
             // textBox3
             // 
             textBox3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox3.Location = new Point(2265, 14);
+            textBox3.Location = new Point(2223, 14);
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(191, 23);
             textBox3.TabIndex = 2;
@@ -150,7 +150,7 @@
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(0, 56);
             panel4.Name = "panel4";
-            panel4.Size = new Size(702, 408);
+            panel4.Size = new Size(660, 393);
             panel4.TabIndex = 4;
             // 
             // cbx_expired
@@ -158,7 +158,7 @@
             cbx_expired.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_expired.FormattingEnabled = true;
             cbx_expired.Items.AddRange(new object[] { "SI", "NO" });
-            cbx_expired.Location = new Point(41, 318);
+            cbx_expired.Location = new Point(12, 301);
             cbx_expired.Name = "cbx_expired";
             cbx_expired.Size = new Size(287, 23);
             cbx_expired.TabIndex = 11;
@@ -166,7 +166,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(41, 298);
+            label11.Location = new Point(12, 281);
             label11.Name = "label11";
             label11.Size = new Size(49, 15);
             label11.TabIndex = 40;
@@ -175,7 +175,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(374, 183);
+            label10.Location = new Point(345, 166);
             label10.Name = "label10";
             label10.Size = new Size(77, 15);
             label10.TabIndex = 37;
@@ -183,7 +183,7 @@
             // 
             // txt_clave_Tecnica
             // 
-            txt_clave_Tecnica.Location = new Point(374, 202);
+            txt_clave_Tecnica.Location = new Point(345, 185);
             txt_clave_Tecnica.MaxLength = 100;
             txt_clave_Tecnica.Name = "txt_clave_Tecnica";
             txt_clave_Tecnica.Size = new Size(287, 23);
@@ -192,7 +192,7 @@
             // dtpFechaExpedicion
             // 
             dtpFechaExpedicion.Format = DateTimePickerFormat.Short;
-            dtpFechaExpedicion.Location = new Point(41, 258);
+            dtpFechaExpedicion.Location = new Point(12, 241);
             dtpFechaExpedicion.MinDate = new DateTime(2025, 4, 17, 0, 0, 0, 0);
             dtpFechaExpedicion.Name = "dtpFechaExpedicion";
             dtpFechaExpedicion.Size = new Size(287, 23);
@@ -201,7 +201,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(41, 236);
+            label6.Location = new Point(12, 219);
             label6.Name = "label6";
             label6.Size = new Size(99, 15);
             label6.TabIndex = 36;
@@ -210,7 +210,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(374, 128);
+            label4.Location = new Point(345, 111);
             label4.Name = "label4";
             label4.Size = new Size(135, 15);
             label4.TabIndex = 34;
@@ -219,7 +219,7 @@
             // textBox2
             // 
             textBox2.Enabled = false;
-            textBox2.Location = new Point(374, 148);
+            textBox2.Location = new Point(345, 131);
             textBox2.MaxLength = 10;
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(287, 23);
@@ -228,7 +228,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(41, 26);
+            label3.Location = new Point(12, 9);
             label3.Name = "label3";
             label3.Size = new Size(123, 15);
             label3.TabIndex = 31;
@@ -236,7 +236,7 @@
             // 
             // txt_id_dian
             // 
-            txt_id_dian.Location = new Point(41, 46);
+            txt_id_dian.Location = new Point(12, 29);
             txt_id_dian.MaxLength = 2;
             txt_id_dian.Name = "txt_id_dian";
             txt_id_dian.Size = new Size(287, 23);
@@ -248,7 +248,7 @@
             cbx_en_uso.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_en_uso.FormattingEnabled = true;
             cbx_en_uso.Items.AddRange(new object[] { "Si", "No" });
-            cbx_en_uso.Location = new Point(41, 375);
+            cbx_en_uso.Location = new Point(12, 358);
             cbx_en_uso.Name = "cbx_en_uso";
             cbx_en_uso.Size = new Size(287, 23);
             cbx_en_uso.TabIndex = 13;
@@ -256,7 +256,7 @@
             // dtpk_fecha_vencimiento
             // 
             dtpk_fecha_vencimiento.Format = DateTimePickerFormat.Short;
-            dtpk_fecha_vencimiento.Location = new Point(374, 258);
+            dtpk_fecha_vencimiento.Location = new Point(345, 241);
             dtpk_fecha_vencimiento.MinDate = new DateTime(2025, 4, 17, 0, 0, 0, 0);
             dtpk_fecha_vencimiento.Name = "dtpk_fecha_vencimiento";
             dtpk_fecha_vencimiento.Size = new Size(287, 23);
@@ -266,7 +266,7 @@
             // 
             cbx_tipo_documento.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_documento.FormattingEnabled = true;
-            cbx_tipo_documento.Location = new Point(374, 46);
+            cbx_tipo_documento.Location = new Point(345, 29);
             cbx_tipo_documento.Name = "cbx_tipo_documento";
             cbx_tipo_documento.Size = new Size(287, 23);
             cbx_tipo_documento.TabIndex = 2;
@@ -274,7 +274,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(374, 26);
+            label14.Location = new Point(345, 9);
             label14.Name = "label14";
             label14.Size = new Size(95, 15);
             label14.TabIndex = 30;
@@ -283,7 +283,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(41, 76);
+            label13.Location = new Point(12, 59);
             label13.Name = "label13";
             label13.Size = new Size(49, 15);
             label13.TabIndex = 26;
@@ -291,7 +291,7 @@
             // 
             // txt_prefijo
             // 
-            txt_prefijo.Location = new Point(41, 96);
+            txt_prefijo.Location = new Point(12, 79);
             txt_prefijo.MaxLength = 10;
             txt_prefijo.Name = "txt_prefijo";
             txt_prefijo.Size = new Size(287, 23);
@@ -300,7 +300,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(41, 355);
+            label9.Location = new Point(12, 338);
             label9.Name = "label9";
             label9.Size = new Size(42, 15);
             label9.TabIndex = 17;
@@ -309,7 +309,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(374, 236);
+            label8.Location = new Point(345, 219);
             label8.Name = "label8";
             label8.Size = new Size(107, 15);
             label8.TabIndex = 15;
@@ -318,7 +318,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(41, 128);
+            label7.Location = new Point(12, 111);
             label7.Name = "label7";
             label7.Size = new Size(90, 15);
             label7.TabIndex = 14;
@@ -326,7 +326,7 @@
             // 
             // txt_numero_hasta
             // 
-            txt_numero_hasta.Location = new Point(41, 148);
+            txt_numero_hasta.Location = new Point(12, 131);
             txt_numero_hasta.MaxLength = 10;
             txt_numero_hasta.Name = "txt_numero_hasta";
             txt_numero_hasta.Size = new Size(287, 23);
@@ -338,7 +338,7 @@
             cbx_estado.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_estado.FormattingEnabled = true;
             cbx_estado.Items.AddRange(new object[] { "Activo", "Inactivo" });
-            cbx_estado.Location = new Point(374, 318);
+            cbx_estado.Location = new Point(345, 301);
             cbx_estado.Name = "cbx_estado";
             cbx_estado.Size = new Size(287, 23);
             cbx_estado.TabIndex = 12;
@@ -346,7 +346,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(374, 298);
+            label5.Location = new Point(345, 281);
             label5.Name = "label5";
             label5.Size = new Size(42, 15);
             label5.TabIndex = 9;
@@ -355,7 +355,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(41, 183);
+            label2.Location = new Point(12, 166);
             label2.Name = "label2";
             label2.Size = new Size(125, 15);
             label2.TabIndex = 3;
@@ -363,7 +363,7 @@
             // 
             // txt_numero_autorizacion
             // 
-            txt_numero_autorizacion.Location = new Point(41, 202);
+            txt_numero_autorizacion.Location = new Point(12, 185);
             txt_numero_autorizacion.MaxLength = 50;
             txt_numero_autorizacion.Name = "txt_numero_autorizacion";
             txt_numero_autorizacion.Size = new Size(287, 23);
@@ -372,7 +372,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(374, 76);
+            label1.Location = new Point(345, 59);
             label1.Name = "label1";
             label1.Size = new Size(93, 15);
             label1.TabIndex = 1;
@@ -380,7 +380,7 @@
             // 
             // txt_numero_desde
             // 
-            txt_numero_desde.Location = new Point(374, 96);
+            txt_numero_desde.Location = new Point(345, 79);
             txt_numero_desde.MaxLength = 10;
             txt_numero_desde.Name = "txt_numero_desde";
             txt_numero_desde.Size = new Size(287, 23);
@@ -395,7 +395,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(702, 464);
+            ClientSize = new Size(660, 449);
             Controls.Add(panel4);
             Controls.Add(panel3);
             Icon = (Icon)resources.GetObject("$this.Icon");

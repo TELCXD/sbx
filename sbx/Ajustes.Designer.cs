@@ -193,11 +193,10 @@
             TabParametros.Controls.Add(label1);
             TabParametros.Controls.Add(lbl_valida_stock);
             TabParametros.Controls.Add(panel2);
-            TabParametros.Location = new Point(4, 30);
-            TabParametros.Margin = new Padding(3, 4, 3, 4);
+            TabParametros.Location = new Point(4, 26);
             TabParametros.Name = "TabParametros";
-            TabParametros.Padding = new Padding(3, 4, 3, 4);
-            TabParametros.Size = new Size(1229, 702);
+            TabParametros.Padding = new Padding(3);
+            TabParametros.Size = new Size(1074, 522);
             TabParametros.TabIndex = 1;
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
@@ -205,9 +204,9 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(434, 423);
+            label10.Location = new Point(380, 317);
             label10.Name = "label10";
-            label10.Size = new Size(184, 21);
+            label10.Size = new Size(148, 17);
             label10.TabIndex = 20;
             label10.Text = "80 mm (9) - 58 mm (3)";
             // 
@@ -216,28 +215,26 @@
             cbx_lineas_abajo.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_lineas_abajo.FormattingEnabled = true;
             cbx_lineas_abajo.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
-            cbx_lineas_abajo.Location = new Point(289, 415);
-            cbx_lineas_abajo.Margin = new Padding(3, 4, 3, 4);
+            cbx_lineas_abajo.Location = new Point(253, 311);
             cbx_lineas_abajo.Name = "cbx_lineas_abajo";
-            cbx_lineas_abajo.Size = new Size(138, 29);
+            cbx_lineas_abajo.Size = new Size(121, 25);
             cbx_lineas_abajo.TabIndex = 19;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(9, 423);
+            label9.Location = new Point(8, 317);
             label9.Name = "label9";
-            label9.Size = new Size(200, 21);
+            label9.Size = new Size(158, 17);
             label9.TabIndex = 18;
             label9.Text = "lineas abajo de la tirilla";
             // 
             // rb_58mm
             // 
             rb_58mm.AutoSize = true;
-            rb_58mm.Location = new Point(493, 257);
-            rb_58mm.Margin = new Padding(3, 4, 3, 4);
+            rb_58mm.Location = new Point(431, 193);
             rb_58mm.Name = "rb_58mm";
-            rb_58mm.Size = new Size(219, 25);
+            rb_58mm.Size = new Size(172, 21);
             rb_58mm.TabIndex = 17;
             rb_58mm.TabStop = true;
             rb_58mm.Text = "58 mm (32 Caracteres)";
@@ -247,10 +244,9 @@
             // rb_80mm
             // 
             rb_80mm.AutoSize = true;
-            rb_80mm.Location = new Point(289, 257);
-            rb_80mm.Margin = new Padding(3, 4, 3, 4);
+            rb_80mm.Location = new Point(253, 193);
             rb_80mm.Name = "rb_80mm";
-            rb_80mm.Size = new Size(219, 25);
+            rb_80mm.Size = new Size(172, 21);
             rb_80mm.TabIndex = 6;
             rb_80mm.TabStop = true;
             rb_80mm.Text = "80 mm (42 Caracteres)";
@@ -259,19 +255,18 @@
             // 
             // txt_mensaje_final_tirilla
             // 
-            txt_mensaje_final_tirilla.Location = new Point(289, 336);
-            txt_mensaje_final_tirilla.Margin = new Padding(3, 4, 3, 4);
+            txt_mensaje_final_tirilla.Location = new Point(253, 252);
             txt_mensaje_final_tirilla.MaxLength = 42;
             txt_mensaje_final_tirilla.Name = "txt_mensaje_final_tirilla";
-            txt_mensaje_final_tirilla.Size = new Size(399, 27);
+            txt_mensaje_final_tirilla.Size = new Size(350, 23);
             txt_mensaje_final_tirilla.TabIndex = 8;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(9, 340);
+            label8.Location = new Point(8, 255);
             label8.Name = "label8";
-            label8.Size = new Size(299, 21);
+            label8.Size = new Size(235, 17);
             label8.TabIndex = 16;
             label8.Text = "Mensaje Personalizado al final tirilla";
             // 
@@ -280,18 +275,17 @@
             cbx_parametro_tipo_filtro_producto.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_parametro_tipo_filtro_producto.FormattingEnabled = true;
             cbx_parametro_tipo_filtro_producto.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_parametro_tipo_filtro_producto.Location = new Point(289, 213);
-            cbx_parametro_tipo_filtro_producto.Margin = new Padding(3, 4, 3, 4);
+            cbx_parametro_tipo_filtro_producto.Location = new Point(253, 160);
             cbx_parametro_tipo_filtro_producto.Name = "cbx_parametro_tipo_filtro_producto";
-            cbx_parametro_tipo_filtro_producto.Size = new Size(138, 29);
+            cbx_parametro_tipo_filtro_producto.Size = new Size(121, 25);
             cbx_parametro_tipo_filtro_producto.TabIndex = 4;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(9, 220);
+            label7.Location = new Point(8, 165);
             label7.Name = "label7";
-            label7.Size = new Size(167, 21);
+            label7.Size = new Size(131, 17);
             label7.TabIndex = 14;
             label7.Text = "Tipo filtro producto";
             // 
@@ -300,36 +294,33 @@
             cbx_Buscarenventapor.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_Buscarenventapor.FormattingEnabled = true;
             cbx_Buscarenventapor.Items.AddRange(new object[] { "Id", "Sku", "Codigo barras" });
-            cbx_Buscarenventapor.Location = new Point(289, 171);
-            cbx_Buscarenventapor.Margin = new Padding(3, 4, 3, 4);
+            cbx_Buscarenventapor.Location = new Point(253, 128);
             cbx_Buscarenventapor.Name = "cbx_Buscarenventapor";
-            cbx_Buscarenventapor.Size = new Size(138, 29);
+            cbx_Buscarenventapor.Size = new Size(121, 25);
             cbx_Buscarenventapor.TabIndex = 3;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(9, 177);
+            label6.Location = new Point(8, 133);
             label6.Name = "label6";
-            label6.Size = new Size(180, 21);
+            label6.Size = new Size(137, 17);
             label6.TabIndex = 12;
             label6.Text = "Buscar en venta por";
             // 
             // txt_ruta_backup
             // 
             txt_ruta_backup.Enabled = false;
-            txt_ruta_backup.Location = new Point(289, 376);
-            txt_ruta_backup.Margin = new Padding(3, 4, 3, 4);
+            txt_ruta_backup.Location = new Point(253, 282);
             txt_ruta_backup.Name = "txt_ruta_backup";
-            txt_ruta_backup.Size = new Size(399, 27);
+            txt_ruta_backup.Size = new Size(350, 23);
             txt_ruta_backup.TabIndex = 9;
             // 
             // txt_impresora
             // 
-            txt_impresora.Location = new Point(289, 293);
-            txt_impresora.Margin = new Padding(3, 4, 3, 4);
+            txt_impresora.Location = new Point(253, 220);
             txt_impresora.Name = "txt_impresora";
-            txt_impresora.Size = new Size(399, 27);
+            txt_impresora.Size = new Size(350, 23);
             txt_impresora.TabIndex = 7;
             // 
             // cbx_pregunta_imprimir_venta
@@ -337,10 +328,9 @@
             cbx_pregunta_imprimir_venta.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_pregunta_imprimir_venta.FormattingEnabled = true;
             cbx_pregunta_imprimir_venta.Items.AddRange(new object[] { "NO", "SI" });
-            cbx_pregunta_imprimir_venta.Location = new Point(289, 129);
-            cbx_pregunta_imprimir_venta.Margin = new Padding(3, 4, 3, 4);
+            cbx_pregunta_imprimir_venta.Location = new Point(253, 97);
             cbx_pregunta_imprimir_venta.Name = "cbx_pregunta_imprimir_venta";
-            cbx_pregunta_imprimir_venta.Size = new Size(138, 29);
+            cbx_pregunta_imprimir_venta.Size = new Size(121, 25);
             cbx_pregunta_imprimir_venta.TabIndex = 2;
             // 
             // cbx_valida_stock_venta
@@ -348,54 +338,53 @@
             cbx_valida_stock_venta.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_valida_stock_venta.FormattingEnabled = true;
             cbx_valida_stock_venta.Items.AddRange(new object[] { "SI", "NO" });
-            cbx_valida_stock_venta.Location = new Point(289, 88);
-            cbx_valida_stock_venta.Margin = new Padding(3, 4, 3, 4);
+            cbx_valida_stock_venta.Location = new Point(253, 66);
             cbx_valida_stock_venta.Name = "cbx_valida_stock_venta";
-            cbx_valida_stock_venta.Size = new Size(138, 29);
+            cbx_valida_stock_venta.Size = new Size(121, 25);
             cbx_valida_stock_venta.TabIndex = 1;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(9, 380);
+            label4.Location = new Point(8, 285);
             label4.Name = "label4";
-            label4.Size = new Size(120, 21);
+            label4.Size = new Size(92, 17);
             label4.TabIndex = 6;
             label4.Text = "Ruta backup";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(9, 301);
+            label3.Location = new Point(8, 226);
             label3.Name = "label3";
-            label3.Size = new Size(93, 21);
+            label3.Size = new Size(72, 17);
             label3.TabIndex = 5;
             label3.Text = "Impresora";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(9, 263);
+            label2.Location = new Point(8, 197);
             label2.Name = "label2";
-            label2.Size = new Size(106, 21);
+            label2.Size = new Size(84, 17);
             label2.TabIndex = 4;
             label2.Text = "Ancho tirilla";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(9, 136);
+            label1.Location = new Point(8, 102);
             label1.Name = "label1";
-            label1.Size = new Size(306, 21);
+            label1.Size = new Size(240, 17);
             label1.TabIndex = 3;
             label1.Text = "Preguntar imprimir factura en venta";
             // 
             // lbl_valida_stock
             // 
             lbl_valida_stock.AutoSize = true;
-            lbl_valida_stock.Location = new Point(9, 99);
+            lbl_valida_stock.Location = new Point(8, 74);
             lbl_valida_stock.Name = "lbl_valida_stock";
-            lbl_valida_stock.Size = new Size(222, 21);
+            lbl_valida_stock.Size = new Size(169, 17);
             lbl_valida_stock.TabIndex = 2;
             lbl_valida_stock.Text = "Validar stock para venta";
             // 
@@ -404,10 +393,9 @@
             panel2.BorderStyle = BorderStyle.Fixed3D;
             panel2.Controls.Add(btn_guardar_parametros);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(3, 4);
-            panel2.Margin = new Padding(3, 4, 3, 4);
+            panel2.Location = new Point(3, 3);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1223, 73);
+            panel2.Size = new Size(1068, 56);
             panel2.TabIndex = 1;
             // 
             // btn_guardar_parametros
@@ -416,10 +404,9 @@
             btn_guardar_parametros.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_guardar_parametros.FlatStyle = FlatStyle.Flat;
             btn_guardar_parametros.Image = (Image)resources.GetObject("btn_guardar_parametros.Image");
-            btn_guardar_parametros.Location = new Point(3, 4);
-            btn_guardar_parametros.Margin = new Padding(3, 4, 3, 4);
+            btn_guardar_parametros.Location = new Point(3, 3);
             btn_guardar_parametros.Name = "btn_guardar_parametros";
-            btn_guardar_parametros.Size = new Size(115, 60);
+            btn_guardar_parametros.Size = new Size(101, 45);
             btn_guardar_parametros.TabIndex = 0;
             btn_guardar_parametros.Text = "Guardar";
             btn_guardar_parametros.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -429,11 +416,10 @@
             // tabPage1
             // 
             tabPage1.Controls.Add(tabControl2);
-            tabPage1.Location = new Point(4, 30);
-            tabPage1.Margin = new Padding(3, 4, 3, 4);
+            tabPage1.Location = new Point(4, 26);
             tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3, 4, 3, 4);
-            tabPage1.Size = new Size(1229, 702);
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1074, 522);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Rangos de numeración";
             tabPage1.UseVisualStyleBackColor = true;
@@ -443,22 +429,20 @@
             tabControl2.Controls.Add(tabPage2);
             tabControl2.Controls.Add(tabPage4);
             tabControl2.Dock = DockStyle.Fill;
-            tabControl2.Location = new Point(3, 4);
-            tabControl2.Margin = new Padding(3, 4, 3, 4);
+            tabControl2.Location = new Point(3, 3);
             tabControl2.Name = "tabControl2";
             tabControl2.SelectedIndex = 0;
-            tabControl2.Size = new Size(1223, 694);
+            tabControl2.Size = new Size(1068, 516);
             tabControl2.TabIndex = 0;
             // 
             // tabPage2
             // 
             tabPage2.Controls.Add(dtg_rangos_numeracion);
             tabPage2.Controls.Add(panel1);
-            tabPage2.Location = new Point(4, 30);
-            tabPage2.Margin = new Padding(3, 4, 3, 4);
+            tabPage2.Location = new Point(4, 26);
             tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3, 4, 3, 4);
-            tabPage2.Size = new Size(1215, 660);
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1060, 486);
             tabPage2.TabIndex = 0;
             tabPage2.Text = "Rangos de numeración";
             tabPage2.UseVisualStyleBackColor = true;
@@ -488,8 +472,7 @@
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dtg_rangos_numeracion.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_rangos_numeracion.Dock = DockStyle.Fill;
-            dtg_rangos_numeracion.Location = new Point(3, 77);
-            dtg_rangos_numeracion.Margin = new Padding(3, 4, 3, 4);
+            dtg_rangos_numeracion.Location = new Point(3, 59);
             dtg_rangos_numeracion.Name = "dtg_rangos_numeracion";
             dtg_rangos_numeracion.ReadOnly = true;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -502,7 +485,7 @@
             dtg_rangos_numeracion.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_rangos_numeracion.RowHeadersWidth = 51;
             dtg_rangos_numeracion.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_rangos_numeracion.Size = new Size(1209, 579);
+            dtg_rangos_numeracion.Size = new Size(1054, 424);
             dtg_rangos_numeracion.TabIndex = 1;
             // 
             // cl_Nro
@@ -604,10 +587,9 @@
             panel1.Controls.Add(btn_editar_ra);
             panel1.Controls.Add(btn_agregar_ra);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(3, 4);
-            panel1.Margin = new Padding(3, 4, 3, 4);
+            panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1209, 73);
+            panel1.Size = new Size(1054, 56);
             panel1.TabIndex = 0;
             // 
             // btn_buscar_ra
@@ -616,10 +598,9 @@
             btn_buscar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_ra.FlatStyle = FlatStyle.Flat;
             btn_buscar_ra.Image = (Image)resources.GetObject("btn_buscar_ra.Image");
-            btn_buscar_ra.Location = new Point(1172, 16);
-            btn_buscar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_buscar_ra.Location = new Point(1022, 12);
             btn_buscar_ra.Name = "btn_buscar_ra";
-            btn_buscar_ra.Size = new Size(30, 35);
+            btn_buscar_ra.Size = new Size(26, 26);
             btn_buscar_ra.TabIndex = 5;
             btn_buscar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar_ra.UseVisualStyleBackColor = true;
@@ -630,10 +611,9 @@
             btn_eliminar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar_ra.FlatStyle = FlatStyle.Flat;
             btn_eliminar_ra.Image = (Image)resources.GetObject("btn_eliminar_ra.Image");
-            btn_eliminar_ra.Location = new Point(248, 4);
-            btn_eliminar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_eliminar_ra.Location = new Point(217, 3);
             btn_eliminar_ra.Name = "btn_eliminar_ra";
-            btn_eliminar_ra.Size = new Size(115, 60);
+            btn_eliminar_ra.Size = new Size(101, 45);
             btn_eliminar_ra.TabIndex = 4;
             btn_eliminar_ra.Text = "Eliminar";
             btn_eliminar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -645,10 +625,9 @@
             btn_editar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar_ra.FlatStyle = FlatStyle.Flat;
             btn_editar_ra.Image = (Image)resources.GetObject("btn_editar_ra.Image");
-            btn_editar_ra.Location = new Point(126, 4);
-            btn_editar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_editar_ra.Location = new Point(110, 3);
             btn_editar_ra.Name = "btn_editar_ra";
-            btn_editar_ra.Size = new Size(115, 60);
+            btn_editar_ra.Size = new Size(101, 45);
             btn_editar_ra.TabIndex = 1;
             btn_editar_ra.Text = "Editar";
             btn_editar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -660,10 +639,9 @@
             btn_agregar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar_ra.FlatStyle = FlatStyle.Flat;
             btn_agregar_ra.Image = (Image)resources.GetObject("btn_agregar_ra.Image");
-            btn_agregar_ra.Location = new Point(3, 4);
-            btn_agregar_ra.Margin = new Padding(3, 4, 3, 4);
+            btn_agregar_ra.Location = new Point(3, 3);
             btn_agregar_ra.Name = "btn_agregar_ra";
-            btn_agregar_ra.Size = new Size(115, 60);
+            btn_agregar_ra.Size = new Size(101, 45);
             btn_agregar_ra.TabIndex = 0;
             btn_agregar_ra.Text = "Agregar";
             btn_agregar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -674,11 +652,10 @@
             // 
             tabPage4.Controls.Add(dtg_api_variables);
             tabPage4.Controls.Add(panel5);
-            tabPage4.Location = new Point(4, 30);
-            tabPage4.Margin = new Padding(3, 4, 3, 4);
+            tabPage4.Location = new Point(4, 26);
             tabPage4.Name = "tabPage4";
-            tabPage4.Padding = new Padding(3, 4, 3, 4);
-            tabPage4.Size = new Size(1215, 660);
+            tabPage4.Padding = new Padding(3);
+            tabPage4.Size = new Size(1060, 486);
             tabPage4.TabIndex = 1;
             tabPage4.Text = "Api";
             tabPage4.UseVisualStyleBackColor = true;
@@ -708,8 +685,7 @@
             dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
             dtg_api_variables.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_api_variables.Dock = DockStyle.Fill;
-            dtg_api_variables.Location = new Point(3, 77);
-            dtg_api_variables.Margin = new Padding(3, 4, 3, 4);
+            dtg_api_variables.Location = new Point(3, 59);
             dtg_api_variables.Name = "dtg_api_variables";
             dtg_api_variables.ReadOnly = true;
             dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -722,7 +698,7 @@
             dtg_api_variables.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_api_variables.RowHeadersWidth = 51;
             dtg_api_variables.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_api_variables.Size = new Size(1209, 579);
+            dtg_api_variables.Size = new Size(1054, 424);
             dtg_api_variables.TabIndex = 11;
             // 
             // cl_id
@@ -861,10 +837,9 @@
             panel5.Controls.Add(btn_editar_api);
             panel5.Controls.Add(btn_agregar_api);
             panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(3, 4);
-            panel5.Margin = new Padding(3, 4, 3, 4);
+            panel5.Location = new Point(3, 3);
             panel5.Name = "panel5";
-            panel5.Size = new Size(1209, 73);
+            panel5.Size = new Size(1054, 56);
             panel5.TabIndex = 10;
             // 
             // btn_buscar_api
@@ -873,10 +848,9 @@
             btn_buscar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_api.FlatStyle = FlatStyle.Flat;
             btn_buscar_api.Image = (Image)resources.GetObject("btn_buscar_api.Image");
-            btn_buscar_api.Location = new Point(1172, 16);
-            btn_buscar_api.Margin = new Padding(3, 4, 3, 4);
+            btn_buscar_api.Location = new Point(1022, 12);
             btn_buscar_api.Name = "btn_buscar_api";
-            btn_buscar_api.Size = new Size(30, 35);
+            btn_buscar_api.Size = new Size(26, 26);
             btn_buscar_api.TabIndex = 8;
             btn_buscar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar_api.UseVisualStyleBackColor = true;
@@ -887,10 +861,9 @@
             btn_eliminar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar_api.FlatStyle = FlatStyle.Flat;
             btn_eliminar_api.Image = (Image)resources.GetObject("btn_eliminar_api.Image");
-            btn_eliminar_api.Location = new Point(248, 4);
-            btn_eliminar_api.Margin = new Padding(3, 4, 3, 4);
+            btn_eliminar_api.Location = new Point(217, 3);
             btn_eliminar_api.Name = "btn_eliminar_api";
-            btn_eliminar_api.Size = new Size(115, 60);
+            btn_eliminar_api.Size = new Size(101, 45);
             btn_eliminar_api.TabIndex = 7;
             btn_eliminar_api.Text = "Eliminar";
             btn_eliminar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -902,10 +875,9 @@
             btn_editar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar_api.FlatStyle = FlatStyle.Flat;
             btn_editar_api.Image = (Image)resources.GetObject("btn_editar_api.Image");
-            btn_editar_api.Location = new Point(126, 4);
-            btn_editar_api.Margin = new Padding(3, 4, 3, 4);
+            btn_editar_api.Location = new Point(110, 3);
             btn_editar_api.Name = "btn_editar_api";
-            btn_editar_api.Size = new Size(115, 60);
+            btn_editar_api.Size = new Size(101, 45);
             btn_editar_api.TabIndex = 6;
             btn_editar_api.Text = "Editar";
             btn_editar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -917,10 +889,9 @@
             btn_agregar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar_api.FlatStyle = FlatStyle.Flat;
             btn_agregar_api.Image = (Image)resources.GetObject("btn_agregar_api.Image");
-            btn_agregar_api.Location = new Point(3, 4);
-            btn_agregar_api.Margin = new Padding(3, 4, 3, 4);
+            btn_agregar_api.Location = new Point(3, 3);
             btn_agregar_api.Name = "btn_agregar_api";
-            btn_agregar_api.Size = new Size(115, 60);
+            btn_agregar_api.Size = new Size(101, 45);
             btn_agregar_api.TabIndex = 5;
             btn_agregar_api.Text = "Agregar";
             btn_agregar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -935,21 +906,19 @@
             Usuarios.Dock = DockStyle.Fill;
             Usuarios.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Usuarios.Location = new Point(0, 0);
-            Usuarios.Margin = new Padding(3, 4, 3, 4);
             Usuarios.Name = "Usuarios";
             Usuarios.SelectedIndex = 0;
-            Usuarios.Size = new Size(1237, 736);
+            Usuarios.Size = new Size(1082, 552);
             Usuarios.TabIndex = 0;
             Usuarios.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // tabAdministracion
             // 
             tabAdministracion.Controls.Add(tabControl1);
-            tabAdministracion.Location = new Point(4, 30);
-            tabAdministracion.Margin = new Padding(3, 4, 3, 4);
+            tabAdministracion.Location = new Point(4, 26);
             tabAdministracion.Name = "tabAdministracion";
-            tabAdministracion.Padding = new Padding(3, 4, 3, 4);
-            tabAdministracion.Size = new Size(1229, 702);
+            tabAdministracion.Padding = new Padding(3);
+            tabAdministracion.Size = new Size(1074, 522);
             tabAdministracion.TabIndex = 2;
             tabAdministracion.Text = "Administracion";
             tabAdministracion.UseVisualStyleBackColor = true;
@@ -959,22 +928,20 @@
             tabControl1.Controls.Add(tabPage3);
             tabControl1.Controls.Add(tabPage5);
             tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(3, 4);
-            tabControl1.Margin = new Padding(3, 4, 3, 4);
+            tabControl1.Location = new Point(3, 3);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1223, 694);
+            tabControl1.Size = new Size(1068, 516);
             tabControl1.TabIndex = 0;
             // 
             // tabPage3
             // 
             tabPage3.Controls.Add(dtg_usuario);
             tabPage3.Controls.Add(panel3);
-            tabPage3.Location = new Point(4, 30);
-            tabPage3.Margin = new Padding(3, 4, 3, 4);
+            tabPage3.Location = new Point(4, 26);
             tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3, 4, 3, 4);
-            tabPage3.Size = new Size(1215, 660);
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(1060, 486);
             tabPage3.TabIndex = 0;
             tabPage3.Text = "Usuarios";
             tabPage3.UseVisualStyleBackColor = true;
@@ -1004,8 +971,7 @@
             dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
             dtg_usuario.DefaultCellStyle = dataGridViewCellStyle8;
             dtg_usuario.Dock = DockStyle.Fill;
-            dtg_usuario.Location = new Point(3, 77);
-            dtg_usuario.Margin = new Padding(3, 4, 3, 4);
+            dtg_usuario.Location = new Point(3, 59);
             dtg_usuario.Name = "dtg_usuario";
             dtg_usuario.ReadOnly = true;
             dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -1018,7 +984,7 @@
             dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_usuario.RowHeadersWidth = 51;
             dtg_usuario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_usuario.Size = new Size(1209, 579);
+            dtg_usuario.Size = new Size(1054, 424);
             dtg_usuario.TabIndex = 5;
             // 
             // cl_IdUsuario
@@ -1107,10 +1073,9 @@
             panel3.Controls.Add(button2);
             panel3.Controls.Add(textBox3);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(3, 4);
-            panel3.Margin = new Padding(3, 4, 3, 4);
+            panel3.Location = new Point(3, 3);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1209, 73);
+            panel3.Size = new Size(1054, 56);
             panel3.TabIndex = 2;
             // 
             // cbx_tipo_filtro
@@ -1119,10 +1084,9 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(854, 19);
-            cbx_tipo_filtro.Margin = new Padding(3, 4, 3, 4);
+            cbx_tipo_filtro.Location = new Point(743, 14);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
-            cbx_tipo_filtro.Size = new Size(99, 29);
+            cbx_tipo_filtro.Size = new Size(87, 25);
             cbx_tipo_filtro.TabIndex = 33;
             // 
             // cbx_campo_filtro
@@ -1131,10 +1095,9 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre usuario", "Id usuario" });
-            cbx_campo_filtro.Location = new Point(717, 19);
-            cbx_campo_filtro.Margin = new Padding(3, 4, 3, 4);
+            cbx_campo_filtro.Location = new Point(623, 14);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
-            cbx_campo_filtro.Size = new Size(130, 29);
+            cbx_campo_filtro.Size = new Size(114, 25);
             cbx_campo_filtro.TabIndex = 32;
             // 
             // btn_buscar_usuario
@@ -1143,10 +1106,9 @@
             btn_buscar_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar_usuario.FlatStyle = FlatStyle.Flat;
             btn_buscar_usuario.Image = (Image)resources.GetObject("btn_buscar_usuario.Image");
-            btn_buscar_usuario.Location = new Point(1170, 16);
-            btn_buscar_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_buscar_usuario.Location = new Point(1020, 12);
             btn_buscar_usuario.Name = "btn_buscar_usuario";
-            btn_buscar_usuario.Size = new Size(30, 35);
+            btn_buscar_usuario.Size = new Size(26, 26);
             btn_buscar_usuario.TabIndex = 31;
             btn_buscar_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar_usuario.UseVisualStyleBackColor = true;
@@ -1155,10 +1117,9 @@
             // txt_buscar_usuario
             // 
             txt_buscar_usuario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar_usuario.Location = new Point(960, 19);
-            txt_buscar_usuario.Margin = new Padding(3, 4, 3, 4);
+            txt_buscar_usuario.Location = new Point(836, 14);
             txt_buscar_usuario.Name = "txt_buscar_usuario";
-            txt_buscar_usuario.Size = new Size(202, 27);
+            txt_buscar_usuario.Size = new Size(177, 23);
             txt_buscar_usuario.TabIndex = 30;
             // 
             // btn_editar_usuario
@@ -1167,10 +1128,9 @@
             btn_editar_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar_usuario.FlatStyle = FlatStyle.Flat;
             btn_editar_usuario.Image = (Image)resources.GetObject("btn_editar_usuario.Image");
-            btn_editar_usuario.Location = new Point(126, 4);
-            btn_editar_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_editar_usuario.Location = new Point(110, 3);
             btn_editar_usuario.Name = "btn_editar_usuario";
-            btn_editar_usuario.Size = new Size(115, 60);
+            btn_editar_usuario.Size = new Size(101, 45);
             btn_editar_usuario.TabIndex = 17;
             btn_editar_usuario.Text = "Editar";
             btn_editar_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -1183,10 +1143,9 @@
             btn_agregar_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar_usuario.FlatStyle = FlatStyle.Flat;
             btn_agregar_usuario.Image = (Image)resources.GetObject("btn_agregar_usuario.Image");
-            btn_agregar_usuario.Location = new Point(3, 4);
-            btn_agregar_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_agregar_usuario.Location = new Point(3, 3);
             btn_agregar_usuario.Name = "btn_agregar_usuario";
-            btn_agregar_usuario.Size = new Size(115, 60);
+            btn_agregar_usuario.Size = new Size(101, 45);
             btn_agregar_usuario.TabIndex = 16;
             btn_agregar_usuario.Text = "Agregar";
             btn_agregar_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -1200,10 +1159,9 @@
             button2.FlatAppearance.MouseDownBackColor = Color.Gray;
             button2.FlatStyle = FlatStyle.Flat;
             button2.Image = (Image)resources.GetObject("button2.Image");
-            button2.Location = new Point(2630, 4);
-            button2.Margin = new Padding(3, 4, 3, 4);
+            button2.Location = new Point(2297, 3);
             button2.Name = "button2";
-            button2.Size = new Size(48, 60);
+            button2.Size = new Size(42, 45);
             button2.TabIndex = 5;
             button2.TextImageRelation = TextImageRelation.ImageBeforeText;
             button2.UseVisualStyleBackColor = true;
@@ -1211,21 +1169,19 @@
             // textBox3
             // 
             textBox3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox3.Location = new Point(2405, 19);
-            textBox3.Margin = new Padding(3, 4, 3, 4);
+            textBox3.Location = new Point(2100, 14);
             textBox3.Name = "textBox3";
-            textBox3.Size = new Size(218, 27);
+            textBox3.Size = new Size(191, 23);
             textBox3.TabIndex = 2;
             // 
             // tabPage5
             // 
             tabPage5.Controls.Add(dtg_permisos);
             tabPage5.Controls.Add(panel4);
-            tabPage5.Location = new Point(4, 29);
-            tabPage5.Margin = new Padding(3, 4, 3, 4);
+            tabPage5.Location = new Point(4, 24);
             tabPage5.Name = "tabPage5";
-            tabPage5.Padding = new Padding(3, 4, 3, 4);
-            tabPage5.Size = new Size(1215, 661);
+            tabPage5.Padding = new Padding(3);
+            tabPage5.Size = new Size(1060, 488);
             tabPage5.TabIndex = 2;
             tabPage5.Text = "Permisos";
             tabPage5.UseVisualStyleBackColor = true;
@@ -1255,8 +1211,7 @@
             dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
             dtg_permisos.DefaultCellStyle = dataGridViewCellStyle11;
             dtg_permisos.Dock = DockStyle.Fill;
-            dtg_permisos.Location = new Point(3, 76);
-            dtg_permisos.Margin = new Padding(3, 4, 3, 4);
+            dtg_permisos.Location = new Point(3, 58);
             dtg_permisos.Name = "dtg_permisos";
             dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle12.BackColor = SystemColors.Control;
@@ -1268,7 +1223,7 @@
             dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
             dtg_permisos.RowHeadersWidth = 51;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_permisos.Size = new Size(1209, 581);
+            dtg_permisos.Size = new Size(1054, 427);
             dtg_permisos.TabIndex = 140;
             // 
             // cl_idUserMenu
@@ -1354,10 +1309,9 @@
             panel4.Controls.Add(btn_busca_usuario);
             panel4.Controls.Add(label5);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(3, 4);
-            panel4.Margin = new Padding(3, 4, 3, 4);
+            panel4.Location = new Point(3, 3);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1209, 72);
+            panel4.Size = new Size(1054, 55);
             panel4.TabIndex = 139;
             // 
             // btn_guardar_permisos
@@ -1366,10 +1320,9 @@
             btn_guardar_permisos.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_guardar_permisos.FlatStyle = FlatStyle.Flat;
             btn_guardar_permisos.Image = (Image)resources.GetObject("btn_guardar_permisos.Image");
-            btn_guardar_permisos.Location = new Point(3, 4);
-            btn_guardar_permisos.Margin = new Padding(3, 4, 3, 4);
+            btn_guardar_permisos.Location = new Point(3, 3);
             btn_guardar_permisos.Name = "btn_guardar_permisos";
-            btn_guardar_permisos.Size = new Size(115, 60);
+            btn_guardar_permisos.Size = new Size(101, 45);
             btn_guardar_permisos.TabIndex = 17;
             btn_guardar_permisos.Text = "Guardar";
             btn_guardar_permisos.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -1380,10 +1333,9 @@
             // 
             txt_busca_usuario.Anchor = AnchorStyles.Top;
             txt_busca_usuario.Enabled = false;
-            txt_busca_usuario.Location = new Point(845, 19);
-            txt_busca_usuario.Margin = new Padding(3, 4, 3, 4);
+            txt_busca_usuario.Location = new Point(737, 14);
             txt_busca_usuario.Name = "txt_busca_usuario";
-            txt_busca_usuario.Size = new Size(306, 27);
+            txt_busca_usuario.Size = new Size(268, 23);
             txt_busca_usuario.TabIndex = 135;
             // 
             // btn_busca_usuario
@@ -1392,10 +1344,9 @@
             btn_busca_usuario.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_busca_usuario.FlatStyle = FlatStyle.Flat;
             btn_busca_usuario.Image = (Image)resources.GetObject("btn_busca_usuario.Image");
-            btn_busca_usuario.Location = new Point(1159, 16);
-            btn_busca_usuario.Margin = new Padding(3, 4, 3, 4);
+            btn_busca_usuario.Location = new Point(1014, 12);
             btn_busca_usuario.Name = "btn_busca_usuario";
-            btn_busca_usuario.Size = new Size(30, 35);
+            btn_busca_usuario.Size = new Size(26, 26);
             btn_busca_usuario.TabIndex = 136;
             btn_busca_usuario.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_busca_usuario.UseVisualStyleBackColor = true;
@@ -1404,9 +1355,9 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(775, 23);
+            label5.Location = new Point(678, 17);
             label5.Name = "label5";
-            label5.Size = new Size(70, 21);
+            label5.Size = new Size(54, 17);
             label5.TabIndex = 137;
             label5.Text = "Usuario";
             // 
@@ -1416,13 +1367,12 @@
             // 
             // Ajustes
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1237, 736);
+            ClientSize = new Size(1082, 552);
             Controls.Add(Usuarios);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(3, 4, 3, 4);
-            MinimumSize = new Size(1011, 770);
+            MinimumSize = new Size(887, 587);
             Name = "Ajustes";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Ajustes";

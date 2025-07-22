@@ -1,5 +1,6 @@
 using ExternalServices.FacturacionElectronica.Factus.Auth;
 using ExternalServices.FacturacionElectronica.Factus.Facturas;
+using ExternalServices.FacturacionElectronica.Factus.RangosNumeracion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuestPDF.Infrastructure;
@@ -378,6 +379,8 @@ namespace sbx
                 services.AddTransient<IAuthService, Auth>();
 
                 services.AddTransient<IFacturas, Facturas>();
+
+                services.AddTransient<IRangoNumeracionFE, Rangos>();
 
             })
             .Build();

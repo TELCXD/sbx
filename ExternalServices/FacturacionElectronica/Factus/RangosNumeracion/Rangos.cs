@@ -1,30 +1,32 @@
 ﻿using Newtonsoft.Json;
 using sbx.core.Entities;
-using sbx.core.Entities.FacturaEletronica;
+using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Interfaces.FacturacionElectronica;
 
-namespace ExternalServices.FacturacionElectronica.Factus.Facturas
+namespace ExternalServices.FacturacionElectronica.Factus.RangosNumeracion
 {
-    public class Facturas: IFacturas
+    public class Rangos: IRangoNumeracionFE
     {
-        public Response<dynamic> CreaValidaFactura(string Token,string urlApi, FacturaRequest facturaRequest)
+        public Response<dynamic> ConsultaRangoDIAN(string Token, string urlApi, RangosEntitie rangosEntitie)
         {
             var response = new Response<dynamic>();
 
             try
             {
                 var client = new HttpClient();
-                var request = new HttpRequestMessage(HttpMethod.Post, urlApi);
+                string Url = @$"{urlApi}?
+                filter[id]={rangosEntitie.Id}&
+                filter[document]={rangosEntitie.document}&
+                filter[resolution_number]={rangosEntitie.resolution_number}&
+                filter[technical_key]={rangosEntitie.technical_key}&
+                filter[is_active]={rangosEntitie.is_active}"
+                .Replace("\n", "")
+                .Replace("\r", "")
+                .Replace(" ", ""); ;
+
+                var request = new HttpRequestMessage(HttpMethod.Get, Url);
                 request.Headers.Add("Accept", "application/json");
                 request.Headers.Add("Authorization", "Bearer " + Token);
-
-                string JsonFactura = JsonConvert.SerializeObject(facturaRequest, new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-
-                var content = new StringContent(JsonFactura, null, "application/json");
-                request.Content = content;
 
                 var respHttp = client.Send(request);
                 int statusCode = (int)respHttp.StatusCode;
@@ -38,7 +40,7 @@ namespace ExternalServices.FacturacionElectronica.Factus.Facturas
                         var contentResp = JsonConvert.DeserializeObject<dynamic>(repContent);
 
                         response.Flag = true;
-                        response.Message = "Creacion de factura electronica exitosa";
+                        response.Message = "Consulta de rangos exitosa";
                         response.Data = contentResp;
                     }
                 }
