@@ -331,136 +331,6 @@ namespace sbx.repositories.RangoNumeracion
             }
         }
 
-        public async Task<Response<dynamic>> Eliminar(int Id)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                var response = new Response<dynamic>();
-
-                try
-                {
-                    await connection.OpenAsync();
-
-                    string sql = $@"SELECT COUNT(1) FROM T_PreciosProducto WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_PreciosCliente WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_PromocionesProductos WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_DetalleEntradasInventario WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_DetalleSalidasInventario WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_DetalleVenta WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_NotaCreditoDetalle WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_DetalleVenta_Suspendidas WHERE IdProducto = {Id};
-                                    SELECT COUNT(1) FROM T_ConversionesProducto WHERE IdProductoHijo = {Id};
-                                    SELECT COUNT(1) FROM T_ConversionesProducto WHERE IdProductoPadre = {Id};
-                                    SELECT COUNT(1) FROM T_DetalleCotizacion WHERE IdProducto = {Id}; ";
-
-                    using var multi = await connection.QueryMultipleAsync(sql);
-
-                    var PreciosProductoCount = await multi.ReadSingleAsync<int>();
-                    var PreciosClienteCount = await multi.ReadSingleAsync<int>();
-                    var PromocionesProductosCount = await multi.ReadSingleAsync<int>();
-                    var DetalleEntradasCount = await multi.ReadSingleAsync<int>();
-                    var DetalleSalidasCount = await multi.ReadSingleAsync<int>();
-                    var DetalleVentaCount = await multi.ReadSingleAsync<int>();
-                    var NotaCreditoDetalleCount = await multi.ReadSingleAsync<int>();
-                    var DetalleVenta_SuspendidasCount = await multi.ReadSingleAsync<int>();
-                    var ConversionesProductoHijoCount = await multi.ReadSingleAsync<int>();
-                    var ConversionesProductoPadreCount = await multi.ReadSingleAsync<int>();
-                    var DetalleCotizacionPadreCount = await multi.ReadSingleAsync<int>();
-
-                    string Mensaje = "";
-
-                    if (PreciosProductoCount > 0 || PreciosClienteCount > 0 || PromocionesProductosCount > 0
-                        || DetalleEntradasCount > 0 || DetalleSalidasCount > 0 || DetalleVentaCount > 0 || NotaCreditoDetalleCount > 0
-                        || DetalleVenta_SuspendidasCount > 0 || ConversionesProductoHijoCount > 0 ||
-                        ConversionesProductoPadreCount > 0 || DetalleCotizacionPadreCount > 0)
-                    {
-                        Mensaje = "No es posible eliminar el producto debido a que se encuentra en uso en los siguientes módulos: ";
-
-                        if (PreciosProductoCount > 0)
-                        {
-                            Mensaje += " precios de producto,";
-                        }
-
-                        if (PreciosClienteCount > 0)
-                        {
-                            Mensaje += " precios de cliente,";
-                        }
-
-                        if (PromocionesProductosCount > 0)
-                        {
-                            Mensaje += " promociones de producto,";
-                        }
-
-                        if (DetalleEntradasCount > 0)
-                        {
-                            Mensaje += " Entradas de producto,";
-                        }
-
-                        if (DetalleSalidasCount > 0)
-                        {
-                            Mensaje += " Salidas de producto,";
-                        }
-
-                        if (DetalleVentaCount > 0)
-                        {
-                            Mensaje += " Ventas,";
-                        }
-
-                        if (NotaCreditoDetalleCount > 0)
-                        {
-                            Mensaje += " Nota credito,";
-                        }
-
-                        if (DetalleVenta_SuspendidasCount > 0)
-                        {
-                            Mensaje += " Venta suspendida,";
-                        }
-
-                        if (ConversionesProductoHijoCount > 0)
-                        {
-                            Mensaje += " Conversion de producto Hijo,";
-                        }
-
-                        if (ConversionesProductoPadreCount > 0)
-                        {
-                            Mensaje += " Conversion de producto padre,";
-                        }
-
-                        if (DetalleCotizacionPadreCount > 0)
-                        {
-                            Mensaje += " Cotizaciones";
-                        }
-                    }
-                    else
-                    {
-                        sql = $"DELETE FROM T_Productos WHERE IdProducto = {Id}";
-
-                        var rowsAffected = await connection.ExecuteAsync(sql);
-
-                        if (rowsAffected > 0)
-                        {
-                            Mensaje = "Se elimino correctamente el producto";
-                            response.Flag = true;
-                        }
-                        else
-                        {
-                            Mensaje = "Se presento un error al intentar eliminar el producto";
-                            response.Flag = false;
-                        }
-                    }
-
-                    response.Message = Mensaje;
-                    return response;
-                }
-                catch (Exception ex)
-                {
-                    response.Flag = false;
-                    response.Message = "Error: " + ex.Message;
-                    return response;
-                }
-            }
-        }
-
         public async Task<Response<dynamic>> IdentificaDocumento(int IdTipoDocumento)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -549,6 +419,45 @@ namespace sbx.repositories.RangoNumeracion
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";
                     response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> Eliminar(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $"DELETE FROM T_RangoNumeracion WHERE Id_RangoNumeracion = {Id}";
+
+                    var rowsAffected = await connection.ExecuteAsync(sql);
+
+                    string Mensaje = "";
+
+                    if (rowsAffected > 0)
+                    {
+                        Mensaje = "Se elimino correctamente";
+                        response.Flag = true;
+                    }
+                    else
+                    {
+                        Mensaje = "Se presento un error al intentar eliminar";
+                        response.Flag = false;
+                    }
+
+                    response.Message = Mensaje;
                     return response;
                 }
                 catch (Exception ex)

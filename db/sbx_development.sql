@@ -126,7 +126,7 @@ VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'product
 ('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1),
 ('Permisos',19,'permisos',1,1),('Cotizacion',20,'cotizacion',1,1),('VentasUno',21,'quitarUno',1,1),
 ('Vendedores',22,'vendedores',1,1),('ConversionProducto',23,'conversionProducto',1,1),('Gasto',24,'Gastos',1,1),
-('CredencialesApi',25,'credencialesApi',1,1)
+('RangosNumeracion',25,'rangosNumeracion',1,1)
 GO
 CREATE TABLE TR_User_Menu
 (
@@ -717,6 +717,9 @@ CREATE TABLE T_NotaCredito (
 IdNotaCredito INT PRIMARY KEY IDENTITY,
 IdVenta INT,
 Motivo NVARCHAR(255),
+NumberNotaCreditoDIAN VARCHAR(20),
+EstadoNotaCreditoDIAN VARCHAR(20), --EMITIDA,PENDIENTE EMITIR
+NotaCreditoJSON VARCHAR(MAX),
 CreationDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),

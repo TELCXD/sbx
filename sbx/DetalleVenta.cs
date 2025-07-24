@@ -94,13 +94,13 @@ namespace sbx
                 {
                     if (resp.Data.Count > 0)
                     {
-                        lbl_factura.Text = resp.Data[0].Factura;
+                        lbl_factura.Text = resp.Data[0].NumberFacturaDIAN == "" ? resp.Data[0].Factura: resp.Data[0].NumberFacturaDIAN;
                         lbl_cliente.Text = resp.Data[0].NumeroDocumento + " - " + resp.Data[0].NombreRazonSocial;
                         lbl_vendedor.Text = resp.Data[0].NumeroDocumentoVendedor + " - " + resp.Data[0].NombreCompletoVendedor;
                         lbl_medio_pago.Text = resp.Data[0].NombreMetodoPago;
                         lbl_referencia.Text = resp.Data[0].Referencia;
                         lbl_banco.Text = resp.Data[0].NombreBanco;
-                        lbl_estado.Text = resp.Data[0].Estado;
+                        lbl_estado.Text = resp.Data[0].EstadoFacturaDIAN == "" ? resp.Data[0].Estado : resp.Data[0].EstadoFacturaDIAN;
                         lbl_usuario.Text = resp.Data[0].IdUserActionFactura + " - " + resp.Data[0].UserNameFactura;
 
                         if (resp.Data[0].IdNotaCredito > 0) 
@@ -129,7 +129,8 @@ namespace sbx
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
                             Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
                             ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                            TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            TotalLinea = (SubtotalLinea - DescuentoLinea);
 
                             dtg_ventas.Rows.Add(
                                 item.IdProducto,
@@ -143,10 +144,12 @@ namespace sbx
                                 TotalLinea.ToString("N2", new CultureInfo("es-CO")));
                         }
 
-                        Total += (Subtotal - Descuento) + Impuesto;
+                        //Total += (Subtotal - Descuento) + Impuesto;
+                        Total += (Subtotal - Descuento);
+                        decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                         lbl_cantidadProductos.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
-                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                         lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
@@ -240,10 +243,12 @@ namespace sbx
                                 DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
                                 Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
                             }
-                            Total = (Subtotal - Descuento) + Impuesto;
+                            //Total = (Subtotal - Descuento) + Impuesto;
+                            Total = (Subtotal - Descuento);
+                            decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                             DataFactura.CantidadTotal = Cantidad;
-                            DataFactura.Subtotal = Subtotal;
+                            DataFactura.Subtotal = SubtotalMenosImpuesto;
                             DataFactura.Descuento = Descuento;
                             DataFactura.Impuesto = Impuesto;
                             DataFactura.Total = Total;
@@ -265,7 +270,7 @@ namespace sbx
                                 desc = Convert.ToDecimal(item.Descuento);
                                 iva = Convert.ToDecimal(item.Impuesto);
 
-                                total = CalcularTotal(precio, iva, desc);
+                                total = CalcularTotal(precio, 0, desc);
                                 total = total * cantidad;
 
                                 string UnidadMedidaAbreviada;

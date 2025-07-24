@@ -102,7 +102,7 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(668, 56);
+            panel3.Size = new Size(717, 56);
             panel3.TabIndex = 107;
             // 
             // btn_add_producto
@@ -127,7 +127,7 @@
             button1.FlatAppearance.MouseDownBackColor = Color.Gray;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Image = (Image)resources.GetObject("button1.Image");
-            button1.Location = new Point(2926, 3);
+            button1.Location = new Point(2975, 3);
             button1.Name = "button1";
             button1.Size = new Size(42, 45);
             button1.TabIndex = 5;
@@ -137,7 +137,7 @@
             // textBox1
             // 
             textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(2729, 14);
+            textBox1.Location = new Point(2778, 14);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(191, 23);
             textBox1.TabIndex = 2;
@@ -164,16 +164,16 @@
             label3.AutoSize = true;
             label3.Location = new Point(226, 205);
             label3.Name = "label3";
-            label3.Size = new Size(82, 15);
+            label3.Size = new Size(222, 15);
             label3.TabIndex = 111;
-            label3.Text = "Costo unitario";
+            label3.Text = "Costo unitario (con impuesto, si aplica) *";
             // 
             // txt_costo
             // 
             txt_costo.Location = new Point(226, 223);
             txt_costo.MaxLength = 13;
             txt_costo.Name = "txt_costo";
-            txt_costo.Size = new Size(193, 23);
+            txt_costo.Size = new Size(222, 23);
             txt_costo.TabIndex = 7;
             txt_costo.Text = "0";
             txt_costo.KeyPress += txt_costo_KeyPress;
@@ -204,18 +204,18 @@
             // dtp_fecha_vencimiento
             // 
             dtp_fecha_vencimiento.Format = DateTimePickerFormat.Short;
-            dtp_fecha_vencimiento.Location = new Point(448, 169);
-            dtp_fecha_vencimiento.MinDate = new DateTime(2025, 5, 12, 0, 0, 0, 0);
+            dtp_fecha_vencimiento.Location = new Point(484, 169);
+            dtp_fecha_vencimiento.MinDate = new DateTime(2025, 7, 24, 0, 0, 0, 0);
             dtp_fecha_vencimiento.Name = "dtp_fecha_vencimiento";
-            dtp_fecha_vencimiento.Size = new Size(193, 23);
+            dtp_fecha_vencimiento.Size = new Size(209, 23);
             dtp_fecha_vencimiento.TabIndex = 5;
-            dtp_fecha_vencimiento.Value = new DateTime(2025, 5, 12, 20, 35, 24, 0);
+            dtp_fecha_vencimiento.Value = new DateTime(2025, 7, 24, 0, 0, 0, 0);
             dtp_fecha_vencimiento.Visible = false;
             // 
             // lbl_fechaVencimiento
             // 
             lbl_fechaVencimiento.AutoSize = true;
-            lbl_fechaVencimiento.Location = new Point(448, 151);
+            lbl_fechaVencimiento.Location = new Point(484, 151);
             lbl_fechaVencimiento.Name = "lbl_fechaVencimiento";
             lbl_fechaVencimiento.Size = new Size(107, 15);
             lbl_fechaVencimiento.TabIndex = 115;
@@ -254,10 +254,11 @@
             // 
             // txt_iva
             // 
+            txt_iva.Enabled = false;
             txt_iva.Location = new Point(226, 274);
             txt_iva.MaxLength = 13;
             txt_iva.Name = "txt_iva";
-            txt_iva.Size = new Size(193, 23);
+            txt_iva.Size = new Size(222, 23);
             txt_iva.TabIndex = 10;
             txt_iva.Text = "0";
             txt_iva.KeyPress += txt_iva_KeyPress;
@@ -267,7 +268,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(448, 205);
+            label8.Location = new Point(484, 205);
             label8.Name = "label8";
             label8.Size = new Size(54, 15);
             label8.TabIndex = 121;
@@ -276,16 +277,16 @@
             // txt_subtotal
             // 
             txt_subtotal.Enabled = false;
-            txt_subtotal.Location = new Point(448, 223);
+            txt_subtotal.Location = new Point(484, 223);
             txt_subtotal.MaxLength = 13;
             txt_subtotal.Name = "txt_subtotal";
-            txt_subtotal.Size = new Size(193, 23);
+            txt_subtotal.Size = new Size(209, 23);
             txt_subtotal.TabIndex = 8;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(448, 256);
+            label9.Location = new Point(484, 256);
             label9.Name = "label9";
             label9.Size = new Size(32, 15);
             label9.TabIndex = 123;
@@ -294,10 +295,10 @@
             // txt_total
             // 
             txt_total.Enabled = false;
-            txt_total.Location = new Point(448, 274);
+            txt_total.Location = new Point(484, 274);
             txt_total.MaxLength = 13;
             txt_total.Name = "txt_total";
-            txt_total.Size = new Size(193, 23);
+            txt_total.Size = new Size(209, 23);
             txt_total.TabIndex = 11;
             // 
             // lbl_nombre_producto
@@ -329,7 +330,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(668, 308);
+            ClientSize = new Size(717, 308);
             Controls.Add(chek_fecha_vencimiento);
             Controls.Add(lbl_nombre_producto);
             Controls.Add(label9);
@@ -354,8 +355,8 @@
             Controls.Add(txt_producto);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(684, 347);
-            MinimumSize = new Size(684, 347);
+            MaximumSize = new Size(733, 347);
+            MinimumSize = new Size(733, 347);
             Name = "AgregaDetalleEntrada";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AgregaDetalleEntrada";

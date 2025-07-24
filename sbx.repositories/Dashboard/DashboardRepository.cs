@@ -32,13 +32,13 @@ namespace sbx.repositories.Dashboard
                                     B.NombreProducto,
 									E.Nombre MedioPago,
                                     SUM(B.Cantidad) Cantidad,
-                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) VentaNetaFinal,
+                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)) VentaNetaFinal,
                                     SUM((B.Cantidad * B.CostoUnitario))CostoTotal,
-                                    SUM(((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) GananciaBruta,
+                                    SUM(((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)) - (B.Cantidad * B.CostoUnitario)) GananciaBruta,
 									SUM(CASE 
-									WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100) > 0 
-									THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) / 
-										  ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100))) * 100
+									WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) > 0 
+									THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)) - (B.Cantidad * B.CostoUnitario)) / 
+										  ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100))) * 100
 									ELSE 0 
 									END) AS MargenPorcentaje         
                                     

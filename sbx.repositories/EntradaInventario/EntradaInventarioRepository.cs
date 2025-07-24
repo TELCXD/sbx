@@ -453,7 +453,7 @@ namespace sbx.repositories.EntradaInventario
 										e.Descuento,
 										e.Iva,
                                         ei.Comentario,
-										(e.Cantidad * e.CostoUnitario) * (1 - ISNULL(e.Descuento, 0) / 100) * (1 + e.Iva / 100) Total
+										(e.Cantidad * e.CostoUnitario) * (1 - ISNULL(e.Descuento, 0) / 100) Total
                                     FROM T_DetalleEntradasInventario e
                                     INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
                                     INNER JOIN T_TipoEntrada te ON te.IdTipoEntrada = ei.IdTipoEntrada
@@ -483,7 +483,7 @@ namespace sbx.repositories.EntradaInventario
 										0 Descuento,
 										0 Iva,
                                         si.Comentario,
-										(s.Cantidad * s.CostoUnitario) * (1 - ISNULL(0, 0) / 100) * (1 + 0 / 100) Total
+										(s.Cantidad * s.CostoUnitario) Total
                                     FROM T_DetalleSalidasInventario s
                                     INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
                                     INNER JOIN T_TipoSalida ts ON ts.IdTipoSalida = si.IdTipoSalida
@@ -498,7 +498,7 @@ namespace sbx.repositories.EntradaInventario
 										dvt.IdUserAction,
 										usr.UserName,
 										CONCAT(dvt.IdUserAction,'-',usr.UserName) Usuario,
-										CONCAT(vt.Prefijo,'-',vt.Consecutivo) Documento,
+										ISNULL(vt.NumberFacturaDIAN,CONCAT(vt.Prefijo,vt.Consecutivo)) Documento,
 	                                    'Salida por Venta' AS TipoMovimiento,
 	                                    dvt.Cantidad,
 	                                    'Ventas' AS Tipo,
@@ -513,7 +513,7 @@ namespace sbx.repositories.EntradaInventario
 										dvt.Descuento,
 										dvt.Impuesto Iva,
                                         '' AS Comentario,
-										(dvt.Cantidad * dvt.PrecioUnitario) * (1 - ISNULL(dvt.Descuento, 0) / 100) * (1 + dvt.Impuesto / 100) Total
+										(dvt.Cantidad * dvt.PrecioUnitario) * (1 - ISNULL(dvt.Descuento, 0) / 100) Total
 	                                FROM T_Ventas vt 
 									INNER JOIN T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta
 									INNER JOIN T_User usr ON usr.IdUser = dvt.IdUserAction
@@ -541,7 +541,7 @@ namespace sbx.repositories.EntradaInventario
 										ncd.Descuento,
 										ncd.Impuesto Iva,
                                         nc.Motivo AS Comentario,
-										(ncd.Cantidad * ncd.PrecioUnitario) * (1 - ISNULL(ncd.Descuento, 0) / 100) * (1 + ncd.Impuesto / 100) Total
+										(ncd.Cantidad * ncd.PrecioUnitario) * (1 - ISNULL(ncd.Descuento, 0) / 100) Total
 									FROM T_NotaCredito nc INNER JOIN T_NotaCreditoDetalle ncd ON nc.IdNotaCredito  = ncd.IdNotaCredito
 									INNER JOIN T_User usr ON usr.IdUser = ncd.IdUserAction
                                     ) R  ";
@@ -692,6 +692,23 @@ namespace sbx.repositories.EntradaInventario
                         DateTime FechaActual = DateTime.Now;
                         FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
+                        sql = @" DECLARE @IdMarca INT;
+
+                                -- Buscar si ya existe
+                                SELECT @IdMarca = IdMarca FROM T_Marcas WHERE Nombre = @NombreMarca;
+
+                                -- Si no existe, insertar
+                                IF @IdMarca IS NULL
+                                BEGIN
+                                    INSERT INTO T_Marcas (Nombre) VALUES (@NombreMarca);
+                                    SET @IdMarca = SCOPE_IDENTITY();
+                                END
+
+                                -- Retornar ID
+                                SELECT @IdMarca AS IdMarca; ";
+
+                        int idMarca = await connection.ExecuteScalarAsync<int>(sql, new { NombreMarca = (item[3].ToString()?.Trim() == "" ? "N/A" : item[3].ToString()?.Trim()) }, transaction);
+
                         sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
                                   CostoBase,PrecioBase,EsInventariable,Iva,IdCategoria,IdMarca,IdUnidadMedida,CreationDate, IdUserAction)
                                   VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
@@ -706,9 +723,9 @@ namespace sbx.repositories.EntradaInventario
                             CostoBase = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
                             PrecioBase = Convert.ToDecimal(item[5], new CultureInfo("es-CO")),
                             EsInventariable = 1,
-                            Iva = 0,
+                            Iva = Convert.ToDecimal(item[7], new CultureInfo("es-CO")),
                             IdCategoria = 1,
-                            IdMarca = 1,
+                            IdMarca = idMarca,
                             IdUnidadMedida = 1,
                             CreationDate = FechaActual,
                             IdUserAction = IdUser

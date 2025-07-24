@@ -457,6 +457,9 @@ namespace sbx.repositories.Venta
                                     A.IdUserAction IdUserActionFactura,
                                     A.IdVendedor,
                                     A.Estado,
+                                    ISNULL(A.EstadoFacturaDIAN,'') EstadoFacturaDIAN,
+									ISNULL(A.NumberFacturaDIAN,'') NumberFacturaDIAN,
+									A.FacturaJSON,
                                     ISNULL((SELECT NT.IdNotaCredito FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) IdNotaCredito,
                                     J.NumeroDocumento NumeroDocumentoVendedor,
                                     J.Nombre NombreVendedor,
@@ -561,6 +564,9 @@ namespace sbx.repositories.Venta
                                     A.IdUserAction IdUserActionFactura,
                                     A.IdVendedor,
                                     A.Estado,
+                                    ISNULL(A.EstadoFacturaDIAN,'') EstadoFacturaDIAN,
+									ISNULL(A.NumberFacturaDIAN,'') NumberFacturaDIAN,
+									A.FacturaJSON,
                                     ISNULL((SELECT IdNotaCredito FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) IdNotaCredito,
                                     J.NumeroDocumento NumeroDocumentoVendedor,
                                     J.Nombre NombreVendedor,
@@ -646,7 +652,8 @@ namespace sbx.repositories.Venta
                                     Where = $" AND B.CodigoBarras LIKE @Filtro ";
                                     break;
                                 case "Prefijo-Consecutivo":
-                                    Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -691,7 +698,7 @@ namespace sbx.repositories.Venta
                                     Where = $" AND B.CodigoBarras = @Filtro ";
                                     break;
                                 case "Prefijo-Consecutivo":
-                                    Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) = @Filtro ";
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) = @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -736,7 +743,7 @@ namespace sbx.repositories.Venta
                                     Where = $" AND B.CodigoBarras LIKE @Filtro ";
                                     break;
                                 case "Prefijo-Consecutivo":
-                                    Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
                                     break;
                                 default:
                                     break;
@@ -751,6 +758,13 @@ namespace sbx.repositories.Venta
                     sql += Where + " ORDER BY A.CreationDate DESC ";
 
                     dynamic resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
+
+                    if (resultado.Count == 0 && campoFiltro == "Prefijo-Consecutivo") 
+                    {
+                        sql = sql.Replace("AND CONCAT(A.Prefijo,A.Consecutivo)", "AND A.NumberFacturaDIAN");
+
+                        resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
+                    }
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";
@@ -833,7 +847,7 @@ namespace sbx.repositories.Venta
                     await connection.OpenAsync();
                    
                     string sql = @"SELECT A.IdVenta,                                
-                                    CONCAT(A.Prefijo,A.Consecutivo) Factura,
+                                    ISNULL(A.NumberFacturaDIAN,CONCAT(A.Prefijo,A.Consecutivo)) Factura,
                                     A.CreationDate FechaFactura,                                                              
                                     A.IdCliente,
                                     D.NumeroDocumento,

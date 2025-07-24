@@ -39,9 +39,6 @@
             DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
             label10 = new Label();
             cbx_lineas_abajo = new ComboBox();
@@ -85,29 +82,6 @@
             btn_eliminar_ra = new Button();
             btn_editar_ra = new Button();
             btn_agregar_ra = new Button();
-            tabPage4 = new TabPage();
-            dtg_api_variables = new DataGridView();
-            cl_id = new DataGridViewTextBoxColumn();
-            cl_url_api = new DataGridViewTextBoxColumn();
-            cl_grupo = new DataGridViewTextBoxColumn();
-            cl_descripcion = new DataGridViewTextBoxColumn();
-            cl_variable1 = new DataGridViewTextBoxColumn();
-            cl_variable2 = new DataGridViewTextBoxColumn();
-            cl_variable3 = new DataGridViewTextBoxColumn();
-            cl_variable4 = new DataGridViewTextBoxColumn();
-            cl_variable5 = new DataGridViewTextBoxColumn();
-            cl_variable6 = new DataGridViewTextBoxColumn();
-            cl_variable7 = new DataGridViewTextBoxColumn();
-            cl_variable8 = new DataGridViewTextBoxColumn();
-            cl_variable9 = new DataGridViewTextBoxColumn();
-            cl_variable10 = new DataGridViewTextBoxColumn();
-            cl_variable11 = new DataGridViewTextBoxColumn();
-            cl_variable12 = new DataGridViewTextBoxColumn();
-            panel5 = new Panel();
-            btn_buscar_api = new Button();
-            btn_eliminar_api = new Button();
-            btn_editar_api = new Button();
-            btn_agregar_api = new Button();
             Usuarios = new TabControl();
             tabAdministracion = new TabPage();
             tabControl1 = new TabControl();
@@ -155,9 +129,6 @@
             tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_rangos_numeracion).BeginInit();
             panel1.SuspendLayout();
-            tabPage4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dtg_api_variables).BeginInit();
-            panel5.SuspendLayout();
             Usuarios.SuspendLayout();
             tabAdministracion.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -427,7 +398,6 @@
             // tabControl2
             // 
             tabControl2.Controls.Add(tabPage2);
-            tabControl2.Controls.Add(tabPage4);
             tabControl2.Dock = DockStyle.Fill;
             tabControl2.Location = new Point(3, 3);
             tabControl2.Name = "tabControl2";
@@ -608,6 +578,7 @@
             // 
             // btn_eliminar_ra
             // 
+            btn_eliminar_ra.Enabled = false;
             btn_eliminar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar_ra.FlatStyle = FlatStyle.Flat;
             btn_eliminar_ra.Image = (Image)resources.GetObject("btn_eliminar_ra.Image");
@@ -622,6 +593,7 @@
             // 
             // btn_editar_ra
             // 
+            btn_editar_ra.Enabled = false;
             btn_editar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar_ra.FlatStyle = FlatStyle.Flat;
             btn_editar_ra.Image = (Image)resources.GetObject("btn_editar_ra.Image");
@@ -636,6 +608,7 @@
             // 
             // btn_agregar_ra
             // 
+            btn_agregar_ra.Enabled = false;
             btn_agregar_ra.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar_ra.FlatStyle = FlatStyle.Flat;
             btn_agregar_ra.Image = (Image)resources.GetObject("btn_agregar_ra.Image");
@@ -647,256 +620,6 @@
             btn_agregar_ra.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_agregar_ra.UseVisualStyleBackColor = true;
             btn_agregar_ra.Click += btn_agregar_ra_Click;
-            // 
-            // tabPage4
-            // 
-            tabPage4.Controls.Add(dtg_api_variables);
-            tabPage4.Controls.Add(panel5);
-            tabPage4.Location = new Point(4, 26);
-            tabPage4.Name = "tabPage4";
-            tabPage4.Padding = new Padding(3);
-            tabPage4.Size = new Size(1060, 486);
-            tabPage4.TabIndex = 1;
-            tabPage4.Text = "Api";
-            tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // dtg_api_variables
-            // 
-            dtg_api_variables.AllowUserToAddRows = false;
-            dtg_api_variables.AllowUserToDeleteRows = false;
-            dtg_api_variables.AllowUserToOrderColumns = true;
-            dtg_api_variables.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dtg_api_variables.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            dtg_api_variables.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_api_variables.Columns.AddRange(new DataGridViewColumn[] { cl_id, cl_url_api, cl_grupo, cl_descripcion, cl_variable1, cl_variable2, cl_variable3, cl_variable4, cl_variable5, cl_variable6, cl_variable7, cl_variable8, cl_variable9, cl_variable10, cl_variable11, cl_variable12 });
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Window;
-            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dtg_api_variables.DefaultCellStyle = dataGridViewCellStyle5;
-            dtg_api_variables.Dock = DockStyle.Fill;
-            dtg_api_variables.Location = new Point(3, 59);
-            dtg_api_variables.Name = "dtg_api_variables";
-            dtg_api_variables.ReadOnly = true;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dtg_api_variables.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            dtg_api_variables.RowHeadersWidth = 51;
-            dtg_api_variables.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_api_variables.Size = new Size(1054, 424);
-            dtg_api_variables.TabIndex = 11;
-            // 
-            // cl_id
-            // 
-            cl_id.HeaderText = "Id";
-            cl_id.MinimumWidth = 6;
-            cl_id.Name = "cl_id";
-            cl_id.ReadOnly = true;
-            cl_id.Width = 125;
-            // 
-            // cl_url_api
-            // 
-            cl_url_api.HeaderText = "Url Api";
-            cl_url_api.MinimumWidth = 6;
-            cl_url_api.Name = "cl_url_api";
-            cl_url_api.ReadOnly = true;
-            cl_url_api.Width = 125;
-            // 
-            // cl_grupo
-            // 
-            cl_grupo.HeaderText = "Grupo";
-            cl_grupo.MinimumWidth = 6;
-            cl_grupo.Name = "cl_grupo";
-            cl_grupo.ReadOnly = true;
-            cl_grupo.Width = 180;
-            // 
-            // cl_descripcion
-            // 
-            cl_descripcion.HeaderText = "Descripcion";
-            cl_descripcion.MinimumWidth = 6;
-            cl_descripcion.Name = "cl_descripcion";
-            cl_descripcion.ReadOnly = true;
-            cl_descripcion.Width = 125;
-            // 
-            // cl_variable1
-            // 
-            cl_variable1.HeaderText = "Variable1";
-            cl_variable1.MinimumWidth = 6;
-            cl_variable1.Name = "cl_variable1";
-            cl_variable1.ReadOnly = true;
-            cl_variable1.Width = 125;
-            // 
-            // cl_variable2
-            // 
-            cl_variable2.HeaderText = "Variable2";
-            cl_variable2.MinimumWidth = 6;
-            cl_variable2.Name = "cl_variable2";
-            cl_variable2.ReadOnly = true;
-            cl_variable2.Width = 125;
-            // 
-            // cl_variable3
-            // 
-            cl_variable3.HeaderText = "Variable3";
-            cl_variable3.MinimumWidth = 6;
-            cl_variable3.Name = "cl_variable3";
-            cl_variable3.ReadOnly = true;
-            cl_variable3.Width = 125;
-            // 
-            // cl_variable4
-            // 
-            cl_variable4.HeaderText = "Variable4";
-            cl_variable4.MinimumWidth = 6;
-            cl_variable4.Name = "cl_variable4";
-            cl_variable4.ReadOnly = true;
-            cl_variable4.Width = 125;
-            // 
-            // cl_variable5
-            // 
-            cl_variable5.HeaderText = "Variable5";
-            cl_variable5.MinimumWidth = 6;
-            cl_variable5.Name = "cl_variable5";
-            cl_variable5.ReadOnly = true;
-            cl_variable5.Width = 125;
-            // 
-            // cl_variable6
-            // 
-            cl_variable6.HeaderText = "Variable6";
-            cl_variable6.MinimumWidth = 6;
-            cl_variable6.Name = "cl_variable6";
-            cl_variable6.ReadOnly = true;
-            cl_variable6.Width = 125;
-            // 
-            // cl_variable7
-            // 
-            cl_variable7.HeaderText = "Variable7";
-            cl_variable7.MinimumWidth = 6;
-            cl_variable7.Name = "cl_variable7";
-            cl_variable7.ReadOnly = true;
-            cl_variable7.Width = 125;
-            // 
-            // cl_variable8
-            // 
-            cl_variable8.HeaderText = "Variable8";
-            cl_variable8.MinimumWidth = 6;
-            cl_variable8.Name = "cl_variable8";
-            cl_variable8.ReadOnly = true;
-            cl_variable8.Width = 125;
-            // 
-            // cl_variable9
-            // 
-            cl_variable9.HeaderText = "Variable9";
-            cl_variable9.MinimumWidth = 6;
-            cl_variable9.Name = "cl_variable9";
-            cl_variable9.ReadOnly = true;
-            cl_variable9.Width = 125;
-            // 
-            // cl_variable10
-            // 
-            cl_variable10.HeaderText = "Variable10";
-            cl_variable10.MinimumWidth = 6;
-            cl_variable10.Name = "cl_variable10";
-            cl_variable10.ReadOnly = true;
-            cl_variable10.Width = 125;
-            // 
-            // cl_variable11
-            // 
-            cl_variable11.HeaderText = "Variable11";
-            cl_variable11.MinimumWidth = 6;
-            cl_variable11.Name = "cl_variable11";
-            cl_variable11.ReadOnly = true;
-            cl_variable11.Width = 125;
-            // 
-            // cl_variable12
-            // 
-            cl_variable12.HeaderText = "Variable12";
-            cl_variable12.MinimumWidth = 6;
-            cl_variable12.Name = "cl_variable12";
-            cl_variable12.ReadOnly = true;
-            cl_variable12.Width = 125;
-            // 
-            // panel5
-            // 
-            panel5.BorderStyle = BorderStyle.Fixed3D;
-            panel5.Controls.Add(btn_buscar_api);
-            panel5.Controls.Add(btn_eliminar_api);
-            panel5.Controls.Add(btn_editar_api);
-            panel5.Controls.Add(btn_agregar_api);
-            panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(3, 3);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(1054, 56);
-            panel5.TabIndex = 10;
-            // 
-            // btn_buscar_api
-            // 
-            btn_buscar_api.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_buscar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_buscar_api.FlatStyle = FlatStyle.Flat;
-            btn_buscar_api.Image = (Image)resources.GetObject("btn_buscar_api.Image");
-            btn_buscar_api.Location = new Point(1022, 12);
-            btn_buscar_api.Name = "btn_buscar_api";
-            btn_buscar_api.Size = new Size(26, 26);
-            btn_buscar_api.TabIndex = 8;
-            btn_buscar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_buscar_api.UseVisualStyleBackColor = true;
-            btn_buscar_api.Click += btn_buscar_api_Click;
-            // 
-            // btn_eliminar_api
-            // 
-            btn_eliminar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_eliminar_api.FlatStyle = FlatStyle.Flat;
-            btn_eliminar_api.Image = (Image)resources.GetObject("btn_eliminar_api.Image");
-            btn_eliminar_api.Location = new Point(217, 3);
-            btn_eliminar_api.Name = "btn_eliminar_api";
-            btn_eliminar_api.Size = new Size(101, 45);
-            btn_eliminar_api.TabIndex = 7;
-            btn_eliminar_api.Text = "Eliminar";
-            btn_eliminar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_eliminar_api.UseVisualStyleBackColor = true;
-            btn_eliminar_api.Click += btn_eliminar_api_Click;
-            // 
-            // btn_editar_api
-            // 
-            btn_editar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_editar_api.FlatStyle = FlatStyle.Flat;
-            btn_editar_api.Image = (Image)resources.GetObject("btn_editar_api.Image");
-            btn_editar_api.Location = new Point(110, 3);
-            btn_editar_api.Name = "btn_editar_api";
-            btn_editar_api.Size = new Size(101, 45);
-            btn_editar_api.TabIndex = 6;
-            btn_editar_api.Text = "Editar";
-            btn_editar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_editar_api.UseVisualStyleBackColor = true;
-            btn_editar_api.Click += btn_editar_api_Click;
-            // 
-            // btn_agregar_api
-            // 
-            btn_agregar_api.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_agregar_api.FlatStyle = FlatStyle.Flat;
-            btn_agregar_api.Image = (Image)resources.GetObject("btn_agregar_api.Image");
-            btn_agregar_api.Location = new Point(3, 3);
-            btn_agregar_api.Name = "btn_agregar_api";
-            btn_agregar_api.Size = new Size(101, 45);
-            btn_agregar_api.TabIndex = 5;
-            btn_agregar_api.Text = "Agregar";
-            btn_agregar_api.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_agregar_api.UseVisualStyleBackColor = true;
-            btn_agregar_api.Click += btn_agregar_api_Click;
             // 
             // Usuarios
             // 
@@ -952,36 +675,36 @@
             dtg_usuario.AllowUserToDeleteRows = false;
             dtg_usuario.AllowUserToOrderColumns = true;
             dtg_usuario.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_usuario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_usuario.Columns.AddRange(new DataGridViewColumn[] { cl_IdUsuario, cl_userName, id_rol, cl_rol, cl_tipo_identificacion, cl_identificacion, cl_nombre, cl_telefono, cl_BirthDate });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_usuario.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_usuario.Dock = DockStyle.Fill;
             dtg_usuario.Location = new Point(3, 59);
             dtg_usuario.Name = "dtg_usuario";
             dtg_usuario.ReadOnly = true;
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_usuario.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_usuario.RowHeadersWidth = 51;
             dtg_usuario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_usuario.Size = new Size(1054, 424);
@@ -1192,35 +915,35 @@
             dtg_permisos.AllowUserToDeleteRows = false;
             dtg_permisos.AllowUserToOrderColumns = true;
             dtg_permisos.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = SystemColors.Control;
-            dataGridViewCellStyle10.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle10.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle10.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle10.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = SystemColors.Control;
+            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             dtg_permisos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_permisos.Columns.AddRange(new DataGridViewColumn[] { cl_idUserMenu, cl_id_menu, cl_menu, cl_id_user, cl_toRead, cl_ToCreate, cl_toUpdate, cl_toDelete, cl_estado });
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = SystemColors.Window;
-            dataGridViewCellStyle11.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle11.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle11.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
-            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = SystemColors.Window;
+            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
+            dtg_permisos.DefaultCellStyle = dataGridViewCellStyle8;
             dtg_permisos.Dock = DockStyle.Fill;
             dtg_permisos.Location = new Point(3, 58);
             dtg_permisos.Name = "dtg_permisos";
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = SystemColors.Control;
-            dataGridViewCellStyle12.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle12.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.True;
-            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = SystemColors.Control;
+            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
+            dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_permisos.RowHeadersWidth = 51;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_permisos.Size = new Size(1054, 427);
@@ -1385,9 +1108,6 @@
             tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dtg_rangos_numeracion).EndInit();
             panel1.ResumeLayout(false);
-            tabPage4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dtg_api_variables).EndInit();
-            panel5.ResumeLayout(false);
             Usuarios.ResumeLayout(false);
             tabAdministracion.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
@@ -1476,13 +1196,6 @@
         private RadioButton rb_58mm;
         private Label label9;
         private Label label10;
-        private TabPage tabPage4;
-        private Panel panel5;
-        private Button btn_eliminar_api;
-        private Button btn_editar_api;
-        private Button btn_agregar_api;
-        private Button btn_buscar_api;
-        private DataGridView dtg_api_variables;
         private DataGridViewTextBoxColumn cl_Nro;
         private DataGridViewTextBoxColumn cl_id_rango_dian;
         private DataGridViewTextBoxColumn cl_en_uso;
@@ -1494,21 +1207,5 @@
         private DataGridViewTextBoxColumn cl_numero_hasta;
         private DataGridViewTextBoxColumn cl_nro_resolucion;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
-        private DataGridViewTextBoxColumn cl_id;
-        private DataGridViewTextBoxColumn cl_url_api;
-        private DataGridViewTextBoxColumn cl_grupo;
-        private DataGridViewTextBoxColumn cl_descripcion;
-        private DataGridViewTextBoxColumn cl_variable1;
-        private DataGridViewTextBoxColumn cl_variable2;
-        private DataGridViewTextBoxColumn cl_variable3;
-        private DataGridViewTextBoxColumn cl_variable4;
-        private DataGridViewTextBoxColumn cl_variable5;
-        private DataGridViewTextBoxColumn cl_variable6;
-        private DataGridViewTextBoxColumn cl_variable7;
-        private DataGridViewTextBoxColumn cl_variable8;
-        private DataGridViewTextBoxColumn cl_variable9;
-        private DataGridViewTextBoxColumn cl_variable10;
-        private DataGridViewTextBoxColumn cl_variable11;
-        private DataGridViewTextBoxColumn cl_variable12;
     }
 }

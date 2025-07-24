@@ -14,5 +14,6 @@ namespace sbx.core.Interfaces.RangoNumeracion
         Task<bool> ExisteClaveTecnica(string ClaveTecnica, int Id);
         Task<Response<dynamic>> IdentificaDocumento(int IdTipoDocumento);
         Task<Response<dynamic>> ValidaRango(int Id);
+        Task<Response<dynamic>> Eliminar(int Id);
     }
 }

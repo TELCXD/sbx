@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.Parametros;
 using sbx.core.Entities.Permiso;
-using sbx.core.Interfaces.Categoria;
-using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Permisos;
@@ -52,7 +50,6 @@ namespace sbx
         {
             ValidaPermisos();
             await ConsultaRangosNumeracion();
-            await CargaDatosCredenciales();
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
             cbx_lineas_abajo.SelectedIndex = 0;
@@ -77,8 +74,10 @@ namespace sbx
                             btn_guardar_permisos.Enabled = item.ToCreate == 1 ? true : false;
                             btn_busca_usuario.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
-                        case "credencialesApi":
-                            btn_agregar_api.Enabled = item.ToCreate == 1 ? true : false;
+                        case "rangosNumeracion":
+                            btn_agregar_ra.Enabled = item.ToCreate == 1 ? true : false;
+                            btn_editar_ra.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_eliminar_ra.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         default:
                             break;
@@ -544,67 +543,6 @@ namespace sbx
             txt_mensaje_final_tirilla.Text = MensajePersonalizado.Length > 32 ? MensajePersonalizado.Substring(0, 32) : MensajePersonalizado;
         }
 
-        private async Task CargaDatosCredenciales()
-        {
-            var resp = await _ICredencialesApi.List();
-
-            dtg_api_variables.Rows.Clear();
-
-            if (resp.Data != null)
-            {
-                if (resp.Data.Count > 0)
-                {
-                    foreach (var item in resp.Data)
-                    {
-                        dtg_api_variables.Rows.Add(
-                            item.IdCredencialesApi,
-                            item.url_api,
-                            item.NombreGrupo,
-                            item.Descripcion,
-                            item.Variable1,
-                            item.Variable2,
-                            item.Variable3,
-                            item.Variable4,
-                            item.Variable5,
-                            item.Variable6,
-                            item.Variable7,
-                            item.Variable8,
-                            item.Variable9,
-                            item.Variable10,
-                            item.Variable11,
-                            item.Variable12);
-                    }
-                }
-            }
-        }
-
-        private void btn_editar_api_Click(object sender, EventArgs e)
-        {
-            if (dtg_api_variables.Rows.Count > 0)
-            {
-                if (dtg_api_variables.SelectedRows.Count > 0)
-                {
-                    var row = dtg_api_variables.SelectedRows[0];
-                    if (row.Cells["cl_id"].Value != null)
-                    {
-                        int IdCredencialesApi = Convert.ToInt32(row.Cells["cl_id"].Value);
-                        if (_Permisos != null)
-                        {
-                            _AgregaApi = _serviceProvider.GetRequiredService<AgregaApi>();
-                            _AgregaApi.Permisos = _Permisos;
-                            _AgregaApi.Id_credencialesApi = IdCredencialesApi;
-                            _AgregaApi.FormClosed += (s, args) => _AgregaApi = null;
-                            _AgregaApi.ShowDialog();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("No hay datos para Editar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
         private void btn_agregar_api_Click(object sender, EventArgs e)
         {
             if (_Permisos != null)
@@ -617,9 +555,9 @@ namespace sbx
             }
         }
 
-        private async void btn_eliminar_api_Click(object sender, EventArgs e)
+        private async void btn_eliminar_ra_Click(object sender, EventArgs e)
         {
-            if (dtg_api_variables.Rows.Count > 0)
+            if (dtg_rangos_numeracion.Rows.Count > 0)
             {
                 DialogResult result = MessageBox.Show("¿Está seguro que desea eliminar ?",
                         "Confirmar",
@@ -627,26 +565,58 @@ namespace sbx
                         MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    if (dtg_api_variables.SelectedRows.Count > 0)
+                    if (dtg_rangos_numeracion.SelectedRows.Count > 0)
                     {
-                        var row = dtg_api_variables.SelectedRows[0];
-                        if (row.Cells["cl_id"].Value != null)
+                        var row = dtg_rangos_numeracion.SelectedRows[0];
+                        if (row.Cells["cl_Nro"].Value != null)
                         {
-                            int Id= Convert.ToInt32(row.Cells["cl_id"].Value);
-                            var resp = await _ICredencialesApi.Eliminar(Id);
+                            int Id = Convert.ToInt32(row.Cells["cl_Nro"].Value);
 
-                            if (resp != null)
+                            if (Id > 1) 
                             {
-                                if (resp.Flag == true)
+                                if (row.Cells["cl_en_uso"].Value != null) 
                                 {
-                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    await CargaDatosCredenciales();
+                                    string EnUso = row.Cells["cl_en_uso"].Value.ToString() ?? "";
+
+                                    if (EnUso == "NO") 
+                                    {
+                                        var resp = await _IRangoNumeracion.Eliminar(Id);
+
+                                        if (resp != null)
+                                        {
+                                            if (resp.Flag == true)
+                                            {
+                                                MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                await ConsultaRangosNumeracion();
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("Se presento un error al intentar eliminar rango de numeracion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se puede eliminar el rango de numeración porque está en uso.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
                                 }
                                 else
                                 {
-                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBox.Show("No se encontro informacion de en uso", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 }
                             }
+                            else
+                            {
+                                MessageBox.Show("No es posible eliminar rango de numeracion por defecto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se encontro informacion de id rango de numeracion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
@@ -655,16 +625,6 @@ namespace sbx
             {
                 MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-        }
-
-        private async void btn_buscar_api_Click(object sender, EventArgs e)
-        {
-            await CargaDatosCredenciales();
-        }
-
-        private void btn_eliminar_ra_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -1,7 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Entities;
+using sbx.core.Entities.Auth;
 using sbx.core.Entities.NotaCredito;
+using sbx.core.Entities.Venta;
+using sbx.core.Interfaces.FacturacionElectronica;
 using sbx.core.Interfaces.NotaCredito;
 using sbx.core.Interfaces.Venta;
+using System.Configuration;
 using System.Globalization;
 
 namespace sbx
@@ -12,17 +17,20 @@ namespace sbx
         private Buscador? _Buscador;
         private readonly IServiceProvider _serviceProvider;
         private readonly INotaCredito _INotaCredito;
+        private readonly IAuthService _IAuthService;
         int IdFactura = 0;
         private dynamic? _Permisos;
         decimal TotalParaDevolucion = 0;
         char decimalSeparator = ',';
+        string FacturaJSON = "";
 
-        public AgregarNotaCredito(IVenta venta, IServiceProvider serviceProvider, INotaCredito notaCredito)
+        public AgregarNotaCredito(IVenta venta, IServiceProvider serviceProvider, INotaCredito notaCredito, IAuthService authService)
         {
             InitializeComponent();
             _IVenta = venta;
             _serviceProvider = serviceProvider;
             _INotaCredito = notaCredito;
+            _IAuthService = authService;
         }
 
         public dynamic? Permisos
@@ -89,166 +97,305 @@ namespace sbx
                         return;
                     }
 
+                    FacturaJSON = resp.Data[0].FacturaJSON;
                     dtg_ventas.Rows.Clear();
+                    chk_marcar_todo.Checked = false;
 
-                    txt_busca_factura.Text = resp.Data[0].Factura;
+                    txt_busca_factura.Text = resp.Data[0].NumberFacturaDIAN == "" ? resp.Data[0].Factura : resp.Data[0].NumberFacturaDIAN;
 
-                    if (resp.Data != null)
+                    lbl_factura.Text = resp.Data[0].NumberFacturaDIAN == "" ? resp.Data[0].Factura : resp.Data[0].NumberFacturaDIAN;
+                    lbl_cliente.Text = resp.Data[0].NumeroDocumento + " - " + resp.Data[0].NombreRazonSocial;
+                    lbl_vendedor.Text = resp.Data[0].NumeroDocumentoVendedor + " - " + resp.Data[0].NombreCompletoVendedor;
+                    lbl_medio_pago.Text = resp.Data[0].NombreMetodoPago;
+                    lbl_referencia.Text = resp.Data[0].Referencia;
+                    lbl_banco.Text = resp.Data[0].NombreBanco;
+                    lbl_usuario.Text = resp.Data[0].IdUserActionFactura + " - " + resp.Data[0].UserNameFactura;
+
+                    decimal Subtotal = 0;
+                    decimal cantidadTotal = 0;
+                    decimal DescuentoLinea;
+                    decimal Descuento = 0;
+                    decimal Impuesto = 0;
+                    decimal ImpuestoLinea;
+                    decimal SubtotalLinea;
+                    decimal Total = 0;
+                    decimal TotalLinea;
+
+                    foreach (var item in resp.Data)
                     {
-                        if (resp.Data.Count > 0)
-                        {
-                            lbl_factura.Text = resp.Data[0].Factura;
-                            lbl_cliente.Text = resp.Data[0].NumeroDocumento + " - " + resp.Data[0].NombreRazonSocial;
-                            lbl_vendedor.Text = resp.Data[0].NumeroDocumentoVendedor + " - " + resp.Data[0].NombreCompletoVendedor;
-                            lbl_medio_pago.Text = resp.Data[0].NombreMetodoPago;
-                            lbl_referencia.Text = resp.Data[0].Referencia;
-                            lbl_banco.Text = resp.Data[0].NombreBanco;
-                            lbl_usuario.Text = resp.Data[0].IdUserActionFactura + " - " + resp.Data[0].UserNameFactura;
+                        cantidadTotal += Convert.ToDecimal(item.Cantidad);
+                        Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
+                        SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
+                        Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                        DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                        Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                        ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
 
-                            decimal Subtotal = 0;
-                            decimal cantidadTotal = 0;
-                            decimal DescuentoLinea;
-                            decimal Descuento = 0;
-                            decimal Impuesto = 0;
-                            decimal ImpuestoLinea;
-                            decimal SubtotalLinea;
-                            decimal Total = 0;
-                            decimal TotalLinea;
+                        TotalLinea = (SubtotalLinea - DescuentoLinea);
+                        //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
 
-                            foreach (var item in resp.Data)
-                            {
-                                cantidadTotal += Convert.ToDecimal(item.Cantidad);
-                                Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
-                                SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
-                                Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                                ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                                TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
-
-                                dtg_ventas.Rows.Add(
-                                    item.IdDetalleVenta,
-                                    false,
-                                    item.IdProducto,
-                                    item.Sku,
-                                    item.CodigoBarras,
-                                    item.NombreProducto,
-                                    item.UnidadMedida,
-                                    item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
-                                    Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
-                                    Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
-                                    Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
-                                    Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
-                                    TotalLinea.ToString("N2", new CultureInfo("es-CO")));
-                            }
-
-                            Total += (Subtotal - Descuento) + Impuesto;
-
-                            lbl_cantidadProductos.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
-                            lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
-                            lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
-                            lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
-                            lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
-
-                            chk_marcar_todo.Checked = true;
-                        }
-                        else
-                        {
-                            MessageBox.Show("No hay informacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
+                        dtg_ventas.Rows.Add(
+                            item.IdDetalleVenta,
+                            false,
+                            item.IdProducto,
+                            item.Sku,
+                            item.CodigoBarras,
+                            item.NombreProducto,
+                            item.UnidadMedida,
+                            item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
+                            Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
+                            Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
+                            Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
+                            Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
+                            TotalLinea.ToString("N2", new CultureInfo("es-CO")));
                     }
-                    else
-                    {
-                        MessageBox.Show("No hay informacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+
+                    Total += (Subtotal - Descuento);
+                    //Total += (Subtotal - Descuento) + Impuesto;
+                    decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
+
+                    lbl_cantidadProductos.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
+                    lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+
+                    chk_marcar_todo.Checked = true;
                 }
+                else
+                {
+                    MessageBox.Show("No hay informacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay informacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private async void btn_devolucion_parcial_Click(object sender, EventArgs e)
         {
-            int Contador = 0;
-            bool TodoProductTieneCantDevo = true;
-
-            foreach (DataGridViewRow fila in dtg_ventas.Rows)
+            panel2.Enabled = false;
+            this.Cursor = Cursors.WaitCursor;
+            try
             {
-                if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value) && Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")) > 0)
-                {
-                    Contador++;
-                }
+                int Contador = 0;
+                bool TodoProductTieneCantDevo = true;
 
-                if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value) && Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")) <= 0)
+                foreach (DataGridViewRow fila in dtg_ventas.Rows)
                 {
-                    TodoProductTieneCantDevo = false;
-                }
-            }
-
-            if (Contador > 0 && TodoProductTieneCantDevo)
-            {
-                DialogResult result = MessageBox.Show("¿Está seguro de realizar devolucion?",
-                "Confirmar",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    NotaCreditoEntitie notaCreditoEntitie = new NotaCreditoEntitie
+                    if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value) && Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")) > 0)
                     {
-                        IdVenta = IdFactura,
-                        Motivo = txt_motivo_devolucion.Text
-                    };
-
-                    foreach (DataGridViewRow fila in dtg_ventas.Rows)
-                    {
-                        if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value))
-                        {
-                            DetalleNotaCredito detalleNotaCredito = new DetalleNotaCredito
-                            {
-                                IdDetalleVenta = Convert.ToInt32(fila.Cells["cl_id_detalle_venta"].Value),
-                                IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
-                                Sku = fila.Cells["cl_sku"].Value.ToString() ?? "",
-                                CodigoBarras = fila.Cells["cl_codigo_barras"].Value.ToString() ?? "",
-                                NombreProducto = fila.Cells["cl_nombre"].Value.ToString() ?? "",
-                                Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")),
-                                PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
-                                UnidadMedida = fila.Cells["cl_unidadMedida"].Value.ToString() ?? "",
-                                Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                                Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"))
-                            };
-
-                            notaCreditoEntitie.detalleNotaCredito.Add(detalleNotaCredito);
-                        }
+                        Contador++;
                     }
 
-                    var resp = await _INotaCredito.Create(notaCreditoEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                    if (resp != null)
+                    if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value) && Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")) <= 0)
                     {
-                        if (resp.Flag == true)
+                        TodoProductTieneCantDevo = false;
+                    }
+                }
+
+                if (Contador > 0 && TodoProductTieneCantDevo)
+                {
+                    DialogResult result = MessageBox.Show("¿Está seguro de realizar devolucion?",
+                    "Confirmar",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        NotaCreditoEntitie notaCreditoEntitie = new NotaCreditoEntitie
                         {
-                            MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            this.Close();
+                            IdVenta = IdFactura,
+                            Motivo = txt_motivo_devolucion.Text
+                        };
+
+                        foreach (DataGridViewRow fila in dtg_ventas.Rows)
+                        {
+                            if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value))
+                            {
+                                DetalleNotaCredito detalleNotaCredito = new DetalleNotaCredito
+                                {
+                                    IdDetalleVenta = Convert.ToInt32(fila.Cells["cl_id_detalle_venta"].Value),
+                                    IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
+                                    Sku = fila.Cells["cl_sku"].Value.ToString() ?? "",
+                                    CodigoBarras = fila.Cells["cl_codigo_barras"].Value.ToString() ?? "",
+                                    NombreProducto = fila.Cells["cl_nombre"].Value.ToString() ?? "",
+                                    Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")),
+                                    PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
+                                    UnidadMedida = fila.Cells["cl_unidadMedida"].Value.ToString() ?? "",
+                                    Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
+                                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"))
+                                };
+
+                                notaCreditoEntitie.detalleNotaCredito.Add(detalleNotaCredito);
+                            }
+                        }
+
+                        var resp = await _INotaCredito.Create(notaCreditoEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                        if (resp != null)
+                        {
+                            if (resp.Flag == true)
+                            {
+                                var DataNotaCreditoRegistrada = new Response<dynamic>();
+                                int IdNotaCreditoCreada = resp.Data;
+                                DataNotaCreditoRegistrada = await _INotaCredito.List(IdNotaCreditoCreada);
+
+                                ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie =
+                                    new ActualizarNotaCreditoForNotaCreditoElectronicaEntitie();
+
+                                try
+                                {
+                                    AuthEntitie authEntitie = new AuthEntitie
+                                    {
+                                        url_api = ConfigurationManager.AppSettings["UrlAuthPOST"]!,
+                                        grant_type = ConfigurationManager.AppSettings["grant_typeAuth"]!,
+                                        client_id = ConfigurationManager.AppSettings["client_id"]!,
+                                        client_secret = ConfigurationManager.AppSettings["client_secret"]!,
+                                        username = ConfigurationManager.AppSettings["username"]!,
+                                        Passwords = ConfigurationManager.AppSettings["password"]!
+                                    };
+
+                                    if (!string.IsNullOrEmpty(authEntitie.url_api) && !string.IsNullOrEmpty(authEntitie.grant_type)
+                                        && !string.IsNullOrEmpty(authEntitie.client_id) && !string.IsNullOrEmpty(authEntitie.client_secret)
+                                        && !string.IsNullOrEmpty(authEntitie.username) && !string.IsNullOrEmpty(authEntitie.Passwords))
+                                    {
+
+                                        var RespAuth = _IAuthService.Autenticacion(authEntitie);
+
+                                        if (RespAuth.Data != null)
+                                        {
+                                            if (RespAuth.Flag && RespAuth.Data.access_token != "")
+                                            {
+                                                string Token = RespAuth.Data.access_token.ToString();
+                                                string UrlCrearValidarNotaCredito = ConfigurationManager.AppSettings["UrlCrearValidarNotaCreditoPOST"]!;
+
+                                                if (DataNotaCreditoRegistrada.Data != null)
+                                                {
+                                                    if (DataNotaCreditoRegistrada.Data.Count > 0)
+                                                    {
+
+                                                    }
+                                                    else
+                                                    {
+                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = Convert.ToInt32(DataNotaCreditoRegistrada.Data![0].IdNotaCredito);
+                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                        //Actualizar informacion de nota credito electronica en base de datos
+                                                        var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                        if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                                        {
+                                                            MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = Convert.ToInt32(DataNotaCreditoRegistrada.Data![0].IdNotaCredito);
+                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                    //Actualizar informacion de nota credito electronica en base de datos
+                                                    var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                    if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                                    {
+                                                        MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    }
+
+                                                    MessageBox.Show($"No encontro informacion de factura registrada", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = Convert.ToInt32(DataNotaCreditoRegistrada.Data![0].IdNotaCredito);
+                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                //Actualizar informacion de nota credito electronica en base de datos
+                                                var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                                {
+                                                    MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                }
+
+                                                MessageBox.Show($"Error en autenticacion, no se emitira nota credito electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = Convert.ToInt32(DataNotaCreditoRegistrada.Data![0].IdNotaCredito);
+                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                            //Actualizar informacion de nota credito electronica en base de datos
+                                            var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                            if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                            {
+                                                MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+
+                                            MessageBox.Show($"Error en autenticacion, no se emitira nota credito electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+
+                                            MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        this.Close();
+                                    }
+                                    else
+                                    {
+                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = Convert.ToInt32(DataNotaCreditoRegistrada.Data![0].IdNotaCredito);
+                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                        //Actualizar informacion de nota credito electronica en base de datos
+                                        var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                        if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                        {
+                                            MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+
+                                        MessageBox.Show($"No se encuentra informacion completa de Url Apis, no se emitira factura electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }     
+                                }
+                                catch (Exception ex)
+                                {
+                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = Convert.ToInt32(DataNotaCreditoRegistrada.Data![0].IdNotaCredito);
+                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                    //Actualizar informacion de nota credito electronica en base de datos
+                                    var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                    if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                    {
+                                        MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Se presento una excepcion debido a esto se registrara nota credito en estado pendiente de Emitir, Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                         else
                         {
-                            MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("No se obtuvo informacion de proceso creacion de nota credito", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show("No se obtuvo informacion de proceso creacion de nota credito", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-            }
-            else
-            {
-                if (!TodoProductTieneCantDevo) 
-                {
-                    MessageBox.Show("Todos los productos seleccionados debe tener Cant.dev mayor a cero, favor verificar ", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    MessageBox.Show("Debe seleccionar 1 producto y total devolucion debe ser mayor a cero", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (!TodoProductTieneCantDevo)
+                    {
+                        MessageBox.Show("Todos los productos seleccionados debe tener Cant.dev mayor a cero, favor verificar ", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Debe seleccionar 1 producto y total devolucion debe ser mayor a cero", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
+            }
+            finally
+            {
+                panel2.Enabled = true;
+                this.Cursor = Cursors.Default;
             }
         }
 
@@ -300,7 +447,8 @@ namespace sbx
                         SubtotalLineaDevo = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO"));
                         DescuentoLineaDevo = CalcularDescuento(SubtotalLineaDevo, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                         ImpuestoLineaDevo = CalcularIva(SubtotalLineaDevo - DescuentoLineaDevo, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
-                        TotalLineaDevo = (SubtotalLineaDevo - DescuentoLineaDevo) + ImpuestoLineaDevo;
+                        TotalLineaDevo = (SubtotalLineaDevo - DescuentoLineaDevo);
+                        //TotalLineaDevo = (SubtotalLineaDevo - DescuentoLineaDevo) + ImpuestoLineaDevo;
 
                         TotalParaDevolucion += TotalLineaDevo;
                     }
@@ -335,7 +483,8 @@ namespace sbx
                     SubtotalLineaDevo = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO"));
                     DescuentoLineaDevo = CalcularDescuento(SubtotalLineaDevo, Convert.ToDecimal(fila.Cells["cl_descuento"].Value));
                     ImpuestoLineaDevo = CalcularIva(SubtotalLineaDevo - DescuentoLineaDevo, Convert.ToDecimal(fila.Cells["cl_iva"].Value));
-                    TotalLineaDevo = (SubtotalLineaDevo - DescuentoLineaDevo) + ImpuestoLineaDevo;
+                    TotalLineaDevo = (SubtotalLineaDevo - DescuentoLineaDevo);
+                    //TotalLineaDevo = (SubtotalLineaDevo - DescuentoLineaDevo) + ImpuestoLineaDevo;
 
                     TotalParaDevolucion += TotalLineaDevo;
                 }

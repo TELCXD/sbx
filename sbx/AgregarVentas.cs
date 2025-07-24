@@ -1195,12 +1195,12 @@ namespace sbx
             //1. ¿Tiene precio personalizado? => usar PreciosCliente
             if (agregaVentaEntitie.IdCliente > 0)
             {
-                var resp1 = await _IPrecioCliente.PrecioClientePersonalizado(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdCliente);
+                var resp1 = await _IPrecioCliente.PrecioClientePersonalizado(Convert.ToInt32(DataProducto!.Data[0].IdProducto), agregaVentaEntitie.IdCliente);
                 if (resp1.Data != null)
                 {
                     if (resp1.Data.Count > 0)
                     {
-                        decimal Total = CalcularTotal(resp1.Data[0].PrecioEspecial, DataProducto.Data[0].Iva, 0);
+                        decimal Total = CalcularTotal(resp1.Data[0].PrecioEspecial, 0, 0);
 
                         int rowIndex = dtg_producto.Rows.Add(
                              DataProducto.Data[0].IdProducto,
@@ -1232,7 +1232,7 @@ namespace sbx
                 {
                     if (resp2.Data.Count > 0)
                     {
-                        decimal Total = CalcularTotal(resp2.Data[0].Precio, DataProducto.Data[0].Iva, 0);
+                        decimal Total = CalcularTotal(resp2.Data[0].Precio, 0, 0);
 
                         int rowIndex = dtg_producto.Rows.Add(
                              DataProducto.Data[0].IdProducto,
@@ -1261,7 +1261,7 @@ namespace sbx
                 {
                     if (resp3.Data.Count > 0)
                     {
-                        decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, resp3.Data[0].Porcentaje);
+                        decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, 0, resp3.Data[0].Porcentaje);
 
                         int rowIndex = dtg_producto.Rows.Add(
                              DataProducto.Data[0].IdProducto,
@@ -1285,7 +1285,7 @@ namespace sbx
             //4. Si nada aplica => usar PrecioBase por defecto
             if (Continuar == true)
             {
-                decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, DataProducto.Data[0].Iva, 0);
+                decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, 0, 0);
 
                 int rowIndex = dtg_producto.Rows.Add(
                      DataProducto.Data[0].IdProducto,
@@ -1315,7 +1315,7 @@ namespace sbx
                     decimal cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                     decimal desc = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO"));
                     decimal iva = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"));
-                    decimal total = CalcularTotal(precio, iva, desc);
+                    decimal total = CalcularTotal(precio, 0, desc);
                     total = total * cantidad;
                     fila.Cells["cl_total"].Value = total.ToString("N2", new CultureInfo("es-CO"));
 
@@ -1326,10 +1326,12 @@ namespace sbx
                     DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                     Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
                 }
-                Total = (Subtotal - Descuento) + Impuesto;
+                //Total = (Subtotal - Descuento) + Impuesto;
+                Total = (Subtotal - Descuento);
+                decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                 lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
-                lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                 lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                 lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                 lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
@@ -1350,11 +1352,11 @@ namespace sbx
             }
         }
 
-        private void txt_valor_pago_KeyPress(object sender, KeyPressEventArgs e)
+        private async void txt_valor_pago_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter) // o (char)13
             {
-                GuardarVenta();
+                await GuardarVenta();
                 e.Handled = true; // opcional: evita beep
                 return;
             }
@@ -1577,7 +1579,7 @@ namespace sbx
                                         desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
                                         iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                                        total = CalcularTotal(precio, iva, desc);
+                                        total = CalcularTotal(precio, 0, desc);
                                         total = total * cantidad;
 
                                         dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1614,7 +1616,7 @@ namespace sbx
                     desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
                     iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                    total = CalcularTotal(precio, iva, desc);
+                    total = CalcularTotal(precio, 0, desc);
                     total = total * cantidad;
 
                     dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1738,7 +1740,7 @@ namespace sbx
                                                 desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
                                                 iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                                                total = CalcularTotal(precio, iva, desc);
+                                                total = CalcularTotal(precio, 0, desc);
                                                 total = total * cantidad;
 
                                                 dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1756,7 +1758,7 @@ namespace sbx
                                                 desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
                                                 iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                                                total = CalcularTotal(precio, iva, desc);
+                                                total = CalcularTotal(precio, 0, desc);
                                                 total = total * cantidad;
 
                                                 dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1776,7 +1778,7 @@ namespace sbx
                                             desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
                                             iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                                            total = CalcularTotal(precio, iva, desc);
+                                            total = CalcularTotal(precio, 0, desc);
                                             total = total * cantidad;
 
                                             dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1816,7 +1818,7 @@ namespace sbx
                         desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
                         iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
 
-                        total = CalcularTotal(precio, iva, desc);
+                        total = CalcularTotal(precio, 0, desc);
                         total = total * cantidad;
 
                         dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1845,10 +1847,12 @@ namespace sbx
                     DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                     Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
                 }
-                Total = (Subtotal - Descuento) + Impuesto;
+                //Total = (Subtotal - Descuento) + Impuesto;
+                Total = (Subtotal - Descuento);
+                decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                 lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
-                lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                 lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                 lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                 lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
@@ -2083,158 +2087,187 @@ namespace sbx
                                         {
                                             if (respGuardado.Flag == true)
                                             {
-                                                Limpiar();
-
-                                                if (IdCotizacion > 0)
-                                                {
-                                                    var respUpdateCotiza = await _ICotizacion.CambioEstadoCotizacion(IdCotizacion, "FACTURADA", respGuardado.Data, Convert.ToInt32(_Permisos?[0]?.IdUser));
-                                                    if (respUpdateCotiza != null)
-                                                    {
-                                                        if (respUpdateCotiza.Flag == false)
-                                                        {
-                                                            MessageBox.Show("No fue posible cambiar el estado de la cotizacion, pero la factura si se genero correctamente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        MessageBox.Show("No fue posible cambiar el estado de la cotizacion, pero la factura si se genero correctamente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                    }
-
-                                                    IdCotizacion = 0;
-                                                }
-
-                                                int IdVentaCreada = respGuardado.Data;                                            
-                                                var DataFacturaRegistrada = new Response<dynamic>();
-                                                DataFacturaRegistrada = await _IVenta.List(IdVentaCreada);
-
                                                 ActualizarFacturaForFacturaElectronicaEntitie actualizarFacturaForFacturaElectronicaEntitie
                                                 = new ActualizarFacturaForFacturaElectronicaEntitie();
 
-                                                //Emite Factura Electronica
-                                                if (FacturaElectronica == true)
+                                                int IdVentaCreada = respGuardado.Data;
+                                                var DataFacturaRegistrada = new Response<dynamic>();
+                                                DataFacturaRegistrada = await _IVenta.List(IdVentaCreada);
+
+                                                try
                                                 {
-                                                    AuthEntitie authEntitie = new AuthEntitie
-                                                    {
-                                                        url_api = ConfigurationManager.AppSettings["UrlAuthPOST"]!,
-                                                        grant_type = ConfigurationManager.AppSettings["grant_typeAuth"]!,
-                                                        client_id = ConfigurationManager.AppSettings["client_id"]!,
-                                                        client_secret = ConfigurationManager.AppSettings["client_secret"]!,
-                                                        username = ConfigurationManager.AppSettings["username"]!,
-                                                        Passwords = ConfigurationManager.AppSettings["password"]!
-                                                    };
+                                                    Limpiar();
 
-                                                    if (!string.IsNullOrEmpty(authEntitie.url_api) && !string.IsNullOrEmpty(authEntitie.grant_type) 
-                                                        && !string.IsNullOrEmpty(authEntitie.client_id) && !string.IsNullOrEmpty(authEntitie.client_secret)
-                                                        && !string.IsNullOrEmpty(authEntitie.username) && !string.IsNullOrEmpty(authEntitie.Passwords))
+                                                    if (IdCotizacion > 0)
                                                     {
-                                                        var RespAuth = _IAuthService.Autenticacion(authEntitie);
-
-                                                        if (RespAuth.Data != null)
+                                                        var respUpdateCotiza = await _ICotizacion.CambioEstadoCotizacion(IdCotizacion, "FACTURADA", respGuardado.Data, Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                                        if (respUpdateCotiza != null)
                                                         {
-                                                            if (RespAuth.Flag && RespAuth.Data.access_token != "")
+                                                            if (respUpdateCotiza.Flag == false)
                                                             {
-                                                                string Token = RespAuth.Data.access_token.ToString();
-                                                                string UrlCrearValidarFactura = ConfigurationManager.AppSettings["UrlCrearValidarFacturaPOST"]!;
+                                                                MessageBox.Show("No fue posible cambiar el estado de la cotizacion, pero la factura si se genero correctamente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            MessageBox.Show("No fue posible cambiar el estado de la cotizacion, pero la factura si se genero correctamente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        }
 
-                                                                if (DataFacturaRegistrada.Data != null)
+                                                        IdCotizacion = 0;
+                                                    }
+
+                                                    //Emite Factura Electronica
+                                                    if (FacturaElectronica == true)
+                                                    {
+                                                        AuthEntitie authEntitie = new AuthEntitie
+                                                        {
+                                                            url_api = ConfigurationManager.AppSettings["UrlAuthPOST"]!,
+                                                            grant_type = ConfigurationManager.AppSettings["grant_typeAuth"]!,
+                                                            client_id = ConfigurationManager.AppSettings["client_id"]!,
+                                                            client_secret = ConfigurationManager.AppSettings["client_secret"]!,
+                                                            username = ConfigurationManager.AppSettings["username"]!,
+                                                            Passwords = ConfigurationManager.AppSettings["password"]!
+                                                        };
+
+                                                        if (!string.IsNullOrEmpty(authEntitie.url_api) && !string.IsNullOrEmpty(authEntitie.grant_type)
+                                                            && !string.IsNullOrEmpty(authEntitie.client_id) && !string.IsNullOrEmpty(authEntitie.client_secret)
+                                                            && !string.IsNullOrEmpty(authEntitie.username) && !string.IsNullOrEmpty(authEntitie.Passwords))
+                                                        {
+                                                            var RespAuth = _IAuthService.Autenticacion(authEntitie);
+
+                                                            if (RespAuth.Data != null)
+                                                            {
+                                                                if (RespAuth.Flag && RespAuth.Data.access_token != "")
                                                                 {
-                                                                    if (DataFacturaRegistrada.Data.Count > 0)
+                                                                    string Token = RespAuth.Data.access_token.ToString();
+                                                                    string UrlCrearValidarFactura = ConfigurationManager.AppSettings["UrlCrearValidarFacturaPOST"]!;
+
+                                                                    if (DataFacturaRegistrada.Data != null)
                                                                     {
-                                                                        Customer customer = new Customer();
-                                                                        int TipoIdentificacion = Convert.ToInt32(DataFacturaRegistrada.Data[0].IdIdentificationType);
-                                                                        customer.identification_document_id =
-                                                                            (TipoIdentificacion == 1 ? 3 : //Cédula de ciudadanía
-                                                                            TipoIdentificacion == 2 ? 5 : //Cédula de extranjería
-                                                                            TipoIdentificacion == 3 ? 3 : //RUT de momento se maneja con Cédula de ciudadanía
-                                                                            TipoIdentificacion == 4 ? 6 : 3).ToString(); //NIT
-
-                                                                        customer.identification = DataFacturaRegistrada.Data[0].NumeroDocumento.ToString();
-                                                                        if (TipoIdentificacion == 4) //NIT
+                                                                        if (DataFacturaRegistrada.Data.Count > 0)
                                                                         {
-                                                                            customer.company = DataFacturaRegistrada.Data[0].NombreRazonSocial.ToString();
-                                                                            customer.trade_name = "";
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            customer.names = DataFacturaRegistrada.Data[0].NombreRazonSocial.ToString();
-                                                                        }
-                                                                        customer.address = DataFacturaRegistrada.Data[0].Direccion.ToString();
-                                                                        customer.email = DataFacturaRegistrada.Data[0].Email.ToString();
-                                                                        customer.phone = DataFacturaRegistrada.Data[0].Telefono.ToString();
-                                                                        customer.legal_organization_id = (TipoIdentificacion == 4 ? 1 : 2).ToString(); // 1. Juridico, 2. Natural
-                                                                        customer.tribute_id = "21"; // 18. IVA, 21. No aplica *
-                                                                        customer.municipality_id = "1079"; //Cali, valle del cauca
+                                                                            Customer customer = new Customer();
+                                                                            int TipoIdentificacion = Convert.ToInt32(DataFacturaRegistrada.Data[0].IdIdentificationType);
+                                                                            customer.identification_document_id =
+                                                                                (TipoIdentificacion == 1 ? 3 : //Cédula de ciudadanía
+                                                                                TipoIdentificacion == 2 ? 5 : //Cédula de extranjería
+                                                                                TipoIdentificacion == 3 ? 3 : //RUT de momento se maneja con Cédula de ciudadanía
+                                                                                TipoIdentificacion == 4 ? 6 : 3).ToString(); //NIT
 
-                                                                        List<WithholdingTax> ListwithholdingTax = new List<WithholdingTax>();
-                                                                        List<Item> Listitems = new List<Item>();
-                                                                        foreach (var ItemsVenta in DataFacturaRegistrada.Data)
-                                                                        {
-                                                                            //WithholdingTax withholdingTax = new WithholdingTax
-                                                                            //{
-                                                                            //    Code = "01",
-                                                                            //    WithholdingTaxRate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO"))
-                                                                            //};
-
-                                                                            //ListwithholdingTax.Add(withholdingTax);
-
-                                                                            Item item = new Item
+                                                                            customer.identification = DataFacturaRegistrada.Data[0].NumeroDocumento.ToString();
+                                                                            if (TipoIdentificacion == 4) //NIT
                                                                             {
-                                                                                code_reference = ItemsVenta.IdProducto.ToString(),
-                                                                                name = ItemsVenta.NombreProducto.ToString(),
-                                                                                quantity = Convert.ToDecimal(ItemsVenta.Cantidad, new CultureInfo("es-CO")),
-                                                                                discount_rate = Convert.ToDecimal(ItemsVenta.Descuento, new CultureInfo("es-CO")),
-                                                                                price = Convert.ToDecimal(ItemsVenta.PrecioUnitario, new CultureInfo("es-CO")),
-                                                                                tax_rate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO")),
-                                                                                unit_measure_id =
-                                                                                (ItemsVenta.IdUnidadMedida == 1 ? 70 : //Unidad
-                                                                                ItemsVenta.IdUnidadMedida == 7 ? 414 : //kilogramo
-                                                                                ItemsVenta.IdUnidadMedida == 11 ? 449 : //libra
-                                                                                ItemsVenta.IdUnidadMedida == 9 ? 512 : //metro
-                                                                                ItemsVenta.IdUnidadMedida == 12 ? 874 : //galón
-                                                                                70), //En cualquier otro caso Unidad
-                                                                                standard_code_id = 1, //Estándar de adopción del contribuyente
-                                                                                is_excluded = 0, // excluido de IVA (0: no, 1: sí).
-                                                                                tribute_id = 1, //Impuesto sobre la Ventas
-                                                                                                //WithholdingTaxes = ListwithholdingTax
+                                                                                customer.company = DataFacturaRegistrada.Data[0].NombreRazonSocial.ToString();
+                                                                                customer.trade_name = "";
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                customer.names = DataFacturaRegistrada.Data[0].NombreRazonSocial.ToString();
+                                                                            }
+                                                                            customer.address = DataFacturaRegistrada.Data[0].Direccion.ToString();
+                                                                            customer.email = DataFacturaRegistrada.Data[0].Email.ToString();
+                                                                            customer.phone = DataFacturaRegistrada.Data[0].Telefono.ToString();
+                                                                            customer.legal_organization_id = (TipoIdentificacion == 4 ? 1 : 2).ToString(); // 1. Juridico, 2. Natural
+                                                                            customer.tribute_id = "21"; // 18. IVA, 21. No aplica *
+                                                                            customer.municipality_id = "1079"; //Cali, valle del cauca
+
+                                                                            List<WithholdingTax> ListwithholdingTax = new List<WithholdingTax>();
+                                                                            List<Item> Listitems = new List<Item>();
+                                                                            foreach (var ItemsVenta in DataFacturaRegistrada.Data)
+                                                                            {
+                                                                                //WithholdingTax withholdingTax = new WithholdingTax
+                                                                                //{
+                                                                                //    Code = "01",
+                                                                                //    WithholdingTaxRate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO"))
+                                                                                //};
+
+                                                                                //ListwithholdingTax.Add(withholdingTax);
+
+                                                                                Item item = new Item
+                                                                                {
+                                                                                    code_reference = ItemsVenta.IdProducto.ToString(),
+                                                                                    name = ItemsVenta.NombreProducto.ToString(),
+                                                                                    quantity = Convert.ToDecimal(ItemsVenta.Cantidad, new CultureInfo("es-CO")),
+                                                                                    discount_rate = Convert.ToDecimal(ItemsVenta.Descuento, new CultureInfo("es-CO")),
+                                                                                    price = Convert.ToDecimal(ItemsVenta.PrecioUnitario, new CultureInfo("es-CO")),
+                                                                                    tax_rate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO")),
+                                                                                    unit_measure_id =
+                                                                                    (ItemsVenta.IdUnidadMedida == 1 ? 70 : //Unidad
+                                                                                    ItemsVenta.IdUnidadMedida == 7 ? 414 : //kilogramo
+                                                                                    ItemsVenta.IdUnidadMedida == 11 ? 449 : //libra
+                                                                                    ItemsVenta.IdUnidadMedida == 9 ? 512 : //metro
+                                                                                    ItemsVenta.IdUnidadMedida == 12 ? 874 : //galón
+                                                                                    70), //En cualquier otro caso Unidad
+                                                                                    standard_code_id = 1, //Estándar de adopción del contribuyente
+                                                                                    is_excluded = 0, // excluido de IVA (0: no, 1: sí).
+                                                                                    tribute_id = 1, //Impuesto sobre la Ventas
+                                                                                                    //WithholdingTaxes = ListwithholdingTax
+                                                                                };
+
+                                                                                Listitems.Add(item);
+                                                                            }
+
+                                                                            FacturaRequest facturaRequest = new FacturaRequest
+                                                                            {
+                                                                                numbering_range_id = IdRangoDIAN,
+                                                                                reference_code = DataFacturaRegistrada.Data[0].Factura.ToString(),
+                                                                                observation = "",
+                                                                                payment_form = "1",
+                                                                                payment_due_date = "",
+                                                                                payment_method_code = "10",
+                                                                                //billing_period = billingPeriod,
+                                                                                customer = customer,
+                                                                                items = Listitems
                                                                             };
 
-                                                                            Listitems.Add(item);
-                                                                        }
+                                                                            var responseFacturaElectronica = _IFacturas.CreaValidaFactura(Token, UrlCrearValidarFactura, facturaRequest);
 
-                                                                        FacturaRequest facturaRequest = new FacturaRequest
-                                                                        {
-                                                                            numbering_range_id = IdRangoDIAN,
-                                                                            reference_code = DataFacturaRegistrada.Data[0].Factura.ToString(),
-                                                                            observation = "",
-                                                                            payment_form = "1",
-                                                                            payment_due_date = "",
-                                                                            payment_method_code = "10",
-                                                                            //billing_period = billingPeriod,
-                                                                            customer = customer,
-                                                                            items = Listitems
-                                                                        };
+                                                                            if (!responseFacturaElectronica.Flag)
+                                                                            {
+                                                                                actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data[0].IdVenta);
+                                                                                actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
 
-                                                                        var responseFacturaElectronica = _IFacturas.CreaValidaFactura(Token, UrlCrearValidarFactura, facturaRequest);
+                                                                                MessageBox.Show($"Error en Emicion de factura electronica: {responseFacturaElectronica?.Data} - {responseFacturaElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                if (responseFacturaElectronica.Data != null)
+                                                                                {
+                                                                                    actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data[0].IdVenta);
+                                                                                    actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN = responseFacturaElectronica.Data!.data.bill.number;
+                                                                                    actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "EMITIDA";
+                                                                                    actualizarFacturaForFacturaElectronicaEntitie.FacturaJSON = responseFacturaElectronica.Data.ToString();
+                                                                                    actualizarFacturaForFacturaElectronicaEntitie.qr_image = responseFacturaElectronica.Data!.data.bill.qr_image;
+                                                                                }
+                                                                            }
 
-                                                                        if (!responseFacturaElectronica.Flag)
-                                                                        {
-                                                                            actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data[0].IdVenta);
-                                                                            actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
+                                                                            //Actualizar informacion de facturacion electronica en base de datos
+                                                                            var respActualizaDataFacturaElectronica = await _IVenta.ActualizarDataFacturaElectronica(actualizarFacturaForFacturaElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
-                                                                            MessageBox.Show($"Error en Emicion de factura electronica: {responseFacturaElectronica?.Data} - {responseFacturaElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                            if (!respActualizaDataFacturaElectronica.Flag)
+                                                                            {
+                                                                                MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                            if (responseFacturaElectronica.Data != null)
-                                                                            {
-                                                                                actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data[0].IdVenta);
-                                                                                actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN = responseFacturaElectronica.Data!.data.bill.number;
-                                                                                actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "EMITIDA";
-                                                                                actualizarFacturaForFacturaElectronicaEntitie.FacturaJSON = responseFacturaElectronica.Data.ToString();
-                                                                                actualizarFacturaForFacturaElectronicaEntitie.qr_image = responseFacturaElectronica.Data!.data.bill.qr_image;
-                                                                            }
-                                                                        }
+                                                                            actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data![0].IdVenta);
+                                                                            actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
+                                                                            //Actualizar informacion de facturacion electronica en base de datos
+                                                                            var respActualizaDataFacturaElectronica = await _IVenta.ActualizarDataFacturaElectronica(actualizarFacturaForFacturaElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
+                                                                            if (!respActualizaDataFacturaElectronica.Flag)
+                                                                            {
+                                                                                MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                            }
+
+                                                                            MessageBox.Show($"No encontro informacion de factura registrada", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data![0].IdVenta);
+                                                                        actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
                                                                         //Actualizar informacion de facturacion electronica en base de datos
                                                                         var respActualizaDataFacturaElectronica = await _IVenta.ActualizarDataFacturaElectronica(actualizarFacturaForFacturaElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
@@ -2242,15 +2275,23 @@ namespace sbx
                                                                         {
                                                                             MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                         }
-                                                                    }
-                                                                    else
-                                                                    {
+
                                                                         MessageBox.Show($"No encontro informacion de factura registrada", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    MessageBox.Show($"No encontro informacion de factura registrada", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                    actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data![0].IdVenta);
+                                                                    actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
+                                                                    //Actualizar informacion de facturacion electronica en base de datos
+                                                                    var respActualizaDataFacturaElectronica = await _IVenta.ActualizarDataFacturaElectronica(actualizarFacturaForFacturaElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                                    if (!respActualizaDataFacturaElectronica.Flag)
+                                                                    {
+                                                                        MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                    }
+
+                                                                    MessageBox.Show($"Error en autenticacion,  no se emitira factura electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                 }
                                                             }
                                                             else
@@ -2264,7 +2305,8 @@ namespace sbx
                                                                 {
                                                                     MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                 }
-                                                                MessageBox.Show($"Error en autenticacion,  no se emitira factura electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                                                                MessageBox.Show($"Error en autenticacion, no se emitira factura electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                             }
                                                         }
                                                         else
@@ -2278,214 +2320,214 @@ namespace sbx
                                                             {
                                                                 MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                             }
-                                                            MessageBox.Show($"Error en autenticacion, no se emitira factura electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                                                            MessageBox.Show($"No se encuentra informacion completa de Url Apis, no se emitira factura electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                         }
                                                     }
-                                                    else
+
+                                                    //Imprime Tirilla
+                                                    var DataTienda = await _ITienda.List();
+                                                    if (DataTienda.Data != null)
                                                     {
-                                                        actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data![0].IdVenta);
-                                                        actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
-                                                        //Actualizar informacion de facturacion electronica en base de datos
-                                                        var respActualizaDataFacturaElectronica = await _IVenta.ActualizarDataFacturaElectronica(actualizarFacturaForFacturaElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                                                        if (!respActualizaDataFacturaElectronica.Flag)
+                                                        if (DataTienda.Data.Count > 0)
                                                         {
-                                                            MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                        }
-
-                                                        MessageBox.Show($"No se encuentra informacion completa de Url Apis, no se emitira factura electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                    }
-                                                }
-
-                                                //Imprime Tirilla
-                                                var DataTienda = await _ITienda.List();
-                                                if (DataTienda.Data != null)
-                                                {
-                                                    if (DataTienda.Data.Count > 0)
-                                                    {
-                                                        FacturaPOSEntitie DataFactura = new FacturaPOSEntitie();
-                                                        if (FacturaElectronica)
-                                                        {
-                                                            DataFactura.NumeroFactura = actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN;
-                                                            DataFactura.FacturaElectronica = true;
-                                                            DataFactura.FacturaJSON = actualizarFacturaForFacturaElectronicaEntitie.FacturaJSON;
-                                                            DataFactura.qr_image = actualizarFacturaForFacturaElectronicaEntitie.qr_image;
-                                                        }
-                                                        else
-                                                        {
-                                                            DataFactura.NumeroFactura = DataFacturaRegistrada.Data![0].Factura;
-                                                            DataFactura.FacturaElectronica = false;
-                                                        }
-                                                        
-                                                        DataFactura.Fecha = DataFacturaRegistrada.Data![0].FechaFactura;
-                                                        DataFactura.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
-                                                        DataFactura.DireccionEmpresa = DataTienda.Data[0].Direccion;
-                                                        DataFactura.TelefonoEmpresa = DataTienda.Data[0].Telefono;
-                                                        DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
-                                                        DataFactura.UserNameFactura = DataFacturaRegistrada.Data[0].IdUserActionFactura + " - " + DataFacturaRegistrada.Data[0].UserNameFactura;
-                                                        DataFactura.NombreCliente = DataFacturaRegistrada.Data[0].NumeroDocumento + " - " + DataFacturaRegistrada.Data[0].NombreRazonSocial;
-                                                        DataFactura.NombreVendedor = DataFacturaRegistrada.Data[0].NumeroDocumentoVendedor + " - " + DataFacturaRegistrada.Data[0].NombreVendedor;
-                                                        DataFactura.FormaPago = DataFacturaRegistrada.Data[0].NombreMetodoPago;
-                                                        DataFactura.Recibido = DataFacturaRegistrada.Data[0].Recibido;
-
-                                                        Cantidad = 0;
-                                                        Subtotal = 0;
-                                                        Descuento = 0;
-                                                        Impuesto = 0;
-                                                        SubtotalLinea = 0;
-                                                        DescuentoLinea = 0;
-
-                                                        foreach (var item in DataFacturaRegistrada.Data)
-                                                        {
-                                                            Cantidad += Convert.ToDecimal(item.Cantidad);
-                                                            Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-                                                            SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-                                                            Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
-                                                            DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
-                                                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
-                                                        }
-                                                        Total = (Subtotal - Descuento) + Impuesto;
-
-                                                        DataFactura.CantidadTotal = Cantidad;
-                                                        DataFactura.Subtotal = Subtotal;
-                                                        DataFactura.Descuento = Descuento;
-                                                        DataFactura.Impuesto = Impuesto;
-                                                        DataFactura.Total = Total;
-                                                        DataFactura.Cambio = DataFactura.Recibido - Total;
-
-                                                        List<ItemFacturaEntitie> ListItemFacturaEntitie = new List<ItemFacturaEntitie>();
-
-                                                        decimal precio;
-                                                        decimal cantidad;
-                                                        decimal desc;
-                                                        decimal iva;
-                                                        decimal total;
-
-                                                        foreach (var item in DataFacturaRegistrada.Data)
-                                                        {
-                                                            precio = Convert.ToDecimal(item.PrecioUnitario);
-                                                            cantidad = Convert.ToDecimal(item.Cantidad);
-                                                            desc = Convert.ToDecimal(item.Descuento);
-                                                            iva = Convert.ToDecimal(item.Impuesto);
-
-                                                            total = CalcularTotal(precio, iva, desc);
-                                                            total = total * cantidad;
-
-                                                            string UnidadMedidaAbreviada;
-
-                                                            switch (item.UnidadMedida)
+                                                            FacturaPOSEntitie DataFactura = new FacturaPOSEntitie();
+                                                            if (FacturaElectronica)
                                                             {
-                                                                case "Unidad (und)":
-                                                                    UnidadMedidaAbreviada = "und";
-                                                                    break;
-                                                                case "Caja (caja)":
-                                                                    UnidadMedidaAbreviada = "caja";
-                                                                    break;
-                                                                case "Paquete (paq)":
-                                                                    UnidadMedidaAbreviada = "paq";
-                                                                    break;
-                                                                case "Bolsa (bol)":
-                                                                    UnidadMedidaAbreviada = "bol";
-                                                                    break;
-                                                                case "Litro (lt)":
-                                                                    UnidadMedidaAbreviada = "lt";
-                                                                    break;
-                                                                case "Mililitro (ml)":
-                                                                    UnidadMedidaAbreviada = "ml";
-                                                                    break;
-                                                                case "Kilogramo (kg)":
-                                                                    UnidadMedidaAbreviada = "kg";
-                                                                    break;
-                                                                case "Gramo (g)":
-                                                                    UnidadMedidaAbreviada = "g";
-                                                                    break;
-                                                                case "Metro (m)":
-                                                                    UnidadMedidaAbreviada = "m";
-                                                                    break;
-                                                                case "Par (par)":
-                                                                    UnidadMedidaAbreviada = "par";
-                                                                    break;
-                                                                default:
-                                                                    UnidadMedidaAbreviada = "";
-                                                                    break;
+                                                                DataFactura.NumeroFactura = actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN;
+                                                                DataFactura.FacturaElectronica = true;
+                                                                DataFactura.FacturaJSON = actualizarFacturaForFacturaElectronicaEntitie.FacturaJSON;
+                                                                DataFactura.qr_image = actualizarFacturaForFacturaElectronicaEntitie.qr_image;
+                                                            }
+                                                            else
+                                                            {
+                                                                DataFactura.NumeroFactura = DataFacturaRegistrada.Data![0].Factura;
+                                                                DataFactura.FacturaElectronica = false;
                                                             }
 
-                                                            var ItemFactura = new ItemFacturaEntitie
+                                                            DataFactura.Fecha = DataFacturaRegistrada.Data![0].FechaFactura;
+                                                            DataFactura.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
+                                                            DataFactura.DireccionEmpresa = DataTienda.Data[0].Direccion;
+                                                            DataFactura.TelefonoEmpresa = DataTienda.Data[0].Telefono;
+                                                            DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
+                                                            DataFactura.UserNameFactura = DataFacturaRegistrada.Data[0].IdUserActionFactura + " - " + DataFacturaRegistrada.Data[0].UserNameFactura;
+                                                            DataFactura.NombreCliente = DataFacturaRegistrada.Data[0].NumeroDocumento + " - " + DataFacturaRegistrada.Data[0].NombreRazonSocial;
+                                                            DataFactura.NombreVendedor = DataFacturaRegistrada.Data[0].NumeroDocumentoVendedor + " - " + DataFacturaRegistrada.Data[0].NombreVendedor;
+                                                            DataFactura.FormaPago = DataFacturaRegistrada.Data[0].NombreMetodoPago;
+                                                            DataFactura.Recibido = DataFacturaRegistrada.Data[0].Recibido;
+
+                                                            Cantidad = 0;
+                                                            Subtotal = 0;
+                                                            Descuento = 0;
+                                                            Impuesto = 0;
+                                                            SubtotalLinea = 0;
+                                                            DescuentoLinea = 0;
+
+                                                            foreach (var item in DataFacturaRegistrada.Data)
                                                             {
-                                                                Codigo = item.IdProducto,
-                                                                Descripcion = item.NombreProducto,
-                                                                Cantidad = item.Cantidad,
-                                                                UnidadMedida = UnidadMedidaAbreviada,
-                                                                PrecioUnitario = item.PrecioUnitario,
-                                                                Descuento = item.Descuento,
-                                                                Impuesto = item.Impuesto,
-                                                                Total = total
-                                                            };
+                                                                Cantidad += Convert.ToDecimal(item.Cantidad);
+                                                                Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                                            }
+                                                            Total = (Subtotal - Descuento);
+                                                            //Total = (Subtotal - Descuento) + Impuesto;
+                                                            decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
-                                                            ListItemFacturaEntitie.Add(ItemFactura);
-                                                        }
+                                                            DataFactura.CantidadTotal = Cantidad;
+                                                            DataFactura.Subtotal = SubtotalMenosImpuesto;
+                                                            DataFactura.Descuento = Descuento;
+                                                            DataFactura.Impuesto = Impuesto;
+                                                            DataFactura.Total = Total;
+                                                            DataFactura.Cambio = DataFactura.Recibido - Total;
 
-                                                        DataFactura.Items = ListItemFacturaEntitie;
+                                                            List<ItemFacturaEntitie> ListItemFacturaEntitie = new List<ItemFacturaEntitie>();
 
-                                                        var DataParametros = await _IParametros.List("");
+                                                            decimal precio;
+                                                            decimal cantidad;
+                                                            decimal desc;
+                                                            decimal iva;
+                                                            decimal total;
 
-                                                        if (DataParametros.Data != null)
-                                                        {
-                                                            if (DataParametros.Data.Count > 0)
+                                                            foreach (var item in DataFacturaRegistrada.Data)
                                                             {
-                                                                int ANCHO_TIRILLA = 0;
-                                                                string PreguntarParaImprimir = "";
-                                                                string Impresora = "";
-                                                                string MensajeFinalTirilla = "";
-                                                                int LineasAbajo = 0;
-                                                                foreach (var itemParametros in DataParametros.Data)
+                                                                precio = Convert.ToDecimal(item.PrecioUnitario);
+                                                                cantidad = Convert.ToDecimal(item.Cantidad);
+                                                                desc = Convert.ToDecimal(item.Descuento);
+                                                                iva = Convert.ToDecimal(item.Impuesto);
+
+                                                                total = CalcularTotal(precio, 0, desc);
+                                                                total = total * cantidad;
+
+                                                                string UnidadMedidaAbreviada;
+
+                                                                switch (item.UnidadMedida)
                                                                 {
-                                                                    switch (itemParametros.Nombre)
+                                                                    case "Unidad (und)":
+                                                                        UnidadMedidaAbreviada = "und";
+                                                                        break;
+                                                                    case "Caja (caja)":
+                                                                        UnidadMedidaAbreviada = "caja";
+                                                                        break;
+                                                                    case "Paquete (paq)":
+                                                                        UnidadMedidaAbreviada = "paq";
+                                                                        break;
+                                                                    case "Bolsa (bol)":
+                                                                        UnidadMedidaAbreviada = "bol";
+                                                                        break;
+                                                                    case "Litro (lt)":
+                                                                        UnidadMedidaAbreviada = "lt";
+                                                                        break;
+                                                                    case "Mililitro (ml)":
+                                                                        UnidadMedidaAbreviada = "ml";
+                                                                        break;
+                                                                    case "Kilogramo (kg)":
+                                                                        UnidadMedidaAbreviada = "kg";
+                                                                        break;
+                                                                    case "Gramo (g)":
+                                                                        UnidadMedidaAbreviada = "g";
+                                                                        break;
+                                                                    case "Metro (m)":
+                                                                        UnidadMedidaAbreviada = "m";
+                                                                        break;
+                                                                    case "Par (par)":
+                                                                        UnidadMedidaAbreviada = "par";
+                                                                        break;
+                                                                    default:
+                                                                        UnidadMedidaAbreviada = "";
+                                                                        break;
+                                                                }
+
+                                                                var ItemFactura = new ItemFacturaEntitie
+                                                                {
+                                                                    Codigo = item.IdProducto,
+                                                                    Descripcion = item.NombreProducto,
+                                                                    Cantidad = item.Cantidad,
+                                                                    UnidadMedida = UnidadMedidaAbreviada,
+                                                                    PrecioUnitario = item.PrecioUnitario,
+                                                                    Descuento = item.Descuento,
+                                                                    Impuesto = item.Impuesto,
+                                                                    Total = total
+                                                                };
+
+                                                                ListItemFacturaEntitie.Add(ItemFactura);
+                                                            }
+
+                                                            DataFactura.Items = ListItemFacturaEntitie;
+
+                                                            var DataParametros = await _IParametros.List("");
+
+                                                            if (DataParametros.Data != null)
+                                                            {
+                                                                if (DataParametros.Data.Count > 0)
+                                                                {
+                                                                    int ANCHO_TIRILLA = 0;
+                                                                    string PreguntarParaImprimir = "";
+                                                                    string Impresora = "";
+                                                                    string MensajeFinalTirilla = "";
+                                                                    int LineasAbajo = 0;
+                                                                    foreach (var itemParametros in DataParametros.Data)
                                                                     {
-                                                                        case "Ancho tirilla":
-                                                                            ANCHO_TIRILLA = Convert.ToInt32(itemParametros.Value);
-                                                                            break;
-                                                                        case "Preguntar imprimir factura en venta":
-                                                                            PreguntarParaImprimir = itemParametros.Value;
-                                                                            break;
-                                                                        case "Impresora":
-                                                                            Impresora = itemParametros.Value;
-                                                                            break;
-                                                                        case "Mensaje final tirilla":
-                                                                            MensajeFinalTirilla = itemParametros.Value;
-                                                                            break;
-                                                                        case "lineas abajo de la tirilla":
-                                                                            LineasAbajo = Convert.ToInt32(itemParametros.Value);
-                                                                            break;
-                                                                        default:
-                                                                            break;
+                                                                        switch (itemParametros.Nombre)
+                                                                        {
+                                                                            case "Ancho tirilla":
+                                                                                ANCHO_TIRILLA = Convert.ToInt32(itemParametros.Value);
+                                                                                break;
+                                                                            case "Preguntar imprimir factura en venta":
+                                                                                PreguntarParaImprimir = itemParametros.Value;
+                                                                                break;
+                                                                            case "Impresora":
+                                                                                Impresora = itemParametros.Value;
+                                                                                break;
+                                                                            case "Mensaje final tirilla":
+                                                                                MensajeFinalTirilla = itemParametros.Value;
+                                                                                break;
+                                                                            case "lineas abajo de la tirilla":
+                                                                                LineasAbajo = Convert.ToInt32(itemParametros.Value);
+                                                                                break;
+                                                                            default:
+                                                                                break;
+                                                                        }
                                                                     }
-                                                                }
 
-                                                                StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA, MensajeFinalTirilla, true);
+                                                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA, MensajeFinalTirilla, true);
 
-                                                                if (FacturaElectronica) 
-                                                                {
-                                                                    GuardarTirillaComoImagen(tirilla, DataFactura.qr_image, DataFactura.NumeroFactura);
-                                                                }
+                                                                    if (FacturaElectronica)
+                                                                    {
+                                                                        GuardarTirillaComoImagen(tirilla, DataFactura.qr_image, DataFactura.NumeroFactura);
+                                                                    }
 
-                                                                string carpetaFacturas = "Facturas";
-                                                                if (!Directory.Exists(carpetaFacturas))
-                                                                {
-                                                                    Directory.CreateDirectory(carpetaFacturas);
-                                                                }
+                                                                    string carpetaFacturas = "Facturas";
+                                                                    if (!Directory.Exists(carpetaFacturas))
+                                                                    {
+                                                                        Directory.CreateDirectory(carpetaFacturas);
+                                                                    }
 
-                                                                File.WriteAllText(Path.Combine(carpetaFacturas, $"factura_{DataFactura.NumeroFactura}.txt"),
-                                                                                  tirilla.ToString(),
-                                                                                  Encoding.UTF8);
+                                                                    File.WriteAllText(Path.Combine(carpetaFacturas, $"factura_{DataFactura.NumeroFactura}.txt"),
+                                                                                      tirilla.ToString(),
+                                                                                      Encoding.UTF8);
 
-                                                                if (PreguntarParaImprimir == "SI")
-                                                                {
-                                                                    DialogResult result = MessageBox.Show("¿Está seguro de imprimir la factura?",
-                                                                    "Confirmar cancelacion",
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Question);
-                                                                    if (result == DialogResult.Yes)
+                                                                    if (PreguntarParaImprimir == "SI")
+                                                                    {
+                                                                        DialogResult result = MessageBox.Show("¿Está seguro de imprimir la factura?",
+                                                                        "Confirmar cancelacion",
+                                                                        MessageBoxButtons.YesNo,
+                                                                        MessageBoxIcon.Question);
+                                                                        if (result == DialogResult.Yes)
+                                                                        {
+                                                                            if (FacturaElectronica)
+                                                                            {
+                                                                                RawPrinterHelper.SendStringToPrinterConQr(Impresora, tirilla.ToString(), LineasAbajo, DataFactura.qr_image);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
                                                                     {
                                                                         if (FacturaElectronica)
                                                                         {
@@ -2494,19 +2536,12 @@ namespace sbx
                                                                         else
                                                                         {
                                                                             RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
-                                                                        }    
+                                                                        }
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (FacturaElectronica)
-                                                                    {
-                                                                        RawPrinterHelper.SendStringToPrinterConQr(Impresora, tirilla.ToString(), LineasAbajo, DataFactura.qr_image);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
-                                                                    }
+                                                                    MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                 }
                                                             }
                                                             else
@@ -2516,7 +2551,7 @@ namespace sbx
                                                         }
                                                         else
                                                         {
-                                                            MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                            MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                         }
                                                     }
                                                     else
@@ -2524,9 +2559,21 @@ namespace sbx
                                                         MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                     }
                                                 }
-                                                else
+                                                catch (Exception ex)
                                                 {
-                                                    MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data![0].IdVenta);
+                                                    actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
+                                                    //Actualizar informacion de facturacion electronica en base de datos
+                                                    var respActualizaDataFacturaElectronica = await _IVenta.ActualizarDataFacturaElectronica(actualizarFacturaForFacturaElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                    if (!respActualizaDataFacturaElectronica.Flag)
+                                                    {
+                                                        MessageBox.Show($"Se presento un error al intentar actualizar informacion de factura electronica en base de datos, Error: {respActualizaDataFacturaElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    }
+                                                    else
+                                                    {
+                                                        MessageBox.Show("Se presento una excepcion debido a esto se registrara factura en estado pendiente de Emitir, Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    }
                                                 }
                                             }
                                             else
@@ -2979,7 +3026,7 @@ namespace sbx
 
                                             if (Stock >= item.Cantidad)
                                             {
-                                                decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+                                                decimal Total = CalcularTotal(item.PrecioUnitario, 0, item.Descuento);
 
                                                 dtg_producto.Rows.Add(
                                                      item.IdProducto,
@@ -3016,7 +3063,7 @@ namespace sbx
                                     {
                                         if (DataProducto.Data.Count > 0)
                                         {
-                                            decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+                                            decimal Total = CalcularTotal(item.PrecioUnitario, 0, item.Descuento);
 
                                             dtg_producto.Rows.Add(
                                                  item.IdProducto,
@@ -3056,10 +3103,13 @@ namespace sbx
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                             Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
                         }
-                        Total = (Subtotal - Descuento) + Impuesto;
+
+                        //Total = (Subtotal - Descuento) + Impuesto;
+                        Total = (Subtotal - Descuento);
+                        decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                         lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
-                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                         lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
@@ -3188,10 +3238,13 @@ namespace sbx
                                 DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
                                 Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
                             }
-                            Total = (Subtotal - Descuento) + Impuesto;
+
+                            Total = (Subtotal - Descuento);
+                            //Total = (Subtotal - Descuento) + Impuesto;
+                            decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                             DtCotizacion.CantidadTotal = Cantidad;
-                            DtCotizacion.Subtotal = Subtotal;
+                            DtCotizacion.Subtotal = SubtotalMenosImpuesto;
                             DtCotizacion.Descuento = Descuento;
                             DtCotizacion.Impuesto = Impuesto;
                             DtCotizacion.Total = Total;
@@ -3212,7 +3265,7 @@ namespace sbx
                                 desc = Convert.ToDecimal(item.Descuento);
                                 iva = Convert.ToDecimal(item.Impuesto);
 
-                                total = CalcularTotal(precio, iva, desc);
+                                total = CalcularTotal(precio, 0, desc);
                                 total = total * cantidad;
 
                                 string UnidadMedidaAbreviada;
@@ -3504,7 +3557,7 @@ namespace sbx
 
                                             if (Stock >= item.Cantidad)
                                             {
-                                                decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+                                                decimal Total = CalcularTotal(item.PrecioUnitario, 0, item.Descuento);
 
                                                 dtg_producto.Rows.Add(
                                                      item.IdProducto,
@@ -3541,7 +3594,7 @@ namespace sbx
                                     {
                                         if (DataProducto.Data.Count > 0)
                                         {
-                                            decimal Total = CalcularTotal(item.PrecioUnitario, item.Impuesto, item.Descuento);
+                                            decimal Total = CalcularTotal(item.PrecioUnitario, 0, item.Descuento);
 
                                             dtg_producto.Rows.Add(
                                                  item.IdProducto,
@@ -3581,10 +3634,13 @@ namespace sbx
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                             Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
                         }
-                        Total = (Subtotal - Descuento) + Impuesto;
+
+                        Total = (Subtotal - Descuento);
+                        //Total = (Subtotal - Descuento) + Impuesto;
+                        decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                         lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
-                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                         lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
@@ -3650,10 +3706,13 @@ namespace sbx
                                     DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                                     Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
                                 }
-                                Total = (Subtotal - Descuento) + Impuesto;
+
+                                Total = (Subtotal - Descuento);
+                                //Total = (Subtotal - Descuento) + Impuesto;
+                                decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                                 lbl_cantidadProductos.Text = Cantidad.ToString(new CultureInfo("es-CO"));
-                                lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                                lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                                 lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                                 lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                                 lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));

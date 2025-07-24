@@ -79,6 +79,7 @@ namespace sbx
 
                 txt_producto.Text = resp.Data[0].IdProducto + " " + resp.Data[0].Sku + " " + resp.Data[0].CodigoBarras;
                 lbl_nombre_producto.Text = resp.Data[0].Nombre;
+                txt_iva.Text = resp.Data[0].Iva.ToString();
             }
         }
 
@@ -265,14 +266,14 @@ namespace sbx
                 decimal Total = Subtotal - ValorDescuento;
                 txt_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
             }
-            if (txt_iva.Text.Trim() != "" && txt_subtotal.Text.Trim() != "")
-            {
-                decimal Subtotal = Convert.ToDecimal(txt_subtotal.Text, new CultureInfo("es-CO")) - ValorDescuento;
-                decimal IvaPorcentaje = Convert.ToDecimal(txt_iva.Text, new CultureInfo("es-CO"));
-                decimal ValorIva = Subtotal * (IvaPorcentaje / 100);
-                decimal Total = Subtotal + ValorIva;
-                txt_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
-            }
+            //if (txt_iva.Text.Trim() != "" && txt_subtotal.Text.Trim() != "")
+            //{
+            //    decimal Subtotal = Convert.ToDecimal(txt_subtotal.Text, new CultureInfo("es-CO")) - ValorDescuento;
+            //    decimal IvaPorcentaje = Convert.ToDecimal(txt_iva.Text, new CultureInfo("es-CO"));
+            //    decimal ValorIva = Subtotal * (IvaPorcentaje / 100);
+            //    decimal Total = Subtotal + ValorIva;
+            //    txt_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+            //}
         }
 
         private void txt_descuento_KeyUp(object sender, KeyEventArgs e)

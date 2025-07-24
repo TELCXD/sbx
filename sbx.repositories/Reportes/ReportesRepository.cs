@@ -36,9 +36,9 @@ namespace sbx.repositories.Reportes
                                     B.IdProducto,
                                     B.NombreProducto,
                                     SUM(B.Cantidad) Cantidad,
-                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) VentaNetaFinal,
+                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) VentaNetaFinal,
                                     SUM((B.Cantidad * B.CostoUnitario))CostoTotal,
-                                    SUM(((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) GananciaBruta        
+                                    SUM(((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) GananciaBruta        
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                     INNER JOIN T_Cliente C ON A.IdCliente = C.IdCliente
@@ -52,7 +52,10 @@ namespace sbx.repositories.Reportes
                                     A.CreationDate,
 									CONCAT(A.IdUserAction,'-',D.UserName) Usuario,
                                     A.IdVenta,                                  
-                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,	                               
+                                    CONCAT(A.Prefijo,A.Consecutivo) Factura,
+                                    ISNULL(A.EstadoFacturaDIAN,'') EstadoFacturaDIAN,
+									ISNULL(A.NumberFacturaDIAN,'') NumberFacturaDIAN,
+									A.FacturaJSON,
 	                                B.IdProducto,
                                     B.NombreProducto,
                                     B.Cantidad,
@@ -60,15 +63,15 @@ namespace sbx.repositories.Reportes
                                     B.CostoUnitario,
                                     ISNULL(B.Descuento, 0) AS DescuentoPorcentaje,
                                     B.Impuesto AS ImpuestoPorcentaje,
-                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100) AS VentaNetaFinal,
+                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)  AS VentaNetaFinal,
                                     (B.Cantidad * B.CostoUnitario) AS CostoTotal,
                                     -- Ganancia/Pérdida
-                                    ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario) AS GananciaBruta,   
+                                    ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario) AS GananciaBruta,   
                                     -- Margen sobre venta
                                     CASE 
-                                        WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100) > 0 
-                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) / 
-                                              ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100))) * 100
+                                        WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) > 0 
+                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) / 
+                                              ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) )) * 100
                                         ELSE 0 
                                     END AS MargenPorcentaje      
                                 FROM T_Ventas A
@@ -85,7 +88,7 @@ namespace sbx.repositories.Reportes
                                     A.IdVenta,
                                     A.Prefijo,
 	                                A.Consecutivo,
-                                    CONCAT(A.Prefijo,'-',A.Consecutivo) Factura,
+                                    CONCAT(A.Prefijo,A.Consecutivo) Factura,
 	                                A.IdCliente,
 	                                C.NumeroDocumento,
 	                                C.NombreRazonSocial,
@@ -96,6 +99,9 @@ namespace sbx.repositories.Reportes
 	                                A.IdUserAction,
 	                                D.UserName,
 	                                A.Estado,
+                                    ISNULL(A.EstadoFacturaDIAN,'') EstadoFacturaDIAN,
+									ISNULL(A.NumberFacturaDIAN,'') NumberFacturaDIAN,
+									A.FacturaJSON,
 	                                B.IdProducto,
 	                                B.Sku,
 	                                B.CodigoBarras,
@@ -110,22 +116,22 @@ namespace sbx.repositories.Reportes
                                     (B.Cantidad * B.PrecioUnitario) AS VentaBruta,
                                     (B.Cantidad * B.PrecioUnitario) * (ISNULL(B.Descuento, 0) / 100.0) AS DescuentoValor,
                                     (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) AS VentaConDescuento,
-                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) * (B.Impuesto / 100.0) AS ImpuestoValor,
-                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) * (1 + B.Impuesto / 100.0) AS VentaNetaFinal,
+                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0)  AS ImpuestoValor,
+                                    (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0)  AS VentaNetaFinal,
                                     (B.Cantidad * B.CostoUnitario) AS CostoTotal,
                                     -- Ganancia/Pérdida
-                                    ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) * (1 + B.Impuesto / 100.0)) - (B.Cantidad * B.CostoUnitario) AS GananciaBruta,
+                                    ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100.0) ) - (B.Cantidad * B.CostoUnitario) AS GananciaBruta,
                                     -- Margen sobre venta
                                     CASE 
-                                        WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100) > 0 
-                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) / 
-                                              ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100))) * 100
+                                        WHEN (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)  > 0 
+                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) / 
+                                              ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) )) * 100
                                         ELSE 0 
                                     END AS MargenPorcentaje,
                                     -- Markup sobre costo
                                     CASE 
                                         WHEN (B.Cantidad * B.CostoUnitario) > 0 
-                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) * (1 + B.Impuesto / 100)) - (B.Cantidad * B.CostoUnitario)) / 
+                                        THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) / 
                                               (B.Cantidad * B.CostoUnitario)) * 100
                                         ELSE 0 
                                     END AS MarkupPorcentaje
@@ -171,7 +177,7 @@ namespace sbx.repositories.Reportes
                                     Where = $" AND B.NombreProducto LIKE @Filtro ";
                                     break;
                                 case "Prefijo-Consecutivo":
-                                    Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
                                     break;
                                 case "Nombre usuario":
                                     Where = $" AND D.UserName LIKE @Filtro ";
@@ -207,7 +213,7 @@ namespace sbx.repositories.Reportes
                                     Where = $" AND B.NombreProducto = @Filtro ";
                                     break;
                                 case "Prefijo-Consecutivo":
-                                    Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) = @Filtro ";
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) = @Filtro ";
                                     break;
                                 case "Nombre usuario":
                                     Where = $" AND D.UserName = @Filtro ";
@@ -243,7 +249,7 @@ namespace sbx.repositories.Reportes
                                     Where = $" AND B.NombreProducto LIKE @Filtro ";
                                     break;
                                 case "Prefijo-Consecutivo":
-                                    Where = $" AND CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
                                     break;
                                 case "Nombre usuario":
                                     Where = $" AND D.UserName LIKE @Filtro ";
@@ -272,6 +278,13 @@ namespace sbx.repositories.Reportes
                     sql += Where + groupby + orderby;
 
                     dynamic resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
+
+                    if (resultado.Count == 0 && campoFiltro == "Prefijo-Consecutivo")
+                    {
+                        sql = sql.Replace("AND CONCAT(A.Prefijo,A.Consecutivo)", "AND A.NumberFacturaDIAN");
+
+                        resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
+                    }
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";

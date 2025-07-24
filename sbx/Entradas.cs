@@ -117,7 +117,8 @@ namespace sbx
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
                             ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Iva, new CultureInfo("es-CO")));
                             Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Iva, new CultureInfo("es-CO")));
-                            decimal TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            decimal TotalLinea = (SubtotalLinea - DescuentoLinea);
+                            //decimal TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
                             dtg_detalle_entrada.Rows.Add(
                                 item.IdProducto,
                                 item.Sku,
@@ -132,7 +133,8 @@ namespace sbx
                                 TotalLinea.ToString("N2", new CultureInfo("es-CO")));
                         }
 
-                        Total = (Subtotal - Descuento) + Impuesto;
+                        Total = (Subtotal - Descuento);
+                        //Total = (Subtotal - Descuento) + Impuesto;
 
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
                     }

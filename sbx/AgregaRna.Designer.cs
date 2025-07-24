@@ -193,7 +193,7 @@
             // 
             dtpFechaExpedicion.Format = DateTimePickerFormat.Short;
             dtpFechaExpedicion.Location = new Point(12, 241);
-            dtpFechaExpedicion.MinDate = new DateTime(2025, 4, 17, 0, 0, 0, 0);
+            dtpFechaExpedicion.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
             dtpFechaExpedicion.Name = "dtpFechaExpedicion";
             dtpFechaExpedicion.Size = new Size(287, 23);
             dtpFechaExpedicion.TabIndex = 9;

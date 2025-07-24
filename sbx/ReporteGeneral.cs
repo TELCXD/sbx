@@ -46,6 +46,7 @@ namespace sbx
             double VentasTotales = 0;
             double ComprasTotales = 0;
             double GastosTotales = 0;
+            double SalidasTotales = 0;
 
             chart1.Series.Clear();
 
@@ -53,7 +54,7 @@ namespace sbx
             lbl_ventas_totales.Text = "0";
             lbl_gastos.Text = "0";
 
-            //VENTAS - COMPRAS - GASTOS
+            //VENTAS - COMPRAS - GASTOS - SALIDAS
             var respVentasComprasGastos = await _IReporteGeneral.BuscarReporteGeneral(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
 
             string jsonVentasComprasGastos = JsonConvert.SerializeObject(respVentasComprasGastos.Data);
@@ -95,6 +96,10 @@ namespace sbx
                         else if (index == 2)
                         {
                             serie.Points[index].Color = Color.IndianRed;
+                        }
+                        else if (index == 3)
+                        {
+                            serie.Points[index].Color = Color.SteelBlue;
                         }
 
                         index++;
@@ -161,19 +166,35 @@ namespace sbx
                 }
             }
 
+            //SALIDAS
+            var respSalidas = await _IReporteGeneral.BuscarReporteSalidas(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+
+            string jsonSalidas = JsonConvert.SerializeObject(respSalidas.Data);
+
+            DataTable? dataTableSalidas = JsonConvert.DeserializeObject<DataTable>(jsonSalidas);
+
+            if (dataTableSalidas != null)
+            {
+                if (dataTableSalidas.Rows.Count > 0)
+                {
+                    SalidasTotales = dataTableSalidas.AsEnumerable().Sum(row => row.Field<double>("ValorSalidas"));
+                    lbl_salidas.Text = SalidasTotales.ToString("N2", new CultureInfo("es-CO"));
+                }
+            }
+
             //RESULTADO
-            double Resultado = VentasTotales - ComprasTotales - GastosTotales;
+            double Resultado = VentasTotales - (SalidasTotales + GastosTotales);
 
             lbl_resultado.Text = Resultado.ToString("N2", new CultureInfo("es-CO"));
 
-            if (Resultado > 0)
-            {
-                lbl_resultado.ForeColor = Color.SeaGreen;
-            }
-            else
-            {
-                lbl_resultado.ForeColor = Color.Red;
-            }
+            //if (Resultado > 0)
+            //{
+            //    lbl_resultado.ForeColor = Color.SeaGreen;
+            //}
+            //else
+            //{
+            //    lbl_resultado.ForeColor = Color.Red;
+            //}
 
             this.Cursor = Cursors.Default;
         }
@@ -224,6 +245,24 @@ namespace sbx
             _Inventario = _serviceProvider.GetRequiredService<Inventario>();
             _Inventario.Permisos = _Permisos;
             _Inventario.TipoMovimiento = "Entrada";
+            _Inventario.FechaIni = dtp_fecha_inicio.Value;
+            _Inventario.FechaFin = dtp_fecha_fin.Value;
+            _Inventario.FormClosed += (s, args) => _Inventario = null;
+            _Inventario.Show();
+        }
+
+        private void btn_salidas_Click(object sender, EventArgs e)
+        {
+            if (_Inventario != null && !_Inventario.IsDisposed)
+            {
+                _Inventario.BringToFront();
+                _Inventario.WindowState = FormWindowState.Normal;
+                return;
+            }
+
+            _Inventario = _serviceProvider.GetRequiredService<Inventario>();
+            _Inventario.Permisos = _Permisos;
+            _Inventario.TipoMovimiento = "Salida";
             _Inventario.FechaIni = dtp_fecha_inicio.Value;
             _Inventario.FechaFin = dtp_fecha_fin.Value;
             _Inventario.FormClosed += (s, args) => _Inventario = null;
