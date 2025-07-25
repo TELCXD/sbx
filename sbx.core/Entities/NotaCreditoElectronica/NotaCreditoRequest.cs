@@ -1,19 +1,6 @@
 ﻿
-namespace sbx.core.Entities.FacturaEletronica
+namespace sbx.core.Entities.NotaCreditoElectronica
 {
-    public class FacturaRequest
-    {
-        public int numbering_range_id { get; set; }
-        public string reference_code { get; set; } = string.Empty;
-        public string observation { get; set; } = string.Empty;
-        public string payment_form { get; set; } = string.Empty;
-        public string payment_due_date { get; set; } = string.Empty;
-        public string payment_method_code { get; set; } = string.Empty;
-        public BillingPeriod? billing_period { get; set; }
-        public Customer customer { get; set; } = new();
-        public List<Item> items { get; set; } = new();
-    }
-
     public class BillingPeriod
     {
         public string start_date { get; set; } = string.Empty;
@@ -40,9 +27,10 @@ namespace sbx.core.Entities.FacturaEletronica
 
     public class Item
     {
+        public string note { get; set; } = string.Empty;
         public string code_reference { get; set; } = string.Empty;
         public string name { get; set; } = string.Empty;
-        public decimal quantity { get; set; }
+        public decimal quantity { get; set; } 
         public decimal discount_rate { get; set; }
         public decimal price { get; set; }
         public decimal tax_rate { get; set; }
@@ -50,12 +38,21 @@ namespace sbx.core.Entities.FacturaEletronica
         public int standard_code_id { get; set; }
         public int is_excluded { get; set; }
         public int tribute_id { get; set; }
-        public List<WithholdingTax> withholding_taxes { get; set; } = new();
+        public List<object> withholding_taxes { get; set; } = new();
     }
 
-    public class WithholdingTax
+    public class NotaCreditoRequest
     {
-        public string code { get; set; } = string.Empty;
-        public string withholding_tax_rate { get; set; } = string.Empty;
+        public int numbering_range_id { get; set; }
+        public int correction_concept_code { get; set; }
+        public int customization_id { get; set; }
+        public int bill_id { get; set; }
+        public string reference_code { get; set; } = string.Empty;
+        public bool send_email { get; set; }
+        public string observation { get; set; } = string.Empty;
+        public string payment_method_code { get; set; } = string.Empty;
+        public BillingPeriod? billing_period { get; set; } 
+        public Customer customer { get; set; } = new();
+        public List<Item> items { get; set; } = new();
     }
 }

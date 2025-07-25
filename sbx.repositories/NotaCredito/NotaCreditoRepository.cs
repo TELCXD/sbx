@@ -37,14 +37,19 @@ namespace sbx.repositories.NotaCredito
                     DateTime FechaActual = DateTime.Now;
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    sql = @$" INSERT INTO T_NotaCredito (IdVenta,Motivo,CreationDate, IdUserAction)
-                                  VALUES(@IdVenta, @Motivo, @CreationDate, @IdUserAction);
-                                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                    sql = @$" INSERT INTO T_NotaCredito (Prefijo,Consecutivo,IdVenta,Motivo,Estado,CreationDate, IdUserAction)
+                              VALUES(@Prefijo,
+                              (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_NotaCredito WHERE Prefijo = @Prefijo),
+                               @IdVenta, @Motivo,@Estado,@CreationDate,@IdUserAction);
+                               SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                     var parametros = new
                     {
+                        notaCredito.Prefijo,
+                        notaCredito.Consecutivo,
                         notaCredito.IdVenta,
                         notaCredito.Motivo,
+                        notaCredito.Estado,
                         CreationDate = FechaActual,
                         IdUserAction = IdUser
                     };
@@ -432,15 +437,19 @@ namespace sbx.repositories.NotaCredito
                     await connection.OpenAsync();
 
                     string sql = @"SELECT 
+                                    A.IdNotaCredito,
+                                    ISNULL(NULLIF(A.NumberNotaCreditoDIAN, ''),CONCAT(A.Prefijo,A.Consecutivo)) NotaCredito,
                                     A.Motivo,
                                     A.IdVenta,
                                     D.Prefijo,
 									D.Consecutivo,
-                                    CONCAT(D.Prefijo,'-',D.Consecutivo) Factura,
+                                    ISNULL(D.NumberFacturaDIAN,CONCAT(D.Prefijo,D.Consecutivo)) Factura,
 									A.IdUserAction AS IdUserActionNotaCredito,
 									CONCAT(A.IdUserAction, '-', C.UserName) AS Usuario,
+                                    A.NumberNotaCreditoDIAN,
+                                    A.EstadoNotaCreditoDIAN,
+                                    A.NotaCreditoJSON,
                                     B.IdNotaCreditoDetalle,
-                                    B.IdNotaCredito,
                                     B.IdDetalleVenta,	
                                     B.IdProducto,
                                     B.Sku,
@@ -462,7 +471,7 @@ namespace sbx.repositories.NotaCredito
 
                     if (Id > 0)
                     {
-                        Where = $"WHERE B.IdNotaCredito = {Id}";
+                        Where = $"WHERE A.IdNotaCredito = {Id}";
                         sql += Where;
                     }
 
@@ -477,6 +486,61 @@ namespace sbx.repositories.NotaCredito
                 {
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ActualizarDataNotaCreditoElectronica(ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                try
+                {
+                    string sql = "";
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sql = @$" UPDATE T_NotaCredito SET NumberNotaCreditoDIAN = @NumberNotaCreditoDIAN,
+                              EstadoNotaCreditoDIAN = @EstadoNotaCreditoDIAN, NotaCreditoJSON = @NotaCreditoJSON,
+                              UpdateDate = @UpdateDate, IdUserAction = @IdUserAction
+                              WHERE IdNotaCredito = @IdNotaCredito ";
+
+                    var parametros = new
+                    {
+                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito,
+                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NumberNotaCreditoDIAN,
+                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN,
+                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoJSON,
+                        UpdateDate = FechaActual,
+                        IdUserAction = IdUser
+                    };
+
+                    int FilasAfectadas = await connection.ExecuteAsync(sql, parametros);
+
+                    if (FilasAfectadas > 0)
+                    {
+                        response.Flag = true;
+                        response.Message = "Nota credito actualiza con datos factura electronica correctamente";
+                    }
+                    else
+                    {
+                        response.Flag = false;
+                        response.Message = "Se presento un error al intentar actualiza con datos nota credito electronica";
+                    }
+
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    response.Data = 0;
                     return response;
                 }
             }

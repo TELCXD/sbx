@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using sbx.core.Entities;
-using sbx.core.Entities.FacturaEletronica;
-using sbx.core.Interfaces.FacturacionElectronica;
+using sbx.core.Entities.NotaCreditoElectronica;
+using sbx.core.Interfaces.NotaCreditoElectronica;
 
-namespace ExternalServices.FacturacionElectronica.Factus.Facturas
+namespace ExternalServices.FacturacionElectronica.Factus.NotasCredito
 {
-    public class Facturas: IFacturas
+    public class NotasCredito : INotasCreditoElectronica
     {
-        public Response<dynamic> CreaValidaFactura(string Token,string urlApi, FacturaRequest facturaRequest)
+        public Response<dynamic> CreaValidaNotaCredito(string Token, string urlApi, NotaCreditoRequest notaCreditoRequest)
         {
             var response = new Response<dynamic>();
 
@@ -18,12 +18,12 @@ namespace ExternalServices.FacturacionElectronica.Factus.Facturas
                 request.Headers.Add("Accept", "application/json");
                 request.Headers.Add("Authorization", "Bearer " + Token);
 
-                string JsonFactura = JsonConvert.SerializeObject(facturaRequest, new JsonSerializerSettings
+                string JsonNotaCredito = JsonConvert.SerializeObject(notaCreditoRequest, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
                 });
 
-                var content = new StringContent(JsonFactura, null, "application/json");
+                var content = new StringContent(JsonNotaCredito, null, "application/json");
                 request.Content = content;
 
                 var respHttp = client.Send(request);
@@ -38,7 +38,7 @@ namespace ExternalServices.FacturacionElectronica.Factus.Facturas
                         var contentResp = JsonConvert.DeserializeObject<dynamic>(repContent);
 
                         response.Flag = true;
-                        response.Message = "Creacion de factura electronica exitosa";
+                        response.Message = "Creacion de nota credito electronica exitosa";
                         response.Data = contentResp;
                     }
                 }

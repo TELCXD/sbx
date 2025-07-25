@@ -61,7 +61,7 @@ namespace sbx
 
             if (cbx_tipo_reporte.Text == "Resumen por factura - Ganancias y perdidas")
             {
-                cbx_campo_filtro.Items.AddRange(new object[] { "Nombre producto", "Id" });
+                cbx_campo_filtro.Items.AddRange(new object[] { "Prefijo-Consecutivo", "Nombre producto", "Id" });
                 label7.Visible = false;
                 lbl_cantidad_resumen.Visible = false;
                 panel3.Visible = true;
@@ -179,7 +179,7 @@ namespace sbx
                             TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
                             Ganancia += Convert.ToDecimal(item.GananciaBruta);
 
-                            dtg_reportes.Rows.Add(item.CreationDate, item.Factura, item.IdProducto, item.NombreProducto,
+                            dtg_reportes.Rows.Add(item.CreationDate, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN, item.IdProducto, item.NombreProducto,
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
@@ -191,10 +191,12 @@ namespace sbx
                                 item.MargenPorcentaje.ToString("N2", new CultureInfo("es-CO")));
                         }
 
-                        Total += (Subtotal - Descuento) + Impuesto;
+                        //Total += (Subtotal - Descuento) + Impuesto;
+                        Total += (Subtotal - Descuento);
+                        decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                         lbl_cantidadProductos.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
-                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                         lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
@@ -239,7 +241,7 @@ namespace sbx
                             TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
                             Ganancia += Convert.ToDecimal(item.GananciaBruta);
 
-                            dtg_reportes.Rows.Add(item.CreationDate, item.Usuario, item.Factura, item.Cliente, item.Vendedor,
+                            dtg_reportes.Rows.Add(item.CreationDate, item.Usuario, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN, item.Cliente, item.Vendedor,
                                 item.IdProducto, item.Sku, item.CodigoBarras, item.NombreProducto, item.UnidadMedida,
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
@@ -252,10 +254,12 @@ namespace sbx
                                 Convert.ToDecimal(item.MargenPorcentaje, new CultureInfo("es-CO")));
                         }
 
-                        Total += (Subtotal - Descuento) + Impuesto;
+                        //Total += (Subtotal - Descuento) + Impuesto;
+                        Total += (Subtotal - Descuento);
+                        decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
 
                         lbl_cantidadProductos.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
-                        lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                        lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                         lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                         lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));

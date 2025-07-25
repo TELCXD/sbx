@@ -18,10 +18,11 @@ namespace sbx.core.Entities.RangoNumeracion
         public string? NumeroResolucion { get; set; }
         public string? ClaveTecnica { get; set; }
         public DateTime FechaExpedicion { get; set; }
-        public DateTime? FechaVencimiento { get; set; }
+        public DateTime FechaVencimiento { get; set; }
         public int Active { get; set; }
         public int Vencido { get; set; }
         public int EnUso { get; set; }
         public int CodigoDocumento { get; set; }
+        public int DocElectronico { get; set; }
     }
 }

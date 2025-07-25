@@ -7,5 +7,6 @@ namespace sbx.core.Interfaces.NotaCredito
     {
         Task<Response<dynamic>> Create(NotaCreditoEntitie notaCreditoEntitie, int IdUser);
         Task<Response<dynamic>> List(int Id);
+        Task<Response<dynamic>> ActualizarDataNotaCreditoElectronica(ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie, int IdUser);
     }
 }

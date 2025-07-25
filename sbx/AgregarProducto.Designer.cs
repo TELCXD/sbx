@@ -124,7 +124,6 @@
             // 
             // txt_iva
             // 
-            txt_iva.Enabled = false;
             txt_iva.Location = new Point(363, 92);
             txt_iva.MaxLength = 13;
             txt_iva.Name = "txt_iva";
@@ -137,6 +136,7 @@
             // cbx_es_inventariable
             // 
             cbx_es_inventariable.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_es_inventariable.Enabled = false;
             cbx_es_inventariable.FormattingEnabled = true;
             cbx_es_inventariable.Items.AddRange(new object[] { "SI", "NO" });
             cbx_es_inventariable.Location = new Point(363, 314);
@@ -158,9 +158,9 @@
             label4.AutoSize = true;
             label4.Location = new Point(12, 349);
             label4.Name = "label4";
-            label4.Size = new Size(92, 15);
+            label4.Size = new Size(224, 15);
             label4.TabIndex = 50;
-            label4.Text = "Precio unitario *";
+            label4.Text = "Precio unitario (con impuesto, si aplica) *";
             // 
             // txt_precio
             // 
@@ -178,9 +178,9 @@
             label3.AutoSize = true;
             label3.Location = new Point(12, 293);
             label3.Name = "label3";
-            label3.Size = new Size(90, 15);
+            label3.Size = new Size(222, 15);
             label3.TabIndex = 48;
-            label3.Text = "Costo unitario *";
+            label3.Text = "Costo unitario (con impuesto, si aplica) *";
             // 
             // txt_costo
             // 

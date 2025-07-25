@@ -1,5 +1,7 @@
 using ExternalServices.FacturacionElectronica.Factus.Auth;
 using ExternalServices.FacturacionElectronica.Factus.Facturas;
+using ExternalServices.FacturacionElectronica.Factus.NotasCredito;
+using ExternalServices.FacturacionElectronica.Factus.RangosNumeracion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuestPDF.Infrastructure;
@@ -25,6 +27,7 @@ using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.Marca;
 using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.NotaCredito;
+using sbx.core.Interfaces.NotaCreditoElectronica;
 using sbx.core.Interfaces.Pago;
 using sbx.core.Interfaces.Pais;
 using sbx.core.Interfaces.Parametros;
@@ -378,6 +381,10 @@ namespace sbx
                 services.AddTransient<IAuthService, Auth>();
 
                 services.AddTransient<IFacturas, Facturas>();
+
+                services.AddTransient<IRangoNumeracionFE, Rangos>();
+
+                services.AddTransient<INotasCreditoElectronica, NotasCredito>();
 
             })
             .Build();

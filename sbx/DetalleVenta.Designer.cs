@@ -511,7 +511,7 @@
             lbl_nota_credito.AutoSize = true;
             lbl_nota_credito.Font = new Font("Segoe UI", 9.75F);
             lbl_nota_credito.ForeColor = SystemColors.InfoText;
-            lbl_nota_credito.Location = new Point(124, 5);
+            lbl_nota_credito.Location = new Point(124, 8);
             lbl_nota_credito.Name = "lbl_nota_credito";
             lbl_nota_credito.RightToLeft = RightToLeft.No;
             lbl_nota_credito.Size = new Size(13, 17);

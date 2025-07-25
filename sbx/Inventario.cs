@@ -191,7 +191,7 @@ namespace sbx
                             decimal cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                             decimal desc = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO"));
                             decimal iva = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"));
-                            decimal total = CalcularTotal(precio, iva, desc);
+                            decimal total = CalcularTotal(precio, 0, desc);
                             total = total * cantidad;
                             fila.Cells["cl_total"].Value = total.ToString("N2", new CultureInfo("es-CO"));
                         }

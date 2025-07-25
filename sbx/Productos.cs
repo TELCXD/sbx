@@ -359,6 +359,34 @@ namespace sbx
                                 }
                             }
 
+                            if (string.IsNullOrEmpty(item[7]?.ToString()?.Trim()))
+                            {
+                                Mensaje += "El Impuesto es obligatorio, en caso de no tener colocar el valor en cero (0) ";
+                                Error++;
+                            }
+                            else
+                            {
+                                string valor = item[7]?.ToString()?.Trim() ?? "";
+                                if (valor != "")
+                                {
+                                    if (!decimal.TryParse(valor, out decimal Impuesto))
+                                    {
+                                        Mensaje += "El impuesto debe ser un valor numérico válido, ";
+                                        Error++;
+                                    }
+                                    else if (Impuesto < 0)
+                                    {
+                                        Mensaje += "El impuesto no puede ser negativo, ";
+                                        Error++;
+                                    }
+                                }
+                                else
+                                {
+                                    Mensaje += "El impuesto es obligatorio, en caso de no tener colocar el valor en cero (0), ";
+                                    Error++;
+                                }
+                            }
+
                             if (Error > 0)
                             {
                                 this.Cursor = Cursors.Default;
@@ -416,7 +444,7 @@ namespace sbx
             int startRow = 2;
             int endRow = Math.Min(worksheet.LastRowUsed()?.RowNumber() ?? 100, 5000);
             int startColumn = 1; // Columna A
-            int endColumn = 7;   // Columna G
+            int endColumn = 8;   // Columna G
 
             // Crear columnas (A-G)
             for (int col = startColumn; col <= endColumn; col++)

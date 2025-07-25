@@ -126,7 +126,7 @@ VALUES ('Home',1,'home',1,1), ('Ventas',2,'ventas',1,1), ('Productos',3,'product
 ('ListaPrecios',16,'listaPrecios',1,1), ('Promociones',17,'promociones',1,1),('Usuarios',18,'usuarios',1,1),
 ('Permisos',19,'permisos',1,1),('Cotizacion',20,'cotizacion',1,1),('VentasUno',21,'quitarUno',1,1),
 ('Vendedores',22,'vendedores',1,1),('ConversionProducto',23,'conversionProducto',1,1),('Gasto',24,'Gastos',1,1),
-('CredencialesApi',25,'credencialesApi',1,1)
+('RangosNumeracion',25,'rangosNumeracion',1,1)
 GO
 CREATE TABLE TR_User_Menu
 (
@@ -261,6 +261,7 @@ FechaVencimiento DATE,
 Vencido BIT,
 Active BIT,
 EnUso BIT,
+DocElectronico BIT,
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
@@ -269,8 +270,12 @@ FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
 INSERT INTO T_RangoNumeracion (IdRangoDIAN,Id_TipoDocumentoRangoNumeracion, Prefijo, NumeroDesde,NumeroHasta,NumeroResolucion
-,ClaveTecnica,FechaExpedicion,FechaVencimiento,Vencido,Active,EnUso,CreationDate,IdUserAction)
-VALUES(0,21,'FV',1,999999999,'','','2030-01-01','2030-01-01',0,1,1,GETDATE(),1)
+,ClaveTecnica,FechaExpedicion,FechaVencimiento,Vencido,Active,EnUso,DocElectronico,CreationDate,IdUserAction)
+VALUES(0,21,'FV',1,999999999,'','','2025-05-01','2030-01-01',0,1,1,0,GETDATE(),1)
+GO
+INSERT INTO T_RangoNumeracion (IdRangoDIAN,Id_TipoDocumentoRangoNumeracion, Prefijo, NumeroDesde,NumeroHasta,NumeroResolucion
+,ClaveTecnica,FechaExpedicion,FechaVencimiento,Vencido,Active,EnUso,DocElectronico,CreationDate,IdUserAction)
+VALUES(1,22,'N',1,999999999,'','','2025-05-01','2030-01-01',0,1,1,0,GETDATE(),1)
 GO
 CREATE TABLE T_Categorias(
 IdCategoria INT IDENTITY(1,1) PRIMARY KEY,
@@ -715,8 +720,15 @@ FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 GO
 CREATE TABLE T_NotaCredito (
 IdNotaCredito INT PRIMARY KEY IDENTITY,
+Prefijo VARCHAR(5),
+Consecutivo BIGINT,
 IdVenta INT,
 Motivo NVARCHAR(255),
+Estado VARCHAR(100), --REGISTRADA
+NumberNotaCreditoDIAN VARCHAR(20),
+EstadoNotaCreditoDIAN VARCHAR(20), --EMITIDA,PENDIENTE EMITIR
+NotaCreditoJSON VARCHAR(MAX),
+UpdateDate DATETIME,
 CreationDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY (IdVenta) REFERENCES T_Ventas(IdVenta),
@@ -735,6 +747,7 @@ UnidadMedida VARCHAR(50),
 PrecioUnitario DECIMAL(10,2) NOT NULL,
 Descuento DECIMAL(10,2),
 Impuesto DECIMAL(10,2) NOT NULL,
+UpdateDate DATETIME,
 CreationDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY (IdNotaCredito) REFERENCES T_NotaCredito(IdNotaCredito),
