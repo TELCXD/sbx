@@ -54,7 +54,7 @@ namespace sbx
                 {
                     if (resp.Data.Count > 0)
                     {
-                        lbl_nota_credito.Text = "NC-" + resp.Data[0].IdNotaCredito;
+                        lbl_nota_credito.Text = resp.Data[0].NotaCredito;
                         lbl_usuario.Text = resp.Data[0].Usuario;
                         txt_motivo_devolucion.Text = resp.Data[0].Motivo;
                         lbl_factura.Text = resp.Data[0].Factura;

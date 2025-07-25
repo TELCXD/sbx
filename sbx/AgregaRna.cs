@@ -79,6 +79,7 @@ namespace sbx
             cbx_expired.SelectedIndex = 1;
             cbx_estado.SelectedIndex = 0;
             cbx_en_uso.SelectedIndex = 0;
+            cbx_doc_electronico.SelectedIndex = 1;
 
             if (Id_RangoNumeracion > 0)
             {
@@ -98,6 +99,7 @@ namespace sbx
                     cbx_expired.SelectedIndex = resp.Data[0].Vencido == true ? 0 : 1;
                     cbx_estado.SelectedIndex = resp.Data[0].Active == true ? 0 : 1;
                     cbx_en_uso.SelectedIndex = resp.Data[0].EnUso == true ? 0 : 1;
+                    cbx_doc_electronico.SelectedIndex = resp.Data[0].DocElectronico == true ? 0 : 1;
                 }
                 else
                 {
@@ -180,7 +182,8 @@ namespace sbx
                         FechaVencimiento = dtpk_fecha_vencimiento.Value,
                         Vencido = cbx_expired.SelectedIndex == 0 ? 1 : 0,
                         Active = cbx_estado.SelectedIndex == 0 ? 1 : 0,
-                        EnUso = cbx_en_uso.SelectedIndex == 0 ? 1 : 0
+                        EnUso = cbx_en_uso.SelectedIndex == 0 ? 1 : 0,
+                        DocElectronico = cbx_doc_electronico.SelectedIndex == 0 ? 1 : 0
                     };
 
                     var validationContext = new ValidationContext(Datos);
@@ -192,7 +195,7 @@ namespace sbx
 
                     if (esValido)
                     {
-                        if (Datos.NumeroResolucion != "" && Datos.ClaveTecnica != "") 
+                        if (Datos.DocElectronico == 1) 
                         {
                             //Autenticacion DIAN
                             AuthEntitie authEntitie = new AuthEntitie
@@ -249,6 +252,7 @@ namespace sbx
                                                     DateTime start_date = Convert.ToDateTime(respRangoDian.Data.data[0].start_date);
                                                     DateTime end_date = Convert.ToDateTime(respRangoDian.Data.data[0].end_date);
                                                     string technical_key = respRangoDian.Data.data[0].technical_key;
+                                                    if(technical_key == null) { technical_key = ""; }
                                                     bool is_expired = respRangoDian.Data.data[0].is_expired;
 
                                                     if (Convert.ToInt32(id) == Datos.Id_RangoDIAN

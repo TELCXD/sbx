@@ -37,14 +37,19 @@ namespace sbx.repositories.NotaCredito
                     DateTime FechaActual = DateTime.Now;
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    sql = @$" INSERT INTO T_NotaCredito (IdVenta,Motivo,CreationDate, IdUserAction)
-                                  VALUES(@IdVenta, @Motivo, @CreationDate, @IdUserAction);
-                                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                    sql = @$" INSERT INTO T_NotaCredito (Prefijo,Consecutivo,IdVenta,Motivo,Estado,CreationDate, IdUserAction)
+                              VALUES(@Prefijo,
+                              (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_NotaCredito WHERE Prefijo = @Prefijo),
+                               @IdVenta, @Motivo,@Estado,@CreationDate,@IdUserAction);
+                               SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                     var parametros = new
                     {
+                        notaCredito.Prefijo,
+                        notaCredito.Consecutivo,
                         notaCredito.IdVenta,
                         notaCredito.Motivo,
+                        notaCredito.Estado,
                         CreationDate = FechaActual,
                         IdUserAction = IdUser
                     };
@@ -433,6 +438,7 @@ namespace sbx.repositories.NotaCredito
 
                     string sql = @"SELECT 
                                     A.IdNotaCredito,
+                                    ISNULL(NULLIF(A.NumberNotaCreditoDIAN, ''),CONCAT(A.Prefijo,A.Consecutivo)) NotaCredito,
                                     A.Motivo,
                                     A.IdVenta,
                                     D.Prefijo,

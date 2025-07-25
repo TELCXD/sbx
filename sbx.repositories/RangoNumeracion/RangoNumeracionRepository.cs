@@ -43,7 +43,8 @@ namespace sbx.repositories.RangoNumeracion
                                   FechaVencimiento = @FechaVencimiento,
                                   Vencido = @Vencido,
                                   Active = @Active, 
-                                  EnUso = @EnUso, 
+                                  EnUso = @EnUso,
+                                  DocElectronico = @DocElectronico,
                                   UpdateDate = @UpdateDate,
                                   IdUserAction = @IdUserAction
                                   WHERE Id_RangoNumeracion = @Id_RangoNumeracion";
@@ -63,6 +64,7 @@ namespace sbx.repositories.RangoNumeracion
                             rangoNumeracionEntitie.Vencido,
                             Active = rangoNumeracionEntitie.Active,
                             EnUso = rangoNumeracionEntitie.EnUso,
+                            rangoNumeracionEntitie.DocElectronico,
                             UpdateDate = FechaActual,
                             IdUserAction = IdUser
                         };
@@ -89,10 +91,10 @@ namespace sbx.repositories.RangoNumeracion
                     {
                         sql = @$" INSERT INTO T_RangoNumeracion (IdRangoDIAN,Id_TipoDocumentoRangoNumeracion,
                                   Prefijo,NumeroDesde,NumeroHasta,NumeroResolucion,ClaveTecnica,FechaExpedicion,
-                                  FechaVencimiento,Vencido,Active,EnUso,CreationDate,IdUserAction)
+                                  FechaVencimiento,Vencido,Active,EnUso,DocElectronico,CreationDate,IdUserAction)
                                   VALUES(@Id_RangoDIAN,@Id_TipoDocumentoRangoNumeracion,@Prefijo,@NumeroDesde,
                                   @NumeroHasta,@NumeroResolucion,@ClaveTecnica,@FechaExpedicion,
-                                  @FechaVencimiento,@Vencido,@Active,@EnUso,
+                                  @FechaVencimiento,@Vencido,@Active,@EnUso,@DocElectronico,
                                   @CreationDate,@IdUserAction); SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                         var parametros = new
@@ -109,6 +111,7 @@ namespace sbx.repositories.RangoNumeracion
                             rangoNumeracionEntitie.Vencido,
                             Active = rangoNumeracionEntitie.Active,
                             EnUso = rangoNumeracionEntitie.EnUso,
+                            rangoNumeracionEntitie.DocElectronico,
                             CreationDate = FechaActual,
                             IdUserAction = IdUser
                         };
@@ -168,6 +171,7 @@ namespace sbx.repositories.RangoNumeracion
                                   ,Vencido
                                   ,Active
                                   ,ISNULL(EnUso, 0) EnUso
+                                  ,DocElectronico
                                   ,CreationDate
                                   ,UpdateDate
                                   ,IdUserAction
@@ -221,6 +225,7 @@ namespace sbx.repositories.RangoNumeracion
                                   ,Vencido
                                   ,Active
                                   ,ISNULL(EnUso, 0) EnUso
+                                  ,DocElectronico
                                   ,CreationDate
                                   ,UpdateDate
                                   ,IdUserAction
@@ -356,6 +361,7 @@ namespace sbx.repositories.RangoNumeracion
                                   ,Vencido
                                   ,Active
                                   ,ISNULL(EnUso, 0) EnUso
+                                  ,DocElectronico
                                   ,CreationDate
                                   ,UpdateDate
                                   ,IdUserAction
@@ -409,6 +415,7 @@ namespace sbx.repositories.RangoNumeracion
                                   ,Vencido
                                   ,Active
                                   ,ISNULL(EnUso, 0) EnUso
+                                  ,DocElectronico
                                   ,CreationDate
                                   ,UpdateDate
                                   ,IdUserAction

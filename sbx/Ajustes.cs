@@ -103,6 +103,7 @@ namespace sbx
                         item.Id_RangoNumeracion,
                         item.IdRangoDIAN,
                         item.EnUso == true ? "SI" : "NO",
+                        item.DocElectronico == true ? "SI" : "NO",
                         item.Vencido == true ? "SI" : "NO",
                         item.Active == true ? "Active" : "Inactivo",
                         item.Id_TipoDocumentoRangoNumeracion == 21 ? "Factura de Venta"
@@ -154,6 +155,23 @@ namespace sbx
                             _AgregaRna.FormClosed += (s, args) => _AgregaRna = null;
                             _AgregaRna.ShowDialog();
                         }
+                        //int id_rango_dian = Convert.ToInt32(row.Cells["cl_id_rango_dian"].Value);
+
+                        //if (id_rango_dian > 0) 
+                        //{
+                        //    if (_Permisos != null)
+                        //    {
+                        //        _AgregaRna = _serviceProvider.GetRequiredService<AgregaRna>();
+                        //        _AgregaRna.Permisos = _Permisos;
+                        //        _AgregaRna.Id_RangoNumeracion = Id_RangoNumeracion;
+                        //        _AgregaRna.FormClosed += (s, args) => _AgregaRna = null;
+                        //        _AgregaRna.ShowDialog();
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    MessageBox.Show("No es posible editar este registro", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        //}
                     }
                 }
             }

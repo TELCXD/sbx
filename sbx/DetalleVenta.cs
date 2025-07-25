@@ -100,12 +100,12 @@ namespace sbx
                         lbl_medio_pago.Text = resp.Data[0].NombreMetodoPago;
                         lbl_referencia.Text = resp.Data[0].Referencia;
                         lbl_banco.Text = resp.Data[0].NombreBanco;
-                        lbl_estado.Text = resp.Data[0].EstadoFacturaDIAN == "" ? resp.Data[0].Estado : resp.Data[0].EstadoFacturaDIAN;
+                        lbl_estado.Text = resp.Data[0].EstadoFacturaDIAN != "" ? resp.Data[0].Estado == "FACTURADA" ? resp.Data[0].EstadoFacturaDIAN : resp.Data[0].Estado : resp.Data[0].Estado;
                         lbl_usuario.Text = resp.Data[0].IdUserActionFactura + " - " + resp.Data[0].UserNameFactura;
 
                         if (resp.Data[0].IdNotaCredito > 0) 
                         {
-                            lbl_nota_credito.Text = "NC - " + resp.Data[0].IdNotaCredito;
+                            lbl_nota_credito.Text = resp.Data[0].NumberNotaCreditoDIAN == "" ? resp.Data[0].NotaCredito : resp.Data[0].NumberNotaCreditoDIAN;
                             IdNotaCredito = resp.Data[0].IdNotaCredito;
                             if (Origen != "Inventario") { btn_ver_productos.Enabled = true; }   
                         }

@@ -23,5 +23,6 @@ namespace sbx.core.Entities.RangoNumeracion
         public int Vencido { get; set; }
         public int EnUso { get; set; }
         public int CodigoDocumento { get; set; }
+        public int DocElectronico { get; set; }
     }
 }

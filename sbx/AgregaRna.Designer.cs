@@ -62,6 +62,8 @@
             label1 = new Label();
             txt_numero_desde = new TextBox();
             errorProvider1 = new ErrorProvider(components);
+            cbx_doc_electronico = new ComboBox();
+            label12 = new Label();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -121,6 +123,8 @@
             // 
             panel4.BackColor = SystemColors.Window;
             panel4.BorderStyle = BorderStyle.Fixed3D;
+            panel4.Controls.Add(cbx_doc_electronico);
+            panel4.Controls.Add(label12);
             panel4.Controls.Add(cbx_expired);
             panel4.Controls.Add(label11);
             panel4.Controls.Add(label10);
@@ -391,6 +395,25 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // cbx_doc_electronico
+            // 
+            cbx_doc_electronico.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_doc_electronico.FormattingEnabled = true;
+            cbx_doc_electronico.Items.AddRange(new object[] { "SI", "NO" });
+            cbx_doc_electronico.Location = new Point(345, 356);
+            cbx_doc_electronico.Name = "cbx_doc_electronico";
+            cbx_doc_electronico.Size = new Size(287, 23);
+            cbx_doc_electronico.TabIndex = 41;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(345, 336);
+            label12.Name = "label12";
+            label12.Size = new Size(132, 15);
+            label12.TabIndex = 42;
+            label12.Text = "Documento electrónico";
+            // 
             // AgregaRna
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -446,5 +469,7 @@
         private TextBox txt_clave_Tecnica;
         private ComboBox cbx_expired;
         private Label label11;
+        private ComboBox cbx_doc_electronico;
+        private Label label12;
     }
 }

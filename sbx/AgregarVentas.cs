@@ -2023,7 +2023,7 @@ namespace sbx
                                 string ClaveTecnica = respDoc.Data[0].ClaveTecnica.ToString();
                                 bool FacturaElectronica = false;
 
-                                if (NumeroResolucion != "" && ClaveTecnica != "") { FacturaElectronica = true; }
+                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) { FacturaElectronica = true; }
 
                                 if (Actual <= NumHasta)
                                 {
