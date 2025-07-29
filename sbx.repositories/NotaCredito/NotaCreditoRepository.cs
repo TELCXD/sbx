@@ -592,7 +592,7 @@ namespace sbx.repositories.NotaCredito
 									G.UserName UserName,
                                     A.IdUserAction 
                                     FROM T_NotaCredito A
-                                    INNER JOIN T_NotaCreditoDetalle B ON A.IdVenta = B.IdNotaCredito
+                                    INNER JOIN T_NotaCreditoDetalle B ON A.IdNotaCredito = B.IdNotaCredito
                                     INNER JOIN T_User G ON G.IdUser = A.IdUserAction
                                     WHERE 
                                     A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120) " + FiltroPorUsuario;

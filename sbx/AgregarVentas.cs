@@ -5,6 +5,7 @@ using sbx.core.Entities.Auth;
 using sbx.core.Entities.Cotizacion;
 using sbx.core.Entities.FacturaEletronica;
 using sbx.core.Entities.PagosVenta;
+using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Entities.Venta;
 using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.Banco;
@@ -2012,9 +2013,6 @@ namespace sbx
 
                         var respDoc = await _IRangoNumeracion.IdentificaDocumento(21);
 
-                        int Id_RangoNumeracion;
-                        int IdRangoDIAN;
-
                         if (respDoc.Data != null)
                         {
                             if (respDoc.Data.Count > 0)
@@ -2022,18 +2020,92 @@ namespace sbx
                                 long NumDesde = respDoc.Data[0].NumeroDesde;
                                 long NumHasta = respDoc.Data[0].NumeroHasta;
                                 long Actual = respDoc.Data[0].ConsecutivoActual;
+                                int Id_RangoNumeracion = respDoc.Data[0].Id_RangoNumeracion;
+                                int IdRangoDIAN = respDoc.Data[0].IdRangoDIAN;
+                                int IsActive = Convert.ToInt32(respDoc.Data[0].Active);
 
                                 string NumeroResolucion = respDoc.Data[0].NumeroResolucion.ToString();
                                 string ClaveTecnica = respDoc.Data[0].ClaveTecnica.ToString();
                                 bool FacturaElectronica = false;
+                                string Token = "";
 
-                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) { FacturaElectronica = true; }
+                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) 
+                                { 
+                                    FacturaElectronica = true;
+
+                                    AuthEntitie authEntitie = new AuthEntitie
+                                    {
+                                        url_api = ConfigurationManager.AppSettings["UrlAuthPOST"]!,
+                                        grant_type = ConfigurationManager.AppSettings["grant_typeAuth"]!,
+                                        client_id = ConfigurationManager.AppSettings["client_id"]!,
+                                        client_secret = ConfigurationManager.AppSettings["client_secret"]!,
+                                        username = ConfigurationManager.AppSettings["username"]!,
+                                        Passwords = ConfigurationManager.AppSettings["password"]!
+                                    };
+
+                                    if (!string.IsNullOrEmpty(authEntitie.url_api) && !string.IsNullOrEmpty(authEntitie.grant_type)
+                                        && !string.IsNullOrEmpty(authEntitie.client_id) && !string.IsNullOrEmpty(authEntitie.client_secret)
+                                        && !string.IsNullOrEmpty(authEntitie.username) && !string.IsNullOrEmpty(authEntitie.Passwords))
+                                    {
+                                        var RespAuth = _IAuthService.Autenticacion(authEntitie);
+
+                                        if (RespAuth != null)
+                                        {
+                                            if (RespAuth.Flag && RespAuth.Data!.access_token != "")
+                                            {
+                                                Token = RespAuth.Data!.access_token.ToString();
+                                                string UrlRangos = ConfigurationManager.AppSettings["UrlRangosGET"]!;
+
+                                                RangosEntitie rangosEntitie = new RangosEntitie
+                                                {
+                                                    Id = IdRangoDIAN,
+                                                    document = 21,
+                                                    resolution_number = NumeroResolucion,
+                                                    technical_key = ClaveTecnica,
+                                                    is_active = IsActive
+                                                };
+
+                                                var respGetRangos = _IRangoNumeracionFE.ConsultaRangoDIAN(Token, UrlRangos, rangosEntitie);
+
+                                                if (respGetRangos != null)
+                                                {
+                                                    if (respGetRangos.Flag)
+                                                    {
+                                                        Actual = Convert.ToInt64(respGetRangos.Data!.data[0].current);
+                                                    }
+                                                    else
+                                                    {
+                                                        Actual = respDoc.Data[0].ConsecutivoActual;
+                                                        MessageBox.Show($"Error en consulta de rango numeracion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Actual = respDoc.Data[0].ConsecutivoActual;
+                                                    MessageBox.Show($"Error en consulta de rango numeracion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Actual = respDoc.Data[0].ConsecutivoActual;
+                                                MessageBox.Show($"Error en autenticacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Actual = respDoc.Data[0].ConsecutivoActual;
+                                            MessageBox.Show($"Error en autenticacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Actual = respDoc.Data[0].ConsecutivoActual;
+                                        MessageBox.Show($"No se encuentra informacion completa de Url Apis", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
 
                                 if (Actual <= NumHasta)
                                 {
-                                    Id_RangoNumeracion = respDoc.Data[0].Id_RangoNumeracion;
-                                    IdRangoDIAN = respDoc.Data[0].IdRangoDIAN;
-
                                     venta.Id_RangoNumeracion = Id_RangoNumeracion;
                                     venta.IdRangoDIAN = IdRangoDIAN;
                                     venta.Prefijo = respDoc.Data[0].Prefijo;
@@ -2143,12 +2215,6 @@ namespace sbx
                                                             {
                                                                 if (RespAuth.Flag && RespAuth.Data.access_token != "")
                                                                 {
-                                                                    string Token = RespAuth.Data.access_token.ToString();
-
-
-
-                                                                    string UrlCrearValidarFactura = ConfigurationManager.AppSettings["UrlCrearValidarFacturaPOST"]!;
-
                                                                     if (DataFacturaRegistrada.Data != null)
                                                                     {
                                                                         if (DataFacturaRegistrada.Data.Count > 0)
@@ -2226,6 +2292,8 @@ namespace sbx
                                                                                 customer = customer,
                                                                                 items = Listitems
                                                                             };
+
+                                                                            string UrlCrearValidarFactura = ConfigurationManager.AppSettings["UrlCrearValidarFacturaPOST"]!;
 
                                                                             var responseFacturaElectronica = _IFacturas.CreaValidaFactura(Token, UrlCrearValidarFactura, facturaRequest);
 

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using sbx.core.Entities.Auth;
 using sbx.core.Entities.NotaCredito;
 using sbx.core.Entities.NotaCreditoElectronica;
+using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Entities.Venta;
 using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.FacturacionElectronica;
@@ -31,9 +33,11 @@ namespace sbx
         private readonly INotasCreditoElectronica _INotasCreditoElectronica;
         private readonly IAuthService _IAuthService;
         private readonly IVenta _IVenta;
+        private readonly IRangoNumeracionFE _IRangoNumeracionFE;
 
         public NotasCredito(INotaCredito notaCredito, ITienda tienda, IParametros parametros, IServiceProvider serviceProvider,
-            IRangoNumeracion rangoNumeracion, INotasCreditoElectronica notasCreditoElectronica, IAuthService iAuthService, IVenta iVenta)
+            IRangoNumeracion rangoNumeracion, INotasCreditoElectronica notasCreditoElectronica, 
+            IAuthService iAuthService, IVenta iVenta, IRangoNumeracionFE iRangoNumeracionFE)
         {
             InitializeComponent();
             _INotaCredito = notaCredito;
@@ -44,6 +48,7 @@ namespace sbx
             _INotasCreditoElectronica = notasCreditoElectronica;
             _IAuthService = iAuthService;
             _IVenta = iVenta;
+            _IRangoNumeracionFE = iRangoNumeracionFE;
         }
 
         decimal Cantidad = 0;
@@ -325,7 +330,6 @@ namespace sbx
                                     decimal cantidad;
                                     decimal desc;
                                     decimal iva;
-                                    decimal totalLinea;
                                     decimal total;
 
                                     foreach (var item in DataNotaCr.Data)
@@ -620,17 +624,15 @@ namespace sbx
                 {
                     if (respDoc.Data.Count > 0)
                     {
+                        int IdRangoDIAN = Convert.ToInt32(respDoc.Data[0].IdRangoDIAN);
                         long NumDesde = respDoc.Data[0].NumeroDesde;
                         long NumHasta = respDoc.Data[0].NumeroHasta;
-                        long Actual = respDoc.Data[0].ConsecutivoActual;
                         string NumeroResolucion = respDoc.Data[0].NumeroResolucion.ToString();
                         string ClaveTecnica = respDoc.Data[0].ClaveTecnica.ToString();
-                        bool NotaCreditoElectronica = false;
-                        DateTime FechaExpedicion = DateTime.Now;
-                        DateTime FechaVencimiento = DateTime.Now;
-                        int Id_RangoNumeracion;
-                        int IdRangoDIAN;
+                        int IsActive = Convert.ToInt32(respDoc.Data[0].Active);
 
+                        bool NotaCreditoElectronica = false;
+                        
                         var row = dtg_nota_credito.SelectedRows[0];
                         int IdVenta = Convert.ToInt32(row.Cells["cl_id_venta"].Value);
                         int IdNotaCredito = Convert.ToInt32(row.Cells["cl_id_nota_credito"].Value);
@@ -645,7 +647,10 @@ namespace sbx
                                 IdIdentificationType = Convert.ToInt32(resp.Data[0].IdIdentificationType);
                                 MotivoNotaCredito = resp.Data[0].MotivoNotaCredito.ToString();
 
-                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) { NotaCreditoElectronica = true; }
+                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) 
+                                { 
+                                    NotaCreditoElectronica = true;
+                                }
 
                                 if (FacturaElectronica == true && NotaCreditoElectronica == false)
                                 {
@@ -653,146 +658,203 @@ namespace sbx
                                     return;
                                 }
 
-                                if (Actual <= NumHasta)
+                                ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie =
+                                new ActualizarNotaCreditoForNotaCreditoElectronicaEntitie();
+
+                                if (NotaCreditoElectronica == true)
                                 {
-                                    Id_RangoNumeracion = respDoc.Data[0].Id_RangoNumeracion;
-                                    IdRangoDIAN = respDoc.Data[0].IdRangoDIAN;
-
-                                    ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie =
-                                                    new ActualizarNotaCreditoForNotaCreditoElectronicaEntitie();
-
-                                    if (NotaCreditoElectronica == true)
+                                    if (!string.IsNullOrEmpty(FacturaJSON))
                                     {
-                                        if (!string.IsNullOrEmpty(FacturaJSON))
+                                        AuthEntitie authEntitie = new AuthEntitie
                                         {
-                                            AuthEntitie authEntitie = new AuthEntitie
-                                            {
-                                                url_api = ConfigurationManager.AppSettings["UrlAuthPOST"]!,
-                                                grant_type = ConfigurationManager.AppSettings["grant_typeAuth"]!,
-                                                client_id = ConfigurationManager.AppSettings["client_id"]!,
-                                                client_secret = ConfigurationManager.AppSettings["client_secret"]!,
-                                                username = ConfigurationManager.AppSettings["username"]!,
-                                                Passwords = ConfigurationManager.AppSettings["password"]!
-                                            };
+                                            url_api = ConfigurationManager.AppSettings["UrlAuthPOST"]!,
+                                            grant_type = ConfigurationManager.AppSettings["grant_typeAuth"]!,
+                                            client_id = ConfigurationManager.AppSettings["client_id"]!,
+                                            client_secret = ConfigurationManager.AppSettings["client_secret"]!,
+                                            username = ConfigurationManager.AppSettings["username"]!,
+                                            Passwords = ConfigurationManager.AppSettings["password"]!
+                                        };
 
-                                            if (!string.IsNullOrEmpty(authEntitie.url_api) && !string.IsNullOrEmpty(authEntitie.grant_type)
-                                                && !string.IsNullOrEmpty(authEntitie.client_id) && !string.IsNullOrEmpty(authEntitie.client_secret)
-                                                && !string.IsNullOrEmpty(authEntitie.username) && !string.IsNullOrEmpty(authEntitie.Passwords))
-                                            {
-                                                var RespAuth = _IAuthService.Autenticacion(authEntitie);
+                                        if (!string.IsNullOrEmpty(authEntitie.url_api) && !string.IsNullOrEmpty(authEntitie.grant_type)
+                                            && !string.IsNullOrEmpty(authEntitie.client_id) && !string.IsNullOrEmpty(authEntitie.client_secret)
+                                            && !string.IsNullOrEmpty(authEntitie.username) && !string.IsNullOrEmpty(authEntitie.Passwords))
+                                        {
+                                            var RespAuth = _IAuthService.Autenticacion(authEntitie);
 
-                                                if (RespAuth.Data != null)
+                                            if (RespAuth != null)
+                                            {
+                                                if (RespAuth.Flag && RespAuth.Data!.access_token != "")
                                                 {
-                                                    if (RespAuth.Flag && RespAuth.Data.access_token != "")
+                                                    string Token = RespAuth.Data!.access_token.ToString();
+
+                                                    string UrlRangos = ConfigurationManager.AppSettings["UrlRangosGET"]!;
+
+                                                    RangosEntitie rangosEntitie = new RangosEntitie
                                                     {
-                                                        string Token = RespAuth.Data.access_token.ToString();
-                                                        string UrlCrearValidarNotaCredito = ConfigurationManager.AppSettings["UrlCrearValidarNotaCreditoPOST"]!;
+                                                        Id = IdRangoDIAN,
+                                                        document = 22,
+                                                        resolution_number = NumeroResolucion,
+                                                        technical_key = ClaveTecnica,
+                                                        is_active = IsActive
+                                                    };
 
-                                                        dynamic? resultado = JsonConvert.DeserializeObject<dynamic>(FacturaJSON);
+                                                    var respGetRangos = _IRangoNumeracionFE.ConsultaRangoDIAN(Token, UrlRangos, rangosEntitie);
 
-                                                        if (resultado != null)
+                                                    if (respGetRangos != null)
+                                                    {
+                                                        if (respGetRangos.Flag)
                                                         {
-                                                            int _bill_id = resultado.data.bill.id;
+                                                            long current = Convert.ToInt64(respGetRangos.Data!.data[0].current);
 
-                                                            Customer customer = new Customer();
-                                                            customer.identification_document_id =
-                                                               (IdIdentificationType == 1 ? 3 : //Cédula de ciudadanía
-                                                               IdIdentificationType == 2 ? 5 : //Cédula de extranjería
-                                                            IdIdentificationType == 3 ? 3 : //RUT de momento se maneja con Cédula de ciudadanía
-                                                               IdIdentificationType == 4 ? 6 : 3).ToString(); //NIT
-
-                                                            customer.identification = resultado.data.customer.identification;
-                                                            customer.dv = resultado.data.customer.dv ?? "";
-                                                            if (IdIdentificationType == 4) //NIT
+                                                            if (current <= NumHasta)
                                                             {
-                                                                customer.company = resultado.data.customer.company;
-                                                                customer.trade_name = resultado.data.customer.trade_name;
-                                                            }
-                                                            else
-                                                            {
-                                                                customer.names = resultado.data.customer.names;
-                                                            }
-                                                            customer.address = resultado.data.customer.address;
-                                                            customer.email = resultado.data.customer.email;
-                                                            customer.phone = resultado.data.customer.phone;
-                                                            customer.legal_organization_id = resultado.data.customer.legal_organization.id; // 1. Juridico, 2. Natural
-                                                            customer.tribute_id = resultado.data.customer.tribute.id; // 18. IVA, 21. No aplica *
-                                                            customer.municipality_id = "1079"; //Cali, valle del cauca
+                                                                DateTime FechaExpedicion = DateTime.Now;
+                                                                DateTime FechaVencimiento = DateTime.Now;
 
-                                                            List<Item> Listitems = new List<Item>();
-                                                            foreach (var ItemsVenta in resultado.data.items)
-                                                            {
-                                                                //WithholdingTax withholdingTax = new WithholdingTax
-                                                                //{
-                                                                //    Code = "01",
-                                                                //    WithholdingTaxRate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO"))
-                                                                //};
+                                                                FechaExpedicion = Convert.ToDateTime(respDoc.Data[0].FechaExpedicion);
+                                                                FechaVencimiento = Convert.ToDateTime(respDoc.Data[0].FechaVencimiento);
 
-                                                                //ListwithholdingTax.Add(withholdingTax);
+                                                                DateTime FechaActual = DateTime.Now;
+                                                                FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd"));
 
-                                                                Item item = new Item
+                                                                if (FechaVencimiento >= FechaActual)
                                                                 {
-                                                                    note = ItemsVenta.note,
-                                                                    code_reference = ItemsVenta.code_reference,
-                                                                    name = ItemsVenta.name,
-                                                                    quantity = Convert.ToDecimal(ItemsVenta.quantity, new CultureInfo("es-CO")),
-                                                                    discount_rate = Convert.ToDecimal(ItemsVenta.discount_rate, new CultureInfo("es-CO")),
-                                                                    price = Convert.ToDecimal(ItemsVenta.price, new CultureInfo("es-CO")),
-                                                                    tax_rate = Convert.ToDecimal(ItemsVenta.tax_rate, new CultureInfo("es-CO")),
-                                                                    unit_measure_id = ItemsVenta.unit_measure.id,
-                                                                    standard_code_id = ItemsVenta.standard_code.id,
-                                                                    is_excluded = ItemsVenta.is_excluded,
-                                                                    tribute_id = ItemsVenta.tribute.id,
-                                                                    //withholding_taxes = ItemsVenta.withholding_taxes
-                                                                };
+                                                                    dynamic? resultado = JsonConvert.DeserializeObject<dynamic>(FacturaJSON);
 
-                                                                Listitems.Add(item);
-                                                            }
+                                                                    if (resultado != null)
+                                                                    {
+                                                                        int _bill_id = resultado.data.bill.id;
 
-                                                            NotaCreditoRequest notaCreditoRequest = new NotaCreditoRequest
-                                                            {
-                                                                numbering_range_id = IdRangoDIAN,
-                                                                correction_concept_code = 2, //Anulación de factura electrónica.
-                                                                customization_id = 20, //Nota Crédito que referencia una factura electrónica.
-                                                                bill_id = _bill_id,
-                                                                reference_code = IdNotaCredito.ToString(),
-                                                                send_email = resultado.data.bill.send_email == 0 ? false : true,
-                                                                observation = MotivoNotaCredito,
-                                                                payment_method_code = resultado.data.bill.payment_method.code,
-                                                                customer = customer,
-                                                                items = Listitems
-                                                            };
-                                                            var responseNotaCreditoElectronica = _INotasCreditoElectronica.CreaValidaNotaCredito(Token, UrlCrearValidarNotaCredito, notaCreditoRequest);
+                                                                        Customer customer = new Customer();
+                                                                        customer.identification_document_id =
+                                                                        (IdIdentificationType == 1 ? 3 : //Cédula de ciudadanía
+                                                                        IdIdentificationType == 2 ? 5 : //Cédula de extranjería
+                                                                        IdIdentificationType == 3 ? 3 : //RUT de momento se maneja con Cédula de ciudadanía
+                                                                        IdIdentificationType == 4 ? 6 : 3).ToString(); //NIT
 
-                                                            if (!responseNotaCreditoElectronica.Flag)
-                                                            {
-                                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCredito;
-                                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                                        customer.identification = resultado.data.customer.identification;
+                                                                        customer.dv = resultado.data.customer.dv ?? "";
+                                                                        if (IdIdentificationType == 4) //NIT
+                                                                        {
+                                                                            customer.company = resultado.data.customer.company;
+                                                                            customer.trade_name = resultado.data.customer.trade_name;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            customer.names = resultado.data.customer.names;
+                                                                        }
+                                                                        customer.address = resultado.data.customer.address;
+                                                                        customer.email = resultado.data.customer.email;
+                                                                        customer.phone = resultado.data.customer.phone;
+                                                                        customer.legal_organization_id = resultado.data.customer.legal_organization.id; // 1. Juridico, 2. Natural
+                                                                        customer.tribute_id = resultado.data.customer.tribute.id; // 18. IVA, 21. No aplica *
+                                                                        customer.municipality_id = "1079"; //Cali, valle del cauca
 
-                                                                MessageBox.Show($"Error en Emicion de nota credito electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                            }
-                                                            else
-                                                            {
-                                                                if (responseNotaCreditoElectronica.Data != null)
+                                                                        List<Item> Listitems = new List<Item>();
+                                                                        foreach (var ItemsVenta in resultado.data.items)
+                                                                        {
+                                                                            //WithholdingTax withholdingTax = new WithholdingTax
+                                                                            //{
+                                                                            //    Code = "01",
+                                                                            //    WithholdingTaxRate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO"))
+                                                                            //};
+
+                                                                            //ListwithholdingTax.Add(withholdingTax);
+
+                                                                            Item item = new Item
+                                                                            {
+                                                                                note = ItemsVenta.note,
+                                                                                code_reference = ItemsVenta.code_reference,
+                                                                                name = ItemsVenta.name,
+                                                                                quantity = Convert.ToDecimal(ItemsVenta.quantity, new CultureInfo("es-CO")),
+                                                                                discount_rate = Convert.ToDecimal(ItemsVenta.discount_rate, new CultureInfo("es-CO")),
+                                                                                price = Convert.ToDecimal(ItemsVenta.price, new CultureInfo("es-CO")),
+                                                                                tax_rate = Convert.ToDecimal(ItemsVenta.tax_rate, new CultureInfo("es-CO")),
+                                                                                unit_measure_id = ItemsVenta.unit_measure.id,
+                                                                                standard_code_id = ItemsVenta.standard_code.id,
+                                                                                is_excluded = ItemsVenta.is_excluded,
+                                                                                tribute_id = ItemsVenta.tribute.id,
+                                                                                //withholding_taxes = ItemsVenta.withholding_taxes
+                                                                            };
+
+                                                                            Listitems.Add(item);
+                                                                        }
+
+                                                                        NotaCreditoRequest notaCreditoRequest = new NotaCreditoRequest
+                                                                        {
+                                                                            numbering_range_id = IdRangoDIAN,
+                                                                            correction_concept_code = 2, //Anulación de factura electrónica.
+                                                                            customization_id = 20, //Nota Crédito que referencia una factura electrónica.
+                                                                            bill_id = _bill_id,
+                                                                            reference_code = IdNotaCredito.ToString(),
+                                                                            send_email = resultado.data.bill.send_email == 0 ? false : true,
+                                                                            observation = MotivoNotaCredito,
+                                                                            payment_method_code = resultado.data.bill.payment_method.code,
+                                                                            customer = customer,
+                                                                            items = Listitems
+                                                                        };
+
+                                                                        string UrlCrearValidarNotaCredito = ConfigurationManager.AppSettings["UrlCrearValidarNotaCreditoPOST"]!;
+
+                                                                        var responseNotaCreditoElectronica = _INotasCreditoElectronica.CreaValidaNotaCredito(Token, UrlCrearValidarNotaCredito, notaCreditoRequest);
+
+                                                                        if (!responseNotaCreditoElectronica.Flag)
+                                                                        {
+                                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCredito;
+                                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+
+                                                                            MessageBox.Show($"Error en Emicion de nota credito electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (responseNotaCreditoElectronica.Data != null)
+                                                                            {
+                                                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCredito;
+                                                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NumberNotaCreditoDIAN = responseNotaCreditoElectronica.Data!.data.credit_note.number;
+                                                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "EMITIDA";
+                                                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoJSON = responseNotaCreditoElectronica.Data.ToString();
+                                                                                actualizarNotaCreditoForNotaCreditoElectronicaEntitie.qr_image = responseNotaCreditoElectronica.Data!.data.credit_note.qr_image;
+                                                                            }
+                                                                        }
+                                                                        //Actualizar informacion de nota credito electronica en base de datos
+                                                                        var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                                        if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                                                        {
+                                                                            MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                            this.Close();
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCredito;
+                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                                        //Actualizar informacion de nota credito electronica en base de datos
+                                                                        var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                                        if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                                                        {
+                                                                            MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                        }
+
+                                                                        MessageBox.Show($"Error no se logro leer JSON de factura electronica,  no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                        this.Close();
+                                                                    }
+                                                                }
+                                                                else
                                                                 {
-                                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCredito;
-                                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NumberNotaCreditoDIAN = responseNotaCreditoElectronica.Data!.data.credit_note.number;
-                                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "EMITIDA";
-                                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoJSON = responseNotaCreditoElectronica.Data.ToString();
-                                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.qr_image = responseNotaCreditoElectronica.Data!.data.credit_note.qr_image;
+                                                                    MessageBox.Show($"Ha excedido el rango de fechas autorizadas (de {FechaExpedicion} a {FechaVencimiento}) ", "Rango de numeracion vencido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                 }
                                                             }
-                                                            //Actualizar informacion de nota credito electronica en base de datos
-                                                            var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                                                            if (!respActualizaDataNotaCreditoElectronica.Flag)
-                                                            {
-                                                                MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                            }
                                                             else
                                                             {
-                                                                MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                                                this.Close();
+                                                                MessageBox.Show($@"Ha excedido el rango autorizado de numeración (de {NumDesde} a {NumHasta}).
+                                                                                        Por favor, solicite una nueva resolución de numeración para continuar con la emisión de nota credito.",
+                                                                                    "Límite de notas credito alcanzado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                             }
                                                         }
                                                         else
@@ -807,7 +869,7 @@ namespace sbx
                                                                 MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                             }
 
-                                                            MessageBox.Show($"Error no se logro leer JSON de factura electronica,  no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                            MessageBox.Show($"Error en consulta de consecutivo rango de numeracion, no se emitira nota credito electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                             this.Close();
                                                         }
                                                     }
@@ -823,7 +885,7 @@ namespace sbx
                                                             MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                         }
 
-                                                        MessageBox.Show($"Error en autenticacion, no se emitira nota credito electronica: {RespAuth?.Data} - {RespAuth?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        MessageBox.Show($"Error en consulta de consecutivo rango de numeracion, no se emitira nota credito electronica ", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                         this.Close();
                                                     }
                                                 }
@@ -855,7 +917,7 @@ namespace sbx
                                                     MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                 }
 
-                                                MessageBox.Show($"No se encuentra informacion completa de Url Apis, no se emitira factura electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                MessageBox.Show($"Error en autenticacion, no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                 this.Close();
                                             }
                                         }
@@ -871,21 +933,29 @@ namespace sbx
                                                 MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                             }
 
-                                            MessageBox.Show($"No encontro informacion JSON de factura electronica a anular, se registrara nota credito en estado pendiente de Emitir", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            MessageBox.Show($"No se encuentra informacion completa de Url Apis, no se emitira factura electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                             this.Close();
                                         }
                                     }
                                     else
                                     {
-                                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCredito;
+                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                        //Actualizar informacion de nota credito electronica en base de datos
+                                        var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                        if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                        {
+                                            MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }
+
+                                        MessageBox.Show($"No encontro informacion JSON de factura electronica a anular, se registrara nota credito en estado pendiente de Emitir", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                         this.Close();
                                     }
                                 }
                                 else
                                 {
-                                    MessageBox.Show($@"Ha excedido el rango autorizado de numeración (de {NumDesde} a {NumHasta}).
-                                                      Por favor, solicite una nueva resolución de numeración para continuar con la emisión de nota credito.",
-                                                             "Límite de notas credito alcanzado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBox.Show($"Documento no es electronico", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 }
                             }
                             else
