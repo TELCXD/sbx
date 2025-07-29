@@ -446,8 +446,10 @@ namespace sbx.repositories.NotaCredito
                                     ISNULL(D.NumberFacturaDIAN,CONCAT(D.Prefijo,D.Consecutivo)) Factura,
 									A.IdUserAction AS IdUserActionNotaCredito,
 									CONCAT(A.IdUserAction, '-', C.UserName) AS Usuario,
-                                    A.NumberNotaCreditoDIAN,
-                                    A.EstadoNotaCreditoDIAN,
+                                    C.UserName,
+                                    A.Estado,
+                                    ISNULL(A.NumberNotaCreditoDIAN,'') NumberNotaCreditoDIAN,
+                                    ISNULL(A.EstadoNotaCreditoDIAN,'') EstadoNotaCreditoDIAN,
                                     A.NotaCreditoJSON,
                                     B.IdNotaCreditoDetalle,
                                     B.IdDetalleVenta,	
@@ -541,6 +543,203 @@ namespace sbx.repositories.NotaCredito
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
                     response.Data = 0;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro, string clientVenta, DateTime FechaInicio, DateTime FechaFin, int idUser, string RolName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                DateTime FechaIni = Convert.ToDateTime(FechaInicio.ToString("yyyy-MM-dd"));
+                DateTime FechaFn = Convert.ToDateTime(FechaFin.ToString("yyyy-MM-dd"));
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string FiltroPorUsuario = "";
+
+                    if (RolName != "Administrador")
+                    {
+                        FiltroPorUsuario = $" AND A.IdUserAction = {idUser} ";
+                    }
+
+                    string sql = @" SELECT 
+									A.IdNotaCredito,
+                                    A.IdVenta,
+                                    A.Prefijo,
+                                    A.Consecutivo,
+                                    CONCAT(A.Prefijo,A.Consecutivo) NotaCredito,
+                                    A.Estado,
+                                    ISNULL(A.EstadoNotaCreditoDIAN,'') EstadoNotaCreditoDIAN,
+									ISNULL(A.NumberNotaCreditoDIAN,'') NumberNotaCreditoDIAN,
+									A.NotaCreditoJSON,
+                                    ISNULL((SELECT IdNotaCredito FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) IdNotaCredito,
+                                    B.IdProducto,
+                                    B.Sku,
+                                    B.CodigoBarras,
+                                    B.NombreProducto,
+                                    B.PrecioUnitario,
+                                    B.Cantidad,
+									B.UnidadMedida,
+                                    B.Descuento,
+                                    B.Impuesto,                                                                                             
+                                    A.CreationDate,
+									G.UserName UserName,
+                                    A.IdUserAction 
+                                    FROM T_NotaCredito A
+                                    INNER JOIN T_NotaCreditoDetalle B ON A.IdVenta = B.IdNotaCredito
+                                    INNER JOIN T_User G ON G.IdUser = A.IdUserAction
+                                    WHERE 
+                                    A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120) " + FiltroPorUsuario;
+
+                    string Where = "";
+                    string Filtro = "";
+
+                    switch (tipoFiltro)
+                    {
+                        case "Inicia con":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.NombreProducto LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND G.UserName LIKE @Filtro ";
+                                    }
+                                    break;
+                                case "Id":
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.IdProducto LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND A.IdUserAction LIKE @Filtro ";
+                                    }
+                                    break;
+                                case "Sku":
+                                    Where = $" AND B.Sku LIKE @Filtro ";
+                                    break;
+                                case "Codigo barras":
+                                    Where = $" AND B.CodigoBarras LIKE @Filtro ";
+                                    break;
+                                case "Prefijo-Consecutivo":
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato + "%";
+                            break;
+                        case "Igual a":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.NombreProducto = @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND G.UserName = @Filtro ";
+                                    }
+                                    break;
+                                case "Id":
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.IdProducto = @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND A.IdUserAction = @Filtro ";
+                                    }
+                                    break;
+                                case "Sku":
+                                    Where = $" AND B.Sku = @Filtro ";
+                                    break;
+                                case "Codigo barras":
+                                    Where = $" AND B.CodigoBarras = @Filtro ";
+                                    break;
+                                case "Prefijo-Consecutivo":
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) = @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = dato;
+                            break;
+                        case "Contiene":
+                            switch (campoFiltro)
+                            {
+                                case "Nombre":
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.NombreProducto LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND G.UserName LIKE @Filtro ";
+                                    }
+                                    break;
+                                case "Id":
+                                    if (clientVenta == "Producto")
+                                    {
+                                        Where = $" AND B.IdProducto LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Usuario")
+                                    {
+                                        Where = $" AND A.IdUserAction LIKE @Filtro ";
+                                    }
+                                    break;
+                                case "Sku":
+                                    Where = $" AND B.Sku LIKE @Filtro ";
+                                    break;
+                                case "Codigo barras":
+                                    Where = $" AND B.CodigoBarras LIKE @Filtro ";
+                                    break;
+                                case "Prefijo-Consecutivo":
+                                    Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Filtro = "%" + dato + "%";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    sql += Where + " ORDER BY A.CreationDate DESC ";
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
+
+                    if (resultado.Count == 0 && campoFiltro == "Prefijo-Consecutivo")
+                    {
+                        sql = sql.Replace("AND CONCAT(A.Prefijo,A.Consecutivo)", "AND A.NumberNotaCreditoDIAN");
+
+                        resultado = await connection.QueryAsync(sql, new { Filtro, FechaIni, FechaFn });
+                    }
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
                     return response;
                 }
             }

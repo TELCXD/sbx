@@ -5,7 +5,7 @@ using sbx.core.Interfaces.NotaCreditoElectronica;
 
 namespace ExternalServices.FacturacionElectronica.Factus.NotasCredito
 {
-    public class NotasCredito : INotasCreditoElectronica
+    public class NotasCreditoService : INotasCreditoElectronica
     {
         public Response<dynamic> CreaValidaNotaCredito(string Token, string urlApi, NotaCreditoRequest notaCreditoRequest)
         {
