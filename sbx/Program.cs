@@ -234,6 +234,8 @@ namespace sbx
 
                 services.AddTransient<AgregaApi>();
 
+                services.AddTransient<NotasCredito>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -384,7 +386,7 @@ namespace sbx
 
                 services.AddTransient<IRangoNumeracionFE, Rangos>();
 
-                services.AddTransient<INotasCreditoElectronica, NotasCredito>();
+                services.AddTransient<INotasCreditoElectronica, NotasCreditoService>();
 
             })
             .Build();

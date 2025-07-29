@@ -467,6 +467,7 @@ namespace sbx.repositories.Venta
 									ISNULL((SELECT NT.EstadoNotaCreditoDIAN FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) EstadoNotaCreditoDIAN,
 									ISNULL((SELECT NT.NumberNotaCreditoDIAN FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) NumberNotaCreditoDIAN,
 									ISNULL((SELECT NT.NotaCreditoJSON FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) NotaCreditoJSON,
+                                    ISNULL((SELECT NT.Motivo FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), '') MotivoNotaCredito,
                                     J.NumeroDocumento NumeroDocumentoVendedor,
                                     J.Nombre NombreVendedor,
                                     J.Apellido ApellidoVendedor,

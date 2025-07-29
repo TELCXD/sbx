@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using sbx.core.Entities.Caja;
 using sbx.core.Entities.Cotizacion;
+using sbx.core.Entities.NotaCredito;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
@@ -448,6 +449,257 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine($"Pagos en efectivo: {caja.PagosEnEfectivo.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine($"Monto final: {caja.MontoFinalDeclarado.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine($"Diferencia: {caja.Diferencia.ToString("N0", new CultureInfo("es-CO"))}");
+
+            return sb;
+        }
+
+        public static StringBuilder GenerarTirillaNotaCredito(NotaCreditoPOSEntitie NotaCredito, int Pr_ANCHO_TIRILLA, string MensajeFinalTirilla, bool OpenCajon)
+        {
+            var sb = new StringBuilder();
+
+            ANCHO_TIRILLA = Pr_ANCHO_TIRILLA == 58 ? 32 : Pr_ANCHO_TIRILLA == 80 ? 42 : 0;
+
+            //Abrir cajon
+            if (OpenCajon)
+            {
+                sb.Append("\x1B" + "p" + "\x00" + "\x0F" + "\x96");
+            }
+
+            if (NotaCredito.NotaCreditoElectronica)
+            {
+                // Informacion empresa
+                sb.AppendLine(CentrarTexto(NotaCredito.NombreEmpresa));
+                sb.AppendLine(CentrarTextoLargo(NotaCredito.DireccionEmpresa));
+                sb.AppendLine(CentrarTexto($"Tel: {NotaCredito.TelefonoEmpresa}"));
+                sb.AppendLine(CentrarTexto($"NIT: {NotaCredito.NIT}"));
+                sb.AppendLine(CentrarTexto($"NOTA CREDITO ELECTRÓNICA"));
+                sb.AppendLine(new string('=', ANCHO_TIRILLA));
+
+                // Información de nota credito
+                sb.AppendLine($"NOTA CREDITO: {NotaCredito.NumeroNotaCredito}");
+                sb.AppendLine($"FACTURA: {NotaCredito.NumeroFactura}");
+                sb.AppendLine($"FECHA: {NotaCredito.Fecha:dd/MM/yyyy HH:mm}");
+                sb.AppendLine($"USUARIO: {NotaCredito.UserNameNotaCredito}");
+
+                sb.AppendLine($"ESTADO: {NotaCredito.Estado}");
+                sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                // Informacion de Items
+                if (ANCHO_TIRILLA == 42)
+                {
+                    sb.AppendLine("ITEM - DESCRIPCION");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IVA");
+                    sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                    foreach (var item in NotaCredito.Items)
+                    {
+                        // Descripción (puede ocupar varias líneas)
+                        var descripcionLineas = DividirTexto("Item: " + item.Codigo + "-" + item.Descripcion, ANCHO_TIRILLA - 1);
+                        foreach (var linea in descripcionLineas)
+                        {
+                            sb.AppendLine($"{linea}");
+                        }
+
+                        // Línea con cantidad y precio
+                        string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
+                        string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
+                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                        string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
+
+                        var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
+                        sb.AppendLine(lineaCantidad);
+                    }
+                }
+                else if (ANCHO_TIRILLA == 32)
+                {
+                    sb.AppendLine("ITEM - DESCRIPCION");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|");
+                    sb.AppendLine("DESC% |TOTAL         |IVA");
+                    sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                    foreach (var item in NotaCredito.Items)
+                    {
+                        // Descripción (puede ocupar varias líneas)
+                        var descripcionLineas = DividirTexto("Item: " + item.Codigo + "-" + item.Descripcion, ANCHO_TIRILLA - 1);
+                        foreach (var linea in descripcionLineas)
+                        {
+                            sb.AppendLine($"{linea}");
+                        }
+
+                        // Línea con cantidad y precio
+                        string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
+                        string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string Descuento = item.Descuento.ToString().Length > 6 ? item.Descuento.ToString().Substring(0, 6) : item.Descuento.ToString().PadRight(6);
+                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(14);
+                        string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
+
+                        var linea2 = $"{cantidad}|{unidadMedida}|{PrecioUnitario}";
+                        sb.AppendLine(linea2);
+                        var linea3 = $"{Descuento}|{Total}|{impuesto}";
+                        sb.AppendLine(linea3);
+                    }
+                }
+
+                sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                // Totales
+                sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {NotaCredito.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine(new string('=', ANCHO_TIRILLA));
+
+                sb.AppendLine(new string('=', ANCHO_TIRILLA));
+
+                // Pie de página
+                sb.AppendLine();
+
+                dynamic datosNotaCreditoElectronica = JsonConvert.DeserializeObject<dynamic>(NotaCredito.NotaCreditoJSON);
+                if (ANCHO_TIRILLA == 42)
+                {
+                    //sb.AppendLine(CentrarTexto("Autorización numeración de facturación"));
+                    //sb.AppendLine(CentrarTexto($"DIAN {datosNotaCreditoElectronica!.data.numbering_range.resolution_number} - Prefijo: {datosNotaCreditoElectronica!.data.numbering_range.prefix}"));
+                    //sb.AppendLine(CentrarTexto($"Habilita rangos de:{datosNotaCreditoElectronica!.data.numbering_range.from.ToString()}"));
+                    //sb.AppendLine(CentrarTexto($"hasta: {datosNotaCreditoElectronica!.data.numbering_range.to.ToString()}"));
+                    //sb.AppendLine(CentrarTexto($"Fecha desde: {datosNotaCreditoElectronica!.data.numbering_range.start_date.ToString()}"));
+                    //sb.AppendLine(CentrarTexto($"hasta: {datosNotaCreditoElectronica!.data.numbering_range.end_date.ToString()}"));
+                    //sb.AppendLine(CentrarTexto($"Vigencia {datosNotaCreditoElectronica!.data.numbering_range.months} meses."));
+                    //sb.AppendLine();
+                    sb.AppendLine(CentrarTexto("Fecha y hora de Generación:"));
+                    sb.AppendLine(CentrarTexto(datosNotaCreditoElectronica!.data.credit_note.validated.ToString()));
+                }
+                else if (ANCHO_TIRILLA == 32)
+                {
+                    //sb.AppendLine(CentrarTexto("Autorización de numeración"));
+                    //sb.AppendLine(CentrarTexto("de facturación"));
+                    //sb.AppendLine(CentrarTexto($"DIAN {datosNotaCreditoElectronica!.data.numbering_range.resolution_number}"));
+                    //sb.AppendLine(CentrarTexto($"Prefijo: {datosNotaCreditoElectronica!.data.numbering_range.prefix}"));
+                    //sb.AppendLine(CentrarTexto($"Habilita rangos de:"));
+                    //sb.AppendLine(CentrarTexto(datosNotaCreditoElectronica!.data.numbering_range.from.ToString()));
+                    //sb.AppendLine(CentrarTexto($"hasta:"));
+                    //sb.AppendLine(CentrarTexto(datosNotaCreditoElectronica!.data.numbering_range.to.ToString()));
+                    //sb.AppendLine(CentrarTexto($"Fecha desde:"));
+                    //sb.AppendLine(CentrarTexto(datosNotaCreditoElectronica!.data.numbering_range.start_date.ToString()));
+                    //sb.AppendLine(CentrarTexto($"hasta:"));
+                    //sb.AppendLine(CentrarTexto(datosNotaCreditoElectronica!.data.numbering_range.end_date.ToString()));
+                    //sb.AppendLine(CentrarTexto($"Vigencia {datosNotaCreditoElectronica!.data.numbering_range.months} meses."));
+                    //sb.AppendLine();
+                    sb.AppendLine("Fecha y hora de Generación:");
+                    sb.AppendLine(datosNotaCreditoElectronica!.data.credit_note.validated.ToString());
+                }
+
+                sb.AppendLine();
+
+                var LineasCUFE = DividirTexto($"Código CUFE: {datosNotaCreditoElectronica!.data.credit_note.cufe}", ANCHO_TIRILLA - 1);
+                foreach (var linea in LineasCUFE)
+                {
+                    sb.AppendLine($"{linea}");
+                }
+                sb.AppendLine();
+
+                sb.AppendLine($"Proveedor tecnológico: {datosNotaCreditoElectronica!.data.company.company}");
+                sb.AppendLine($"NIT: {datosNotaCreditoElectronica!.data.company.nit}-{datosNotaCreditoElectronica!.data.company.dv}");
+                sb.AppendLine("Fabricante Software: ");
+                sb.AppendLine("NIT: ");
+                sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
+                sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
+            }
+            else
+            {
+                // Encabezado
+                sb.AppendLine(CentrarTexto(NotaCredito.NombreEmpresa));
+                sb.AppendLine(CentrarTextoLargo(NotaCredito.DireccionEmpresa));
+                sb.AppendLine(CentrarTexto($"Tel: {NotaCredito.TelefonoEmpresa}"));
+                sb.AppendLine(CentrarTexto($"NIT: {NotaCredito.NIT}"));
+                sb.AppendLine(new string('=', ANCHO_TIRILLA));
+
+                // Información de nota credito
+                sb.AppendLine($"NOTA CREDITO: {NotaCredito.NumeroNotaCredito}");
+                sb.AppendLine($"FACTURA: {NotaCredito.NumeroFactura}");
+                sb.AppendLine($"FECHA: {NotaCredito.Fecha:dd/MM/yyyy HH:mm}");
+                sb.AppendLine($"USUARIO: {NotaCredito.UserNameNotaCredito}");
+
+                sb.AppendLine($"ESTADO: {NotaCredito.Estado}");
+                sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                // Items
+                if (ANCHO_TIRILLA == 42)
+                {
+                    sb.AppendLine("ITEM - DESCRIPCION");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IVA");
+                    sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                    foreach (var item in NotaCredito.Items)
+                    {
+                        // Descripción (puede ocupar varias líneas)
+                        var descripcionLineas = DividirTexto("Item: " + item.Codigo + "-" + item.Descripcion, ANCHO_TIRILLA - 1);
+                        foreach (var linea in descripcionLineas)
+                        {
+                            sb.AppendLine($"{linea}");
+                        }
+
+                        // Línea con cantidad y precio
+                        string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
+                        string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
+                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                        string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
+
+                        var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
+                        sb.AppendLine(lineaCantidad);
+                    }
+                }
+                else if (ANCHO_TIRILLA == 32)
+                {
+                    sb.AppendLine("ITEM - DESCRIPCION");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|");
+                    sb.AppendLine("DESC% |TOTAL         |IVA");
+                    sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                    foreach (var item in NotaCredito.Items)
+                    {
+                        // Descripción (puede ocupar varias líneas)
+                        var descripcionLineas = DividirTexto("Item: " + item.Codigo + "-" + item.Descripcion, ANCHO_TIRILLA - 1);
+                        foreach (var linea in descripcionLineas)
+                        {
+                            sb.AppendLine($"{linea}");
+                        }
+
+                        // Línea con cantidad y precio
+                        string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
+                        string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string Descuento = item.Descuento.ToString().Length > 6 ? item.Descuento.ToString().Substring(0, 6) : item.Descuento.ToString().PadRight(6);
+                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(14);
+                        string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
+
+                        var linea2 = $"{cantidad}|{unidadMedida}|{PrecioUnitario}";
+                        sb.AppendLine(linea2);
+                        var linea3 = $"{Descuento}|{Total}|{impuesto}";
+                        sb.AppendLine(linea3);
+                    }
+                }
+
+                sb.AppendLine(new string('-', ANCHO_TIRILLA));
+
+                // Totales
+                sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {NotaCredito.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine(new string('=', ANCHO_TIRILLA));
+
+                sb.AppendLine(new string('=', ANCHO_TIRILLA));
+
+                // Pie de página              
+                sb.AppendLine();
+                sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
+                sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
+            }
 
             return sb;
         }

@@ -69,7 +69,8 @@ namespace sbx
         private readonly ICaja _ICaja;
         private AddApertura _AddApertura;
         private bool CajaAperturada = false;
-        private AgregarNotaCredito? _AgregarNotaCredito;
+        //private AgregarNotaCredito? _AgregarNotaCredito;
+        private NotasCredito? _NotasCredito;
         private AddPagosEfectivo? _AddPagosEfectivo;
         private VentasSuspendidas? _VentasSuspendidas;
         private Cotizacion? _Cotizacion;
@@ -78,12 +79,13 @@ namespace sbx
         private readonly ICredencialesApi _ICredencialesApi;
         private readonly IAuthService _IAuthService;
         private readonly IFacturas _IFacturas;
+        private readonly IRangoNumeracionFE _IRangoNumeracionFE;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
             IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta,
             ITienda tienda, IParametros parametros, ICaja caja, ICotizacion cotizacion, 
-            ICredencialesApi credencialesApi, IAuthService authService, IFacturas facturas)
+            ICredencialesApi credencialesApi, IAuthService authService, IFacturas facturas, IRangoNumeracionFE iRangoNumeracionFE)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -105,6 +107,7 @@ namespace sbx
             _ICredencialesApi = credencialesApi;
             _IAuthService = authService;
             _IFacturas = facturas;
+            _IRangoNumeracionFE = iRangoNumeracionFE;
         }
 
         public dynamic? Permisos
@@ -2019,6 +2022,7 @@ namespace sbx
                                 long NumDesde = respDoc.Data[0].NumeroDesde;
                                 long NumHasta = respDoc.Data[0].NumeroHasta;
                                 long Actual = respDoc.Data[0].ConsecutivoActual;
+
                                 string NumeroResolucion = respDoc.Data[0].NumeroResolucion.ToString();
                                 string ClaveTecnica = respDoc.Data[0].ClaveTecnica.ToString();
                                 bool FacturaElectronica = false;
@@ -2140,6 +2144,9 @@ namespace sbx
                                                                 if (RespAuth.Flag && RespAuth.Data.access_token != "")
                                                                 {
                                                                     string Token = RespAuth.Data.access_token.ToString();
+
+
+
                                                                     string UrlCrearValidarFactura = ConfigurationManager.AppSettings["UrlCrearValidarFacturaPOST"]!;
 
                                                                     if (DataFacturaRegistrada.Data != null)
@@ -2750,10 +2757,10 @@ namespace sbx
         {
             if (_Permisos != null)
             {
-                _AgregarNotaCredito = _serviceProvider.GetRequiredService<AgregarNotaCredito>();
-                _AgregarNotaCredito.Permisos = _Permisos;
-                _AgregarNotaCredito.FormClosed += (s, args) => _AgregarNotaCredito = null;
-                _AgregarNotaCredito.ShowDialog();
+                _NotasCredito = _serviceProvider.GetRequiredService<NotasCredito>();
+                _NotasCredito.Permisos = _Permisos;
+                _NotasCredito.FormClosed += (s, args) => _NotasCredito = null;
+                _NotasCredito.ShowDialog();
             }
         }
 
