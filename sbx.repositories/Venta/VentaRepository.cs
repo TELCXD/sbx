@@ -57,9 +57,9 @@ namespace sbx.repositories.Venta
                     int idVenta = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_DetalleVenta (
-                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto, NombreTributo,CreationDate, IdUserAction)
                             VALUES (@IdVenta, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @NombreTributo, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in ventaEntitie.detalleVentas)
                     {
@@ -78,6 +78,7 @@ namespace sbx.repositories.Venta
                                 detalle.CostoUnitario,
                                 detalle.Descuento,
                                 detalle.Impuesto,
+                                detalle.NombreTributo,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },

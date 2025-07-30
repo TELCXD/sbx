@@ -52,6 +52,7 @@ using sbx.core.Interfaces.TipoEntrada;
 using sbx.core.Interfaces.TipoPromocion;
 using sbx.core.Interfaces.TipoResponsabilidad;
 using sbx.core.Interfaces.TipoSalida;
+using sbx.core.Interfaces.Tributos;
 using sbx.core.Interfaces.UnidadMedida;
 using sbx.core.Interfaces.Usuario;
 using sbx.core.Interfaces.Vendedor;
@@ -101,6 +102,7 @@ using sbx.repositories.TipoEntrada;
 using sbx.repositories.TipoPromocion;
 using sbx.repositories.TipoResponsabilidad;
 using sbx.repositories.TipoSalida;
+using sbx.repositories.Tributos;
 using sbx.repositories.UnidadMedida;
 using sbx.repositories.Usuario;
 using sbx.repositories.Vendedor;
@@ -379,6 +381,9 @@ namespace sbx
 
                 services.AddTransient<ICredencialesApi>(provider =>
                 new CredencialesApiRepository(connectionString));
+
+                services.AddTransient<ITribute>(provider =>
+                new TributeRepository(connectionString));
 
                 services.AddTransient<IAuthService, Auth>();
 

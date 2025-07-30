@@ -2,6 +2,7 @@
 using sbx.core.Interfaces.Categoria;
 using sbx.core.Interfaces.Marca;
 using sbx.core.Interfaces.Producto;
+using sbx.core.Interfaces.Tributos;
 using sbx.core.Interfaces.UnidadMedida;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -16,8 +17,9 @@ namespace sbx
         private readonly IMarca _IMarca;
         private readonly IUnidadMedida _IUnidadMedida;
         private readonly IProducto _IProducto;
+        private readonly ITribute _ITribute;
 
-        public AgregarProducto(ICategoria categoria, IMarca marca, IUnidadMedida unidadMedida, IProducto producto)
+        public AgregarProducto(ICategoria categoria, IMarca marca, IUnidadMedida unidadMedida, IProducto producto, ITribute tribute)
         {
             InitializeComponent();
 
@@ -25,6 +27,7 @@ namespace sbx
             _IMarca = marca;
             _IUnidadMedida = unidadMedida;
             _IProducto = producto;
+            _ITribute = tribute;
         }
 
         public dynamic? Permisos
@@ -90,6 +93,12 @@ namespace sbx
             cbx_unidad_medida.DisplayMember = "Nombre";
             cbx_unidad_medida.SelectedIndex = 0;
 
+            resp = await _ITribute.ListTribute();
+            cbx_tipo_tributo.DataSource = resp.Data;
+            cbx_tipo_tributo.ValueMember = "Idtribute";
+            cbx_tipo_tributo.DisplayMember = "Nombre";
+            cbx_tipo_tributo.SelectedIndex = 0;
+
             cbx_es_inventariable.SelectedIndex = 0;
 
             if (Id_Producto > 0)
@@ -105,10 +114,11 @@ namespace sbx
                     txt_costo.Text = resp.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"));
                     txt_precio.Text = resp.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO"));
                     cbx_es_inventariable.SelectedIndex = resp.Data[0].EsInventariable == true ? 0 : 1;
-                    txt_iva.Text = resp.Data[0].Iva.ToString().Replace('.', ',');
+                    txt_impuesto.Text = resp.Data[0].Impuesto.ToString(new CultureInfo("es-CO"));
                     cbx_categoria.SelectedValue = resp.Data[0].IdCategoria;
                     cbx_marca.SelectedValue = resp.Data[0].IdMarca;
                     cbx_unidad_medida.SelectedValue = resp.Data[0].IdUnidadMedida;
+                    cbx_tipo_tributo.SelectedValue = resp.Data[0].Idtribute;
                 }
                 else
                 {
@@ -124,7 +134,7 @@ namespace sbx
 
             if (string.IsNullOrWhiteSpace(txt_costo.Text)) { errorProvider1.SetError(txt_costo, "Ingrese un valor numerico"); valido++; }
             if (string.IsNullOrWhiteSpace(txt_precio.Text)) { errorProvider1.SetError(txt_precio, "Ingrese un valor numerico"); valido++; }
-            if (string.IsNullOrWhiteSpace(txt_iva.Text)) { errorProvider1.SetError(txt_iva, "Ingrese un valor numerico"); valido++; }
+            if (string.IsNullOrWhiteSpace(txt_impuesto.Text)) { errorProvider1.SetError(txt_impuesto, "Ingrese un valor numerico"); valido++; }
 
             if (valido > 0) { return; } else { valido = 0; }
 
@@ -140,10 +150,11 @@ namespace sbx
                 Nombre = txt_nombre.Text.Trim(),
                 CostoBase = Convert.ToDecimal(txt_costo.Text, new CultureInfo("es-CO")),
                 PrecioBase = Convert.ToDecimal(txt_precio.Text, new CultureInfo("es-CO")),
-                Iva = Convert.ToDecimal(txt_iva.Text.Replace(',', '.')),
+                Impuesto = Convert.ToDecimal(txt_impuesto.Text, new CultureInfo("es-CO")),
                 IdCategoria = Convert.ToInt32(cbx_categoria.SelectedValue),
                 IdMarca = Convert.ToInt32(cbx_marca.SelectedValue),
                 IdUnidadMedida = Convert.ToInt32(cbx_unidad_medida.SelectedValue),
+                Idtribute = Convert.ToInt32(cbx_tipo_tributo.SelectedValue),
                 EsInventariable = cbx_es_inventariable.Text == "SI" ? 1 : 0
             };
 
@@ -197,9 +208,9 @@ namespace sbx
                         errorProvider1.SetError(txt_precio, validationResult.ErrorMessage);
                     }
 
-                    if (validationResult.MemberNames.Contains("Iva"))
+                    if (validationResult.MemberNames.Contains("Impuesto"))
                     {
-                        errorProvider1.SetError(txt_iva, validationResult.ErrorMessage);
+                        errorProvider1.SetError(txt_impuesto, validationResult.ErrorMessage);
                     }
                 }
             }
@@ -222,9 +233,9 @@ namespace sbx
         private void txt_iva_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             errorProvider1.Clear();
-            if (!decimal.TryParse(txt_iva.Text, out _))
+            if (!decimal.TryParse(txt_impuesto.Text, out _))
             {
-                errorProvider1.SetError(txt_iva, "Ingrese un valor numerico");
+                errorProvider1.SetError(txt_impuesto, "Ingrese un valor numerico");
             }
         }
 
@@ -268,12 +279,27 @@ namespace sbx
 
         private void txt_costo_Leave(object sender, EventArgs e)
         {
-           
+
         }
 
         private void txt_precio_Leave(object sender, EventArgs e)
         {
-           
+
+        }
+
+        private void cbx_tipo_tributo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var item = (dynamic?)cbx_tipo_tributo.SelectedItem;
+            string Nombre = item!.Nombre;
+
+            if (Nombre == "INC Bolsas") 
+            {
+                lbl_tributo.Text = "Valor Impuesto bolsa *";
+            }
+            else
+            {
+                lbl_tributo.Text = "Impuesto (%) *";
+            }
         }
     }
 }

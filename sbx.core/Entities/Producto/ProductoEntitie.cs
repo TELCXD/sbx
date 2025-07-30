@@ -14,10 +14,11 @@ namespace sbx.core.Entities.Producto
         [Required(ErrorMessage = "El precio es obligatorio")]
         public decimal PrecioBase { get; set; }
         public int EsInventariable { get; set; }
-        [Required(ErrorMessage = "El Iva es obligatorio")]
-        public decimal Iva { get; set; }
+        [Required(ErrorMessage = "El Impuesto es obligatorio")]
+        public decimal Impuesto { get; set; }
         public int IdCategoria { get; set; }
         public int IdMarca { get; set; }
         public int IdUnidadMedida { get; set; }
+        public int Idtribute { get; set; }
     }
 }

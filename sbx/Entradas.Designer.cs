@@ -63,7 +63,7 @@
             cl_cantidad = new DataGridViewTextBoxColumn();
             cl_costo_unitario = new DataGridViewTextBoxColumn();
             cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
             panel3.SuspendLayout();
             panel1.SuspendLayout();
@@ -319,7 +319,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_detalle_entrada.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_detalle_entrada.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_detalle_entrada.Columns.AddRange(new DataGridViewColumn[] { cl_id_producto, cl_sku, cl_codigo_barras, cl_Nombre, cl_lote, cl_fecha_vencimiento, cl_cantidad, cl_costo_unitario, cl_descuento, cl_iva, cl_total });
+            dtg_detalle_entrada.Columns.AddRange(new DataGridViewColumn[] { cl_id_producto, cl_sku, cl_codigo_barras, cl_Nombre, cl_lote, cl_fecha_vencimiento, cl_cantidad, cl_costo_unitario, cl_descuento, cl_impuesto, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -403,12 +403,12 @@
             cl_descuento.ReadOnly = true;
             cl_descuento.Width = 60;
             // 
-            // cl_iva
+            // cl_impuesto
             // 
-            cl_iva.HeaderText = "%Iva";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 65;
+            cl_impuesto.HeaderText = "%Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 65;
             // 
             // cl_total
             // 
@@ -466,6 +466,9 @@
         private TextBox txt_num_factura;
         private Panel panel4;
         private DataGridView dtg_detalle_entrada;
+        private Label label4;
+        private Button btn_quitar;
+        private Label lbl_total;
         private DataGridViewTextBoxColumn cl_id_producto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -475,10 +478,7 @@
         private DataGridViewTextBoxColumn cl_cantidad;
         private DataGridViewTextBoxColumn cl_costo_unitario;
         private DataGridViewTextBoxColumn cl_descuento;
-        private DataGridViewTextBoxColumn cl_iva;
+        private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
-        private Label label4;
-        private Button btn_quitar;
-        private Label lbl_total;
     }
 }

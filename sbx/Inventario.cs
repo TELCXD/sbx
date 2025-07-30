@@ -179,7 +179,7 @@ namespace sbx
                             item.Costo,
                             item.Valor,
                             item.Descuento,
-                            item.Iva,
+                            item.Impuesto,
                             0);
                     }
 
@@ -190,7 +190,7 @@ namespace sbx
                             decimal precio = Convert.ToDecimal(fila.Cells["cl_valor"].Value, new CultureInfo("es-CO"));
                             decimal cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                             decimal desc = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO"));
-                            decimal iva = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"));
+                            decimal Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO"));
                             decimal total = CalcularTotal(precio, 0, desc);
                             total = total * cantidad;
                             fila.Cells["cl_total"].Value = total.ToString("N2", new CultureInfo("es-CO"));

@@ -267,6 +267,7 @@
             cbx_departamento.Name = "cbx_departamento";
             cbx_departamento.Size = new Size(303, 23);
             cbx_departamento.TabIndex = 12;
+            cbx_departamento.SelectedIndexChanged += cbx_departamento_SelectedIndexChanged;
             // 
             // label9
             // 
@@ -417,6 +418,7 @@
             txt_numero_documento.Size = new Size(217, 23);
             txt_numero_documento.TabIndex = 2;
             txt_numero_documento.KeyPress += txt_numero_documento_KeyPress;
+            txt_numero_documento.KeyUp += txt_numero_documento_KeyUp;
             // 
             // errorProvider1
             // 

@@ -179,7 +179,7 @@ namespace sbx.repositories.NotaCredito
                                     Cantidad = CantidadSaleRedondeada,
                                     CostoUnitario = 0,
                                     Descuento = 0,
-                                    Iva = 0,
+                                    Impuesto = 0,
                                     Total = 0
                                 };
 
@@ -277,7 +277,7 @@ namespace sbx.repositories.NotaCredito
                                         Cantidad = CantidadSaleRedondeada,
                                         CostoUnitario = 0,
                                         Descuento = 0,
-                                        Iva = 0,
+                                        Impuesto = 0,
                                         Total = 0
                                     };
 
@@ -377,7 +377,7 @@ namespace sbx.repositories.NotaCredito
                                         Cantidad = CantidadSaleRedondeada,
                                         CostoUnitario = 0,
                                         Descuento = 0,
-                                        Iva = 0,
+                                        Impuesto = 0,
                                         Total = 0
                                     };
 

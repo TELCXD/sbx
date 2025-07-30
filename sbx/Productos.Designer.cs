@@ -46,6 +46,7 @@
             btn_editar = new Button();
             btn_agregar = new Button();
             dtg_producto = new DataGridView();
+            errorProvider1 = new ErrorProvider(components);
             cl_idProducto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
@@ -53,12 +54,12 @@
             cl_stock = new DataGridViewTextBoxColumn();
             cl_costo = new DataGridViewTextBoxColumn();
             cl_precio = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
             cl_esInventariable = new DataGridViewTextBoxColumn();
             cl_unidadMedida = new DataGridViewTextBoxColumn();
             cl_marca = new DataGridViewTextBoxColumn();
             cl_categoria = new DataGridViewTextBoxColumn();
-            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -249,7 +250,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_stock, cl_costo, cl_precio, cl_iva, cl_esInventariable, cl_unidadMedida, cl_marca, cl_categoria });
+            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_stock, cl_costo, cl_precio, cl_tributo, cl_impuesto, cl_esInventariable, cl_unidadMedida, cl_marca, cl_categoria });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -274,6 +275,10 @@
             dtg_producto.Size = new Size(1148, 496);
             dtg_producto.TabIndex = 2;
             dtg_producto.DoubleClick += dtg_producto_DoubleClick;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // cl_idProducto
             // 
@@ -318,11 +323,17 @@
             cl_precio.Name = "cl_precio";
             cl_precio.ReadOnly = true;
             // 
-            // cl_iva
+            // cl_tributo
             // 
-            cl_iva.HeaderText = "Iva (%)";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.ReadOnly = true;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
             // 
             // cl_esInventariable
             // 
@@ -347,10 +358,6 @@
             cl_categoria.HeaderText = "Categoria";
             cl_categoria.Name = "cl_categoria";
             cl_categoria.ReadOnly = true;
-            // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
             // 
             // Productos
             // 
@@ -388,6 +395,8 @@
         private ErrorProvider errorProvider1;
         private Button btn_lista_precios;
         private Button btn_promociones;
+        private Button btn_importar;
+        private Button btn_exportar;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -395,12 +404,11 @@
         private DataGridViewTextBoxColumn cl_stock;
         private DataGridViewTextBoxColumn cl_costo;
         private DataGridViewTextBoxColumn cl_precio;
-        private DataGridViewTextBoxColumn cl_iva;
+        private DataGridViewTextBoxColumn cl_tributo;
+        private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_esInventariable;
         private DataGridViewTextBoxColumn cl_unidadMedida;
         private DataGridViewTextBoxColumn cl_marca;
         private DataGridViewTextBoxColumn cl_categoria;
-        private Button btn_importar;
-        private Button btn_exportar;
     }
 }

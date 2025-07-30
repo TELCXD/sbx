@@ -1214,10 +1214,11 @@ namespace sbx
                              resp1.Data[0].PrecioEspecial.ToString("N2", new CultureInfo("es-CO")),
                              CantidadF.ToString(new CultureInfo("es-CO")),
                              0,
-                             DataProducto.Data[0].Iva,
+                             DataProducto.Data[0].Impuesto,
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
-                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
+                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
+                             DataProducto.Data[0].NombreTributo
                             );
                         dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -1231,7 +1232,7 @@ namespace sbx
             agregaVentaEntitie.IdListaPrecio = Convert.ToInt32(cbx_lista_precio.SelectedValue);
             if (agregaVentaEntitie.IdListaPrecio > 1 && Continuar == true)
             {
-                var resp2 = await _IPrecioProducto.PrecioListaPreciosTipoCliente(Convert.ToInt32(DataProducto.Data[0].IdProducto), agregaVentaEntitie.IdListaPrecio, IdTipoCliente);
+                var resp2 = await _IPrecioProducto.PrecioListaPreciosTipoCliente(Convert.ToInt32(DataProducto!.Data[0].IdProducto), agregaVentaEntitie.IdListaPrecio, IdTipoCliente);
                 if (resp2.Data != null)
                 {
                     if (resp2.Data.Count > 0)
@@ -1246,10 +1247,11 @@ namespace sbx
                              resp2.Data[0].Precio.ToString("N2", new CultureInfo("es-CO")),
                              CantidadF.ToString(new CultureInfo("es-CO")),
                              0,
-                             DataProducto.Data[0].Iva,
+                             DataProducto.Data[0].Impuesto,
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
-                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
+                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
+                             DataProducto.Data[0].NombreTributo
                             );
                         dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -1260,7 +1262,7 @@ namespace sbx
             //3. ¿Hay promociones activas? => aplicar sobre el precio base
             if (Continuar == true)
             {
-                var resp3 = await _IPromocionProducto.PromocionActiva(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+                var resp3 = await _IPromocionProducto.PromocionActiva(Convert.ToInt32(DataProducto!.Data[0].IdProducto));
                 if (resp3.Data != null)
                 {
                     if (resp3.Data.Count > 0)
@@ -1275,10 +1277,11 @@ namespace sbx
                              DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
                              CantidadF.ToString(new CultureInfo("es-CO")),
                              resp3.Data[0].Porcentaje,
-                             DataProducto.Data[0].Iva,
+                             DataProducto.Data[0].Impuesto,
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
-                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
+                             DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
+                             DataProducto.Data[0].NombreTributo
                             );
                         dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -1289,7 +1292,7 @@ namespace sbx
             //4. Si nada aplica => usar PrecioBase por defecto
             if (Continuar == true)
             {
-                decimal Total = CalcularTotal(DataProducto.Data[0].PrecioBase, 0, 0);
+                decimal Total = CalcularTotal(DataProducto!.Data[0].PrecioBase, 0, 0);
 
                 int rowIndex = dtg_producto.Rows.Add(
                      DataProducto.Data[0].IdProducto,
@@ -1299,10 +1302,11 @@ namespace sbx
                      DataProducto.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO")),
                      CantidadF.ToString(new CultureInfo("es-CO")),
                      0,
-                     DataProducto.Data[0].Iva,
+                     DataProducto.Data[0].Impuesto,
                      Total.ToString("N2", new CultureInfo("es-CO")),
                      DataProducto.Data[0].NombreUnidadMedida,
-                     DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"))
+                     DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
+                     DataProducto.Data[0].NombreTributo
                     );
                 dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -1318,7 +1322,7 @@ namespace sbx
                     decimal precio = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO"));
                     decimal cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                     decimal desc = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO"));
-                    decimal iva = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"));
+                    decimal iva = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO"));
                     decimal total = CalcularTotal(precio, 0, desc);
                     total = total * cantidad;
                     fila.Cells["cl_total"].Value = total.ToString("N2", new CultureInfo("es-CO"));
@@ -1328,7 +1332,14 @@ namespace sbx
                     SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                     Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                     DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
-                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                    if (fila.Cells["cl_tributo"].Value.ToString() == "INC Bolsas") 
+                    {
+                        Impuesto += Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO"));
+                    }
+                    else
+                    {
+                        Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")));
+                    }
                 }
                 //Total = (Subtotal - Descuento) + Impuesto;
                 Total = (Subtotal - Descuento);
@@ -1849,7 +1860,7 @@ namespace sbx
                     SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                     Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                     DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
-                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")));
                 }
                 //Total = (Subtotal - Descuento) + Impuesto;
                 Total = (Subtotal - Descuento);
@@ -2136,8 +2147,9 @@ namespace sbx
                                                 Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
                                                 PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
                                                 Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                                                Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")),
-                                                CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
+                                                Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
+                                                CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO")),
+                                                NombreTributo = fila.Cells["cl_tributo"].Value?.ToString() ?? "",
                                             };
 
                                             detalleVentas.Add(Detalle);
@@ -2910,7 +2922,7 @@ namespace sbx
                     Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
                     PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
                     Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")),
+                    Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
                     CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
                 };
 
@@ -3176,7 +3188,7 @@ namespace sbx
                             SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                             Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
-                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")));
                         }
 
                         //Total = (Subtotal - Descuento) + Impuesto;
@@ -3257,7 +3269,7 @@ namespace sbx
                     Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
                     PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
                     Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                    Impuesto = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")),
+                    Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
                     CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
                 };
 
@@ -3707,7 +3719,7 @@ namespace sbx
                             SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                             Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
-                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")));
                         }
 
                         Total = (Subtotal - Descuento);
@@ -3779,7 +3791,7 @@ namespace sbx
                                     SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                                     Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                                     DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
-                                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO")));
+                                    Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")));
                                 }
 
                                 Total = (Subtotal - Descuento);
