@@ -52,6 +52,7 @@
             lbl_total = new Label();
             label1 = new Label();
             dtg_inventario = new DataGridView();
+            errorProvider1 = new ErrorProvider(components);
             cl_id_documento = new DataGridViewTextBoxColumn();
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_documento = new DataGridViewTextBoxColumn();
@@ -69,9 +70,8 @@
             cl_costo = new DataGridViewTextBoxColumn();
             cl_valor = new DataGridViewTextBoxColumn();
             cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
-            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).BeginInit();
@@ -319,7 +319,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_inventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_inventario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_id_documento, cl_fecha, cl_documento, cl_movimiento, cl_cantidad, cl_id_producto, cl_nombre, cl_sku, cl_comentario, cl_tipo, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento, cl_usuario, cl_costo, cl_valor, cl_descuento, cl_iva, cl_total });
+            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_id_documento, cl_fecha, cl_documento, cl_movimiento, cl_cantidad, cl_id_producto, cl_nombre, cl_sku, cl_comentario, cl_tipo, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento, cl_usuario, cl_costo, cl_valor, cl_descuento, cl_impuesto, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -345,6 +345,10 @@
             dtg_inventario.Size = new Size(1190, 438);
             dtg_inventario.TabIndex = 6;
             dtg_inventario.DoubleClick += dtg_inventario_DoubleClick;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // cl_id_documento
             // 
@@ -477,21 +481,17 @@
             cl_descuento.Name = "cl_descuento";
             cl_descuento.ReadOnly = true;
             // 
-            // cl_iva
+            // cl_impuesto
             // 
-            cl_iva.HeaderText = "Iva %";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
             // 
             // cl_total
             // 
             cl_total.HeaderText = "Total";
             cl_total.Name = "cl_total";
             cl_total.ReadOnly = true;
-            // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
             // 
             // Inventario
             // 
@@ -558,5 +558,6 @@
         private DateTimePicker dtp_fecha_inicio;
         private Label label2;
         private Label lbl_fechaVencimiento;
+        private DataGridViewTextBoxColumn cl_impuesto;
     }
 }

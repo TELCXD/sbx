@@ -36,8 +36,8 @@
             label8 = new Label();
             cbx_categoria = new ComboBox();
             label6 = new Label();
-            label5 = new Label();
-            txt_iva = new TextBox();
+            lbl_tributo = new Label();
+            txt_impuesto = new TextBox();
             cbx_es_inventariable = new ComboBox();
             label14 = new Label();
             label4 = new Label();
@@ -55,6 +55,8 @@
             label10 = new Label();
             txt_codigo_barras = new TextBox();
             errorProvider1 = new ErrorProvider(components);
+            cbx_tipo_tributo = new ComboBox();
+            label11 = new Label();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -63,15 +65,15 @@
             // 
             cbx_unidad_medida.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_unidad_medida.FormattingEnabled = true;
-            cbx_unidad_medida.Location = new Point(363, 258);
+            cbx_unidad_medida.Location = new Point(363, 313);
             cbx_unidad_medida.Name = "cbx_unidad_medida";
-            cbx_unidad_medida.Size = new Size(303, 23);
+            cbx_unidad_medida.Size = new Size(360, 23);
             cbx_unidad_medida.TabIndex = 10;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(363, 240);
+            label9.Location = new Point(363, 295);
             label9.Name = "label9";
             label9.Size = new Size(88, 15);
             label9.TabIndex = 60;
@@ -81,15 +83,15 @@
             // 
             cbx_marca.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_marca.FormattingEnabled = true;
-            cbx_marca.Location = new Point(363, 203);
+            cbx_marca.Location = new Point(363, 258);
             cbx_marca.Name = "cbx_marca";
-            cbx_marca.Size = new Size(303, 23);
+            cbx_marca.Size = new Size(360, 23);
             cbx_marca.TabIndex = 9;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(363, 185);
+            label8.Location = new Point(363, 240);
             label8.Name = "label8";
             label8.Size = new Size(40, 15);
             label8.TabIndex = 58;
@@ -99,39 +101,39 @@
             // 
             cbx_categoria.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_categoria.FormattingEnabled = true;
-            cbx_categoria.Location = new Point(363, 148);
+            cbx_categoria.Location = new Point(363, 203);
             cbx_categoria.Name = "cbx_categoria";
-            cbx_categoria.Size = new Size(303, 23);
+            cbx_categoria.Size = new Size(360, 23);
             cbx_categoria.TabIndex = 8;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(363, 130);
+            label6.Location = new Point(363, 185);
             label6.Name = "label6";
             label6.Size = new Size(58, 15);
             label6.TabIndex = 56;
             label6.Text = "Categoria";
             // 
-            // label5
+            // lbl_tributo
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(363, 72);
-            label5.Name = "label5";
-            label5.Size = new Size(53, 15);
-            label5.TabIndex = 54;
-            label5.Text = "IVA (%) *";
+            lbl_tributo.AutoSize = true;
+            lbl_tributo.Location = new Point(363, 128);
+            lbl_tributo.Name = "lbl_tributo";
+            lbl_tributo.Size = new Size(86, 15);
+            lbl_tributo.TabIndex = 54;
+            lbl_tributo.Text = "Impuesto (%) *";
             // 
-            // txt_iva
+            // txt_impuesto
             // 
-            txt_iva.Location = new Point(363, 92);
-            txt_iva.MaxLength = 13;
-            txt_iva.Name = "txt_iva";
-            txt_iva.Size = new Size(303, 23);
-            txt_iva.TabIndex = 7;
-            txt_iva.Text = "0";
-            txt_iva.KeyPress += txt_iva_KeyPress;
-            txt_iva.Validating += txt_iva_Validating;
+            txt_impuesto.Location = new Point(363, 148);
+            txt_impuesto.MaxLength = 13;
+            txt_impuesto.Name = "txt_impuesto";
+            txt_impuesto.Size = new Size(360, 23);
+            txt_impuesto.TabIndex = 7;
+            txt_impuesto.Text = "0";
+            txt_impuesto.KeyPress += txt_iva_KeyPress;
+            txt_impuesto.Validating += txt_iva_Validating;
             // 
             // cbx_es_inventariable
             // 
@@ -139,15 +141,15 @@
             cbx_es_inventariable.Enabled = false;
             cbx_es_inventariable.FormattingEnabled = true;
             cbx_es_inventariable.Items.AddRange(new object[] { "SI", "NO" });
-            cbx_es_inventariable.Location = new Point(363, 314);
+            cbx_es_inventariable.Location = new Point(363, 369);
             cbx_es_inventariable.Name = "cbx_es_inventariable";
-            cbx_es_inventariable.Size = new Size(303, 23);
+            cbx_es_inventariable.Size = new Size(360, 23);
             cbx_es_inventariable.TabIndex = 11;
             // 
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(363, 296);
+            label14.Location = new Point(363, 351);
             label14.Name = "label14";
             label14.Size = new Size(89, 15);
             label14.TabIndex = 52;
@@ -253,7 +255,7 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(700, 56);
+            panel3.Size = new Size(750, 56);
             panel3.TabIndex = 61;
             // 
             // btn_guardar
@@ -292,12 +294,34 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // cbx_tipo_tributo
+            // 
+            cbx_tipo_tributo.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_tipo_tributo.FormattingEnabled = true;
+            cbx_tipo_tributo.Items.AddRange(new object[] { "IVA (Impuesto sobre la Ventas)", "INC (Impuesto Nacional al Consumo)", "INC Bolsas (Impuesto Nacional al Consumo de Bolsa Plástica)" });
+            cbx_tipo_tributo.Location = new Point(363, 92);
+            cbx_tipo_tributo.Name = "cbx_tipo_tributo";
+            cbx_tipo_tributo.Size = new Size(360, 23);
+            cbx_tipo_tributo.TabIndex = 64;
+            cbx_tipo_tributo.SelectedIndexChanged += cbx_tipo_tributo_SelectedIndexChanged;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(363, 74);
+            label11.Name = "label11";
+            label11.Size = new Size(70, 15);
+            label11.TabIndex = 65;
+            label11.Text = "Tipo Tributo";
+            // 
             // AgregarProducto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(700, 407);
+            ClientSize = new Size(750, 407);
+            Controls.Add(cbx_tipo_tributo);
+            Controls.Add(label11);
             Controls.Add(label10);
             Controls.Add(txt_codigo_barras);
             Controls.Add(panel3);
@@ -307,8 +331,8 @@
             Controls.Add(label8);
             Controls.Add(cbx_categoria);
             Controls.Add(label6);
-            Controls.Add(label5);
-            Controls.Add(txt_iva);
+            Controls.Add(lbl_tributo);
+            Controls.Add(txt_impuesto);
             Controls.Add(cbx_es_inventariable);
             Controls.Add(label14);
             Controls.Add(label4);
@@ -323,8 +347,8 @@
             Controls.Add(txt_sku);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(716, 446);
-            MinimumSize = new Size(716, 446);
+            MaximumSize = new Size(766, 446);
+            MinimumSize = new Size(766, 446);
             Name = "AgregarProducto";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AgregarProducto";
@@ -343,8 +367,8 @@
         private Label label8;
         private ComboBox cbx_categoria;
         private Label label6;
-        private Label label5;
-        private TextBox txt_iva;
+        private Label lbl_tributo;
+        private TextBox txt_impuesto;
         private ComboBox cbx_es_inventariable;
         private Label label14;
         private Label label4;
@@ -364,5 +388,7 @@
         private Label label10;
         private TextBox txt_codigo_barras;
         private ErrorProvider errorProvider1;
+        private ComboBox cbx_tipo_tributo;
+        private Label label11;
     }
 }

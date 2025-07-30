@@ -129,7 +129,7 @@ namespace sbx
                                 item.Cantidad.ToString(new CultureInfo("es-CO")),
                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 item.Descuento.ToString(new CultureInfo("es-CO")),
-                                item.Iva.ToString(new CultureInfo("es-CO")),
+                                item.Impuesto.ToString(new CultureInfo("es-CO")),
                                 TotalLinea.ToString("N2", new CultureInfo("es-CO")));
                         }
 
@@ -187,7 +187,7 @@ namespace sbx
                 Cantidad = detalleEntradasInv.Cantidad,
                 CostoUnitario = detalleEntradasInv.CostoUnitario,
                 Descuento = detalleEntradasInv.Descuento,
-                Iva = detalleEntradasInv.Iva,
+                Impuesto = detalleEntradasInv.Impuesto,
                 Total = detalleEntradasInv.Total
             };
 
@@ -214,10 +214,10 @@ namespace sbx
                         item.Nombre,
                         item.CodigoLote,
                         item.FechaVencimiento,
-                        item.Cantidad.ToString().Replace('.', ','),
+                        item.Cantidad.ToString(new CultureInfo("es-CO")),
                         item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
-                        item.Descuento.ToString().Replace('.', ','),
-                        item.Iva.ToString().Replace('.', ','),
+                        item.Descuento.ToString(new CultureInfo("es-CO")),
+                        item.Impuesto.ToString(new CultureInfo("es-CO")),
                         item.Total.ToString("N2", new CultureInfo("es-CO"))
                         );
                 }
@@ -271,7 +271,7 @@ namespace sbx
                         Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
                         CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo_unitario"].Value, new CultureInfo("es-CO")),
                         Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                        Iva = Convert.ToDecimal(fila.Cells["cl_iva"].Value, new CultureInfo("es-CO"))
+                        Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO"))
                     };
 
                     entradasInventarioEntitie.detalleEntradasInventarios.Add(nuevoDetalle);

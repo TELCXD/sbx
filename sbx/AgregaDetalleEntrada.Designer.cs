@@ -47,8 +47,8 @@
             lbl_fechaVencimiento = new Label();
             label6 = new Label();
             txt_descuento = new TextBox();
-            label7 = new Label();
-            txt_iva = new TextBox();
+            lbl_impuesto = new Label();
+            txt_impuesto = new TextBox();
             label8 = new Label();
             txt_subtotal = new TextBox();
             label9 = new Label();
@@ -243,27 +243,27 @@
             txt_descuento.KeyUp += txt_descuento_KeyUp;
             txt_descuento.Validating += txt_descuento_Validating;
             // 
-            // label7
+            // lbl_impuesto
             // 
-            label7.AutoSize = true;
-            label7.Location = new Point(226, 256);
-            label7.Name = "label7";
-            label7.Size = new Size(35, 15);
-            label7.TabIndex = 119;
-            label7.Text = "% Iva";
+            lbl_impuesto.AutoSize = true;
+            lbl_impuesto.Location = new Point(226, 256);
+            lbl_impuesto.Name = "lbl_impuesto";
+            lbl_impuesto.Size = new Size(70, 15);
+            lbl_impuesto.TabIndex = 119;
+            lbl_impuesto.Text = "% Impuesto";
             // 
-            // txt_iva
+            // txt_impuesto
             // 
-            txt_iva.Enabled = false;
-            txt_iva.Location = new Point(226, 274);
-            txt_iva.MaxLength = 13;
-            txt_iva.Name = "txt_iva";
-            txt_iva.Size = new Size(222, 23);
-            txt_iva.TabIndex = 10;
-            txt_iva.Text = "0";
-            txt_iva.KeyPress += txt_iva_KeyPress;
-            txt_iva.KeyUp += txt_iva_KeyUp;
-            txt_iva.Validating += txt_iva_Validating;
+            txt_impuesto.Enabled = false;
+            txt_impuesto.Location = new Point(226, 274);
+            txt_impuesto.MaxLength = 13;
+            txt_impuesto.Name = "txt_impuesto";
+            txt_impuesto.Size = new Size(222, 23);
+            txt_impuesto.TabIndex = 10;
+            txt_impuesto.Text = "0";
+            txt_impuesto.KeyPress += txt_iva_KeyPress;
+            txt_impuesto.KeyUp += txt_iva_KeyUp;
+            txt_impuesto.Validating += txt_iva_Validating;
             // 
             // label8
             // 
@@ -337,8 +337,8 @@
             Controls.Add(txt_total);
             Controls.Add(label8);
             Controls.Add(txt_subtotal);
-            Controls.Add(label7);
-            Controls.Add(txt_iva);
+            Controls.Add(lbl_impuesto);
+            Controls.Add(txt_impuesto);
             Controls.Add(label6);
             Controls.Add(txt_descuento);
             Controls.Add(lbl_fechaVencimiento);
@@ -387,8 +387,8 @@
         private Label lbl_fechaVencimiento;
         private Label label6;
         private TextBox txt_descuento;
-        private Label label7;
-        private TextBox txt_iva;
+        private Label lbl_impuesto;
+        private TextBox txt_impuesto;
         private Label label8;
         private TextBox txt_subtotal;
         private Label label9;

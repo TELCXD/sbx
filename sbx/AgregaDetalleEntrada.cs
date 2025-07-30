@@ -71,15 +71,22 @@ namespace sbx
             var resp = await _IProducto.List(id);
             if (resp.Data != null)
             {
-
                 DetalleEntrada.IdProducto = resp.Data[0].IdProducto;
                 DetalleEntrada.Sku = resp.Data[0].Sku;
                 DetalleEntrada.CodigoBarras = resp.Data[0].CodigoBarras;
                 DetalleEntrada.Nombre = resp.Data[0].Nombre;
-
                 txt_producto.Text = resp.Data[0].IdProducto + " " + resp.Data[0].Sku + " " + resp.Data[0].CodigoBarras;
                 lbl_nombre_producto.Text = resp.Data[0].Nombre;
-                txt_iva.Text = resp.Data[0].Iva.ToString();
+                txt_impuesto.Text = resp.Data[0].Impuesto.ToString(new CultureInfo("es-CO"));
+
+                if (resp.Data[0].NombreTributo == "INC Bolsas")
+                {
+                    lbl_impuesto.Text = "Valor Impuesto bolsa";
+                }
+                else
+                {
+                    lbl_impuesto.Text = "% Impuesto";
+                }
             }
         }
 
@@ -169,25 +176,25 @@ namespace sbx
         private void txt_iva_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             errorProvider1.Clear();
-            if (!decimal.TryParse(txt_iva.Text, out _))
+            if (!decimal.TryParse(txt_impuesto.Text, out _))
             {
-                errorProvider1.SetError(txt_iva, "Ingrese un valor numerico");
+                errorProvider1.SetError(txt_impuesto, "Ingrese un valor numerico");
             }
         }
 
         private void btn_add_producto_Click(object sender, EventArgs e)
         {
             errorProvider1.Clear();
-            if (txt_producto.Text.Trim() != "" && txt_cantidad.Text.Trim() != "" && txt_costo.Text.Trim() != "" && txt_subtotal.Text.Trim() != "" && txt_total.Text.Trim() != "" && txt_descuento.Text != "" && txt_iva.Text.Trim() != "")
+            if (txt_producto.Text.Trim() != "" && txt_cantidad.Text.Trim() != "" && txt_costo.Text.Trim() != "" && txt_subtotal.Text.Trim() != "" && txt_total.Text.Trim() != "" && txt_descuento.Text != "" && txt_impuesto.Text.Trim() != "")
             {
                 if (Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.')) > 0)
                 {
                     DetalleEntrada.CodigoLote = txt_lote.Text;
                     if (chek_fecha_vencimiento.Checked) { DetalleEntrada.FechaVencimiento = dtp_fecha_vencimiento.Value; } else { DetalleEntrada.FechaVencimiento = DateTime.Parse("1900-01-01"); }
-                    DetalleEntrada.Cantidad = Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.'));
+                    DetalleEntrada.Cantidad = Convert.ToDecimal(txt_cantidad.Text, new CultureInfo("es-CO"));
                     DetalleEntrada.CostoUnitario = Convert.ToDecimal(txt_costo.Text, new CultureInfo("es-CO"));
-                    DetalleEntrada.Descuento = Convert.ToDecimal(txt_descuento.Text.Replace(',', '.'));
-                    DetalleEntrada.Iva = Convert.ToDecimal(txt_iva.Text.Replace(',', '.'));
+                    DetalleEntrada.Descuento = Convert.ToDecimal(txt_descuento.Text, new CultureInfo("es-CO"));
+                    DetalleEntrada.Impuesto = Convert.ToDecimal(txt_impuesto.Text, new CultureInfo("es-CO"));
                     DetalleEntrada.Total = Convert.ToDecimal(txt_total.Text, new CultureInfo("es-CO"));
 
                     Enviar_Detalle(DetalleEntrada);
@@ -200,7 +207,7 @@ namespace sbx
                     txt_costo.Text = "0";
                     txt_subtotal.Text = "";
                     txt_descuento.Text = "0";
-                    txt_iva.Text = "0";
+                    txt_impuesto.Text = "0";
                     txt_total.Text = "";
                 }
                 else
@@ -212,7 +219,7 @@ namespace sbx
             {
                 if (txt_producto.Text.Trim() == "") { errorProvider1.SetError(txt_producto, "Debe ingresar un producto"); }
                 if (txt_subtotal.Text.Trim() == "") { errorProvider1.SetError(txt_subtotal, "Debe ingresar cantidad y costo para calcular sub total"); }
-                if (txt_total.Text.Trim() == "" || txt_descuento.Text.Trim() == "" || txt_iva.Text.Trim() == "") { errorProvider1.SetError(txt_total, "Debe existir sub total, descuento y iva para calcular total"); }
+                if (txt_total.Text.Trim() == "" || txt_descuento.Text.Trim() == "" || txt_impuesto.Text.Trim() == "") { errorProvider1.SetError(txt_total, "Debe existir sub total, descuento y impuesto para calcular total"); }
             }
         }
 

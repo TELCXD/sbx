@@ -39,27 +39,29 @@ namespace sbx.repositories.Producto
                                   CostoBase = @CostoBase,
                                   PrecioBase = @PrecioBase, 
                                   EsInventariable = @EsInventariable,
-                                  Iva = @Iva, 
+                                  Impuesto = @Impuesto, 
                                   IdCategoria = @IdCategoria, 
                                   IdMarca = @IdMarca,
                                   IdUnidadMedida = @IdUnidadMedida,
+                                  Idtribute = @Idtribute,
                                   UpdateDate = @UpdateDate,
                                   IdUserAction = @IdUserAction 
                                   WHERE IdProducto = @IdProducto";
 
                         var parametros = new
                         {
-                            IdProducto = productoEntitie.IdProducto,
-                            Sku = productoEntitie.Sku,
-                            CodigoBarras = productoEntitie.CodigoBarras,
-                            Nombre = productoEntitie.Nombre,
-                            CostoBase = productoEntitie.CostoBase,
-                            PrecioBase = productoEntitie.PrecioBase,
-                            EsInventariable = productoEntitie.EsInventariable,
-                            Iva = productoEntitie.Iva,
-                            IdCategoria = productoEntitie.IdCategoria,
-                            IdMarca = productoEntitie.IdMarca,
-                            IdUnidadMedida = productoEntitie.IdUnidadMedida,
+                            productoEntitie.IdProducto,
+                            productoEntitie.Sku,
+                            productoEntitie.CodigoBarras,
+                            productoEntitie.Nombre,
+                            productoEntitie.CostoBase,
+                            productoEntitie.PrecioBase,
+                            productoEntitie.EsInventariable,
+                            productoEntitie.Impuesto,
+                            productoEntitie.IdCategoria,
+                            productoEntitie.IdMarca,
+                            productoEntitie.IdUnidadMedida,
+                            productoEntitie.Idtribute,
                             UpdateDate = FechaActual,
                             IdUserAction = IdUser
                         };
@@ -80,22 +82,23 @@ namespace sbx.repositories.Producto
                     else
                     {
                         sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
-                                  CostoBase,PrecioBase,EsInventariable,Iva,IdCategoria,IdMarca,IdUnidadMedida,CreationDate, IdUserAction)
+                                  CostoBase,PrecioBase,EsInventariable,Impuesto,IdCategoria,IdMarca,IdUnidadMedida,Idtribute,CreationDate, IdUserAction)
                                   VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
-                                  @CostoBase,@PrecioBase,@EsInventariable,@Iva,@IdCategoria,@IdMarca,@IdUnidadMedida,@CreationDate,@IdUserAction)";
+                                  @CostoBase,@PrecioBase,@EsInventariable,@Impuesto,@IdCategoria,@IdMarca,@IdUnidadMedida,@Idtribute,@CreationDate,@IdUserAction)";
 
                         var parametros = new
                         {
-                            Sku = productoEntitie.Sku,
-                            CodigoBarras = productoEntitie.CodigoBarras,
-                            Nombre = productoEntitie.Nombre,
-                            CostoBase = productoEntitie.CostoBase,
-                            PrecioBase = productoEntitie.PrecioBase,
-                            EsInventariable = productoEntitie.EsInventariable,
-                            Iva = productoEntitie.Iva,
-                            IdCategoria = productoEntitie.IdCategoria,
-                            IdMarca = productoEntitie.IdMarca,
-                            IdUnidadMedida = productoEntitie.IdUnidadMedida,
+                            productoEntitie.Sku,
+                            productoEntitie.CodigoBarras,
+                            productoEntitie.Nombre,
+                            productoEntitie.CostoBase,
+                            productoEntitie.PrecioBase,
+                            productoEntitie.EsInventariable,
+                            productoEntitie.Impuesto,
+                            productoEntitie.IdCategoria,
+                            productoEntitie.IdMarca,
+                            productoEntitie.IdUnidadMedida,
+                            productoEntitie.Idtribute,
                             CreationDate = FechaActual,
                             IdUserAction = IdUser
                         };
@@ -143,7 +146,7 @@ namespace sbx.repositories.Producto
                                   ,A.CostoBase
                                   ,A.PrecioBase
                                   ,A.EsInventariable
-                                  ,A.Iva
+                                  ,A.Impuesto
                                   ,A.IdCategoria
 								  ,B.Nombre NombreCategoria
                                   ,A.IdMarca
@@ -151,6 +154,8 @@ namespace sbx.repositories.Producto
                                   ,A.UpdateDate
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -197,7 +202,8 @@ namespace sbx.repositories.Producto
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
-								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
 
                     string Where = "";
 
@@ -298,7 +304,7 @@ namespace sbx.repositories.Producto
                                   ,A.CostoBase
                                   ,A.PrecioBase
                                   ,A.EsInventariable
-                                  ,A.Iva
+                                  ,A.Impuesto
                                   ,A.IdCategoria
 								  ,B.Nombre NombreCategoria
                                   ,A.IdMarca
@@ -306,6 +312,8 @@ namespace sbx.repositories.Producto
                                   ,A.UpdateDate
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -344,7 +352,8 @@ namespace sbx.repositories.Producto
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
-								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
 
                     string Where = "";
                     string Filtro = "";
@@ -464,7 +473,7 @@ namespace sbx.repositories.Producto
                                   ,A.CostoBase
                                   ,A.PrecioBase
                                   ,A.EsInventariable
-                                  ,A.Iva
+                                  ,A.Impuesto
                                   ,A.IdCategoria
 								  ,B.Nombre NombreCategoria
                                   ,A.IdMarca
@@ -472,6 +481,8 @@ namespace sbx.repositories.Producto
                                   ,A.UpdateDate
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -509,7 +520,8 @@ namespace sbx.repositories.Producto
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
-								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
 
                     string Where = "";
 
@@ -553,7 +565,7 @@ namespace sbx.repositories.Producto
                                   ,A.CostoBase
                                   ,A.PrecioBase
                                   ,A.EsInventariable
-                                  ,A.Iva
+                                  ,A.Impuesto
                                   ,A.IdCategoria
 								  ,B.Nombre NombreCategoria
                                   ,A.IdMarca
@@ -561,6 +573,8 @@ namespace sbx.repositories.Producto
                                   ,A.UpdateDate
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -598,7 +612,8 @@ namespace sbx.repositories.Producto
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
-								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
 
                     string Where = "";
 
@@ -642,7 +657,7 @@ namespace sbx.repositories.Producto
                                   ,A.CostoBase
                                   ,A.PrecioBase
                                   ,A.EsInventariable
-                                  ,A.Iva
+                                  ,A.Impuesto
                                   ,A.IdCategoria
 								  ,B.Nombre NombreCategoria
                                   ,A.IdMarca
@@ -650,6 +665,8 @@ namespace sbx.repositories.Producto
                                   ,A.UpdateDate
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -690,7 +707,8 @@ namespace sbx.repositories.Producto
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
 								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida 
-                                  LEFT JOIN T_ConversionesProducto E ON E.IdProductoPadre = A.IdProducto ";
+                                  LEFT JOIN T_ConversionesProducto E ON E.IdProductoPadre = A.IdProducto
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
 
                     string Where = "";
                     string Filtro = "";
@@ -810,7 +828,7 @@ namespace sbx.repositories.Producto
                                   ,A.CostoBase
                                   ,A.PrecioBase
                                   ,A.EsInventariable
-                                  ,A.Iva
+                                  ,A.Impuesto
                                   ,A.IdCategoria
 								  ,B.Nombre NombreCategoria
                                   ,A.IdMarca
@@ -818,6 +836,8 @@ namespace sbx.repositories.Producto
                                   ,A.UpdateDate
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -860,7 +880,8 @@ namespace sbx.repositories.Producto
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
 								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida 
                                   LEFT JOIN T_ConversionesProducto E ON E.IdProductoHijo = A.IdProducto
-								  LEFT JOIN T_ConversionesProducto F ON F.IdProductoPadre = A.IdProducto ";
+								  LEFT JOIN T_ConversionesProducto F ON F.IdProductoPadre = A.IdProducto 
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
 
                     string Where = "";
                     string Filtro = "";
@@ -980,10 +1001,11 @@ namespace sbx.repositories.Producto
                                   ,A.CostoBase
                                   ,A.PrecioBase
                                   --,A.EsInventariable
-                                  ,A.Iva
+                                  ,A.Impuesto
 								  ,B.Nombre NombreCategoria
 								  ,C.Nombre NombreMarca
 								  ,D.Nombre NombreUnidadMedida
+                                  ,E.Nombre NombreTributo
                                   ,ISNULL((SELECT 
                                     SUM(CASE WHEN 
                                     R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
@@ -1019,7 +1041,8 @@ namespace sbx.repositories.Producto
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
-								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida ";
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida 
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
 
                     string Where = "";
                     string Filtro = "";

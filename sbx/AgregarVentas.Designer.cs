@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarVentas));
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
             btn_devolucion = new Button();
             btn_ver_ventas = new Button();
@@ -50,17 +50,6 @@
             btn_busca_producto = new Button();
             btn_nuevo_producto = new Button();
             dtg_producto = new DataGridView();
-            cl_idProducto = new DataGridViewTextBoxColumn();
-            cl_sku = new DataGridViewTextBoxColumn();
-            cl_codigo_barras = new DataGridViewTextBoxColumn();
-            cl_nombre = new DataGridViewTextBoxColumn();
-            cl_precio = new DataGridViewTextBoxColumn();
-            cl_cantidad = new DataGridViewTextBoxColumn();
-            cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
-            cl_total = new DataGridViewTextBoxColumn();
-            cl_unidad_medida = new DataGridViewTextBoxColumn();
-            cl_costo = new DataGridViewTextBoxColumn();
             btn_suspender = new Button();
             btn_cancelar = new Button();
             label3 = new Label();
@@ -95,6 +84,18 @@
             btn_cotizacion = new Button();
             btn_lista_cotizaciones = new Button();
             btn_quitar1 = new Button();
+            cl_idProducto = new DataGridViewTextBoxColumn();
+            cl_sku = new DataGridViewTextBoxColumn();
+            cl_codigo_barras = new DataGridViewTextBoxColumn();
+            cl_nombre = new DataGridViewTextBoxColumn();
+            cl_precio = new DataGridViewTextBoxColumn();
+            cl_cantidad = new DataGridViewTextBoxColumn();
+            cl_descuento = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
+            cl_total = new DataGridViewTextBoxColumn();
+            cl_unidad_medida = new DataGridViewTextBoxColumn();
+            cl_costo = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             panel3.SuspendLayout();
@@ -321,34 +322,34 @@
             dtg_producto.AllowUserToDeleteRows = false;
             dtg_producto.AllowUserToOrderColumns = true;
             dtg_producto.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total, cl_unidad_medida, cl_costo });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dtg_producto.DefaultCellStyle = dataGridViewCellStyle8;
+            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_impuesto, cl_total, cl_unidad_medida, cl_costo, cl_tributo });
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dtg_producto.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_producto.Location = new Point(11, 127);
             dtg_producto.Name = "dtg_producto";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_producto.Size = new Size(1107, 298);
             dtg_producto.TabIndex = 6;
@@ -356,77 +357,6 @@
             dtg_producto.CellEndEdit += dtg_producto_CellEndEdit;
             dtg_producto.EditingControlShowing += dtg_producto_EditingControlShowing;
             dtg_producto.KeyPress += dtg_producto_KeyPress;
-            // 
-            // cl_idProducto
-            // 
-            cl_idProducto.HeaderText = "Id";
-            cl_idProducto.Name = "cl_idProducto";
-            cl_idProducto.ReadOnly = true;
-            cl_idProducto.Width = 50;
-            // 
-            // cl_sku
-            // 
-            cl_sku.HeaderText = "sku";
-            cl_sku.Name = "cl_sku";
-            cl_sku.ReadOnly = true;
-            // 
-            // cl_codigo_barras
-            // 
-            cl_codigo_barras.HeaderText = "Codigo b";
-            cl_codigo_barras.Name = "cl_codigo_barras";
-            cl_codigo_barras.ReadOnly = true;
-            cl_codigo_barras.Width = 150;
-            // 
-            // cl_nombre
-            // 
-            cl_nombre.HeaderText = "Nombre";
-            cl_nombre.Name = "cl_nombre";
-            cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 220;
-            // 
-            // cl_precio
-            // 
-            cl_precio.HeaderText = "Precio";
-            cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
-            cl_precio.Width = 150;
-            // 
-            // cl_cantidad
-            // 
-            cl_cantidad.HeaderText = "Cantidad";
-            cl_cantidad.Name = "cl_cantidad";
-            // 
-            // cl_descuento
-            // 
-            cl_descuento.HeaderText = "Desc %";
-            cl_descuento.Name = "cl_descuento";
-            cl_descuento.Width = 80;
-            // 
-            // cl_iva
-            // 
-            cl_iva.HeaderText = "Iva %";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 67;
-            // 
-            // cl_total
-            // 
-            cl_total.HeaderText = "Total";
-            cl_total.Name = "cl_total";
-            cl_total.ReadOnly = true;
-            cl_total.Width = 142;
-            // 
-            // cl_unidad_medida
-            // 
-            cl_unidad_medida.HeaderText = "UM";
-            cl_unidad_medida.Name = "cl_unidad_medida";
-            cl_unidad_medida.Visible = false;
-            // 
-            // cl_costo
-            // 
-            cl_costo.HeaderText = "Costo";
-            cl_costo.Name = "cl_costo";
-            cl_costo.Visible = false;
             // 
             // btn_suspender
             // 
@@ -838,6 +768,83 @@
             btn_quitar1.UseVisualStyleBackColor = true;
             btn_quitar1.Click += btn_quitar1_Click;
             // 
+            // cl_idProducto
+            // 
+            cl_idProducto.HeaderText = "Id";
+            cl_idProducto.Name = "cl_idProducto";
+            cl_idProducto.ReadOnly = true;
+            cl_idProducto.Width = 50;
+            // 
+            // cl_sku
+            // 
+            cl_sku.HeaderText = "sku";
+            cl_sku.Name = "cl_sku";
+            cl_sku.ReadOnly = true;
+            // 
+            // cl_codigo_barras
+            // 
+            cl_codigo_barras.HeaderText = "Codigo b";
+            cl_codigo_barras.Name = "cl_codigo_barras";
+            cl_codigo_barras.ReadOnly = true;
+            cl_codigo_barras.Width = 150;
+            // 
+            // cl_nombre
+            // 
+            cl_nombre.HeaderText = "Nombre";
+            cl_nombre.Name = "cl_nombre";
+            cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 220;
+            // 
+            // cl_precio
+            // 
+            cl_precio.HeaderText = "Precio";
+            cl_precio.Name = "cl_precio";
+            cl_precio.ReadOnly = true;
+            cl_precio.Width = 150;
+            // 
+            // cl_cantidad
+            // 
+            cl_cantidad.HeaderText = "Cantidad";
+            cl_cantidad.Name = "cl_cantidad";
+            // 
+            // cl_descuento
+            // 
+            cl_descuento.HeaderText = "Desc %";
+            cl_descuento.Name = "cl_descuento";
+            cl_descuento.Width = 76;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 75;
+            // 
+            // cl_total
+            // 
+            cl_total.HeaderText = "Total";
+            cl_total.Name = "cl_total";
+            cl_total.ReadOnly = true;
+            cl_total.Width = 142;
+            // 
+            // cl_unidad_medida
+            // 
+            cl_unidad_medida.HeaderText = "UM";
+            cl_unidad_medida.Name = "cl_unidad_medida";
+            cl_unidad_medida.Visible = false;
+            // 
+            // cl_costo
+            // 
+            cl_costo.HeaderText = "Costo";
+            cl_costo.Name = "cl_costo";
+            cl_costo.Visible = false;
+            // 
+            // cl_tributo
+            // 
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.Visible = false;
+            // 
             // AgregarVentas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -929,6 +936,9 @@
         private Button btn_ver_ventas;
         private Button btn_devolucion;
         private Button btn_pagos_en_efectivo;
+        private Button btn_cotizacion;
+        private Button btn_lista_cotizaciones;
+        private Button btn_quitar1;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -936,12 +946,10 @@
         private DataGridViewTextBoxColumn cl_precio;
         private DataGridViewTextBoxColumn cl_cantidad;
         private DataGridViewTextBoxColumn cl_descuento;
-        private DataGridViewTextBoxColumn cl_iva;
+        private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
         private DataGridViewTextBoxColumn cl_unidad_medida;
         private DataGridViewTextBoxColumn cl_costo;
-        private Button btn_cotizacion;
-        private Button btn_lista_cotizaciones;
-        private Button btn_quitar1;
+        private DataGridViewTextBoxColumn cl_tributo;
     }
 }

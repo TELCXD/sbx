@@ -55,9 +55,9 @@ namespace sbx.repositories.EntradaInventario
 
                     sql = @"INSERT INTO T_DetalleEntradasInventario (
                             IdEntradasInventario, IdProducto, CodigoLote, FechaVencimiento,
-                            Cantidad, CostoUnitario, Descuento, Iva, CreationDate, IdUserAction)
+                            Cantidad, CostoUnitario, Descuento, Impuesto, CreationDate, IdUserAction)
                             VALUES (@IdEntradasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
-                                    @Cantidad, @CostoUnitario, @Descuento, @Iva, @CreationDate, @IdUserAction);";
+                                    @Cantidad, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction);";
 
                     foreach (var detalle in entradasInventarioEntitie.detalleEntradasInventarios)
                     {
@@ -72,7 +72,7 @@ namespace sbx.repositories.EntradaInventario
                                 detalle.Cantidad,
                                 detalle.CostoUnitario,
                                 detalle.Descuento,
-                                detalle.Iva,
+                                detalle.Impuesto,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },
@@ -163,7 +163,7 @@ namespace sbx.repositories.EntradaInventario
                                     Cantidad = CantidadSaleRedondeada,
                                     CostoUnitario = 0,
                                     Descuento = 0,
-                                    Iva = 0,
+                                    Impuesto = 0,
                                     Total = 0
                                 };
 
@@ -260,7 +260,7 @@ namespace sbx.repositories.EntradaInventario
                                         Cantidad = CantidadSaleRedondeada,
                                         CostoUnitario = 0,
                                         Descuento = 0,
-                                        Iva = 0,
+                                        Impuesto = 0,
                                         Total = 0
                                     };
 
@@ -359,7 +359,7 @@ namespace sbx.repositories.EntradaInventario
                                         Cantidad = CantidadSaleRedondeada,
                                         CostoUnitario = 0,
                                         Descuento = 0,
-                                        Iva = 0,
+                                        Impuesto = 0,
                                         Total = 0
                                     };
 
@@ -429,7 +429,7 @@ namespace sbx.repositories.EntradaInventario
                     await connection.OpenAsync();
 
                     string sql = @" SELECT Fecha,IdUserAction,UserName ,Usuario , IdDocumento,Documento, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
-                                    CodigoBarras, CodigoLote, FechaVencimiento,Costo,Valor,Descuento,Iva,Total,Comentario 
+                                    CodigoBarras, CodigoLote, FechaVencimiento,Costo,Valor,Descuento,Impuesto,Total,Comentario 
                                     FROM
                                     (
                                     SELECT 
@@ -451,7 +451,7 @@ namespace sbx.repositories.EntradaInventario
 										0 Costo,
 										e.CostoUnitario Valor,
 										e.Descuento,
-										e.Iva,
+										e.Impuesto,
                                         ei.Comentario,
 										(e.Cantidad * e.CostoUnitario) * (1 - ISNULL(e.Descuento, 0) / 100) Total
                                     FROM T_DetalleEntradasInventario e
@@ -481,7 +481,7 @@ namespace sbx.repositories.EntradaInventario
 										0 Costo,
 										s.CostoUnitario Valor,
 										0 Descuento,
-										0 Iva,
+										0 Impuesto,
                                         si.Comentario,
 										(s.Cantidad * s.CostoUnitario) Total
                                     FROM T_DetalleSalidasInventario s
@@ -511,7 +511,7 @@ namespace sbx.repositories.EntradaInventario
 										dvt.CostoUnitario Costo,
 										dvt.PrecioUnitario Valor,
 										dvt.Descuento,
-										dvt.Impuesto Iva,
+										dvt.Impuesto,
                                         '' AS Comentario,
 										(dvt.Cantidad * dvt.PrecioUnitario) * (1 - ISNULL(dvt.Descuento, 0) / 100) Total
 	                                FROM T_Ventas vt 
@@ -539,7 +539,7 @@ namespace sbx.repositories.EntradaInventario
 										0 Costo,
 										ncd.PrecioUnitario,
 										ncd.Descuento,
-										ncd.Impuesto Iva,
+										ncd.Impuesto,
                                         nc.Motivo AS Comentario,
 										(ncd.Cantidad * ncd.PrecioUnitario) * (1 - ISNULL(ncd.Descuento, 0) / 100) Total
 									FROM T_NotaCredito nc INNER JOIN T_NotaCreditoDetalle ncd ON nc.IdNotaCredito  = ncd.IdNotaCredito
@@ -710,9 +710,9 @@ namespace sbx.repositories.EntradaInventario
                         int idMarca = await connection.ExecuteScalarAsync<int>(sql, new { NombreMarca = (item[3].ToString()?.Trim() == "" ? "N/A" : item[3].ToString()?.Trim()) }, transaction);
 
                         sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
-                                  CostoBase,PrecioBase,EsInventariable,Iva,IdCategoria,IdMarca,IdUnidadMedida,CreationDate, IdUserAction)
+                                  CostoBase,PrecioBase,EsInventariable,Impuesto,IdCategoria,IdMarca,IdUnidadMedida,Idtribute,CreationDate, IdUserAction)
                                   VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
-                                  @CostoBase,@PrecioBase,@EsInventariable,@Iva,@IdCategoria,@IdMarca,@IdUnidadMedida,@CreationDate,@IdUserAction);
+                                  @CostoBase,@PrecioBase,@EsInventariable,@Impuesto,@IdCategoria,@IdMarca,@IdUnidadMedida,@Idtribute,@CreationDate,@IdUserAction);
                                   SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                         var parametrosProducto = new
@@ -723,10 +723,11 @@ namespace sbx.repositories.EntradaInventario
                             CostoBase = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
                             PrecioBase = Convert.ToDecimal(item[5], new CultureInfo("es-CO")),
                             EsInventariable = 1,
-                            Iva = Convert.ToDecimal(item[7], new CultureInfo("es-CO")),
+                            Impuesto = Convert.ToDecimal(item[7], new CultureInfo("es-CO")),
                             IdCategoria = 1,
                             IdMarca = idMarca,
                             IdUnidadMedida = 1,
+                            Idtribute = item[8].ToString()?.Trim() == "IVA" ? 1 : item[8].ToString()?.Trim() == "INC" ? 2 : 1,
                             CreationDate = FechaActual,
                             IdUserAction = IdUser
                         };
@@ -752,9 +753,9 @@ namespace sbx.repositories.EntradaInventario
 
                         sql = @"INSERT INTO T_DetalleEntradasInventario (
                             IdEntradasInventario, IdProducto, CodigoLote, FechaVencimiento,
-                            Cantidad, CostoUnitario, Descuento, Iva, CreationDate, IdUserAction)
+                            Cantidad, CostoUnitario, Descuento, Impuesto, CreationDate, IdUserAction)
                             VALUES (@IdEntradasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
-                                    @Cantidad, @CostoUnitario, @Descuento, @Iva, @CreationDate, @IdUserAction);";
+                                    @Cantidad, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction);";
 
                         await connection.ExecuteAsync(
                                 sql,
@@ -767,7 +768,7 @@ namespace sbx.repositories.EntradaInventario
                                     Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
                                     CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
                                     Descuento = 0,
-                                    Iva = 0,
+                                    Impuesto = 0,
                                     CreationDate = FechaActual,
                                     IdUserAction = IdUser
                                 },
@@ -827,9 +828,9 @@ namespace sbx.repositories.EntradaInventario
 
                     sql = @"INSERT INTO T_DetalleEntradasInventario (
                             IdEntradasInventario, IdProducto, CodigoLote, FechaVencimiento,
-                            Cantidad, CostoUnitario, Descuento, Iva, CreationDate, IdUserAction)
+                            Cantidad, CostoUnitario, Descuento, Impuesto, CreationDate, IdUserAction)
                             VALUES (@IdEntradasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
-                                    @Cantidad, @CostoUnitario, @Descuento, @Iva, @CreationDate, @IdUserAction);";
+                                    @Cantidad, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction);";
 
                     foreach (var detalle in entradasInventarioEntitie.detalleEntradasInventarios)
                     {
@@ -844,7 +845,7 @@ namespace sbx.repositories.EntradaInventario
                                 detalle.Cantidad,
                                 detalle.CostoUnitario,
                                 detalle.Descuento,
-                                detalle.Iva,
+                                detalle.Impuesto,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },
@@ -900,7 +901,7 @@ namespace sbx.repositories.EntradaInventario
                                       ,B.Cantidad
                                       ,B.CostoUnitario
                                       ,B.Descuento
-                                      ,B.Iva
+                                      ,B.Impuesto
                                   FROM T_EntradasInventario A
                                   INNER JOIN T_DetalleEntradasInventario B ON A.IdEntradasInventario = B.IdEntradasInventario
                                   INNER JOIN T_TipoEntrada C ON C.IdTipoEntrada = A.IdTipoEntrada

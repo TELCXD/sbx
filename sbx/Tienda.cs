@@ -182,7 +182,7 @@ namespace sbx
 
         private void ValidaPermisos()
         {
-            if (_Permisos != null) 
+            if (_Permisos != null)
             {
                 foreach (var item in _Permisos)
                 {
@@ -241,7 +241,7 @@ namespace sbx
             cbx_departamento.DisplayMember = "DepartmentName";
             cbx_departamento.SelectedIndex = 0;
 
-            resp = await _ICiudad.ListCiudad();
+            resp = await _ICiudad.ListCiudadForDepartament(Convert.ToInt32(cbx_departamento.SelectedValue));
             cbx_municipio.DataSource = resp.Data;
             cbx_municipio.ValueMember = "IdCity";
             cbx_municipio.DisplayMember = "CityName";
@@ -264,7 +264,7 @@ namespace sbx
         {
             var resp = await _ITienda.List();
 
-            if (resp.Data != null) 
+            if (resp.Data != null)
             {
                 if (resp.Data.Count > 0)
                 {
@@ -301,6 +301,51 @@ namespace sbx
             {
                 e.Handled = true;
             }
+        }
+
+        private async void cbx_departamento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var item = (dynamic?)cbx_departamento.SelectedItem;
+            int idDepart = item!.IdDepartament;
+
+            var resp = await _ICiudad.ListCiudadForDepartament(idDepart);
+            cbx_municipio.DataSource = resp.Data;
+            cbx_municipio.ValueMember = "IdCity";
+            cbx_municipio.DisplayMember = "CityName";
+            cbx_municipio.SelectedIndex = 0;
+        }
+
+        public static int CalcularDigitoVerificacion(string nit)
+        {
+            if (string.IsNullOrWhiteSpace(nit) || !nit.All(char.IsDigit))
+                throw new ArgumentException("El NIT debe contener solo dígitos");
+
+            int[] pesos = new int[] { 71, 67, 59, 53, 47, 43, 41, 37, 29, 23, 19, 17, 13, 7, 3 };
+
+            // Rellenar con ceros a la izquierda si el NIT tiene menos de 15 dígitos
+            nit = nit.PadLeft(15, '0');
+
+            int suma = 0;
+
+            for (int i = 0; i < 15; i++)
+            {
+                int digito = int.Parse(nit[i].ToString());
+                suma += digito * pesos[i];
+            }
+
+            int residuo = suma % 11;
+            if (residuo == 0)
+                return 0;
+            else if (residuo == 1)
+                return 1;
+            else
+                return 11 - residuo;
+        }
+
+        private void txt_numero_documento_KeyUp(object sender, KeyEventArgs e)
+        {
+            int dv = CalcularDigitoVerificacion(txt_numero_documento.Text);
+            txt_digito_verificacion.Text = dv.ToString();
         }
     }
 }

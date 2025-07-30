@@ -222,7 +222,7 @@ namespace sbx
                     dtg_buscador.Columns["CostoBase"].Visible = false;
                     dtg_buscador.Columns["PrecioBase"].Visible = false;
                     dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Iva"].Visible = false;
+                    dtg_buscador.Columns["Impuesto"].Visible = false;
                     dtg_buscador.Columns["IdCategoria"].Visible = false;
                     dtg_buscador.Columns["NombreCategoria"].Visible = false;
                     dtg_buscador.Columns["IdMarca"].Visible = false;
@@ -230,6 +230,8 @@ namespace sbx
                     dtg_buscador.Columns["UpdateDate"].Visible = false;
                     dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
                     dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["Idtribute"].Visible = false;
+                    dtg_buscador.Columns["NombreTributo"].Visible = false;
                     dtg_buscador.Columns["CreationDate"].Visible = false;
                     dtg_buscador.Columns["UpdateDate"].Visible = false;
                     dtg_buscador.Columns["IdUserAction"].Visible = false;
@@ -259,7 +261,7 @@ namespace sbx
                     dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
                     dtg_buscador.Columns["PrecioBase"].Visible = true;
                     dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Iva"].Visible = false;
+                    dtg_buscador.Columns["Impuesto"].Visible = false;
                     dtg_buscador.Columns["IdCategoria"].Visible = false;
                     dtg_buscador.Columns["NombreCategoria"].Visible = false;
                     dtg_buscador.Columns["IdMarca"].Visible = false;
@@ -426,7 +428,8 @@ namespace sbx
                     dtg_buscador.Columns["CostoBase"].Visible = false;
                     dtg_buscador.Columns["PrecioBase"].Visible = false;
                     dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Iva"].Visible = false;
+                    dtg_buscador.Columns["Impuesto"].Visible = false;
+                    dtg_buscador.Columns["Impuesto"].Visible = false;
                     dtg_buscador.Columns["IdCategoria"].Visible = false;
                     dtg_buscador.Columns["NombreCategoria"].Visible = false;
                     dtg_buscador.Columns["IdMarca"].Visible = false;
@@ -461,7 +464,7 @@ namespace sbx
                     dtg_buscador.Columns["CostoBase"].Visible = false;
                     dtg_buscador.Columns["PrecioBase"].Visible = false;
                     dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Iva"].Visible = false;
+                    dtg_buscador.Columns["Impuesto"].Visible = false;
                     dtg_buscador.Columns["IdCategoria"].Visible = false;
                     dtg_buscador.Columns["NombreCategoria"].Visible = false;
                     dtg_buscador.Columns["IdMarca"].Visible = false;
