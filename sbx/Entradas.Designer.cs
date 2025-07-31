@@ -405,7 +405,7 @@
             // 
             // cl_impuesto
             // 
-            cl_impuesto.HeaderText = "%Impuesto";
+            cl_impuesto.HeaderText = "Impuesto";
             cl_impuesto.Name = "cl_impuesto";
             cl_impuesto.ReadOnly = true;
             cl_impuesto.Width = 65;

@@ -60,7 +60,7 @@ namespace sbx.core.Entities.Venta
                 if (ANCHO_TIRILLA == 42)
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
-                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IVA");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in factura.Items)
@@ -88,7 +88,7 @@ namespace sbx.core.Entities.Venta
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
                     sb.AppendLine("CANT  |U.M|PRECIO_UNI|");
-                    sb.AppendLine("DESC% |TOTAL         |IVA");
+                    sb.AppendLine("DESC% |TOTAL         |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in factura.Items)
@@ -120,7 +120,16 @@ namespace sbx.core.Entities.Venta
                 // Totales
                 sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {factura.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {factura.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                if (factura.inc > 0) 
+                {
+                    sb.AppendLine($"{"INC:",-20} {factura.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                }
+                if (factura.incBolsa > 0)
+                {
+                    sb.AppendLine($"{"INC Bolsa:",-20} {factura.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                }
+
                 sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
@@ -226,7 +235,7 @@ namespace sbx.core.Entities.Venta
                 if (ANCHO_TIRILLA == 42)
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
-                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IVA");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in factura.Items)
@@ -254,7 +263,7 @@ namespace sbx.core.Entities.Venta
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
                     sb.AppendLine("CANT  |U.M|PRECIO_UNI|");
-                    sb.AppendLine("DESC% |TOTAL         |IVA");
+                    sb.AppendLine("DESC% |TOTAL         |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in factura.Items)
@@ -286,7 +295,15 @@ namespace sbx.core.Entities.Venta
                 // Totales
                 sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {factura.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {factura.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                if (factura.inc > 0)
+                {
+                    sb.AppendLine($"{"INC:",-20} {factura.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                }
+                if (factura.incBolsa > 0)
+                {
+                    sb.AppendLine($"{"INC Bolsa:",-20} {factura.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                }
                 sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
@@ -488,7 +505,7 @@ namespace sbx.core.Entities.Venta
                 if (ANCHO_TIRILLA == 42)
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
-                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IVA");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in NotaCredito.Items)
@@ -516,7 +533,7 @@ namespace sbx.core.Entities.Venta
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
                     sb.AppendLine("CANT  |U.M|PRECIO_UNI|");
-                    sb.AppendLine("DESC% |TOTAL         |IVA");
+                    sb.AppendLine("DESC% |TOTAL         |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in NotaCredito.Items)
@@ -548,7 +565,15 @@ namespace sbx.core.Entities.Venta
                 // Totales
                 sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {NotaCredito.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {NotaCredito.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                if (NotaCredito.inc > 0)
+                {
+                    sb.AppendLine($"{"INC:",-20} {NotaCredito.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                }
+                if (NotaCredito.incBolsa > 0)
+                {
+                    sb.AppendLine($"{"INC Bolsa:",-20} {NotaCredito.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                }
                 sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
@@ -629,7 +654,7 @@ namespace sbx.core.Entities.Venta
                 if (ANCHO_TIRILLA == 42)
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
-                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IVA");
+                    sb.AppendLine("CANT  |U.M|PRECIO_UNI|DESC%|TOTAL     |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in NotaCredito.Items)
@@ -657,7 +682,7 @@ namespace sbx.core.Entities.Venta
                 {
                     sb.AppendLine("ITEM - DESCRIPCION");
                     sb.AppendLine("CANT  |U.M|PRECIO_UNI|");
-                    sb.AppendLine("DESC% |TOTAL         |IVA");
+                    sb.AppendLine("DESC% |TOTAL         |IMP");
                     sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                     foreach (var item in NotaCredito.Items)
@@ -689,7 +714,15 @@ namespace sbx.core.Entities.Venta
                 // Totales
                 sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {NotaCredito.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {NotaCredito.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                if (NotaCredito.inc > 0)
+                {
+                    sb.AppendLine($"{"INC:",-20} {NotaCredito.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                }
+                if (NotaCredito.incBolsa > 0)
+                {
+                    sb.AppendLine($"{"INC Bolsa:",-20} {NotaCredito.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                }
                 sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 

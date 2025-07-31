@@ -17,5 +17,6 @@ namespace sbx.core.Entities.NotaCredito
         public decimal Impuesto { get; set; }
         public DateTime CreationDate { get; set; }
         public int IdUserAction { get; set; }
+        public string NombreTributo { get; set; }
     }
 }

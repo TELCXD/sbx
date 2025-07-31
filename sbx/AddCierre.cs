@@ -118,12 +118,21 @@ namespace sbx
                                         SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                                         Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
                                         DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                                        Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                                        ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                        if (item.NombreTributo == "INC Bolsas")
+                                        {
+                                            Impuesto += Convert.ToDecimal(item.Impuesto);
+                                            ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                                        }
+                                        else
+                                        {
+                                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                            ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                        }       
                                     }
 
                                     MontoInicial = Convert.ToDecimal(estadoCaja.Data[0].MontoInicialDeclarado, new CultureInfo("es-CO"));
-                                    Total += (Subtotal - Descuento) + Impuesto;
+                                    Total += (Subtotal - Descuento);
+                                    //Total += (Subtotal - Descuento) + Impuesto;
 
                                     decimal Valorpagos = 0;
 

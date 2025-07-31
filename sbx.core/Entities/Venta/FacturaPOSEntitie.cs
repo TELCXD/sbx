@@ -16,6 +16,7 @@ namespace sbx.core.Entities.Venta
         public decimal CantidadTotal { get; set; }
         public decimal Subtotal { get; set; }
         public decimal Descuento { get; set; }
+        public string Tributo { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
         public string Estado { get; set; } = string.Empty;
@@ -27,5 +28,8 @@ namespace sbx.core.Entities.Venta
         public string FacturaJSON { get; set; }
         public bool FacturaElectronica { get; set; }
         public string qr_image { get; set; } = string.Empty;
+        public decimal iva { get; set; }
+        public decimal inc { get; set; }
+        public decimal incBolsa { get; set; }
     }
 }

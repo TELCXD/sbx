@@ -42,6 +42,12 @@
             lbl_banco = new Label();
             label9 = new Label();
             panel3 = new Panel();
+            lbl_inc_bolsa = new Label();
+            label22 = new Label();
+            lbl_inc = new Label();
+            label20 = new Label();
+            lbl_iva = new Label();
+            label18 = new Label();
             lbl_total = new Label();
             label12 = new Label();
             lbl_impuesto = new Label();
@@ -64,7 +70,8 @@
             cl_cantidad = new DataGridViewTextBoxColumn();
             cl_cantidad_devolver = new DataGridViewTextBoxColumn();
             cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
             lbl_vendedor = new Label();
             label5 = new Label();
@@ -185,6 +192,12 @@
             // panel3
             // 
             panel3.BorderStyle = BorderStyle.FixedSingle;
+            panel3.Controls.Add(lbl_inc_bolsa);
+            panel3.Controls.Add(label22);
+            panel3.Controls.Add(lbl_inc);
+            panel3.Controls.Add(label20);
+            panel3.Controls.Add(lbl_iva);
+            panel3.Controls.Add(label18);
             panel3.Controls.Add(lbl_total);
             panel3.Controls.Add(label12);
             panel3.Controls.Add(lbl_impuesto);
@@ -195,10 +208,79 @@
             panel3.Controls.Add(label6);
             panel3.Controls.Add(lbl_cantidadProductos);
             panel3.Controls.Add(label4);
-            panel3.Location = new Point(800, 387);
+            panel3.Location = new Point(690, 387);
             panel3.Name = "panel3";
-            panel3.Size = new Size(359, 159);
+            panel3.Size = new Size(469, 159);
             panel3.TabIndex = 158;
+            // 
+            // lbl_inc_bolsa
+            // 
+            lbl_inc_bolsa.AutoSize = true;
+            lbl_inc_bolsa.Font = new Font("Segoe UI", 9.75F);
+            lbl_inc_bolsa.ForeColor = SystemColors.ControlDarkDark;
+            lbl_inc_bolsa.Location = new Point(326, 61);
+            lbl_inc_bolsa.Name = "lbl_inc_bolsa";
+            lbl_inc_bolsa.RightToLeft = RightToLeft.No;
+            lbl_inc_bolsa.Size = new Size(13, 17);
+            lbl_inc_bolsa.TabIndex = 149;
+            lbl_inc_bolsa.Text = "_";
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Font = new Font("Segoe UI", 9.75F);
+            label22.ForeColor = SystemColors.ControlDarkDark;
+            label22.Location = new Point(258, 61);
+            label22.Name = "label22";
+            label22.Size = new Size(66, 17);
+            label22.TabIndex = 148;
+            label22.Text = "Inc Bolsa: ";
+            // 
+            // lbl_inc
+            // 
+            lbl_inc.AutoSize = true;
+            lbl_inc.Font = new Font("Segoe UI", 9.75F);
+            lbl_inc.ForeColor = SystemColors.ControlDarkDark;
+            lbl_inc.Location = new Point(326, 35);
+            lbl_inc.Name = "lbl_inc";
+            lbl_inc.RightToLeft = RightToLeft.No;
+            lbl_inc.Size = new Size(13, 17);
+            lbl_inc.TabIndex = 147;
+            lbl_inc.Text = "_";
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Font = new Font("Segoe UI", 9.75F);
+            label20.ForeColor = SystemColors.ControlDarkDark;
+            label20.Location = new Point(293, 35);
+            label20.Name = "label20";
+            label20.Size = new Size(31, 17);
+            label20.TabIndex = 146;
+            label20.Text = "Inc: ";
+            // 
+            // lbl_iva
+            // 
+            lbl_iva.AutoSize = true;
+            lbl_iva.Font = new Font("Segoe UI", 9.75F);
+            lbl_iva.ForeColor = SystemColors.ControlDarkDark;
+            lbl_iva.Location = new Point(326, 9);
+            lbl_iva.Name = "lbl_iva";
+            lbl_iva.RightToLeft = RightToLeft.No;
+            lbl_iva.Size = new Size(13, 17);
+            lbl_iva.TabIndex = 145;
+            lbl_iva.Text = "_";
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Font = new Font("Segoe UI", 9.75F);
+            label18.ForeColor = SystemColors.ControlDarkDark;
+            label18.Location = new Point(293, 9);
+            label18.Name = "label18";
+            label18.Size = new Size(31, 17);
+            label18.TabIndex = 144;
+            label18.Text = "Iva: ";
             // 
             // lbl_total
             // 
@@ -330,7 +412,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_id_detalle_venta, cl_seleccionado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_unidadMedida, cl_precio, cl_cantidad, cl_cantidad_devolver, cl_descuento, cl_iva, cl_total });
+            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_id_detalle_venta, cl_seleccionado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_unidadMedida, cl_precio, cl_cantidad, cl_cantidad_devolver, cl_descuento, cl_tributo, cl_impuesto, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -433,12 +515,18 @@
             cl_descuento.ReadOnly = true;
             cl_descuento.Width = 80;
             // 
-            // cl_iva
+            // cl_tributo
             // 
-            cl_iva.HeaderText = "Iva %";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 67;
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.Width = 80;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 67;
             // 
             // cl_total
             // 
@@ -557,7 +645,7 @@
             txt_motivo_devolucion.Anchor = AnchorStyles.Top;
             txt_motivo_devolucion.Location = new Point(5, 75);
             txt_motivo_devolucion.Name = "txt_motivo_devolucion";
-            txt_motivo_devolucion.Size = new Size(769, 23);
+            txt_motivo_devolucion.Size = new Size(649, 23);
             txt_motivo_devolucion.TabIndex = 4;
             // 
             // lbl_total_devolucion
@@ -617,7 +705,7 @@
             panel2.Controls.Add(label14);
             panel2.Location = new Point(4, 387);
             panel2.Name = "panel2";
-            panel2.Size = new Size(790, 159);
+            panel2.Size = new Size(680, 159);
             panel2.TabIndex = 173;
             // 
             // lbl_cantidad_devolucion
@@ -740,7 +828,14 @@
         private DataGridViewTextBoxColumn cl_cantidad;
         private DataGridViewTextBoxColumn cl_cantidad_devolver;
         private DataGridViewTextBoxColumn cl_descuento;
-        private DataGridViewTextBoxColumn cl_iva;
+        private DataGridViewTextBoxColumn cl_tributo;
+        private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
+        private Label lbl_inc_bolsa;
+        private Label label22;
+        private Label lbl_inc;
+        private Label label20;
+        private Label lbl_iva;
+        private Label label18;
     }
 }

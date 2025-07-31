@@ -379,6 +379,7 @@
             lbl_resultado.Size = new Size(17, 21);
             lbl_resultado.TabIndex = 5;
             lbl_resultado.Text = "_";
+            lbl_resultado.Visible = false;
             // 
             // label2
             // 
@@ -389,6 +390,7 @@
             label2.Size = new Size(108, 21);
             label2.TabIndex = 4;
             label2.Text = "RESULTADO $";
+            label2.Visible = false;
             // 
             // chart1
             // 

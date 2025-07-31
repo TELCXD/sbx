@@ -141,7 +141,7 @@ namespace sbx
                     decimal DescuentoLinea;
                     decimal Descuento = 0;
                     decimal Impuesto = 0;
-                    decimal ImpuestoLinea;
+                    decimal ImpuestoLinea = 0;
                     decimal SubtotalLinea;
                     decimal Total = 0;
                     decimal TotalLinea;
@@ -159,7 +159,8 @@ namespace sbx
                         dtg_reportes.Columns.Add("cl_PrecioUnitario", "Precio");
                         dtg_reportes.Columns.Add("cl_CostoUnitario", "Costo");
                         dtg_reportes.Columns.Add("cl_Descuento", "Desc %");
-                        dtg_reportes.Columns.Add("cl_Impuesto", "Iva %");
+                        dtg_reportes.Columns.Add("cl_Tributo", "NombreTributo");
+                        dtg_reportes.Columns.Add("cl_Impuesto", "Impuesto");
                         dtg_reportes.Columns.Add("cl_VentaNetaFinal", "Venta Total");
                         dtg_reportes.Columns.Add("cl_CostoTotal", "Costo Total");
                         dtg_reportes.Columns.Add("cl_GananciaBruta", "Ganancia");
@@ -172,8 +173,17 @@ namespace sbx
                             SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                             Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.DescuentoPorcentaje));
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.DescuentoPorcentaje));
-                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
-                            ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
+                            if (item.NombreTributo == "INC Bolsas") 
+                            {
+                                Impuesto += Convert.ToDecimal(item.ImpuestoPorcentaje);
+                                ImpuestoLinea = Convert.ToDecimal(item.ImpuestoPorcentaje);
+                            }
+                            else
+                            {
+                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
+                                ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
+                            }
+                            
                             TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
                             TotalCostos += Convert.ToDecimal(item.CostoTotal);
                             TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
@@ -221,7 +231,8 @@ namespace sbx
                         dtg_reportes.Columns.Add("cl_PrecioUnitario", "Precio");
                         dtg_reportes.Columns.Add("cl_CostoUnitario", "Costo");
                         dtg_reportes.Columns.Add("cl_Descuento", "Desc %");
-                        dtg_reportes.Columns.Add("cl_Impuesto", "Iva %");
+                        dtg_reportes.Columns.Add("cl_Tributo", "NombreTributo");
+                        dtg_reportes.Columns.Add("cl_Impuesto", "Impuesto");
                         dtg_reportes.Columns.Add("cl_VentaNetaFinal", "Venta Total");
                         dtg_reportes.Columns.Add("cl_CostoTotal", "Costo Total");
                         dtg_reportes.Columns.Add("cl_GananciaBruta", "Ganancia");
@@ -234,8 +245,17 @@ namespace sbx
                             SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                             Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.DescuentoPorcentaje));
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.DescuentoPorcentaje));
-                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
-                            ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
+                            if (item.NombreTributo == "INC Bolsas")
+                            {
+                                Impuesto += Convert.ToDecimal(item.ImpuestoPorcentaje);
+                                ImpuestoLinea = Convert.ToDecimal(item.ImpuestoPorcentaje);
+                            }
+                            else
+                            {
+                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
+                                ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
+                            }
+                                
                             TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
                             TotalCostos += Convert.ToDecimal(item.CostoTotal);
                             TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);

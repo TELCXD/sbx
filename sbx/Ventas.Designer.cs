@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ventas));
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
             dtp_fecha_fin = new DateTimePicker();
             dtp_fecha_inicio = new DateTimePicker();
@@ -57,6 +57,12 @@
             lbl_cantidadProductos = new Label();
             label4 = new Label();
             panel3 = new Panel();
+            lbl_inc_bolsa = new Label();
+            label11 = new Label();
+            lbl_inc = new Label();
+            label7 = new Label();
+            lbl_iva = new Label();
+            label3 = new Label();
             dtg_ventas = new DataGridView();
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_id_venta = new DataGridViewTextBoxColumn();
@@ -69,7 +75,8 @@
             cl_precio = new DataGridViewTextBoxColumn();
             cl_cantidad = new DataGridViewTextBoxColumn();
             cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total_linea = new DataGridViewTextBoxColumn();
             cl_documento_cliente = new DataGridViewTextBoxColumn();
             cl_nombre_cliente = new DataGridViewTextBoxColumn();
@@ -79,6 +86,7 @@
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             panel2.SuspendLayout();
+            panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_ventas).BeginInit();
             contextMenuStrip1.SuspendLayout();
             SuspendLayout();
@@ -243,7 +251,7 @@
             lbl_total.AutoSize = true;
             lbl_total.Font = new Font("Segoe UI", 12F);
             lbl_total.ForeColor = SystemColors.ControlDarkDark;
-            lbl_total.Location = new Point(895, 136);
+            lbl_total.Location = new Point(828, 136);
             lbl_total.Name = "lbl_total";
             lbl_total.RightToLeft = RightToLeft.No;
             lbl_total.Size = new Size(17, 21);
@@ -256,7 +264,7 @@
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 12F);
             label12.ForeColor = SystemColors.ControlDarkDark;
-            label12.Location = new Point(810, 136);
+            label12.Location = new Point(743, 136);
             label12.Name = "label12";
             label12.Size = new Size(49, 21);
             label12.TabIndex = 172;
@@ -268,7 +276,7 @@
             lbl_impuesto.AutoSize = true;
             lbl_impuesto.Font = new Font("Segoe UI", 12F);
             lbl_impuesto.ForeColor = SystemColors.ControlDarkDark;
-            lbl_impuesto.Location = new Point(895, 104);
+            lbl_impuesto.Location = new Point(828, 104);
             lbl_impuesto.Name = "lbl_impuesto";
             lbl_impuesto.RightToLeft = RightToLeft.No;
             lbl_impuesto.Size = new Size(17, 21);
@@ -281,11 +289,11 @@
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 12F);
             label10.ForeColor = SystemColors.ControlDarkDark;
-            label10.Location = new Point(810, 104);
+            label10.Location = new Point(743, 104);
             label10.Name = "label10";
-            label10.Size = new Size(82, 21);
+            label10.Size = new Size(89, 21);
             label10.TabIndex = 170;
-            label10.Text = "Impuesto: ";
+            label10.Text = "Impuestos: ";
             // 
             // lbl_descuento
             // 
@@ -293,7 +301,7 @@
             lbl_descuento.AutoSize = true;
             lbl_descuento.Font = new Font("Segoe UI", 12F);
             lbl_descuento.ForeColor = SystemColors.ControlDarkDark;
-            lbl_descuento.Location = new Point(895, 71);
+            lbl_descuento.Location = new Point(828, 71);
             lbl_descuento.Name = "lbl_descuento";
             lbl_descuento.RightToLeft = RightToLeft.No;
             lbl_descuento.Size = new Size(17, 21);
@@ -306,7 +314,7 @@
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 12F);
             label8.ForeColor = SystemColors.ControlDarkDark;
-            label8.Location = new Point(810, 71);
+            label8.Location = new Point(743, 71);
             label8.Name = "label8";
             label8.Size = new Size(90, 21);
             label8.TabIndex = 168;
@@ -318,7 +326,7 @@
             lbl_subtotal.AutoSize = true;
             lbl_subtotal.Font = new Font("Segoe UI", 12F);
             lbl_subtotal.ForeColor = SystemColors.ControlDarkDark;
-            lbl_subtotal.Location = new Point(895, 40);
+            lbl_subtotal.Location = new Point(828, 40);
             lbl_subtotal.Name = "lbl_subtotal";
             lbl_subtotal.RightToLeft = RightToLeft.No;
             lbl_subtotal.Size = new Size(17, 21);
@@ -331,7 +339,7 @@
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F);
             label6.ForeColor = SystemColors.ControlDarkDark;
-            label6.Location = new Point(810, 40);
+            label6.Location = new Point(743, 40);
             label6.Name = "label6";
             label6.Size = new Size(75, 21);
             label6.TabIndex = 166;
@@ -343,7 +351,7 @@
             lbl_cantidadProductos.AutoSize = true;
             lbl_cantidadProductos.Font = new Font("Segoe UI", 12F);
             lbl_cantidadProductos.ForeColor = SystemColors.ControlDarkDark;
-            lbl_cantidadProductos.Location = new Point(895, 9);
+            lbl_cantidadProductos.Location = new Point(828, 9);
             lbl_cantidadProductos.Name = "lbl_cantidadProductos";
             lbl_cantidadProductos.RightToLeft = RightToLeft.No;
             lbl_cantidadProductos.Size = new Size(17, 21);
@@ -356,7 +364,7 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 12F);
             label4.ForeColor = SystemColors.ControlDarkDark;
-            label4.Location = new Point(810, 9);
+            label4.Location = new Point(743, 9);
             label4.Name = "label4";
             label4.Size = new Size(79, 21);
             label4.TabIndex = 164;
@@ -365,10 +373,91 @@
             // panel3
             // 
             panel3.BorderStyle = BorderStyle.FixedSingle;
-            panel3.Location = new Point(802, 3);
+            panel3.Controls.Add(lbl_inc_bolsa);
+            panel3.Controls.Add(label11);
+            panel3.Controls.Add(lbl_inc);
+            panel3.Controls.Add(label7);
+            panel3.Controls.Add(lbl_iva);
+            panel3.Controls.Add(label3);
+            panel3.Location = new Point(735, 3);
             panel3.Name = "panel3";
-            panel3.Size = new Size(414, 160);
+            panel3.Size = new Size(481, 160);
             panel3.TabIndex = 174;
+            // 
+            // lbl_inc_bolsa
+            // 
+            lbl_inc_bolsa.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_inc_bolsa.AutoSize = true;
+            lbl_inc_bolsa.Font = new Font("Segoe UI", 12F);
+            lbl_inc_bolsa.ForeColor = SystemColors.ControlDarkDark;
+            lbl_inc_bolsa.Location = new Point(351, 67);
+            lbl_inc_bolsa.Name = "lbl_inc_bolsa";
+            lbl_inc_bolsa.RightToLeft = RightToLeft.No;
+            lbl_inc_bolsa.Size = new Size(17, 21);
+            lbl_inc_bolsa.TabIndex = 171;
+            lbl_inc_bolsa.Text = "_";
+            // 
+            // label11
+            // 
+            label11.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI", 12F);
+            label11.ForeColor = SystemColors.ControlDarkDark;
+            label11.Location = new Point(279, 67);
+            label11.Name = "label11";
+            label11.Size = new Size(78, 21);
+            label11.TabIndex = 170;
+            label11.Text = "Inc Bolsa: ";
+            // 
+            // lbl_inc
+            // 
+            lbl_inc.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_inc.AutoSize = true;
+            lbl_inc.Font = new Font("Segoe UI", 12F);
+            lbl_inc.ForeColor = SystemColors.ControlDarkDark;
+            lbl_inc.Location = new Point(351, 36);
+            lbl_inc.Name = "lbl_inc";
+            lbl_inc.RightToLeft = RightToLeft.No;
+            lbl_inc.Size = new Size(17, 21);
+            lbl_inc.TabIndex = 169;
+            lbl_inc.Text = "_";
+            // 
+            // label7
+            // 
+            label7.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 12F);
+            label7.ForeColor = SystemColors.ControlDarkDark;
+            label7.Location = new Point(279, 36);
+            label7.Name = "label7";
+            label7.Size = new Size(37, 21);
+            label7.TabIndex = 168;
+            label7.Text = "Inc: ";
+            // 
+            // lbl_iva
+            // 
+            lbl_iva.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_iva.AutoSize = true;
+            lbl_iva.Font = new Font("Segoe UI", 12F);
+            lbl_iva.ForeColor = SystemColors.ControlDarkDark;
+            lbl_iva.Location = new Point(351, 5);
+            lbl_iva.Name = "lbl_iva";
+            lbl_iva.RightToLeft = RightToLeft.No;
+            lbl_iva.Size = new Size(17, 21);
+            lbl_iva.TabIndex = 167;
+            lbl_iva.Text = "_";
+            // 
+            // label3
+            // 
+            label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 12F);
+            label3.ForeColor = SystemColors.ControlDarkDark;
+            label3.Location = new Point(279, 5);
+            label3.Name = "label3";
+            label3.Size = new Size(37, 21);
+            label3.TabIndex = 166;
+            label3.Text = "Iva: ";
             // 
             // dtg_ventas
             // 
@@ -376,36 +465,36 @@
             dtg_ventas.AllowUserToDeleteRows = false;
             dtg_ventas.AllowUserToOrderColumns = true;
             dtg_ventas.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_estado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle8;
+            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_estado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_tributo, cl_impuesto, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario });
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_ventas.Dock = DockStyle.Fill;
             dtg_ventas.Location = new Point(0, 58);
             dtg_ventas.Name = "dtg_ventas";
             dtg_ventas.ReadOnly = true;
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_ventas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_ventas.Size = new Size(1223, 344);
             dtg_ventas.TabIndex = 5;
@@ -481,12 +570,18 @@
             cl_descuento.Name = "cl_descuento";
             cl_descuento.ReadOnly = true;
             // 
-            // cl_iva
+            // cl_tributo
             // 
-            cl_iva.HeaderText = "Iva (%)";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 80;
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.ReadOnly = true;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 80;
             // 
             // cl_total_linea
             // 
@@ -518,12 +613,12 @@
             // 
             contextMenuStrip1.Items.AddRange(new ToolStripItem[] { MEmitir });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(181, 48);
+            contextMenuStrip1.Size = new Size(106, 26);
             // 
             // MEmitir
             // 
             MEmitir.Name = "MEmitir";
-            MEmitir.Size = new Size(180, 22);
+            MEmitir.Size = new Size(105, 22);
             MEmitir.Text = "Emitir";
             MEmitir.Click += MEmitir_Click;
             // 
@@ -545,6 +640,8 @@
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_ventas).EndInit();
             contextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
@@ -577,6 +674,8 @@
         private DateTimePicker dtp_fecha_inicio;
         private DateTimePicker dtp_fecha_fin;
         private Panel panel3;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem MEmitir;
         private DataGridViewTextBoxColumn cl_fecha;
         private DataGridViewTextBoxColumn cl_id_venta;
         private DataGridViewTextBoxColumn cl_factura;
@@ -588,12 +687,17 @@
         private DataGridViewTextBoxColumn cl_precio;
         private DataGridViewTextBoxColumn cl_cantidad;
         private DataGridViewTextBoxColumn cl_descuento;
-        private DataGridViewTextBoxColumn cl_iva;
+        private DataGridViewTextBoxColumn cl_tributo;
+        private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total_linea;
         private DataGridViewTextBoxColumn cl_documento_cliente;
         private DataGridViewTextBoxColumn cl_nombre_cliente;
         private DataGridViewTextBoxColumn cl_usuario;
-        private ContextMenuStrip contextMenuStrip1;
-        private ToolStripMenuItem MEmitir;
+        private Label lbl_inc_bolsa;
+        private Label label11;
+        private Label lbl_inc;
+        private Label label7;
+        private Label lbl_iva;
+        private Label label3;
     }
 }
