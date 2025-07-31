@@ -25,6 +25,8 @@ namespace sbx.core.Entities.NotaCredito
         public string NotaCreditoJSON { get; set; }
         public bool NotaCreditoElectronica { get; set; }
         public string qr_image { get; set; } = string.Empty;
-
+        public decimal iva { get; set; }
+        public decimal inc { get; set; }
+        public decimal incBolsa { get; set; }
     }
 }

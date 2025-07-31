@@ -388,6 +388,29 @@ namespace sbx
                                 }
                             }
 
+                            if (string.IsNullOrEmpty(item[8]?.ToString()?.Trim()))
+                            {
+                                Mensaje += "El Tributo es obligatorio, debe ser IVA ó INC ";
+                                Error++;
+                            }
+                            else
+                            {
+                                string valor = item[8]?.ToString()?.Trim() ?? "";
+                                if (valor != "")
+                                {
+                                    if (valor != "IVA" && valor != "INC") 
+                                    {
+                                        Mensaje += "El Tributo es obligatorio, debe ser IVA ó INC ";
+                                        Error++;
+                                    }
+                                }
+                                else
+                                {
+                                    Mensaje += "El Tributo es obligatorio, debe ser IVA ó INC ";
+                                    Error++;
+                                }
+                            }
+
                             if (Error > 0)
                             {
                                 this.Cursor = Cursors.Default;
@@ -445,7 +468,7 @@ namespace sbx
             int startRow = 2;
             int endRow = Math.Min(worksheet.LastRowUsed()?.RowNumber() ?? 100, 5000);
             int startColumn = 1; // Columna A
-            int endColumn = 8;   // Columna G
+            int endColumn = 9;   // Columna G
 
             // Crear columnas (A-G)
             for (int col = startColumn; col <= endColumn; col++)

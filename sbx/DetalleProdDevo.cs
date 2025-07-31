@@ -77,9 +77,19 @@ namespace sbx
                             SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                             Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
                             DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                            ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                            TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            if (item.NombreTributo == "INC Bolsas")
+                            {
+                                Impuesto += Convert.ToDecimal(item.Impuesto);
+                                ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                            }
+                            else
+                            {
+                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                            }
+
+                            TotalLinea = (SubtotalLinea - DescuentoLinea);
+                            //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
 
                             dtg_detalle_nota_credito.Rows.Add(
                                 item.IdProducto,
@@ -89,11 +99,13 @@ namespace sbx
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
+                                item.NombreTributo,
                                 Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
                                 TotalLinea.ToString("N2", new CultureInfo("es-CO")));
                         }
 
-                        Total += (Subtotal - Descuento) + Impuesto;
+                        Total = (Subtotal - Descuento);
+                        //Total += (Subtotal - Descuento) + Impuesto;
 
                         lbl_cantidad_devolucion.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
                         lbl_total_devolucion.Text = Total.ToString("N2", new CultureInfo("es-CO"));

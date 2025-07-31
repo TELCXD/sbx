@@ -487,6 +487,7 @@ namespace sbx.repositories.Venta
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
+                                    B.NombreTributo,
                                     B.CreationDate FechaDetalleFactura,
                                     B.IdUserAction IdUserActionDetalleFactura,
                                     --H.UserName UserNameDetalleFactura,
@@ -590,6 +591,7 @@ namespace sbx.repositories.Venta
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
+                                    B.NombreTributo,
                                     B.CreationDate FechaDetalleFactura,
                                     B.IdUserAction IdUserActionDetalleFactura,
                                     --H.UserName UserNameDetalleFactura,
@@ -817,6 +819,7 @@ namespace sbx.repositories.Venta
                                     B.PrecioUnitario,
                                     B.CostoUnitario,
                                     B.Descuento,
+                                    B.NombreTributo,
                                     B.Impuesto,
                                     B.CreationDate,
                                     B.IdUserAction 

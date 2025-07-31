@@ -37,7 +37,7 @@ namespace sbx.repositories.Reportes
                                     B.NombreProducto,
                                     SUM(B.Cantidad) Cantidad,
                                     SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) VentaNetaFinal,
-                                    SUM((B.Cantidad * B.CostoUnitario))CostoTotal,
+                                    SUM((B.Cantidad * B.CostoUnitario)) CostoTotal,
                                     SUM(((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) GananciaBruta        
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
@@ -63,6 +63,7 @@ namespace sbx.repositories.Reportes
                                     B.CostoUnitario,
                                     ISNULL(B.Descuento, 0) AS DescuentoPorcentaje,
                                     B.Impuesto AS ImpuestoPorcentaje,
+                                    B.NombreTributo,
                                     (B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)  AS VentaNetaFinal,
                                     (B.Cantidad * B.CostoUnitario) AS CostoTotal,
                                     -- Ganancia/Pérdida
@@ -112,6 +113,7 @@ namespace sbx.repositories.Reportes
                                     B.CostoUnitario,
                                     ISNULL(B.Descuento, 0) AS DescuentoPorcentaje,
                                     B.Impuesto AS ImpuestoPorcentaje,
+                                    B.NombreTributo,
                                     -- Cálculos directos
                                     (B.Cantidad * B.PrecioUnitario) AS VentaBruta,
                                     (B.Cantidad * B.PrecioUnitario) * (ISNULL(B.Descuento, 0) / 100.0) AS DescuentoValor,

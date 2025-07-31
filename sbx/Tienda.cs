@@ -1,4 +1,5 @@
-﻿using sbx.core.Entities.Tienda;
+﻿using QuestPDF.Infrastructure;
+using sbx.core.Entities.Tienda;
 using sbx.core.Interfaces.ActividadEconomica;
 using sbx.core.Interfaces.Ciudad;
 using sbx.core.Interfaces.CodigoPostal;
@@ -95,6 +96,7 @@ namespace sbx
                 {
                     if (resp.Flag == true)
                     {
+                        vg_IdTienda = 1;
                         MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -271,6 +273,8 @@ namespace sbx
                     vg_IdTienda = resp.Data[0]?.IdTienda;
                     cbx_tipo_documento.SelectedValue = resp.Data[0]?.IdIdentificationType;
                     txt_numero_documento.Text = resp.Data[0]?.NumeroDocumento;
+                    int dgv = CalcularDigitoVerificacion(txt_numero_documento.Text);
+                    txt_digito_verificacion.Text = dgv.ToString();
                     txt_nombre_razon_social.Text = resp.Data[0]?.NombreRazonSocial;
                     cbx_tipo_responsabilidad.SelectedValue = resp.Data[0]?.IdTipoResponsabilidad;
                     cbx_responsabilidad_tributaria.SelectedValue = resp.Data[0]?.IdResponsabilidadTributaria;
@@ -280,7 +284,14 @@ namespace sbx
                     txt_direccion.Text = resp.Data[0]?.Direccion;
                     cbx_pais.SelectedValue = resp.Data[0]?.IdCountry;
                     cbx_departamento.SelectedValue = resp.Data[0]?.IdDepartament;
+
+                    var respCity = await _ICiudad.ListCiudadForDepartament(Convert.ToInt32(cbx_departamento.SelectedValue));
+                    cbx_municipio.DataSource = respCity.Data;
+                    cbx_municipio.ValueMember = "IdCity";
+                    cbx_municipio.DisplayMember = "CityName";
+
                     cbx_municipio.SelectedValue = resp.Data[0]?.IdCity;
+
                     cbx_codigo_postal.SelectedValue = resp.Data[0]?.IdCodigoPostal;
                     cbx_actividad_economica.SelectedValue = resp.Data[0]?.IdActividadEconomica;
                 }

@@ -50,9 +50,16 @@
             cl_precio = new DataGridViewTextBoxColumn();
             cl_cantidad = new DataGridViewTextBoxColumn();
             cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
             panel3 = new Panel();
+            lbl_inc_bolsa = new Label();
+            label14 = new Label();
+            lbl_inc = new Label();
+            label17 = new Label();
+            lbl_iva = new Label();
+            label20 = new Label();
             lbl_total = new Label();
             label12 = new Label();
             lbl_impuesto = new Label();
@@ -202,7 +209,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total });
+            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_tributo, cl_impuesto, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -244,14 +251,13 @@
             cl_codigo_barras.HeaderText = "Codigo b";
             cl_codigo_barras.Name = "cl_codigo_barras";
             cl_codigo_barras.ReadOnly = true;
-            cl_codigo_barras.Width = 150;
             // 
             // cl_nombre
             // 
             cl_nombre.HeaderText = "Nombre";
             cl_nombre.Name = "cl_nombre";
             cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 220;
+            cl_nombre.Width = 180;
             // 
             // cl_precio
             // 
@@ -273,12 +279,19 @@
             cl_descuento.ReadOnly = true;
             cl_descuento.Width = 80;
             // 
-            // cl_iva
+            // cl_tributo
             // 
-            cl_iva.HeaderText = "Iva %";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 67;
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.ReadOnly = true;
+            cl_tributo.Width = 80;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 67;
             // 
             // cl_total
             // 
@@ -290,6 +303,12 @@
             // panel3
             // 
             panel3.BorderStyle = BorderStyle.FixedSingle;
+            panel3.Controls.Add(lbl_inc_bolsa);
+            panel3.Controls.Add(label14);
+            panel3.Controls.Add(lbl_inc);
+            panel3.Controls.Add(label17);
+            panel3.Controls.Add(lbl_iva);
+            panel3.Controls.Add(label20);
             panel3.Controls.Add(lbl_total);
             panel3.Controls.Add(label12);
             panel3.Controls.Add(lbl_impuesto);
@@ -300,10 +319,79 @@
             panel3.Controls.Add(label6);
             panel3.Controls.Add(lbl_cantidadProductos);
             panel3.Controls.Add(label4);
-            panel3.Location = new Point(749, 416);
+            panel3.Location = new Point(622, 416);
             panel3.Name = "panel3";
-            panel3.Size = new Size(359, 140);
+            panel3.Size = new Size(486, 140);
             panel3.TabIndex = 142;
+            // 
+            // lbl_inc_bolsa
+            // 
+            lbl_inc_bolsa.AutoSize = true;
+            lbl_inc_bolsa.Font = new Font("Segoe UI", 9.75F);
+            lbl_inc_bolsa.ForeColor = SystemColors.ControlDarkDark;
+            lbl_inc_bolsa.Location = new Point(322, 57);
+            lbl_inc_bolsa.Name = "lbl_inc_bolsa";
+            lbl_inc_bolsa.RightToLeft = RightToLeft.No;
+            lbl_inc_bolsa.Size = new Size(13, 17);
+            lbl_inc_bolsa.TabIndex = 149;
+            lbl_inc_bolsa.Text = "_";
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Font = new Font("Segoe UI", 9.75F);
+            label14.ForeColor = SystemColors.ControlDarkDark;
+            label14.Location = new Point(260, 57);
+            label14.Name = "label14";
+            label14.Size = new Size(66, 17);
+            label14.TabIndex = 148;
+            label14.Text = "Inc Bolsa: ";
+            // 
+            // lbl_inc
+            // 
+            lbl_inc.AutoSize = true;
+            lbl_inc.Font = new Font("Segoe UI", 9.75F);
+            lbl_inc.ForeColor = SystemColors.ControlDarkDark;
+            lbl_inc.Location = new Point(322, 31);
+            lbl_inc.Name = "lbl_inc";
+            lbl_inc.RightToLeft = RightToLeft.No;
+            lbl_inc.Size = new Size(13, 17);
+            lbl_inc.TabIndex = 147;
+            lbl_inc.Text = "_";
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Font = new Font("Segoe UI", 9.75F);
+            label17.ForeColor = SystemColors.ControlDarkDark;
+            label17.Location = new Point(262, 31);
+            label17.Name = "label17";
+            label17.Size = new Size(31, 17);
+            label17.TabIndex = 146;
+            label17.Text = "Inc: ";
+            // 
+            // lbl_iva
+            // 
+            lbl_iva.AutoSize = true;
+            lbl_iva.Font = new Font("Segoe UI", 9.75F);
+            lbl_iva.ForeColor = SystemColors.ControlDarkDark;
+            lbl_iva.Location = new Point(322, 5);
+            lbl_iva.Name = "lbl_iva";
+            lbl_iva.RightToLeft = RightToLeft.No;
+            lbl_iva.Size = new Size(13, 17);
+            lbl_iva.TabIndex = 145;
+            lbl_iva.Text = "_";
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Font = new Font("Segoe UI", 9.75F);
+            label20.ForeColor = SystemColors.ControlDarkDark;
+            label20.Location = new Point(260, 5);
+            label20.Name = "label20";
+            label20.Size = new Size(31, 17);
+            label20.TabIndex = 144;
+            label20.Text = "Iva: ";
             // 
             // lbl_total
             // 
@@ -347,9 +435,9 @@
             label10.ForeColor = SystemColors.ControlDarkDark;
             label10.Location = new Point(5, 83);
             label10.Name = "label10";
-            label10.Size = new Size(69, 17);
+            label10.Size = new Size(75, 17);
             label10.TabIndex = 140;
-            label10.Text = "Impuesto: ";
+            label10.Text = "Impuestos: ";
             // 
             // lbl_descuento
             // 
@@ -488,7 +576,7 @@
             panel2.Controls.Add(label15);
             panel2.Location = new Point(4, 416);
             panel2.Name = "panel2";
-            panel2.Size = new Size(739, 140);
+            panel2.Size = new Size(549, 140);
             panel2.TabIndex = 149;
             // 
             // btn_ver_productos
@@ -617,15 +705,6 @@
         private Label label6;
         private Label lbl_cantidadProductos;
         private Label label4;
-        private DataGridViewTextBoxColumn cl_idProducto;
-        private DataGridViewTextBoxColumn cl_sku;
-        private DataGridViewTextBoxColumn cl_codigo_barras;
-        private DataGridViewTextBoxColumn cl_nombre;
-        private DataGridViewTextBoxColumn cl_precio;
-        private DataGridViewTextBoxColumn cl_cantidad;
-        private DataGridViewTextBoxColumn cl_descuento;
-        private DataGridViewTextBoxColumn cl_iva;
-        private DataGridViewTextBoxColumn cl_total;
         private Label lbl_banco;
         private Label label9;
         private Label lbl_referencia;
@@ -638,5 +717,21 @@
         private Button btn_ver_productos;
         private Label lbl_estado;
         private Label label18;
+        private DataGridViewTextBoxColumn cl_idProducto;
+        private DataGridViewTextBoxColumn cl_sku;
+        private DataGridViewTextBoxColumn cl_codigo_barras;
+        private DataGridViewTextBoxColumn cl_nombre;
+        private DataGridViewTextBoxColumn cl_precio;
+        private DataGridViewTextBoxColumn cl_cantidad;
+        private DataGridViewTextBoxColumn cl_descuento;
+        private DataGridViewTextBoxColumn cl_tributo;
+        private DataGridViewTextBoxColumn cl_impuesto;
+        private DataGridViewTextBoxColumn cl_total;
+        private Label lbl_inc_bolsa;
+        private Label label14;
+        private Label lbl_inc;
+        private Label label17;
+        private Label lbl_iva;
+        private Label label20;
     }
 }

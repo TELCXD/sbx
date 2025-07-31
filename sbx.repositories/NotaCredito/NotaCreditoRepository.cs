@@ -57,9 +57,9 @@ namespace sbx.repositories.NotaCredito
                     int idNotaCredito = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_NotaCreditoDetalle (
-                            IdNotaCredito, IdDetalleVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            IdNotaCredito, IdDetalleVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, Descuento,NombreTributo, Impuesto,CreationDate, IdUserAction)
                             VALUES (@IdNotaCredito, @IdDetalleVenta, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @Descuento,@NombreTributo, @Impuesto, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in notaCredito.detalleNotaCredito)
                     {
@@ -77,6 +77,7 @@ namespace sbx.repositories.NotaCredito
                                 detalle.UnidadMedida,
                                 detalle.PrecioUnitario,
                                 detalle.Descuento,
+                                detalle.NombreTributo,
                                 detalle.Impuesto,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
@@ -103,6 +104,9 @@ namespace sbx.repositories.NotaCredito
                     int Correcto = 0;
                     int contador = 0;
                     decimal CantidadSaleRedondeadaTemp = 0;
+
+                    sql = " SELECT Consecutivo FROM T_NotaCredito WHERE IdNotaCredito = " + idNotaCredito;
+                    int consecutivo = connection.QuerySingle<int>(sql);
 
                     foreach (var detalle in notaCredito.detalleNotaCredito)
                     {
@@ -160,7 +164,8 @@ namespace sbx.repositories.NotaCredito
                                 decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                 int IdProductoHijoSale = item.IdProductoHijo;
-                                string Documento = "NC-" + idNotaCredito;
+
+                                string Documento = notaCredito.Prefijo + consecutivo;
 
                                 EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
                                 EntradaInventarioRepository entradaInventarioRepository = new EntradaInventarioRepository(_connectionString);
@@ -258,7 +263,7 @@ namespace sbx.repositories.NotaCredito
                                     decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                     int IdProductoPadreSale = item.IdProductoPadre;
-                                    string Documento = "NC-" + idNotaCredito;
+                                    string Documento = notaCredito.Prefijo + consecutivo;
 
                                     EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
                                     EntradaInventarioRepository entradaInventarioRepository = new EntradaInventarioRepository(_connectionString);
@@ -358,7 +363,7 @@ namespace sbx.repositories.NotaCredito
                                     decimal CantidadSaleRedondeada = Math.Round(CantidadSale, 2);
 
                                     int IdProductoPadreSale = item.IdProductoPadre;
-                                    string Documento = "NC-" + idNotaCredito;
+                                    string Documento = notaCredito.Prefijo + consecutivo;
 
                                     EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
                                     EntradaInventarioRepository entradaInventarioRepository = new EntradaInventarioRepository(_connectionString);
@@ -461,6 +466,7 @@ namespace sbx.repositories.NotaCredito
                                     B.UnidadMedida,
                                     B.PrecioUnitario,
                                     B.Descuento,
+                                    B.NombreTributo,
                                     B.Impuesto,
                                     B.CreationDate,
                                     B.IdUserAction AS IdUserActionNotaCreditoDetalle
@@ -587,6 +593,7 @@ namespace sbx.repositories.NotaCredito
                                     B.Cantidad,
 									B.UnidadMedida,
                                     B.Descuento,
+                                    B.NombreTributo,
                                     B.Impuesto,                                                                                             
                                     A.CreationDate,
 									G.UserName UserName,

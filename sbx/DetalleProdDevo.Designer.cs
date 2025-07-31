@@ -33,15 +33,6 @@
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DetalleProdDevo));
             dtg_detalle_nota_credito = new DataGridView();
-            cl_idProducto = new DataGridViewTextBoxColumn();
-            cl_sku = new DataGridViewTextBoxColumn();
-            cl_codigo_barras = new DataGridViewTextBoxColumn();
-            cl_nombre = new DataGridViewTextBoxColumn();
-            cl_precio = new DataGridViewTextBoxColumn();
-            cl_cantidad = new DataGridViewTextBoxColumn();
-            cl_descuento = new DataGridViewTextBoxColumn();
-            cl_iva = new DataGridViewTextBoxColumn();
-            cl_total = new DataGridViewTextBoxColumn();
             lbl_cantidad_devolucion = new Label();
             lbl_total_devolucion = new Label();
             label17 = new Label();
@@ -56,6 +47,16 @@
             label3 = new Label();
             lbl_usuario = new Label();
             label2 = new Label();
+            cl_idProducto = new DataGridViewTextBoxColumn();
+            cl_sku = new DataGridViewTextBoxColumn();
+            cl_codigo_barras = new DataGridViewTextBoxColumn();
+            cl_nombre = new DataGridViewTextBoxColumn();
+            cl_precio = new DataGridViewTextBoxColumn();
+            cl_cantidad = new DataGridViewTextBoxColumn();
+            cl_descuento = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
+            cl_total = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dtg_detalle_nota_credito).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -75,7 +76,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_detalle_nota_credito.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_detalle_nota_credito.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_detalle_nota_credito.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_iva, cl_total });
+            dtg_detalle_nota_credito.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_tributo, cl_impuesto, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -98,67 +99,6 @@
             dtg_detalle_nota_credito.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_detalle_nota_credito.Size = new Size(1104, 253);
             dtg_detalle_nota_credito.TabIndex = 10;
-            // 
-            // cl_idProducto
-            // 
-            cl_idProducto.HeaderText = "Id";
-            cl_idProducto.Name = "cl_idProducto";
-            cl_idProducto.ReadOnly = true;
-            cl_idProducto.Width = 50;
-            // 
-            // cl_sku
-            // 
-            cl_sku.HeaderText = "sku";
-            cl_sku.Name = "cl_sku";
-            cl_sku.ReadOnly = true;
-            // 
-            // cl_codigo_barras
-            // 
-            cl_codigo_barras.HeaderText = "Codigo b";
-            cl_codigo_barras.Name = "cl_codigo_barras";
-            cl_codigo_barras.ReadOnly = true;
-            cl_codigo_barras.Width = 150;
-            // 
-            // cl_nombre
-            // 
-            cl_nombre.HeaderText = "Nombre";
-            cl_nombre.Name = "cl_nombre";
-            cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 220;
-            // 
-            // cl_precio
-            // 
-            cl_precio.HeaderText = "Precio";
-            cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
-            cl_precio.Width = 150;
-            // 
-            // cl_cantidad
-            // 
-            cl_cantidad.HeaderText = "Cantidad";
-            cl_cantidad.Name = "cl_cantidad";
-            cl_cantidad.ReadOnly = true;
-            // 
-            // cl_descuento
-            // 
-            cl_descuento.HeaderText = "Desc %";
-            cl_descuento.Name = "cl_descuento";
-            cl_descuento.ReadOnly = true;
-            cl_descuento.Width = 80;
-            // 
-            // cl_iva
-            // 
-            cl_iva.HeaderText = "Iva %";
-            cl_iva.Name = "cl_iva";
-            cl_iva.ReadOnly = true;
-            cl_iva.Width = 67;
-            // 
-            // cl_total
-            // 
-            cl_total.HeaderText = "Total";
-            cl_total.Name = "cl_total";
-            cl_total.ReadOnly = true;
-            cl_total.Width = 142;
             // 
             // lbl_cantidad_devolucion
             // 
@@ -324,6 +264,74 @@
             label2.TabIndex = 183;
             label2.Text = "Usuario devolucion: ";
             // 
+            // cl_idProducto
+            // 
+            cl_idProducto.HeaderText = "Id";
+            cl_idProducto.Name = "cl_idProducto";
+            cl_idProducto.ReadOnly = true;
+            cl_idProducto.Width = 50;
+            // 
+            // cl_sku
+            // 
+            cl_sku.HeaderText = "sku";
+            cl_sku.Name = "cl_sku";
+            cl_sku.ReadOnly = true;
+            // 
+            // cl_codigo_barras
+            // 
+            cl_codigo_barras.HeaderText = "Codigo b";
+            cl_codigo_barras.Name = "cl_codigo_barras";
+            cl_codigo_barras.ReadOnly = true;
+            cl_codigo_barras.Width = 120;
+            // 
+            // cl_nombre
+            // 
+            cl_nombre.HeaderText = "Nombre";
+            cl_nombre.Name = "cl_nombre";
+            cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 180;
+            // 
+            // cl_precio
+            // 
+            cl_precio.HeaderText = "Precio";
+            cl_precio.Name = "cl_precio";
+            cl_precio.ReadOnly = true;
+            cl_precio.Width = 150;
+            // 
+            // cl_cantidad
+            // 
+            cl_cantidad.HeaderText = "Cantidad";
+            cl_cantidad.Name = "cl_cantidad";
+            cl_cantidad.ReadOnly = true;
+            // 
+            // cl_descuento
+            // 
+            cl_descuento.HeaderText = "Desc %";
+            cl_descuento.Name = "cl_descuento";
+            cl_descuento.ReadOnly = true;
+            cl_descuento.Width = 80;
+            // 
+            // cl_tributo
+            // 
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.ReadOnly = true;
+            cl_tributo.Width = 80;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 67;
+            // 
+            // cl_total
+            // 
+            cl_total.HeaderText = "Total";
+            cl_total.Name = "cl_total";
+            cl_total.ReadOnly = true;
+            cl_total.Width = 142;
+            // 
             // DetalleProdDevo
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -355,15 +363,6 @@
         #endregion
 
         private DataGridView dtg_detalle_nota_credito;
-        private DataGridViewTextBoxColumn cl_idProducto;
-        private DataGridViewTextBoxColumn cl_sku;
-        private DataGridViewTextBoxColumn cl_codigo_barras;
-        private DataGridViewTextBoxColumn cl_nombre;
-        private DataGridViewTextBoxColumn cl_precio;
-        private DataGridViewTextBoxColumn cl_cantidad;
-        private DataGridViewTextBoxColumn cl_descuento;
-        private DataGridViewTextBoxColumn cl_iva;
-        private DataGridViewTextBoxColumn cl_total;
         private Label lbl_cantidad_devolucion;
         private Label lbl_total_devolucion;
         private Label label17;
@@ -378,5 +377,15 @@
         private Button btn_ver_factura;
         private Label lbl_factura;
         private Label label3;
+        private DataGridViewTextBoxColumn cl_idProducto;
+        private DataGridViewTextBoxColumn cl_sku;
+        private DataGridViewTextBoxColumn cl_codigo_barras;
+        private DataGridViewTextBoxColumn cl_nombre;
+        private DataGridViewTextBoxColumn cl_precio;
+        private DataGridViewTextBoxColumn cl_cantidad;
+        private DataGridViewTextBoxColumn cl_descuento;
+        private DataGridViewTextBoxColumn cl_tributo;
+        private DataGridViewTextBoxColumn cl_impuesto;
+        private DataGridViewTextBoxColumn cl_total;
     }
 }

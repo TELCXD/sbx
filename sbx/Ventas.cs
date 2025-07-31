@@ -149,6 +149,9 @@ namespace sbx
                     decimal SubtotalLinea;
                     decimal Total = 0;
                     decimal TotalLinea;
+                    decimal iva = 0;
+                    decimal inc = 0;
+                    decimal incBolsa = 0;
 
                     foreach (var item in resp.Data)
                     {
@@ -157,8 +160,33 @@ namespace sbx
                         SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                         if (item.Estado == "FACTURADA") { Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento)); }
                         DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                        if (item.Estado == "FACTURADA") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
-                        ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                        if (item.NombreTributo == "INC Bolsas") 
+                        {
+                            if (item.Estado == "FACTURADA") { Impuesto += Convert.ToDecimal(item.Impuesto); }
+                            ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                        }
+                        else
+                        {
+                            if (item.Estado == "FACTURADA") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
+                            ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                        }
+
+                        if(item.Estado == "FACTURADA")
+                        {
+                            if (item.NombreTributo == "INC Bolsas")
+                            {
+                                incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                            }
+                            else if (item.NombreTributo == "IVA")
+                            {
+                                iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                            }
+                            else if (item.NombreTributo == "INC")
+                            {
+                                inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                            }
+                        }
+
                         //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
                         TotalLinea = (SubtotalLinea - DescuentoLinea);
 
@@ -174,6 +202,7 @@ namespace sbx
                             item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                             Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                             Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
+                            item.NombreTributo,
                             Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
                             TotalLinea.ToString("N2", new CultureInfo("es-CO")),
                             item.NumeroDocumento,
@@ -197,6 +226,9 @@ namespace sbx
                     lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                     lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                     lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_inc_bolsa.Text = incBolsa.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_inc.Text = inc.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_iva.Text = iva.ToString("N2", new CultureInfo("es-CO"));
                 }
                 else
                 {
@@ -307,6 +339,9 @@ namespace sbx
                                     Impuesto = 0;
                                     SubtotalLinea = 0;
                                     DescuentoLinea = 0;
+                                    decimal iva = 0;
+                                    decimal inc = 0;
+                                    decimal incBolsa = 0;
 
                                     foreach (var item in DataVenta.Data)
                                     {
@@ -315,8 +350,21 @@ namespace sbx
                                         SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
                                         Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
                                         DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
-                                        Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                        if (item.NombreTributo == "INC Bolsas")
+                                        {
+                                            incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                                        }
+                                        else if (item.NombreTributo == "IVA")
+                                        {
+                                            iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                        }
+                                        else if (item.NombreTributo == "INC")
+                                        {
+                                            inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                        }
                                     }
+
+                                    Impuesto = iva + inc + incBolsa;
 
                                     Total = (Subtotal - Descuento);
                                     //Total = (Subtotal - Descuento) + Impuesto;
@@ -326,6 +374,9 @@ namespace sbx
                                     DataFactura.Subtotal = SubtotalMenosImpuesto;
                                     DataFactura.Descuento = Descuento;
                                     DataFactura.Impuesto = Impuesto;
+                                    DataFactura.iva = iva;
+                                    DataFactura.inc = inc;
+                                    DataFactura.incBolsa = incBolsa;
                                     DataFactura.Total = Total;
                                     DataFactura.Cambio = DataFactura.Recibido - Total;
 
@@ -334,8 +385,6 @@ namespace sbx
                                     decimal precio;
                                     decimal cantidad;
                                     decimal desc;
-                                    decimal iva;
-                                    decimal totalLinea;
                                     decimal total;
 
                                     foreach (var item in DataVenta.Data)
@@ -343,7 +392,6 @@ namespace sbx
                                         precio = Convert.ToDecimal(item.PrecioUnitario);
                                         cantidad = Convert.ToDecimal(item.Cantidad);
                                         desc = Convert.ToDecimal(item.Descuento);
-                                        iva = Convert.ToDecimal(item.Impuesto);
 
                                         total = CalcularTotal(precio, 0, desc);
                                         total = total * cantidad;
@@ -352,35 +400,20 @@ namespace sbx
 
                                         switch (item.UnidadMedida)
                                         {
-                                            case "Unidad (und)":
-                                                UnidadMedidaAbreviada = "Unidad (und)";
+                                            case "Unidad":
+                                                UnidadMedidaAbreviada = "Und";
                                                 break;
-                                            case "Caja (caja)":
-                                                UnidadMedidaAbreviada = "caja";
+                                            case "kilogramo":
+                                                UnidadMedidaAbreviada = "KGM";
                                                 break;
-                                            case "Paquete (paq)":
-                                                UnidadMedidaAbreviada = "paq";
+                                            case "libra":
+                                                UnidadMedidaAbreviada = "LBR";
                                                 break;
-                                            case "Bolsa (bol)":
-                                                UnidadMedidaAbreviada = "bol";
+                                            case "metro":
+                                                UnidadMedidaAbreviada = "MTR";
                                                 break;
-                                            case "Litro (lt)":
-                                                UnidadMedidaAbreviada = "lt";
-                                                break;
-                                            case "Mililitro (ml)":
-                                                UnidadMedidaAbreviada = "ml";
-                                                break;
-                                            case "Kilogramo (kg)":
-                                                UnidadMedidaAbreviada = "kg";
-                                                break;
-                                            case "Gramo (g)":
-                                                UnidadMedidaAbreviada = "g";
-                                                break;
-                                            case "Metro (m)":
-                                                UnidadMedidaAbreviada = "m";
-                                                break;
-                                            case "Par (par)":
-                                                UnidadMedidaAbreviada = "par";
+                                            case "galón":
+                                                UnidadMedidaAbreviada = "GLL";
                                                 break;
                                             default:
                                                 UnidadMedidaAbreviada = "";
