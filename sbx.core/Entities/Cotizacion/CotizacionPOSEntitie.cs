@@ -21,5 +21,8 @@ namespace sbx.core.Entities.Cotizacion
         public string Estado { get; set; }
         public int DiasVencimiento { get; set; }
         public DateTime FechaVencimiento { get; set; }
+        public decimal iva { get; set; }
+        public decimal inc { get; set; }
+        public decimal incBolsa { get; set; }
     }
 }

@@ -984,9 +984,9 @@ namespace sbx.repositories.Venta
                     int idVenta = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_DetalleVenta_Suspendidas (
-                            IdVenta_Suspendidas, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            IdVenta_Suspendidas, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto, NombreTributo,CreationDate, IdUserAction)
                             VALUES (@IdVenta_Suspendidas, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @NombreTributo, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in ventaSuspendidaEntitie.detalleVentasSuspendida)
                     {
@@ -1005,6 +1005,7 @@ namespace sbx.repositories.Venta
                                 detalle.CostoUnitario,
                                 detalle.Descuento,
                                 detalle.Impuesto,
+                                detalle.NombreTributo,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },
@@ -1085,6 +1086,7 @@ namespace sbx.repositories.Venta
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
+                                    B.NombreTributo,
                                     B.CreationDate FechaDetalleFactura,
                                     B.IdUserAction IdUserActionDetalleFactura,
                                     A.IdCliente,
