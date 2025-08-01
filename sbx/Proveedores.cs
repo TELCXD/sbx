@@ -1,8 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using sbx.core.Interfaces.Cliente;
-using sbx.core.Interfaces.Promociones;
 using sbx.core.Interfaces.Proveedor;
 using System.Data;
 
@@ -86,10 +84,14 @@ namespace sbx
                             item.IdentificationType,
                             item.NumeroDocumento,
                             item.NombreRazonSocial,
+                            item.CityName,
                             item.Direccion,
                             item.Telefono,
                             item.Email,
-                            item.Estado);
+                            item.Estado,
+                            item.NombreTipoContribuyente,
+                            item.NombreResponsabilidad,
+                            item.NombreResponsabilidadTributaria);
                     }
                 }
             }
@@ -280,6 +282,15 @@ namespace sbx
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
                 dtg_proveedor.Enabled = true;
+            }
+        }
+
+        private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Enter
+            if (e.KeyChar == (char)13)
+            {
+                await ConsultaProveedor();
             }
         }
     }

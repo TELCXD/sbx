@@ -39,21 +39,33 @@ namespace sbx.repositories.Proveedor
                                   Direccion = @Direccion,
                                   Telefono = @Telefono, 
                                   Email = @Email,
-                                  Estado = @Estado, 
+                                  Estado = @Estado,
+                                  IdTipoResponsabilidad = @IdTipoResponsabilidad,
+                                  IdResponsabilidadTributaria = @IdResponsabilidadTributaria,
+                                  IdTipoContribuyente = @IdTipoContribuyente,
+                                  IdCountry = @IdCountry,
+                                  IdDepartament = @IdDepartament,
+                                  IdCity = @IdCity,
                                   UpdateDate = @UpdateDate,
                                   IdUserAction = @IdUserAction 
                                   WHERE IdProveedor = @IdProveedor";
 
                         var parametros = new
                         {
-                            IdProveedor = proveedorEntitie.IdProveedor,
-                            IdIdentificationType = proveedorEntitie.IdIdentificationType,
-                            NumeroDocumento = proveedorEntitie.NumeroDocumento,
-                            NombreRazonSocial = proveedorEntitie.NombreRazonSocial,
-                            Direccion = proveedorEntitie.Direccion,
-                            Telefono = proveedorEntitie.Telefono,
-                            Email = proveedorEntitie.Email,
-                            Estado = proveedorEntitie.Estado,
+                            proveedorEntitie.IdProveedor,
+                            proveedorEntitie.IdIdentificationType,
+                            proveedorEntitie.NumeroDocumento,
+                            proveedorEntitie.NombreRazonSocial,
+                            proveedorEntitie.Direccion,
+                            proveedorEntitie.Telefono,
+                            proveedorEntitie.Email,
+                            proveedorEntitie.Estado,
+                            proveedorEntitie.IdTipoResponsabilidad,
+                            proveedorEntitie.IdResponsabilidadTributaria,
+                            proveedorEntitie.IdTipoContribuyente,
+                            proveedorEntitie.IdCountry,
+                            proveedorEntitie.IdDepartament,
+                            proveedorEntitie.IdCity,
                             UpdateDate = FechaActual,
                             IdUserAction = IdUser
                         };
@@ -74,19 +86,27 @@ namespace sbx.repositories.Proveedor
                     else
                     {
                         sql = @$" INSERT INTO T_Proveedores (IdIdentificationType,NumeroDocumento,NombreRazonSocial,
-                                  Direccion,Telefono,Email,Estado,CreationDate, IdUserAction)
+                                  Direccion,Telefono,Email,Estado,IdTipoResponsabilidad, IdResponsabilidadTributaria,
+                                  IdTipoContribuyente,IdCountry,IdDepartament,IdCity,CreationDate, IdUserAction)
                                   VALUES(@IdIdentificationType,NULLIF(@NumeroDocumento,''),NULLIF(@NombreRazonSocial, ''),@Direccion,
-                                  @Telefono,@Email,@Estado,@CreationDate,@IdUserAction)";
+                                  @Telefono,@Email,@Estado,@IdTipoResponsabilidad, @IdResponsabilidadTributaria,
+                                  @IdTipoContribuyente,@IdCountry,@IdDepartament,@IdCity,@CreationDate,@IdUserAction)";
 
                         var parametros = new
                         {
-                            IdIdentificationType = proveedorEntitie.IdIdentificationType,
-                            NumeroDocumento = proveedorEntitie.NumeroDocumento,
-                            NombreRazonSocial = proveedorEntitie.NombreRazonSocial,
-                            Direccion = proveedorEntitie.Direccion,
-                            Telefono = proveedorEntitie.Telefono,
-                            Email = proveedorEntitie.Email,
-                            Estado = proveedorEntitie.Estado,
+                            proveedorEntitie.IdIdentificationType,
+                            proveedorEntitie.NumeroDocumento,
+                            proveedorEntitie.NombreRazonSocial,
+                            proveedorEntitie.Direccion,
+                            proveedorEntitie.Telefono,
+                            proveedorEntitie.Email,
+                            proveedorEntitie.Estado,
+                            proveedorEntitie.IdTipoResponsabilidad,
+                            proveedorEntitie.IdResponsabilidadTributaria,
+                            proveedorEntitie.IdTipoContribuyente,
+                            proveedorEntitie.IdCountry,
+                            proveedorEntitie.IdDepartament,
+                            proveedorEntitie.IdCity,
                             CreationDate = FechaActual,
                             IdUserAction = IdUser
                         };
@@ -136,11 +156,29 @@ namespace sbx.repositories.Proveedor
                                   ,A.Telefono
                                   ,A.Email
                                   ,A.Estado
+                                  ,A.IdTipoResponsabilidad
+                                  ,D.Nombre NombreResponsabilidad
+                                  ,A.IdResponsabilidadTributaria
+                                  ,E.Nombre NombreResponsabilidadTributaria
+                                  ,A.IdTipoContribuyente
+                                  ,F.Nombre NombreTipoContribuyente
+                                  ,A.IdCountry
+                                  ,G.CountryName
+                                  ,A.IdDepartament
+                                  ,H.DepartmentName
+                                  ,A.IdCity
+                                  ,I.CityName
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction 
                                   FROM T_Proveedores A
-								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType ";
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
+                                  INNER JOIN T_TipoResponsabilidad D ON A.IdTipoResponsabilidad = D.IdTipoResponsabilidad
+                                  INNER JOIN T_ResponsabilidadTributaria E ON A.IdResponsabilidadTributaria = E.IdResponsabilidadTributaria
+                                  INNER JOIN T_TipoContribuyente F ON A.IdTipoContribuyente = F.IdTipoContribuyente 
+                                  INNER JOIN T_Country G ON A.IdCountry = G.IdCountry 
+                                  INNER JOIN T_Departament H ON A.IdDepartament = H.IdDepartament
+                                  INNER JOIN T_City I ON A.IdCity = I.IdCity ";
 
                     string Where = "";
 
@@ -262,11 +300,29 @@ namespace sbx.repositories.Proveedor
                                   ,A.Telefono
                                   ,A.Email
                                   ,A.Estado
+                                  ,A.IdTipoResponsabilidad
+                                  ,D.Nombre NombreResponsabilidad
+                                  ,A.IdResponsabilidadTributaria
+                                  ,E.Nombre NombreResponsabilidadTributaria
+                                  ,A.IdTipoContribuyente
+                                  ,F.Nombre NombreTipoContribuyente
+                                  ,A.IdCountry
+                                  ,G.CountryName
+                                  ,A.IdDepartament
+                                  ,H.DepartmentName
+                                  ,A.IdCity
+                                  ,I.CityName
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction 
                                   FROM T_Proveedores A
-								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType ";
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
+                                  INNER JOIN T_TipoResponsabilidad D ON A.IdTipoResponsabilidad = D.IdTipoResponsabilidad
+                                  INNER JOIN T_ResponsabilidadTributaria E ON A.IdResponsabilidadTributaria = E.IdResponsabilidadTributaria
+                                  INNER JOIN T_TipoContribuyente F ON A.IdTipoContribuyente = F.IdTipoContribuyente 
+                                  INNER JOIN T_Country G ON A.IdCountry = G.IdCountry 
+                                  INNER JOIN T_Departament H ON A.IdDepartament = H.IdDepartament
+                                  INNER JOIN T_City I ON A.IdCity = I.IdCity ";
 
                     string Where = "";
                     string Filtro = "";
@@ -424,11 +480,29 @@ namespace sbx.repositories.Proveedor
                                   ,A.Telefono
                                   ,A.Email
                                   ,A.Estado
+                                  ,A.IdTipoResponsabilidad
+                                  ,D.Nombre NombreResponsabilidad
+                                  ,A.IdResponsabilidadTributaria
+                                  ,E.Nombre NombreResponsabilidadTributaria
+                                  ,A.IdTipoContribuyente
+                                  ,F.Nombre NombreTipoContribuyente
+                                  ,A.IdCountry
+                                  ,G.CountryName
+                                  ,A.IdDepartament
+                                  ,H.DepartmentName
+                                  ,A.IdCity
+                                  ,I.CityName
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction 
                                   FROM T_Proveedores A
 								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
+                                  INNER JOIN T_TipoResponsabilidad D ON A.IdTipoResponsabilidad = D.IdTipoResponsabilidad
+                                  INNER JOIN T_ResponsabilidadTributaria E ON A.IdResponsabilidadTributaria = E.IdResponsabilidadTributaria
+                                  INNER JOIN T_TipoContribuyente F ON A.IdTipoContribuyente = F.IdTipoContribuyente 
+                                  INNER JOIN T_Country G ON A.IdCountry = G.IdCountry 
+                                  INNER JOIN T_Departament H ON A.IdDepartament = H.IdDepartament
+                                  INNER JOIN T_City I ON A.IdCity = I.IdCity 
                                   WHERE A.NumeroDocumento = '{NumeroDoc}' ";
 
                     dynamic resultado = await connection.QueryAsync(sql);
@@ -465,8 +539,20 @@ namespace sbx.repositories.Proveedor
                                   ,A.Telefono
                                   ,A.Email
                                   ,CASE WHEN A.Estado = 1 THEN 'Activo' ELSE 'Inactivo' END Estado
+                                  ,D.Nombre NombreResponsabilidad
+                                  ,E.Nombre NombreResponsabilidadTributaria
+                                  ,F.Nombre NombreTipoContribuyente
+                                  ,G.CountryName
+                                  ,H.DepartmentName
+                                  ,I.CityName
                                   FROM T_Proveedores A
-								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType ";
+								  INNER JOIN T_IdentificationType B ON A.IdIdentificationType = B.IdIdentificationType 
+                                  INNER JOIN T_TipoResponsabilidad D ON A.IdTipoResponsabilidad = D.IdTipoResponsabilidad
+                                  INNER JOIN T_ResponsabilidadTributaria E ON A.IdResponsabilidadTributaria = E.IdResponsabilidadTributaria
+                                  INNER JOIN T_TipoContribuyente F ON A.IdTipoContribuyente = F.IdTipoContribuyente 
+                                  INNER JOIN T_Country G ON A.IdCountry = G.IdCountry 
+                                  INNER JOIN T_Departament H ON A.IdDepartament = H.IdDepartament
+                                  INNER JOIN T_City I ON A.IdCity = I.IdCity ";
 
                     string Where = "";
                     string Filtro = "";

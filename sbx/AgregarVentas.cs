@@ -2241,10 +2241,12 @@ namespace sbx
                                                                     customer.email = DataFacturaRegistrada.Data[0].Email.ToString();
                                                                     customer.phone = DataFacturaRegistrada.Data[0].Telefono.ToString();
                                                                     customer.legal_organization_id = (TipoIdentificacion == 4 ? 1 : 2).ToString(); // 1. Juridico, 2. Natural
-                                                                    customer.tribute_id = "21"; // 18. IVA, 21. No aplica *
-                                                                    customer.municipality_id = "1079"; //Cali, valle del cauca
+                                                                    customer.tribute_id = DataFacturaRegistrada.Data[0].IdResponsabilidadTributaria == 2 ? "18" :
+                                                                                          DataFacturaRegistrada.Data[0].IdResponsabilidadTributaria == 4 ? "18" :
+                                                                                          "21"; // 18. IVA, 21. No aplica *
+                                                                    customer.municipality_id = DataFacturaRegistrada.Data[0].IdMunicipioApiDian.ToString(); //"1079"; //Cali, valle del cauca
 
-                                                                    List<WithholdingTax> Listwithholding_taxes = new List<WithholdingTax>();
+                                                                    List <WithholdingTax> Listwithholding_taxes = new List<WithholdingTax>();
                                                                     List<Item> Listitems = new List<Item>();
                                                                     foreach (var ItemsVenta in DataFacturaRegistrada.Data)
                                                                     {
@@ -2261,7 +2263,12 @@ namespace sbx
                                                                         {
                                                                             v_is_excluded = 0;
                                                                         }
-                                                                        
+
+                                                                        if (ItemsVenta.NombreTributo.ToString() == "INC" || ItemsVenta.NombreTributo.ToString() == "INC Bolsas")
+                                                                        {
+                                                                            v_is_excluded = 0;
+                                                                        }
+
                                                                         int v_tribute_id = 1; //Impuesto sobre la Ventas
                                                                         switch (ItemsVenta.NombreTributo.ToString())
                                                                         {

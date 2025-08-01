@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using sbx.core.Interfaces.Cliente;
-using sbx.core.Interfaces.Producto;
 using System.Data;
 
 namespace sbx
@@ -14,7 +13,7 @@ namespace sbx
         private readonly ICliente _ICliente;
         private AgregarCliente? _AgregarCliente;
         private int Id_Cliente = 0;
-        private PreciosClientes _PreciosClientes;
+        private PreciosClientes? _PreciosClientes;
 
         public Clientes(IServiceProvider serviceProvider, ICliente cliente)
         {
@@ -90,10 +89,14 @@ namespace sbx
                             item.NumeroDocumento,
                             item.NombreRazonSocial,
                             item.TipoCliente,
+                            item.CityName,
                             item.Direccion,
                             item.Telefono,
                             item.Email,
-                            item.Estado);
+                            item.Estado,
+                            item.NombreTipoAdquiriente,
+                            item.NombreResponsabilidad,
+                            item.NombreResponsabilidadTributaria);
                     }
                 }
             }
@@ -122,7 +125,7 @@ namespace sbx
                     {
                         Id_Cliente = Convert.ToInt32(row.Cells["cl_IdCliente"].Value);
 
-                        if (Id_Cliente > 1) 
+                        if (Id_Cliente > 1)
                         {
                             if (_Permisos != null)
                             {
@@ -295,6 +298,15 @@ namespace sbx
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
                 dtg_cliente.Enabled = true;
+            }
+        }
+
+        private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Enter
+            if (e.KeyChar == (char)13)
+            {
+                await ConsultaCliente();
             }
         }
     }

@@ -47,6 +47,18 @@
             label7 = new Label();
             txt_nombre_razon_social = new TextBox();
             errorProvider1 = new ErrorProvider(components);
+            cbx_tipo_responsabilidad = new ComboBox();
+            label5 = new Label();
+            cbx_tipo_contribuyente = new ComboBox();
+            label8 = new Label();
+            cbx_responsabilidad_tributaria = new ComboBox();
+            label9 = new Label();
+            cbx_departamento = new ComboBox();
+            label12 = new Label();
+            cbx_pais = new ComboBox();
+            label13 = new Label();
+            cbx_municipio = new ComboBox();
+            label11 = new Label();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -58,8 +70,9 @@
             panel3.Controls.Add(btn_guardar);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
+            panel3.Margin = new Padding(3, 4, 3, 4);
             panel3.Name = "panel3";
-            panel3.Size = new Size(702, 56);
+            panel3.Size = new Size(800, 73);
             panel3.TabIndex = 62;
             // 
             // btn_guardar
@@ -68,9 +81,10 @@
             btn_guardar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_guardar.FlatStyle = FlatStyle.Flat;
             btn_guardar.Image = (Image)resources.GetObject("btn_guardar.Image");
-            btn_guardar.Location = new Point(3, 3);
+            btn_guardar.Location = new Point(3, 4);
+            btn_guardar.Margin = new Padding(3, 4, 3, 4);
             btn_guardar.Name = "btn_guardar";
-            btn_guardar.Size = new Size(96, 45);
+            btn_guardar.Size = new Size(110, 60);
             btn_guardar.TabIndex = 0;
             btn_guardar.Text = "Guardar";
             btn_guardar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -80,35 +94,37 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(12, 235);
+            label10.Location = new Point(14, 313);
             label10.Name = "label10";
-            label10.Size = new Size(57, 15);
+            label10.Size = new Size(72, 20);
             label10.TabIndex = 85;
             label10.Text = "Direccion";
             // 
             // txt_direccion
             // 
-            txt_direccion.Location = new Point(12, 255);
+            txt_direccion.Location = new Point(14, 340);
+            txt_direccion.Margin = new Padding(3, 4, 3, 4);
             txt_direccion.MaxLength = 150;
             txt_direccion.Name = "txt_direccion";
-            txt_direccion.Size = new Size(654, 23);
+            txt_direccion.Size = new Size(346, 27);
             txt_direccion.TabIndex = 4;
             // 
             // cbx_tipo_identificacion
             // 
             cbx_tipo_identificacion.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_identificacion.FormattingEnabled = true;
-            cbx_tipo_identificacion.Location = new Point(12, 88);
+            cbx_tipo_identificacion.Location = new Point(14, 117);
+            cbx_tipo_identificacion.Margin = new Padding(3, 4, 3, 4);
             cbx_tipo_identificacion.Name = "cbx_tipo_identificacion";
-            cbx_tipo_identificacion.Size = new Size(303, 23);
+            cbx_tipo_identificacion.Size = new Size(346, 28);
             cbx_tipo_identificacion.TabIndex = 1;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(12, 70);
+            label6.Location = new Point(14, 93);
             label6.Name = "label6";
-            label6.Size = new Size(105, 15);
+            label6.Size = new Size(133, 20);
             label6.TabIndex = 82;
             label6.Text = "Tipo identificacion";
             // 
@@ -117,100 +133,232 @@
             cbx_estado.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_estado.FormattingEnabled = true;
             cbx_estado.Items.AddRange(new object[] { "Activo", "Inactivo" });
-            cbx_estado.Location = new Point(363, 88);
+            cbx_estado.Location = new Point(415, 494);
+            cbx_estado.Margin = new Padding(3, 4, 3, 4);
             cbx_estado.Name = "cbx_estado";
-            cbx_estado.Size = new Size(303, 23);
-            cbx_estado.TabIndex = 5;
+            cbx_estado.Size = new Size(346, 28);
+            cbx_estado.TabIndex = 13;
             // 
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(363, 70);
+            label14.Location = new Point(415, 470);
             label14.Name = "label14";
-            label14.Size = new Size(42, 15);
+            label14.Size = new Size(54, 20);
             label14.TabIndex = 80;
             label14.Text = "Estado";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(363, 180);
+            label3.Location = new Point(415, 166);
             label3.Name = "label3";
-            label3.Size = new Size(36, 15);
+            label3.Size = new Size(46, 20);
             label3.TabIndex = 78;
             label3.Text = "Email";
             // 
             // txt_email
             // 
-            txt_email.Location = new Point(363, 200);
+            txt_email.Location = new Point(415, 193);
+            txt_email.Margin = new Padding(3, 4, 3, 4);
             txt_email.MaxLength = 100;
             txt_email.Name = "txt_email";
-            txt_email.Size = new Size(303, 23);
-            txt_email.TabIndex = 7;
+            txt_email.Size = new Size(346, 27);
+            txt_email.TabIndex = 9;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(363, 126);
+            label2.Location = new Point(415, 94);
             label2.Name = "label2";
-            label2.Size = new Size(52, 15);
+            label2.Size = new Size(67, 20);
             label2.TabIndex = 77;
             label2.Text = "Telefono";
             // 
             // txt_telefono
             // 
-            txt_telefono.Location = new Point(363, 144);
+            txt_telefono.Location = new Point(415, 118);
+            txt_telefono.Margin = new Padding(3, 4, 3, 4);
             txt_telefono.MaxLength = 20;
             txt_telefono.Name = "txt_telefono";
-            txt_telefono.Size = new Size(303, 23);
-            txt_telefono.TabIndex = 6;
+            txt_telefono.Size = new Size(346, 27);
+            txt_telefono.TabIndex = 8;
             txt_telefono.KeyPress += txt_telefono_KeyPress;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 124);
+            label1.Location = new Point(14, 165);
             label1.Name = "label1";
-            label1.Size = new Size(116, 15);
+            label1.Size = new Size(143, 20);
             label1.TabIndex = 76;
             label1.Text = "Numero documento";
             // 
             // txt_numero_documento
             // 
-            txt_numero_documento.Location = new Point(12, 144);
+            txt_numero_documento.Location = new Point(14, 192);
+            txt_numero_documento.Margin = new Padding(3, 4, 3, 4);
             txt_numero_documento.MaxLength = 200;
             txt_numero_documento.Name = "txt_numero_documento";
-            txt_numero_documento.Size = new Size(303, 23);
+            txt_numero_documento.Size = new Size(346, 27);
             txt_numero_documento.TabIndex = 2;
             txt_numero_documento.KeyPress += txt_numero_documento_KeyPress;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(12, 182);
+            label7.Location = new Point(14, 243);
             label7.Name = "label7";
-            label7.Size = new Size(127, 15);
+            label7.Size = new Size(161, 20);
             label7.TabIndex = 75;
             label7.Text = "Nombre / Razon social";
             // 
             // txt_nombre_razon_social
             // 
-            txt_nombre_razon_social.Location = new Point(12, 200);
+            txt_nombre_razon_social.Location = new Point(14, 267);
+            txt_nombre_razon_social.Margin = new Padding(3, 4, 3, 4);
             txt_nombre_razon_social.MaxLength = 100;
             txt_nombre_razon_social.Name = "txt_nombre_razon_social";
-            txt_nombre_razon_social.Size = new Size(303, 23);
+            txt_nombre_razon_social.Size = new Size(346, 27);
             txt_nombre_razon_social.TabIndex = 3;
             // 
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // cbx_tipo_responsabilidad
+            // 
+            cbx_tipo_responsabilidad.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_tipo_responsabilidad.FormattingEnabled = true;
+            cbx_tipo_responsabilidad.Location = new Point(415, 266);
+            cbx_tipo_responsabilidad.Margin = new Padding(3, 4, 3, 4);
+            cbx_tipo_responsabilidad.Name = "cbx_tipo_responsabilidad";
+            cbx_tipo_responsabilidad.Size = new Size(346, 28);
+            cbx_tipo_responsabilidad.TabIndex = 10;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(415, 239);
+            label5.Name = "label5";
+            label5.Size = new Size(180, 20);
+            label5.TabIndex = 113;
+            label5.Text = "Tipo de responsabilidad *";
+            // 
+            // cbx_tipo_contribuyente
+            // 
+            cbx_tipo_contribuyente.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_tipo_contribuyente.FormattingEnabled = true;
+            cbx_tipo_contribuyente.Location = new Point(415, 423);
+            cbx_tipo_contribuyente.Margin = new Padding(3, 4, 3, 4);
+            cbx_tipo_contribuyente.Name = "cbx_tipo_contribuyente";
+            cbx_tipo_contribuyente.Size = new Size(346, 28);
+            cbx_tipo_contribuyente.TabIndex = 12;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(415, 396);
+            label8.Name = "label8";
+            label8.Size = new Size(155, 20);
+            label8.TabIndex = 112;
+            label8.Text = "Tipo de contribuyente";
+            // 
+            // cbx_responsabilidad_tributaria
+            // 
+            cbx_responsabilidad_tributaria.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_responsabilidad_tributaria.FormattingEnabled = true;
+            cbx_responsabilidad_tributaria.Location = new Point(415, 344);
+            cbx_responsabilidad_tributaria.Margin = new Padding(3, 4, 3, 4);
+            cbx_responsabilidad_tributaria.Name = "cbx_responsabilidad_tributaria";
+            cbx_responsabilidad_tributaria.Size = new Size(346, 28);
+            cbx_responsabilidad_tributaria.TabIndex = 11;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(415, 318);
+            label9.Name = "label9";
+            label9.Size = new Size(194, 20);
+            label9.TabIndex = 109;
+            label9.Text = "Responsabilidad tributaria *";
+            // 
+            // cbx_departamento
+            // 
+            cbx_departamento.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_departamento.FormattingEnabled = true;
+            cbx_departamento.Location = new Point(14, 494);
+            cbx_departamento.Margin = new Padding(3, 4, 3, 4);
+            cbx_departamento.Name = "cbx_departamento";
+            cbx_departamento.Size = new Size(346, 28);
+            cbx_departamento.TabIndex = 6;
+            cbx_departamento.SelectedIndexChanged += cbx_departamento_SelectedIndexChanged;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(14, 467);
+            label12.Name = "label12";
+            label12.Size = new Size(106, 20);
+            label12.TabIndex = 117;
+            label12.Text = "Departamento";
+            // 
+            // cbx_pais
+            // 
+            cbx_pais.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_pais.FormattingEnabled = true;
+            cbx_pais.Location = new Point(14, 418);
+            cbx_pais.Margin = new Padding(3, 4, 3, 4);
+            cbx_pais.Name = "cbx_pais";
+            cbx_pais.Size = new Size(346, 28);
+            cbx_pais.TabIndex = 5;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(14, 391);
+            label13.Name = "label13";
+            label13.Size = new Size(34, 20);
+            label13.TabIndex = 116;
+            label13.Text = "País";
+            // 
+            // cbx_municipio
+            // 
+            cbx_municipio.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_municipio.FormattingEnabled = true;
+            cbx_municipio.Location = new Point(14, 565);
+            cbx_municipio.Margin = new Padding(3, 4, 3, 4);
+            cbx_municipio.Name = "cbx_municipio";
+            cbx_municipio.Size = new Size(346, 28);
+            cbx_municipio.TabIndex = 7;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(14, 539);
+            label11.Name = "label11";
+            label11.Size = new Size(138, 20);
+            label11.TabIndex = 119;
+            label11.Text = "Municipio/Ciudad *";
+            // 
             // AgregaProveedor
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(702, 297);
+            ClientSize = new Size(800, 610);
+            Controls.Add(cbx_municipio);
+            Controls.Add(label11);
+            Controls.Add(cbx_departamento);
+            Controls.Add(label12);
+            Controls.Add(cbx_pais);
+            Controls.Add(label13);
+            Controls.Add(cbx_tipo_responsabilidad);
+            Controls.Add(label5);
+            Controls.Add(cbx_tipo_contribuyente);
+            Controls.Add(label8);
+            Controls.Add(cbx_responsabilidad_tributaria);
+            Controls.Add(label9);
             Controls.Add(label10);
             Controls.Add(txt_direccion);
             Controls.Add(cbx_tipo_identificacion);
@@ -227,9 +375,8 @@
             Controls.Add(txt_nombre_razon_social);
             Controls.Add(panel3);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 4, 3, 4);
             MaximizeBox = false;
-            MaximumSize = new Size(718, 336);
-            MinimumSize = new Size(718, 336);
             Name = "AgregaProveedor";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AgregaProveedor";
@@ -259,5 +406,17 @@
         private Label label7;
         private TextBox txt_nombre_razon_social;
         private ErrorProvider errorProvider1;
+        private ComboBox cbx_tipo_responsabilidad;
+        private Label label5;
+        private ComboBox cbx_tipo_contribuyente;
+        private Label label8;
+        private ComboBox cbx_responsabilidad_tributaria;
+        private Label label9;
+        private ComboBox cbx_departamento;
+        private Label label12;
+        private ComboBox cbx_pais;
+        private Label label13;
+        private ComboBox cbx_municipio;
+        private Label label11;
     }
 }
