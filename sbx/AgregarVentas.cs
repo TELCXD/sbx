@@ -2157,7 +2157,7 @@ namespace sbx
                                                     Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
                                                     Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
                                                     CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO")),
-                                                    NombreTributo = fila.Cells["cl_tributo"].Value?.ToString() ?? "",
+                                                    NombreTributo = fila.Cells["cl_tributo"].Value?.ToString() ?? ""
                                                 };
 
                                                 detalleVentas.Add(Detalle);
@@ -2241,10 +2241,12 @@ namespace sbx
                                                                     customer.email = DataFacturaRegistrada.Data[0].Email.ToString();
                                                                     customer.phone = DataFacturaRegistrada.Data[0].Telefono.ToString();
                                                                     customer.legal_organization_id = (TipoIdentificacion == 4 ? 1 : 2).ToString(); // 1. Juridico, 2. Natural
-                                                                    customer.tribute_id = "21"; // 18. IVA, 21. No aplica *
-                                                                    customer.municipality_id = "1079"; //Cali, valle del cauca
+                                                                    customer.tribute_id = DataFacturaRegistrada.Data[0].IdResponsabilidadTributaria == 2 ? "18" :
+                                                                                          DataFacturaRegistrada.Data[0].IdResponsabilidadTributaria == 4 ? "18" :
+                                                                                          "21"; // 18. IVA, 21. No aplica *
+                                                                    customer.municipality_id = DataFacturaRegistrada.Data[0].IdMunicipioApiDian.ToString(); //"1079"; //Cali, valle del cauca
 
-                                                                    List<WithholdingTax> Listwithholding_taxes = new List<WithholdingTax>();
+                                                                    List <WithholdingTax> Listwithholding_taxes = new List<WithholdingTax>();
                                                                     List<Item> Listitems = new List<Item>();
                                                                     foreach (var ItemsVenta in DataFacturaRegistrada.Data)
                                                                     {
@@ -2261,7 +2263,12 @@ namespace sbx
                                                                         {
                                                                             v_is_excluded = 0;
                                                                         }
-                                                                        
+
+                                                                        if (ItemsVenta.NombreTributo.ToString() == "INC" || ItemsVenta.NombreTributo.ToString() == "INC Bolsas")
+                                                                        {
+                                                                            v_is_excluded = 0;
+                                                                        }
+
                                                                         int v_tribute_id = 1; //Impuesto sobre la Ventas
                                                                         switch (ItemsVenta.NombreTributo.ToString())
                                                                         {
@@ -2892,7 +2899,8 @@ namespace sbx
                     PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
                     Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
                     Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
-                    CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
+                    CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO")),
+                    NombreTributo = fila.Cells["cl_tributo"].Value?.ToString() ?? ""
                 };
 
                 detalleVentaSuspendidaEntitie.Add(Detalle);
@@ -3095,7 +3103,8 @@ namespace sbx
                                                      item.Impuesto.ToString(new CultureInfo("es-CO")),
                                                      Total.ToString("N2", new CultureInfo("es-CO")),
                                                      item.UnidadMedida,
-                                                     item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                                     item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                     item.NombreTributo);
                                             }
                                             else
                                             {
@@ -3132,7 +3141,8 @@ namespace sbx
                                                  item.Impuesto.ToString(new CultureInfo("es-CO")),
                                                  Total.ToString("N2", new CultureInfo("es-CO")),
                                                  item.UnidadMedida,
-                                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                 item.NombreTributo);
                                         }
                                         else
                                         {
@@ -3239,7 +3249,8 @@ namespace sbx
                     PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
                     Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
                     Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
-                    CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO"))
+                    CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO")),
+                    NombreTributo = fila.Cells["cl_tributo"].Value?.ToString() ?? "",
                 };
 
                 detalleCotizacionEntitie.Add(Detalle);
@@ -3285,6 +3296,10 @@ namespace sbx
                             SubtotalLinea = 0;
                             DescuentoLinea = 0;
 
+                            decimal iva = 0;
+                            decimal inc = 0;
+                            decimal incBolsa = 0;
+
                             foreach (var item in DatosCotizacion.Data)
                             {
                                 Cantidad += Convert.ToDecimal(item.Cantidad);
@@ -3292,9 +3307,22 @@ namespace sbx
                                 SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
                                 Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
                                 DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
-                                Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+
+                                if (item.NombreTributo == "INC Bolsas")
+                                {
+                                    incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                                }
+                                else if (item.NombreTributo == "IVA")
+                                {
+                                    iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                }
+                                else if (item.NombreTributo == "INC")
+                                {
+                                    inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                }
                             }
 
+                            Impuesto = iva + inc + incBolsa;
                             Total = (Subtotal - Descuento);
                             //Total = (Subtotal - Descuento) + Impuesto;
                             decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
@@ -3303,6 +3331,9 @@ namespace sbx
                             DtCotizacion.Subtotal = SubtotalMenosImpuesto;
                             DtCotizacion.Descuento = Descuento;
                             DtCotizacion.Impuesto = Impuesto;
+                            DtCotizacion.iva = iva;
+                            DtCotizacion.inc = inc;
+                            DtCotizacion.incBolsa = incBolsa;
                             DtCotizacion.Total = Total;
 
                             List<ItemCotizacionEntitie> ListItemCotizacionEntitie = new List<ItemCotizacionEntitie>();
@@ -3310,8 +3341,6 @@ namespace sbx
                             decimal precio;
                             decimal cantidad;
                             decimal desc;
-                            decimal iva;
-                            decimal totalLinea;
                             decimal total;
 
                             foreach (var item in DatosCotizacion.Data)
@@ -3319,7 +3348,6 @@ namespace sbx
                                 precio = Convert.ToDecimal(item.PrecioUnitario);
                                 cantidad = Convert.ToDecimal(item.Cantidad);
                                 desc = Convert.ToDecimal(item.Descuento);
-                                iva = Convert.ToDecimal(item.Impuesto);
 
                                 total = CalcularTotal(precio, 0, desc);
                                 total = total * cantidad;
@@ -3328,35 +3356,20 @@ namespace sbx
 
                                 switch (item.UnidadMedida)
                                 {
-                                    case "Unidad (und)":
-                                        UnidadMedidaAbreviada = "und";
+                                    case "Unidad":
+                                        UnidadMedidaAbreviada = "Und";
                                         break;
-                                    case "Caja (caja)":
-                                        UnidadMedidaAbreviada = "caja";
+                                    case "kilogramo":
+                                        UnidadMedidaAbreviada = "KGM";
                                         break;
-                                    case "Paquete (paq)":
-                                        UnidadMedidaAbreviada = "paq";
+                                    case "libra":
+                                        UnidadMedidaAbreviada = "LBR";
                                         break;
-                                    case "Bolsa (bol)":
-                                        UnidadMedidaAbreviada = "bol";
+                                    case "metro":
+                                        UnidadMedidaAbreviada = "MTR";
                                         break;
-                                    case "Litro (lt)":
-                                        UnidadMedidaAbreviada = "lt";
-                                        break;
-                                    case "Mililitro (ml)":
-                                        UnidadMedidaAbreviada = "ml";
-                                        break;
-                                    case "Kilogramo (kg)":
-                                        UnidadMedidaAbreviada = "kg";
-                                        break;
-                                    case "Gramo (g)":
-                                        UnidadMedidaAbreviada = "g";
-                                        break;
-                                    case "Metro (m)":
-                                        UnidadMedidaAbreviada = "m";
-                                        break;
-                                    case "Par (par)":
-                                        UnidadMedidaAbreviada = "par";
+                                    case "galón":
+                                        UnidadMedidaAbreviada = "GLL";
                                         break;
                                     default:
                                         UnidadMedidaAbreviada = "";
@@ -3626,7 +3639,8 @@ namespace sbx
                                                      item.Impuesto.ToString(new CultureInfo("es-CO")),
                                                      Total.ToString("N2", new CultureInfo("es-CO")),
                                                      item.UnidadMedida,
-                                                     item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                                     item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                     item.NombreTributo);                                               
                                             }
                                             else
                                             {
@@ -3663,7 +3677,8 @@ namespace sbx
                                                  item.Impuesto.ToString(new CultureInfo("es-CO")),
                                                  Total.ToString("N2", new CultureInfo("es-CO")),
                                                  item.UnidadMedida,
-                                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")));
+                                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                 item.NombreTributo);
                                         }
                                         else
                                         {

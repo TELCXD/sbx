@@ -2,6 +2,7 @@
 using sbx.core.Entities.Caja;
 using sbx.core.Entities.Cotizacion;
 using sbx.core.Entities.NotaCredito;
+using sbx.core.Interfaces.FacturacionElectronica;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
@@ -195,7 +196,7 @@ namespace sbx.core.Entities.Venta
 
                 //sb.AppendLine($"Proveedor tecnológico: {datosFacturaElectronica!.data.company.company}");
                 //sb.AppendLine($"NIT: {datosFacturaElectronica!.data.company.nit}-{datosFacturaElectronica!.data.company.dv}");
-                sb.AppendLine("Fabricante Software: SBX POS");
+                sb.AppendLine(CentrarTexto("Fabricante Software: SBX"));
                 //sb.AppendLine("NIT: ");
                 sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
                 sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
@@ -433,7 +434,15 @@ namespace sbx.core.Entities.Venta
             // Totales
             sb.AppendLine($"{"SUBTOTAL:",-20} {cotizacion.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine($"{"DESCUENTO:",-20} {cotizacion.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"{"IVA:",-20} {cotizacion.Impuesto.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"IVA:",-20} {cotizacion.iva.ToString("N0", new CultureInfo("es-CO"))}");
+            if (cotizacion.inc > 0)
+            {
+                sb.AppendLine($"{"INC:",-20} {cotizacion.inc.ToString("N0", new CultureInfo("es-CO"))}");
+            }
+            if (cotizacion.incBolsa > 0)
+            {
+                sb.AppendLine($"{"INC Bolsa:",-20} {cotizacion.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+            }
             sb.AppendLine($"{"TOTAL:",-20} {cotizacion.Total.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
@@ -627,7 +636,7 @@ namespace sbx.core.Entities.Venta
 
                 //sb.AppendLine($"Proveedor tecnológico: {datosNotaCreditoElectronica!.data.company.company}");
                 //sb.AppendLine($"NIT: {datosNotaCreditoElectronica!.data.company.nit}-{datosNotaCreditoElectronica!.data.company.dv}");
-                sb.AppendLine("Fabricante Software: SBX POS");
+                sb.AppendLine(CentrarTexto("Fabricante Software: SBX"));
                 //sb.AppendLine("NIT: ");
                 sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
                 sb.AppendLine(CentrarTexto($"www.sbx.com.co"));

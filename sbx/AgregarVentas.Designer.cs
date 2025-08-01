@@ -50,6 +50,18 @@
             btn_busca_producto = new Button();
             btn_nuevo_producto = new Button();
             dtg_producto = new DataGridView();
+            cl_idProducto = new DataGridViewTextBoxColumn();
+            cl_sku = new DataGridViewTextBoxColumn();
+            cl_codigo_barras = new DataGridViewTextBoxColumn();
+            cl_nombre = new DataGridViewTextBoxColumn();
+            cl_precio = new DataGridViewTextBoxColumn();
+            cl_cantidad = new DataGridViewTextBoxColumn();
+            cl_descuento = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
+            cl_total = new DataGridViewTextBoxColumn();
+            cl_unidad_medida = new DataGridViewTextBoxColumn();
+            cl_costo = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
             btn_suspender = new Button();
             btn_cancelar = new Button();
             label3 = new Label();
@@ -84,18 +96,6 @@
             btn_cotizacion = new Button();
             btn_lista_cotizaciones = new Button();
             btn_quitar1 = new Button();
-            cl_idProducto = new DataGridViewTextBoxColumn();
-            cl_sku = new DataGridViewTextBoxColumn();
-            cl_codigo_barras = new DataGridViewTextBoxColumn();
-            cl_nombre = new DataGridViewTextBoxColumn();
-            cl_precio = new DataGridViewTextBoxColumn();
-            cl_cantidad = new DataGridViewTextBoxColumn();
-            cl_descuento = new DataGridViewTextBoxColumn();
-            cl_impuesto = new DataGridViewTextBoxColumn();
-            cl_total = new DataGridViewTextBoxColumn();
-            cl_unidad_medida = new DataGridViewTextBoxColumn();
-            cl_costo = new DataGridViewTextBoxColumn();
-            cl_tributo = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             panel3.SuspendLayout();
@@ -357,6 +357,83 @@
             dtg_producto.CellEndEdit += dtg_producto_CellEndEdit;
             dtg_producto.EditingControlShowing += dtg_producto_EditingControlShowing;
             dtg_producto.KeyPress += dtg_producto_KeyPress;
+            // 
+            // cl_idProducto
+            // 
+            cl_idProducto.HeaderText = "Id";
+            cl_idProducto.Name = "cl_idProducto";
+            cl_idProducto.ReadOnly = true;
+            cl_idProducto.Width = 50;
+            // 
+            // cl_sku
+            // 
+            cl_sku.HeaderText = "sku";
+            cl_sku.Name = "cl_sku";
+            cl_sku.ReadOnly = true;
+            // 
+            // cl_codigo_barras
+            // 
+            cl_codigo_barras.HeaderText = "Codigo b";
+            cl_codigo_barras.Name = "cl_codigo_barras";
+            cl_codigo_barras.ReadOnly = true;
+            cl_codigo_barras.Width = 150;
+            // 
+            // cl_nombre
+            // 
+            cl_nombre.HeaderText = "Nombre";
+            cl_nombre.Name = "cl_nombre";
+            cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 220;
+            // 
+            // cl_precio
+            // 
+            cl_precio.HeaderText = "Precio";
+            cl_precio.Name = "cl_precio";
+            cl_precio.ReadOnly = true;
+            cl_precio.Width = 150;
+            // 
+            // cl_cantidad
+            // 
+            cl_cantidad.HeaderText = "Cantidad";
+            cl_cantidad.Name = "cl_cantidad";
+            // 
+            // cl_descuento
+            // 
+            cl_descuento.HeaderText = "Desc %";
+            cl_descuento.Name = "cl_descuento";
+            cl_descuento.Width = 76;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 75;
+            // 
+            // cl_total
+            // 
+            cl_total.HeaderText = "Total";
+            cl_total.Name = "cl_total";
+            cl_total.ReadOnly = true;
+            cl_total.Width = 142;
+            // 
+            // cl_unidad_medida
+            // 
+            cl_unidad_medida.HeaderText = "UM";
+            cl_unidad_medida.Name = "cl_unidad_medida";
+            cl_unidad_medida.Visible = false;
+            // 
+            // cl_costo
+            // 
+            cl_costo.HeaderText = "Costo";
+            cl_costo.Name = "cl_costo";
+            cl_costo.Visible = false;
+            // 
+            // cl_tributo
+            // 
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.Visible = false;
             // 
             // btn_suspender
             // 
@@ -767,83 +844,6 @@
             btn_quitar1.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_quitar1.UseVisualStyleBackColor = true;
             btn_quitar1.Click += btn_quitar1_Click;
-            // 
-            // cl_idProducto
-            // 
-            cl_idProducto.HeaderText = "Id";
-            cl_idProducto.Name = "cl_idProducto";
-            cl_idProducto.ReadOnly = true;
-            cl_idProducto.Width = 50;
-            // 
-            // cl_sku
-            // 
-            cl_sku.HeaderText = "sku";
-            cl_sku.Name = "cl_sku";
-            cl_sku.ReadOnly = true;
-            // 
-            // cl_codigo_barras
-            // 
-            cl_codigo_barras.HeaderText = "Codigo b";
-            cl_codigo_barras.Name = "cl_codigo_barras";
-            cl_codigo_barras.ReadOnly = true;
-            cl_codigo_barras.Width = 150;
-            // 
-            // cl_nombre
-            // 
-            cl_nombre.HeaderText = "Nombre";
-            cl_nombre.Name = "cl_nombre";
-            cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 220;
-            // 
-            // cl_precio
-            // 
-            cl_precio.HeaderText = "Precio";
-            cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
-            cl_precio.Width = 150;
-            // 
-            // cl_cantidad
-            // 
-            cl_cantidad.HeaderText = "Cantidad";
-            cl_cantidad.Name = "cl_cantidad";
-            // 
-            // cl_descuento
-            // 
-            cl_descuento.HeaderText = "Desc %";
-            cl_descuento.Name = "cl_descuento";
-            cl_descuento.Width = 76;
-            // 
-            // cl_impuesto
-            // 
-            cl_impuesto.HeaderText = "Impuesto";
-            cl_impuesto.Name = "cl_impuesto";
-            cl_impuesto.ReadOnly = true;
-            cl_impuesto.Width = 75;
-            // 
-            // cl_total
-            // 
-            cl_total.HeaderText = "Total";
-            cl_total.Name = "cl_total";
-            cl_total.ReadOnly = true;
-            cl_total.Width = 142;
-            // 
-            // cl_unidad_medida
-            // 
-            cl_unidad_medida.HeaderText = "UM";
-            cl_unidad_medida.Name = "cl_unidad_medida";
-            cl_unidad_medida.Visible = false;
-            // 
-            // cl_costo
-            // 
-            cl_costo.HeaderText = "Costo";
-            cl_costo.Name = "cl_costo";
-            cl_costo.Visible = false;
-            // 
-            // cl_tributo
-            // 
-            cl_tributo.HeaderText = "Tributo";
-            cl_tributo.Name = "cl_tributo";
-            cl_tributo.Visible = false;
             // 
             // AgregarVentas
             // 

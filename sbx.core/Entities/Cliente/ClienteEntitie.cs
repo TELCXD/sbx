@@ -19,5 +19,11 @@ namespace sbx.core.Entities.Cliente
         [EmailAddress(ErrorMessage = "El Correo distribucion no tiene el formato correcto.")]
         public string Email { get; set; }
         public int Estado { get; set; }
+        public int IdTipoResponsabilidad { get; set; }
+        public int IdResponsabilidadTributaria { get; set; }
+        public int IdTipoContribuyente { get; set; }
+        public int IdCountry { get; set; }
+        public int IdDepartament { get; set; }
+        public int IdCity { get; set; }
     }
 }

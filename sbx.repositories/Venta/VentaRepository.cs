@@ -38,7 +38,7 @@ namespace sbx.repositories.Venta
 
                     sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
                             VALUES(@Prefijo,
-                            (SELECT ISNULL(MAX(Consecutivo), 0) + 200 FROM T_Ventas WHERE Prefijo = @Prefijo),
+                            (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
                             @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
                             SELECT CAST(SCOPE_IDENTITY() AS INT); ";
 
@@ -498,6 +498,8 @@ namespace sbx.repositories.Venta
                                     ISNULL(D.Direccion,'') Direccion,
 									ISNULL(D.Email,'') Email,
 									ISNULL(D.Telefono,'') Telefono,
+                                    D.IdResponsabilidadTributaria,
+                                    Q.IdMunicipioApiDian,
                                     A.IdMetodoPago,
                                     F.Nombre NombreMetodoPago,
                                     C.Referencia,
@@ -512,6 +514,7 @@ namespace sbx.repositories.Venta
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                     INNER JOIN T_PagosVenta C ON A.IdVenta = C.IdVenta
                                     INNER JOIN T_Cliente D ON A.IdCliente = D.IdCliente
+                                    INNER JOIN T_City Q ON D.IdCity = Q.IdCity
                                     INNER JOIN T_Bancos E ON C.IdBanco = E.IdBanco
                                     INNER JOIN T_MetodoPago F ON F.IdMetodoPago = A.IdMetodoPago
                                     INNER JOIN T_User G ON G.IdUser = A.IdUserAction
@@ -981,9 +984,9 @@ namespace sbx.repositories.Venta
                     int idVenta = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_DetalleVenta_Suspendidas (
-                            IdVenta_Suspendidas, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            IdVenta_Suspendidas, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto, NombreTributo,CreationDate, IdUserAction)
                             VALUES (@IdVenta_Suspendidas, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @NombreTributo, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in ventaSuspendidaEntitie.detalleVentasSuspendida)
                     {
@@ -1002,6 +1005,7 @@ namespace sbx.repositories.Venta
                                 detalle.CostoUnitario,
                                 detalle.Descuento,
                                 detalle.Impuesto,
+                                detalle.NombreTributo,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },
@@ -1082,6 +1086,7 @@ namespace sbx.repositories.Venta
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
+                                    B.NombreTributo,
                                     B.CreationDate FechaDetalleFactura,
                                     B.IdUserAction IdUserActionDetalleFactura,
                                     A.IdCliente,

@@ -1,7 +1,13 @@
 ﻿using sbx.core.Entities.Cliente;
+using sbx.core.Interfaces.Ciudad;
 using sbx.core.Interfaces.Cliente;
+using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.IdentificationType;
+using sbx.core.Interfaces.Pais;
+using sbx.core.Interfaces.ResponsabilidadTributaria;
 using sbx.core.Interfaces.TipoCliente;
+using sbx.core.Interfaces.TipoContribuyente;
+using sbx.core.Interfaces.TipoResponsabilidad;
 using System.ComponentModel.DataAnnotations;
 
 namespace sbx
@@ -13,13 +19,25 @@ namespace sbx
         private readonly IIdentificationType _IIdentificationType;
         private readonly ICliente _ICliente;
         public readonly ITipoCliente _ITipoCliente;
-
-        public AgregarCliente(ICliente cliente, IIdentificationType identificationType, ITipoCliente tipoCliente)
+        private readonly ITipoResponsabilidad _ITipoResponsabilidad;
+        private readonly IResponsabilidadTributaria _IResponsabilidadTributaria;
+        private readonly ITipoContribuyente _ITipoContribuyente;
+        private readonly IPais _IPais;
+        private readonly IDepartamento _IDepartamento;
+        private readonly ICiudad _ICiudad;
+        public AgregarCliente(ICliente cliente, IIdentificationType identificationType, ITipoCliente tipoCliente, ITipoResponsabilidad tipoResponsabilidad,
+            IResponsabilidadTributaria responsabilidadTributaria, ITipoContribuyente tipoContribuyente, IPais pais, IDepartamento departamento, ICiudad ciudad)
         {
             InitializeComponent();
             _ICliente = cliente;
             _IIdentificationType = identificationType;
             _ITipoCliente = tipoCliente;
+            _ITipoResponsabilidad = tipoResponsabilidad;
+            _IResponsabilidadTributaria = responsabilidadTributaria;
+            _ITipoContribuyente = tipoContribuyente;
+            _IPais = pais;
+            _IDepartamento = departamento;
+            _ICiudad = ciudad;
         }
 
         public dynamic? Permisos
@@ -76,6 +94,42 @@ namespace sbx
             cbx_tipo_cliente.DisplayMember = "Nombre";
             cbx_tipo_cliente.SelectedIndex = 0;
 
+            resp = await _ITipoResponsabilidad.ListTipoResponsabilidad();
+            cbx_tipo_responsabilidad.DataSource = resp.Data;
+            cbx_tipo_responsabilidad.ValueMember = "IdTipoResponsabilidad";
+            cbx_tipo_responsabilidad.DisplayMember = "Nombre";
+            cbx_tipo_responsabilidad.SelectedIndex = 0;
+
+            resp = await _IResponsabilidadTributaria.ListResponsabilidadTributaria();
+            cbx_responsabilidad_tributaria.DataSource = resp.Data;
+            cbx_responsabilidad_tributaria.ValueMember = "IdResponsabilidadTributaria";
+            cbx_responsabilidad_tributaria.DisplayMember = "Nombre";
+            cbx_responsabilidad_tributaria.SelectedIndex = 0;
+
+            resp = await _ITipoContribuyente.ListTipoContribuyente();
+            cbx_tipo_contribuyente.DataSource = resp.Data;
+            cbx_tipo_contribuyente.ValueMember = "IdTipoContribuyente";
+            cbx_tipo_contribuyente.DisplayMember = "Nombre";
+            cbx_tipo_contribuyente.SelectedIndex = 0;
+
+            resp = await _IPais.ListPais();
+            cbx_pais.DataSource = resp.Data;
+            cbx_pais.ValueMember = "IdCountry";
+            cbx_pais.DisplayMember = "CountryName";
+            cbx_pais.SelectedIndex = 0;
+
+            resp = await _IDepartamento.ListDepartamento();
+            cbx_departamento.DataSource = resp.Data;
+            cbx_departamento.ValueMember = "IdDepartament";
+            cbx_departamento.DisplayMember = "DepartmentName";
+            cbx_departamento.SelectedIndex = 0;
+
+            resp = await _ICiudad.ListCiudadForDepartament(Convert.ToInt32(cbx_departamento.SelectedValue));
+            cbx_municipio.DataSource = resp.Data;
+            cbx_municipio.ValueMember = "IdCity";
+            cbx_municipio.DisplayMember = "CityName";
+            cbx_municipio.SelectedIndex = 0;
+
             cbx_estado.SelectedIndex = 0;
 
             if (Id_Cliente > 0)
@@ -92,6 +146,18 @@ namespace sbx
                     txt_telefono.Text = resp.Data[0].Telefono;
                     txt_email.Text = resp.Data[0].Email;
                     cbx_estado.SelectedIndex = resp.Data[0].Estado == true ? 0 : 1;
+                    cbx_tipo_responsabilidad.SelectedValue = resp.Data[0]?.IdTipoResponsabilidad;
+                    cbx_responsabilidad_tributaria.SelectedValue = resp.Data[0]?.IdResponsabilidadTributaria;
+                    cbx_tipo_contribuyente.SelectedValue = resp.Data[0]?.IdTipoContribuyente;
+                    cbx_pais.SelectedValue = resp.Data[0]?.IdCountry;
+                    cbx_departamento.SelectedValue = resp.Data[0]?.IdDepartament;
+
+                    var respCity = await _ICiudad.ListCiudadForDepartament(Convert.ToInt32(cbx_departamento.SelectedValue));
+                    cbx_municipio.DataSource = respCity.Data;
+                    cbx_municipio.ValueMember = "IdCity";
+                    cbx_municipio.DisplayMember = "CityName";
+
+                    cbx_municipio.SelectedValue = resp.Data[0]?.IdCity;
                 }
                 else
                 {
@@ -120,7 +186,13 @@ namespace sbx
                 Direccion = txt_direccion.Text,
                 Telefono = txt_telefono.Text,
                 Email = txt_email.Text,
-                Estado = cbx_estado.Text == "Activo" ? 1 : 0
+                Estado = cbx_estado.Text == "Activo" ? 1 : 0,
+                IdTipoResponsabilidad = Convert.ToInt32(cbx_tipo_responsabilidad.SelectedValue),
+                IdResponsabilidadTributaria = Convert.ToInt32(cbx_responsabilidad_tributaria.SelectedValue),
+                IdTipoContribuyente = Convert.ToInt32(cbx_tipo_contribuyente.SelectedValue),
+                IdCountry = Convert.ToInt32(cbx_pais.SelectedValue),
+                IdDepartament = Convert.ToInt32(cbx_departamento.SelectedValue),
+                IdCity = Convert.ToInt32(cbx_municipio.SelectedValue)
             };
 
             var validationContext = new ValidationContext(Datos);
@@ -197,6 +269,18 @@ namespace sbx
             {
                 e.Handled = true;
             }
+        }
+
+        private async void cbx_departamento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var item = (dynamic?)cbx_departamento.SelectedItem;
+            int idDepart = item!.IdDepartament;
+
+            var resp = await _ICiudad.ListCiudadForDepartament(idDepart);
+            cbx_municipio.DataSource = resp.Data;
+            cbx_municipio.ValueMember = "IdCity";
+            cbx_municipio.DisplayMember = "CityName";
+            cbx_municipio.SelectedIndex = 0;
         }
     }
 }

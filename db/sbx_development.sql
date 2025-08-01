@@ -1515,10 +1515,22 @@ Direccion VARCHAR(150),
 Telefono VARCHAR(20) UNIQUE,
 Email VARCHAR(100),
 Estado BIT,
+IdTipoResponsabilidad INT,
+IdResponsabilidadTributaria INT,
+IdTipoContribuyente INT,
+IdCountry INT,
+IdDepartament INT,
+IdCity INT,
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY(IdIdentificationType) REFERENCES T_IdentificationType(IdIdentificationType),
+FOREIGN KEY(IdTipoResponsabilidad) REFERENCES T_TipoResponsabilidad(IdTipoResponsabilidad),
+FOREIGN KEY(IdResponsabilidadTributaria) REFERENCES T_ResponsabilidadTributaria(IdResponsabilidadTributaria),
+FOREIGN KEY(IdTipoContribuyente) REFERENCES T_TipoContribuyente(IdTipoContribuyente),
+FOREIGN KEY(IdCountry) REFERENCES T_Country(IdCountry),
+FOREIGN KEY(IdDepartament) REFERENCES T_Departament(IdDepartament),
+FOREIGN KEY(IdCity) REFERENCES T_City(IdCity),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
@@ -1527,8 +1539,9 @@ CREATE UNIQUE INDEX UX_Proveedores_Email
 ON dbo.T_Proveedores(Email)
 WHERE Email IS NOT NULL;
 GO
-INSERT INTO T_Proveedores (IdIdentificationType, NumeroDocumento, NombreRazonSocial, Estado, CreationDate, IdUserAction)
-VALUES (1,'111','N/A',1,GETDATE(),1)
+INSERT INTO T_Proveedores (IdIdentificationType, NumeroDocumento, NombreRazonSocial, Estado, CreationDate, IdUserAction,
+IdTipoResponsabilidad,IdResponsabilidadTributaria,IdTipoContribuyente,IdCountry,IdDepartament,IdCity)
+VALUES (1,'111','N/A',1,GETDATE(),1,1,1,1,1,31,1081)
 GO
 CREATE TABLE T_ConversionesProducto (
 IdProductoPadre INT,     -- Producto contenedor (ej. bolsa)
@@ -1561,11 +1574,23 @@ Telefono VARCHAR(20) UNIQUE,
 Email VARCHAR(100),
 IdTipoCliente INT,
 Estado BIT,
+IdTipoResponsabilidad INT,
+IdResponsabilidadTributaria INT,
+IdTipoContribuyente INT,
+IdCountry INT,
+IdDepartament INT,
+IdCity INT,
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY (IdTipoCliente) REFERENCES T_TipoCliente(IdTipoCliente),
 FOREIGN KEY(IdIdentificationType) REFERENCES T_IdentificationType(IdIdentificationType),
+FOREIGN KEY(IdTipoResponsabilidad) REFERENCES T_TipoResponsabilidad(IdTipoResponsabilidad),
+FOREIGN KEY(IdResponsabilidadTributaria) REFERENCES T_ResponsabilidadTributaria(IdResponsabilidadTributaria),
+FOREIGN KEY(IdTipoContribuyente) REFERENCES T_TipoContribuyente(IdTipoContribuyente),
+FOREIGN KEY(IdCountry) REFERENCES T_Country(IdCountry),
+FOREIGN KEY(IdDepartament) REFERENCES T_Departament(IdDepartament),
+FOREIGN KEY(IdCity) REFERENCES T_City(IdCity),
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
@@ -1574,8 +1599,9 @@ CREATE UNIQUE INDEX UX_Cliente_Email
 ON dbo.T_Cliente(Email)
 WHERE Email IS NOT NULL;
 GO
-INSERT INTO T_Cliente (IdIdentificationType, NumeroDocumento, NombreRazonSocial,IdTipoCliente,Estado,CreationDate,IdUserAction)
-VALUES(1,'222222222222','Consumidor final',1,1,GETDATE(),1)
+INSERT INTO T_Cliente (IdIdentificationType, NumeroDocumento, NombreRazonSocial,IdTipoCliente,Estado,CreationDate,IdUserAction,
+IdTipoResponsabilidad,IdResponsabilidadTributaria,IdTipoContribuyente,IdCountry,IdDepartament,IdCity)
+VALUES(1,'222222222222','Consumidor final',1,1,GETDATE(),1,1,1,1,1,31,1081)
 GO
 CREATE TABLE T_ListasPrecios (
 IdListaPrecio INT IDENTITY(1,1) PRIMARY KEY,
@@ -1974,6 +2000,7 @@ UnidadMedida VARCHAR(50),
 PrecioUnitario DECIMAL(10,2) NOT NULL,
 CostoUnitario DECIMAL(10,2) NOT NULL,
 Descuento DECIMAL(10,2),
+NombreTributo VARCHAR(50) NOT NULL,
 Impuesto DECIMAL(10,2) NOT NULL,
 CreationDate DATETIME,
 IdUserAction INT,
@@ -2030,6 +2057,7 @@ PrecioUnitario DECIMAL(10,2) NOT NULL,
 CostoUnitario DECIMAL(10,2) NOT NULL,
 Descuento DECIMAL(10,2),
 Impuesto DECIMAL(10,2) NOT NULL,
+NombreTributo VARCHAR(50) NOT NULL,
 CreationDate DATETIME,
 IdUserAction INT,
 FOREIGN KEY (IdCotizacion) REFERENCES T_Cotizacion(IdCotizacion),

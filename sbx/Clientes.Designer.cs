@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Clientes));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Clientes));
             panel1 = new Panel();
+            btn_exportar = new Button();
             btn_mejor_precio = new Button();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
@@ -48,12 +49,15 @@
             cl_numero_documento = new DataGridViewTextBoxColumn();
             cl_nombre = new DataGridViewTextBoxColumn();
             cl_tipo_cliente = new DataGridViewTextBoxColumn();
+            cl_ciudad = new DataGridViewTextBoxColumn();
             cl_direccion = new DataGridViewTextBoxColumn();
             cl_telefono = new DataGridViewTextBoxColumn();
             cl_email = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
+            cl_tipo_adquiriente = new DataGridViewTextBoxColumn();
+            cl_tipo_responsabilidad = new DataGridViewTextBoxColumn();
+            cl_responsabilidad_tributaria = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
-            btn_exportar = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_cliente).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -74,9 +78,25 @@
             panel1.Controls.Add(btn_agregar);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(3, 4, 3, 4);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1033, 68);
+            panel1.Size = new Size(1178, 89);
             panel1.TabIndex = 0;
+            // 
+            // btn_exportar
+            // 
+            btn_exportar.Enabled = false;
+            btn_exportar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_exportar.FlatStyle = FlatStyle.Flat;
+            btn_exportar.Image = (Image)resources.GetObject("btn_exportar.Image");
+            btn_exportar.Location = new Point(510, 13);
+            btn_exportar.Margin = new Padding(3, 4, 3, 4);
+            btn_exportar.Name = "btn_exportar";
+            btn_exportar.Size = new Size(53, 60);
+            btn_exportar.TabIndex = 31;
+            btn_exportar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_exportar.UseVisualStyleBackColor = true;
+            btn_exportar.Click += btn_exportar_Click;
             // 
             // btn_mejor_precio
             // 
@@ -84,9 +104,10 @@
             btn_mejor_precio.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_mejor_precio.FlatStyle = FlatStyle.Flat;
             btn_mejor_precio.Image = (Image)resources.GetObject("btn_mejor_precio.Image");
-            btn_mejor_precio.Location = new Point(331, 10);
+            btn_mejor_precio.Location = new Point(378, 13);
+            btn_mejor_precio.Margin = new Padding(3, 4, 3, 4);
             btn_mejor_precio.Name = "btn_mejor_precio";
-            btn_mejor_precio.Size = new Size(109, 45);
+            btn_mejor_precio.Size = new Size(125, 60);
             btn_mejor_precio.TabIndex = 30;
             btn_mejor_precio.Text = "Mejor precio";
             btn_mejor_precio.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -99,9 +120,10 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(715, 22);
+            cbx_tipo_filtro.Location = new Point(815, 29);
+            cbx_tipo_filtro.Margin = new Padding(3, 4, 3, 4);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
-            cbx_tipo_filtro.Size = new Size(87, 23);
+            cbx_tipo_filtro.Size = new Size(99, 28);
             cbx_tipo_filtro.TabIndex = 29;
             // 
             // cbx_campo_filtro
@@ -110,9 +132,10 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Num Doc" });
-            cbx_campo_filtro.Location = new Point(595, 22);
+            cbx_campo_filtro.Location = new Point(678, 29);
+            cbx_campo_filtro.Margin = new Padding(3, 4, 3, 4);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
-            cbx_campo_filtro.Size = new Size(114, 23);
+            cbx_campo_filtro.Size = new Size(130, 28);
             cbx_campo_filtro.TabIndex = 28;
             // 
             // btn_buscar
@@ -121,9 +144,10 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(999, 20);
+            btn_buscar.Location = new Point(1140, 27);
+            btn_buscar.Margin = new Padding(3, 4, 3, 4);
             btn_buscar.Name = "btn_buscar";
-            btn_buscar.Size = new Size(26, 26);
+            btn_buscar.Size = new Size(30, 35);
             btn_buscar.TabIndex = 27;
             btn_buscar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar.UseVisualStyleBackColor = true;
@@ -132,10 +156,12 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(808, 22);
+            txt_buscar.Location = new Point(921, 29);
+            txt_buscar.Margin = new Padding(3, 4, 3, 4);
             txt_buscar.Name = "txt_buscar";
-            txt_buscar.Size = new Size(177, 23);
+            txt_buscar.Size = new Size(202, 27);
             txt_buscar.TabIndex = 26;
+            txt_buscar.KeyPress += txt_buscar_KeyPress;
             // 
             // btn_eliminar
             // 
@@ -143,9 +169,10 @@
             btn_eliminar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar.FlatStyle = FlatStyle.Flat;
             btn_eliminar.Image = (Image)resources.GetObject("btn_eliminar.Image");
-            btn_eliminar.Location = new Point(224, 10);
+            btn_eliminar.Location = new Point(256, 13);
+            btn_eliminar.Margin = new Padding(3, 4, 3, 4);
             btn_eliminar.Name = "btn_eliminar";
-            btn_eliminar.Size = new Size(101, 45);
+            btn_eliminar.Size = new Size(115, 60);
             btn_eliminar.TabIndex = 16;
             btn_eliminar.Text = "Eliminar";
             btn_eliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -158,9 +185,10 @@
             btn_editar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_editar.FlatStyle = FlatStyle.Flat;
             btn_editar.Image = (Image)resources.GetObject("btn_editar.Image");
-            btn_editar.Location = new Point(117, 10);
+            btn_editar.Location = new Point(134, 13);
+            btn_editar.Margin = new Padding(3, 4, 3, 4);
             btn_editar.Name = "btn_editar";
-            btn_editar.Size = new Size(101, 45);
+            btn_editar.Size = new Size(115, 60);
             btn_editar.TabIndex = 15;
             btn_editar.Text = "Editar";
             btn_editar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -173,9 +201,10 @@
             btn_agregar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregar.FlatStyle = FlatStyle.Flat;
             btn_agregar.Image = (Image)resources.GetObject("btn_agregar.Image");
-            btn_agregar.Location = new Point(10, 10);
+            btn_agregar.Location = new Point(11, 13);
+            btn_agregar.Margin = new Padding(3, 4, 3, 4);
             btn_agregar.Name = "btn_agregar";
-            btn_agregar.Size = new Size(101, 45);
+            btn_agregar.Size = new Size(115, 60);
             btn_agregar.TabIndex = 14;
             btn_agregar.Text = "Agregar";
             btn_agregar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -197,7 +226,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_cliente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_cliente.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_cliente.Columns.AddRange(new DataGridViewColumn[] { cl_IdCliente, cl_tipo_documento, cl_numero_documento, cl_nombre, cl_tipo_cliente, cl_direccion, cl_telefono, cl_email, cl_estado });
+            dtg_cliente.Columns.AddRange(new DataGridViewColumn[] { cl_IdCliente, cl_tipo_documento, cl_numero_documento, cl_nombre, cl_tipo_cliente, cl_ciudad, cl_direccion, cl_telefono, cl_email, cl_estado, cl_tipo_adquiriente, cl_tipo_responsabilidad, cl_responsabilidad_tributaria });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -207,7 +236,8 @@
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dtg_cliente.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_cliente.Dock = DockStyle.Fill;
-            dtg_cliente.Location = new Point(0, 68);
+            dtg_cliente.Location = new Point(0, 89);
+            dtg_cliente.Margin = new Padding(3, 4, 3, 4);
             dtg_cliente.Name = "dtg_cliente";
             dtg_cliente.ReadOnly = true;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -218,20 +248,24 @@
             dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_cliente.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dtg_cliente.RowHeadersWidth = 51;
             dtg_cliente.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_cliente.Size = new Size(1033, 382);
+            dtg_cliente.Size = new Size(1178, 500);
             dtg_cliente.TabIndex = 4;
             // 
             // cl_IdCliente
             // 
             cl_IdCliente.HeaderText = "Id";
+            cl_IdCliente.MinimumWidth = 6;
             cl_IdCliente.Name = "cl_IdCliente";
             cl_IdCliente.ReadOnly = true;
             cl_IdCliente.Visible = false;
+            cl_IdCliente.Width = 125;
             // 
             // cl_tipo_documento
             // 
             cl_tipo_documento.HeaderText = "Tipo documento";
+            cl_tipo_documento.MinimumWidth = 6;
             cl_tipo_documento.Name = "cl_tipo_documento";
             cl_tipo_documento.ReadOnly = true;
             cl_tipo_documento.Width = 200;
@@ -239,6 +273,7 @@
             // cl_numero_documento
             // 
             cl_numero_documento.HeaderText = "Numero documento";
+            cl_numero_documento.MinimumWidth = 6;
             cl_numero_documento.Name = "cl_numero_documento";
             cl_numero_documento.ReadOnly = true;
             cl_numero_documento.Width = 170;
@@ -246,69 +281,99 @@
             // cl_nombre
             // 
             cl_nombre.HeaderText = "Nombre";
+            cl_nombre.MinimumWidth = 6;
             cl_nombre.Name = "cl_nombre";
             cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 125;
             // 
             // cl_tipo_cliente
             // 
             cl_tipo_cliente.HeaderText = "Tipo cliente";
+            cl_tipo_cliente.MinimumWidth = 6;
             cl_tipo_cliente.Name = "cl_tipo_cliente";
             cl_tipo_cliente.ReadOnly = true;
             cl_tipo_cliente.Width = 120;
             // 
+            // cl_ciudad
+            // 
+            cl_ciudad.HeaderText = "Ciudad";
+            cl_ciudad.MinimumWidth = 6;
+            cl_ciudad.Name = "cl_ciudad";
+            cl_ciudad.ReadOnly = true;
+            cl_ciudad.Width = 125;
+            // 
             // cl_direccion
             // 
             cl_direccion.HeaderText = "Direccion";
+            cl_direccion.MinimumWidth = 6;
             cl_direccion.Name = "cl_direccion";
             cl_direccion.ReadOnly = true;
+            cl_direccion.Width = 125;
             // 
             // cl_telefono
             // 
             cl_telefono.HeaderText = "Telefono";
+            cl_telefono.MinimumWidth = 6;
             cl_telefono.Name = "cl_telefono";
             cl_telefono.ReadOnly = true;
+            cl_telefono.Width = 125;
             // 
             // cl_email
             // 
             cl_email.HeaderText = "Email";
+            cl_email.MinimumWidth = 6;
             cl_email.Name = "cl_email";
             cl_email.ReadOnly = true;
+            cl_email.Width = 125;
             // 
             // cl_estado
             // 
             cl_estado.HeaderText = "Estado";
+            cl_estado.MinimumWidth = 6;
             cl_estado.Name = "cl_estado";
             cl_estado.ReadOnly = true;
+            cl_estado.Width = 125;
+            // 
+            // cl_tipo_adquiriente
+            // 
+            cl_tipo_adquiriente.HeaderText = "Tipo Adquiriente";
+            cl_tipo_adquiriente.MinimumWidth = 6;
+            cl_tipo_adquiriente.Name = "cl_tipo_adquiriente";
+            cl_tipo_adquiriente.ReadOnly = true;
+            cl_tipo_adquiriente.Width = 125;
+            // 
+            // cl_tipo_responsabilidad
+            // 
+            cl_tipo_responsabilidad.HeaderText = "Tipo responsabilidad";
+            cl_tipo_responsabilidad.MinimumWidth = 6;
+            cl_tipo_responsabilidad.Name = "cl_tipo_responsabilidad";
+            cl_tipo_responsabilidad.ReadOnly = true;
+            cl_tipo_responsabilidad.Width = 125;
+            // 
+            // cl_responsabilidad_tributaria
+            // 
+            cl_responsabilidad_tributaria.HeaderText = "Responsabilidad tributaria";
+            cl_responsabilidad_tributaria.MinimumWidth = 6;
+            cl_responsabilidad_tributaria.Name = "cl_responsabilidad_tributaria";
+            cl_responsabilidad_tributaria.ReadOnly = true;
+            cl_responsabilidad_tributaria.Width = 125;
             // 
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
             // 
-            // btn_exportar
-            // 
-            btn_exportar.Enabled = false;
-            btn_exportar.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_exportar.FlatStyle = FlatStyle.Flat;
-            btn_exportar.Image = (Image)resources.GetObject("btn_exportar.Image");
-            btn_exportar.Location = new Point(446, 10);
-            btn_exportar.Name = "btn_exportar";
-            btn_exportar.Size = new Size(46, 45);
-            btn_exportar.TabIndex = 31;
-            btn_exportar.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_exportar.UseVisualStyleBackColor = true;
-            btn_exportar.Click += btn_exportar_Click;
-            // 
             // Clientes
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1033, 450);
+            ClientSize = new Size(1178, 589);
             Controls.Add(dtg_cliente);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 4, 3, 4);
             MaximizeBox = false;
-            MaximumSize = new Size(1049, 489);
-            MinimumSize = new Size(1049, 489);
+            MaximumSize = new Size(1196, 636);
+            MinimumSize = new Size(1196, 636);
             Name = "Clientes";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Clientes";
@@ -332,16 +397,20 @@
         private TextBox txt_buscar;
         private DataGridView dtg_cliente;
         private ErrorProvider errorProvider1;
+        private Button btn_mejor_precio;
+        private Button btn_exportar;
         private DataGridViewTextBoxColumn cl_IdCliente;
         private DataGridViewTextBoxColumn cl_tipo_documento;
         private DataGridViewTextBoxColumn cl_numero_documento;
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_tipo_cliente;
+        private DataGridViewTextBoxColumn cl_ciudad;
         private DataGridViewTextBoxColumn cl_direccion;
         private DataGridViewTextBoxColumn cl_telefono;
         private DataGridViewTextBoxColumn cl_email;
         private DataGridViewTextBoxColumn cl_estado;
-        private Button btn_mejor_precio;
-        private Button btn_exportar;
+        private DataGridViewTextBoxColumn cl_tipo_adquiriente;
+        private DataGridViewTextBoxColumn cl_tipo_responsabilidad;
+        private DataGridViewTextBoxColumn cl_responsabilidad_tributaria;
     }
 }

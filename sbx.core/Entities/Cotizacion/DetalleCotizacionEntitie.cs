@@ -15,5 +15,6 @@ namespace sbx.core.Entities.Cotizacion
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal CostoUnitario { get; set; }
+        public string NombreTributo { get; set; }
     }
 }

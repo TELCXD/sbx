@@ -52,9 +52,9 @@ namespace sbx.repositories.Cotizacion
                     int idCotizacion = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_DetalleCotizacion (
-                            IdCotizacion, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto,CreationDate, IdUserAction)
+                            IdCotizacion, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto, NombreTributo,CreationDate, IdUserAction)
                             VALUES (@IdCotizacion, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @NombreTributo, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in cotizacionEntitie.detalleCotizacion)
                     {
@@ -73,6 +73,7 @@ namespace sbx.repositories.Cotizacion
                                 detalle.CostoUnitario,
                                 detalle.Descuento,
                                 detalle.Impuesto,
+                                detalle.NombreTributo,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },
@@ -134,6 +135,7 @@ namespace sbx.repositories.Cotizacion
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
+                                    B.NombreTributo,
                                     B.CreationDate FechaDetalleCotizacion,
                                     B.IdUserAction IdUserActionDetalleCotizacion,
                                     A.IdCliente,
@@ -214,6 +216,7 @@ namespace sbx.repositories.Cotizacion
                                     B.Cantidad,
                                     B.Descuento,
                                     B.Impuesto,
+                                    B.NombreTributo,
                                     B.CreationDate FechaDetalleCotizacion,
                                     B.IdUserAction IdUserActionDetalleCotizacion,
                                     A.IdCliente,
