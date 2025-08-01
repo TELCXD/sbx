@@ -193,10 +193,10 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine(CentrarTexto(MensajeFinalTirilla));
                 sb.AppendLine();
 
-                sb.AppendLine($"Proveedor tecnológico: {datosFacturaElectronica!.data.company.company}");
-                sb.AppendLine($"NIT: {datosFacturaElectronica!.data.company.nit}-{datosFacturaElectronica!.data.company.dv}");
-                sb.AppendLine("Fabricante Software: ");
-                sb.AppendLine("NIT: ");
+                //sb.AppendLine($"Proveedor tecnológico: {datosFacturaElectronica!.data.company.company}");
+                //sb.AppendLine($"NIT: {datosFacturaElectronica!.data.company.nit}-{datosFacturaElectronica!.data.company.dv}");
+                sb.AppendLine("Fabricante Software: SBX POS");
+                //sb.AppendLine("NIT: ");
                 sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
                 sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
             }
@@ -625,10 +625,10 @@ namespace sbx.core.Entities.Venta
                 }
                 sb.AppendLine();
 
-                sb.AppendLine($"Proveedor tecnológico: {datosNotaCreditoElectronica!.data.company.company}");
-                sb.AppendLine($"NIT: {datosNotaCreditoElectronica!.data.company.nit}-{datosNotaCreditoElectronica!.data.company.dv}");
-                sb.AppendLine("Fabricante Software: ");
-                sb.AppendLine("NIT: ");
+                //sb.AppendLine($"Proveedor tecnológico: {datosNotaCreditoElectronica!.data.company.company}");
+                //sb.AppendLine($"NIT: {datosNotaCreditoElectronica!.data.company.nit}-{datosNotaCreditoElectronica!.data.company.dv}");
+                sb.AppendLine("Fabricante Software: SBX POS");
+                //sb.AppendLine("NIT: ");
                 sb.AppendLine(CentrarTexto($"Sistema POS SBX - 313-745-0103"));
                 sb.AppendLine(CentrarTexto($"www.sbx.com.co"));
             }
