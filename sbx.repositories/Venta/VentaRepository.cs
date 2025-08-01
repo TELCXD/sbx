@@ -38,7 +38,7 @@ namespace sbx.repositories.Venta
 
                     sql = @$" INSERT INTO T_Ventas (Prefijo,Consecutivo,IdCliente,IdVendedor,IdMetodoPago,Estado,CreationDate, IdUserAction)
                             VALUES(@Prefijo,
-                            (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_Ventas WHERE Prefijo = @Prefijo),
+                            (SELECT ISNULL(MAX(Consecutivo), 0) + 200 FROM T_Ventas WHERE Prefijo = @Prefijo),
                             @IdCliente,@IdVendedor,@IdMetodoPago,@Estado,@CreationDate,@IdUserAction);
                             SELECT CAST(SCOPE_IDENTITY() AS INT); ";
 

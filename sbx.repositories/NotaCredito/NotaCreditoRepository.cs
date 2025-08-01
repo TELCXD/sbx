@@ -39,7 +39,7 @@ namespace sbx.repositories.NotaCredito
 
                     sql = @$" INSERT INTO T_NotaCredito (Prefijo,Consecutivo,IdVenta,Motivo,Estado,CreationDate, IdUserAction)
                               VALUES(@Prefijo,
-                              (SELECT ISNULL(MAX(Consecutivo), 0) + 1 FROM T_NotaCredito WHERE Prefijo = @Prefijo),
+                              (SELECT ISNULL(MAX(Consecutivo), 0) + 200 FROM T_NotaCredito WHERE Prefijo = @Prefijo),
                                @IdVenta, @Motivo,@Estado,@CreationDate,@IdUserAction);
                                SELECT CAST(SCOPE_IDENTITY() AS INT);";
 

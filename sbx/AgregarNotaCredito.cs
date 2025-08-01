@@ -418,6 +418,7 @@ namespace sbx
                                 DateTime FechaExpedicion = DateTime.Now;
                                 DateTime FechaVencimiento = DateTime.Now;
                                 string Token = "";
+                                bool Continuar = true;
 
                                 if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) 
                                 { 
@@ -465,30 +466,35 @@ namespace sbx
                                                     }
                                                     else
                                                     {
+                                                        Continuar = false;
                                                         Actual = respDoc.Data[0].ConsecutivoActual;
                                                         MessageBox.Show($"Error en consulta de rango numeracion, no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                     }
                                                 }
                                                 else
                                                 {
+                                                    Continuar = false;
                                                     Actual = respDoc.Data[0].ConsecutivoActual;
                                                     MessageBox.Show($"Error en consulta de rango numeracion, no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                 }
                                             }
                                             else
                                             {
+                                                Continuar = false;
                                                 Actual = respDoc.Data[0].ConsecutivoActual;
                                                 MessageBox.Show($"Error en autenticacion, no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                             }
                                         }
                                         else
                                         {
+                                            Continuar = false;
                                             Actual = respDoc.Data[0].ConsecutivoActual;
                                             MessageBox.Show($"Error en autenticacion, no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                         }
                                     }
                                     else
                                     {
+                                        Continuar = false;
                                         Actual = respDoc.Data[0].ConsecutivoActual;
                                         MessageBox.Show($"No se encuentra informacion completa de Url Apis, no se emitira nota electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
@@ -497,177 +503,195 @@ namespace sbx
                                 if (FacturaElectronica == true && NotaCreditoElectronica == false) 
                                 {
                                     MessageBox.Show($"Dado que la factura a anular es electrónica, es obligatorio que la nota crédito también sea electrónica. El proceso ha sido cancelado y no se generará la nota crédito.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    return;
+                                    Continuar = false;
                                 }
 
-                                if (Actual <= NumHasta)
-                                {                                   
-                                    notaCreditoEntitie.IdVenta = IdFactura;
-                                    notaCreditoEntitie.Motivo = txt_motivo_devolucion.Text;
-                                    notaCreditoEntitie.Estado = "REGISTRADA";
-                                    notaCreditoEntitie.Id_RangoNumeracion = Id_RangoNumeracion;
-                                    notaCreditoEntitie.IdRangoDIAN = IdRangoDIAN;
-                                    notaCreditoEntitie.Prefijo = respDoc.Data[0].Prefijo;
-                                    notaCreditoEntitie.Desde = respDoc.Data[0].NumeroDesde;
-                                    notaCreditoEntitie.Hasta = respDoc.Data[0].NumeroHasta;
-                                    notaCreditoEntitie.resolution_number = NumeroResolucion;
-                                    notaCreditoEntitie.technical_key = ClaveTecnica;
-
-                                    FechaExpedicion = Convert.ToDateTime(respDoc.Data[0].FechaExpedicion);
-                                    FechaVencimiento = Convert.ToDateTime(respDoc.Data[0].FechaVencimiento);
-
-                                    DateTime FechaActual = DateTime.Now;
-                                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd"));
-
-                                    if (FechaVencimiento >= FechaActual)
+                                if (Continuar) 
+                                {
+                                    if (Actual <= NumHasta)
                                     {
-                                        foreach (DataGridViewRow fila in dtg_ventas.Rows)
+                                        notaCreditoEntitie.IdVenta = IdFactura;
+                                        notaCreditoEntitie.Motivo = txt_motivo_devolucion.Text;
+                                        notaCreditoEntitie.Estado = "REGISTRADA";
+                                        notaCreditoEntitie.Id_RangoNumeracion = Id_RangoNumeracion;
+                                        notaCreditoEntitie.IdRangoDIAN = IdRangoDIAN;
+                                        notaCreditoEntitie.Prefijo = respDoc.Data[0].Prefijo;
+                                        notaCreditoEntitie.Desde = respDoc.Data[0].NumeroDesde;
+                                        notaCreditoEntitie.Hasta = respDoc.Data[0].NumeroHasta;
+                                        notaCreditoEntitie.resolution_number = NumeroResolucion;
+                                        notaCreditoEntitie.technical_key = ClaveTecnica;
+
+                                        FechaExpedicion = Convert.ToDateTime(respDoc.Data[0].FechaExpedicion);
+                                        FechaVencimiento = Convert.ToDateTime(respDoc.Data[0].FechaVencimiento);
+
+                                        DateTime FechaActual = DateTime.Now;
+                                        FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd"));
+
+                                        if (FechaVencimiento >= FechaActual)
                                         {
-                                            if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value))
+                                            foreach (DataGridViewRow fila in dtg_ventas.Rows)
                                             {
-                                                DetalleNotaCredito detalleNotaCredito = new DetalleNotaCredito
+                                                if (Convert.ToBoolean(fila.Cells["cl_seleccionado"].Value))
                                                 {
-                                                    IdDetalleVenta = Convert.ToInt32(fila.Cells["cl_id_detalle_venta"].Value),
-                                                    IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
-                                                    Sku = fila.Cells["cl_sku"].Value.ToString() ?? "",
-                                                    CodigoBarras = fila.Cells["cl_codigo_barras"].Value.ToString() ?? "",
-                                                    NombreProducto = fila.Cells["cl_nombre"].Value.ToString() ?? "",
-                                                    Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")),
-                                                    PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
-                                                    UnidadMedida = fila.Cells["cl_unidadMedida"].Value.ToString() ?? "",
-                                                    Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                                                    Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
-                                                    NombreTributo = fila.Cells["cl_tributo"].Value.ToString() ?? ""
-                                                };
-
-                                                notaCreditoEntitie.detalleNotaCredito.Add(detalleNotaCredito);
-                                            }
-                                        }
-
-                                        var resp = await _INotaCredito.Create(notaCreditoEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                                        if (resp != null)
-                                        {
-                                            if (resp.Flag == true)
-                                            {
-                                                int IdNotaCreditoCreada = resp.Data;
-
-                                                ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie =
-                                                    new ActualizarNotaCreditoForNotaCreditoElectronicaEntitie();
-
-                                                try
-                                                {
-                                                    if (NotaCreditoElectronica == true)
+                                                    DetalleNotaCredito detalleNotaCredito = new DetalleNotaCredito
                                                     {
-                                                        if (!string.IsNullOrEmpty(FacturaJSON))
+                                                        IdDetalleVenta = Convert.ToInt32(fila.Cells["cl_id_detalle_venta"].Value),
+                                                        IdProducto = Convert.ToInt32(fila.Cells["cl_idProducto"].Value),
+                                                        Sku = fila.Cells["cl_sku"].Value.ToString() ?? "",
+                                                        CodigoBarras = fila.Cells["cl_codigo_barras"].Value.ToString() ?? "",
+                                                        NombreProducto = fila.Cells["cl_nombre"].Value.ToString() ?? "",
+                                                        Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO")),
+                                                        PrecioUnitario = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")),
+                                                        UnidadMedida = fila.Cells["cl_unidadMedida"].Value.ToString() ?? "",
+                                                        Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
+                                                        Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
+                                                        NombreTributo = fila.Cells["cl_tributo"].Value.ToString() ?? ""
+                                                    };
+
+                                                    notaCreditoEntitie.detalleNotaCredito.Add(detalleNotaCredito);
+                                                }
+                                            }
+
+                                            var resp = await _INotaCredito.Create(notaCreditoEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                            if (resp != null)
+                                            {
+                                                if (resp.Flag == true)
+                                                {
+                                                    int IdNotaCreditoCreada = resp.Data;
+
+                                                    ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie =
+                                                        new ActualizarNotaCreditoForNotaCreditoElectronicaEntitie();
+
+                                                    try
+                                                    {
+                                                        if (NotaCreditoElectronica == true)
                                                         {
-                                                            string UrlCrearValidarNotaCredito = ConfigurationManager.AppSettings["UrlCrearValidarNotaCreditoPOST"]!;
-
-                                                            dynamic? resultado = JsonConvert.DeserializeObject<dynamic>(FacturaJSON);
-
-                                                            if (resultado != null)
+                                                            if (!string.IsNullOrEmpty(FacturaJSON))
                                                             {
-                                                                int _bill_id = resultado.data.bill.id;
+                                                                string UrlCrearValidarNotaCredito = ConfigurationManager.AppSettings["UrlCrearValidarNotaCreditoPOST"]!;
 
-                                                                Customer customer = new Customer();
-                                                                customer.identification_document_id =
-                                                                   (IdIdentificationType == 1 ? 3 : //Cédula de ciudadanía
-                                                                   IdIdentificationType == 2 ? 5 : //Cédula de extranjería
-                                                                   IdIdentificationType == 3 ? 3 : //RUT de momento se maneja con Cédula de ciudadanía
-                                                                   IdIdentificationType == 4 ? 6 : 3).ToString(); //NIT
+                                                                dynamic? resultado = JsonConvert.DeserializeObject<dynamic>(FacturaJSON);
 
-                                                                customer.identification = resultado.data.customer.identification;
-                                                                customer.dv = resultado.data.customer.dv ?? "";
-                                                                if (IdIdentificationType == 4) //NIT
+                                                                if (resultado != null)
                                                                 {
-                                                                    customer.company = resultado.data.customer.company;
-                                                                    customer.trade_name = resultado.data.customer.trade_name;
-                                                                }
-                                                                else
-                                                                {
-                                                                    customer.names = resultado.data.customer.names;
-                                                                }
-                                                                customer.address = resultado.data.customer.address;
-                                                                customer.email = resultado.data.customer.email;
-                                                                customer.phone = resultado.data.customer.phone;
-                                                                customer.legal_organization_id = resultado.data.customer.legal_organization.id; // 1. Juridico, 2. Natural
-                                                                customer.tribute_id = resultado.data.customer.tribute.id; // 18. IVA, 21. No aplica *
-                                                                customer.municipality_id = "1079"; //Cali, valle del cauca
+                                                                    int _bill_id = resultado.data.bill.id;
 
-                                                                List<Item> Listitems = new List<Item>();
-                                                                foreach (var ItemsVenta in resultado.data.items)
-                                                                {
-                                                                    //WithholdingTax withholdingTax = new WithholdingTax
-                                                                    //{
-                                                                    //    Code = "01",
-                                                                    //    WithholdingTaxRate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO"))
-                                                                    //};
+                                                                    Customer customer = new Customer();
+                                                                    customer.identification_document_id =
+                                                                       (IdIdentificationType == 1 ? 3 : //Cédula de ciudadanía
+                                                                       IdIdentificationType == 2 ? 5 : //Cédula de extranjería
+                                                                       IdIdentificationType == 3 ? 3 : //RUT de momento se maneja con Cédula de ciudadanía
+                                                                       IdIdentificationType == 4 ? 6 : 3).ToString(); //NIT
 
-                                                                    //ListwithholdingTax.Add(withholdingTax);
-
-                                                                    Item item = new Item
+                                                                    customer.identification = resultado.data.customer.identification;
+                                                                    customer.dv = resultado.data.customer.dv ?? "";
+                                                                    if (IdIdentificationType == 4) //NIT
                                                                     {
-                                                                        note = ItemsVenta.note,
-                                                                        code_reference = ItemsVenta.code_reference,
-                                                                        name = ItemsVenta.name,
-                                                                        quantity = Convert.ToDecimal(ItemsVenta.quantity, new CultureInfo("es-CO")),
-                                                                        discount_rate = Convert.ToDecimal(ItemsVenta.discount_rate, new CultureInfo("es-CO")),
-                                                                        price = Convert.ToDecimal(ItemsVenta.price, new CultureInfo("es-CO")),
-                                                                        tax_rate = Convert.ToDecimal(ItemsVenta.tax_rate, new CultureInfo("es-CO")),
-                                                                        unit_measure_id = ItemsVenta.unit_measure.id,
-                                                                        standard_code_id = ItemsVenta.standard_code.id,
-                                                                        is_excluded = ItemsVenta.is_excluded,
-                                                                        tribute_id = ItemsVenta.tribute.id,
-                                                                        //withholding_taxes = ItemsVenta.withholding_taxes
+                                                                        customer.company = resultado.data.customer.company;
+                                                                        customer.trade_name = resultado.data.customer.trade_name;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        customer.names = resultado.data.customer.names;
+                                                                    }
+                                                                    customer.address = resultado.data.customer.address;
+                                                                    customer.email = resultado.data.customer.email;
+                                                                    customer.phone = resultado.data.customer.phone;
+                                                                    customer.legal_organization_id = resultado.data.customer.legal_organization.id; // 1. Juridico, 2. Natural
+                                                                    customer.tribute_id = resultado.data.customer.tribute.id; // 18. IVA, 21. No aplica *
+                                                                    customer.municipality_id = "1079"; //Cali, valle del cauca
+
+                                                                    List<Item> Listitems = new List<Item>();
+                                                                    foreach (var ItemsVenta in resultado.data.items)
+                                                                    {
+                                                                        //WithholdingTax withholdingTax = new WithholdingTax
+                                                                        //{
+                                                                        //    Code = "01",
+                                                                        //    WithholdingTaxRate = Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO"))
+                                                                        //};
+
+                                                                        //ListwithholdingTax.Add(withholdingTax);
+
+                                                                        Item item = new Item
+                                                                        {
+                                                                            note = ItemsVenta.note,
+                                                                            code_reference = ItemsVenta.code_reference,
+                                                                            name = ItemsVenta.name,
+                                                                            quantity = Convert.ToDecimal(ItemsVenta.quantity, new CultureInfo("es-CO")),
+                                                                            discount_rate = Convert.ToDecimal(ItemsVenta.discount_rate, new CultureInfo("es-CO")),
+                                                                            price = Convert.ToDecimal(ItemsVenta.price, new CultureInfo("es-CO")),
+                                                                            tax_rate = Convert.ToDecimal(ItemsVenta.tax_rate, new CultureInfo("es-CO")),
+                                                                            unit_measure_id = ItemsVenta.unit_measure.id,
+                                                                            standard_code_id = ItemsVenta.standard_code.id,
+                                                                            is_excluded = ItemsVenta.is_excluded,
+                                                                            tribute_id = ItemsVenta.tribute.id,
+                                                                            //withholding_taxes = ItemsVenta.withholding_taxes
+                                                                        };
+
+                                                                        Listitems.Add(item);
+                                                                    }
+
+                                                                    NotaCreditoRequest notaCreditoRequest = new NotaCreditoRequest
+                                                                    {
+                                                                        numbering_range_id = IdRangoDIAN,
+                                                                        correction_concept_code = 2, //Anulación de factura electrónica.
+                                                                        customization_id = 20, //Nota Crédito que referencia una factura electrónica.
+                                                                        bill_id = _bill_id,
+                                                                        reference_code = IdNotaCreditoCreada.ToString(),
+                                                                        send_email = resultado.data.bill.send_email == 0 ? false : true,
+                                                                        observation = txt_motivo_devolucion.Text,
+                                                                        payment_method_code = resultado.data.bill.payment_method.code,
+                                                                        customer = customer,
+                                                                        items = Listitems
                                                                     };
 
-                                                                    Listitems.Add(item);
+                                                                    var responseNotaCreditoElectronica = _INotasCreditoElectronica.CreaValidaNotaCredito(Token, UrlCrearValidarNotaCredito, notaCreditoRequest);
+
+                                                                    if (!responseNotaCreditoElectronica.Flag)
+                                                                    {
+                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
+                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+
+                                                                        MessageBox.Show($"Error en Emicion de nota electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (responseNotaCreditoElectronica.Data != null)
+                                                                        {
+                                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
+                                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NumberNotaCreditoDIAN = responseNotaCreditoElectronica.Data!.data.credit_note.number;
+                                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "EMITIDA";
+                                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoJSON = responseNotaCreditoElectronica.Data.ToString();
+                                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.qr_image = responseNotaCreditoElectronica.Data!.data.credit_note.qr_image;
+                                                                        }
+                                                                    }
+                                                                    //Actualizar informacion de nota credito electronica en base de datos
+                                                                    var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                                    if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                                                    {
+                                                                        MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                        this.Close();
+                                                                    }
                                                                 }
-
-                                                                NotaCreditoRequest notaCreditoRequest = new NotaCreditoRequest
-                                                                {
-                                                                    numbering_range_id = IdRangoDIAN,
-                                                                    correction_concept_code = 2, //Anulación de factura electrónica.
-                                                                    customization_id = 20, //Nota Crédito que referencia una factura electrónica.
-                                                                    bill_id = _bill_id,
-                                                                    reference_code = IdNotaCreditoCreada.ToString(),
-                                                                    send_email = resultado.data.bill.send_email == 0 ? false : true,
-                                                                    observation = txt_motivo_devolucion.Text,
-                                                                    payment_method_code = resultado.data.bill.payment_method.code,
-                                                                    customer = customer,
-                                                                    items = Listitems
-                                                                };
-
-                                                                var responseNotaCreditoElectronica = _INotasCreditoElectronica.CreaValidaNotaCredito(Token, UrlCrearValidarNotaCredito, notaCreditoRequest);
-
-                                                                if (!responseNotaCreditoElectronica.Flag)
+                                                                else
                                                                 {
                                                                     actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
                                                                     actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                                    //Actualizar informacion de nota credito electronica en base de datos
+                                                                    var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
-                                                                    MessageBox.Show($"Error en Emicion de nota electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (responseNotaCreditoElectronica.Data != null)
+                                                                    if (!respActualizaDataNotaCreditoElectronica.Flag)
                                                                     {
-                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
-                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NumberNotaCreditoDIAN = responseNotaCreditoElectronica.Data!.data.credit_note.number;
-                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "EMITIDA";
-                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoJSON = responseNotaCreditoElectronica.Data.ToString();
-                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.qr_image = responseNotaCreditoElectronica.Data!.data.credit_note.qr_image;
+                                                                        MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     }
-                                                                }
-                                                                //Actualizar informacion de nota credito electronica en base de datos
-                                                                var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
-                                                                if (!respActualizaDataNotaCreditoElectronica.Flag)
-                                                                {
-                                                                    MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                                }
-                                                                else
-                                                                {
-                                                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                    MessageBox.Show($"Error no se logro leer JSON de factura electronica,  no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     this.Close();
                                                                 }
                                                             }
@@ -683,215 +707,204 @@ namespace sbx
                                                                     MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                 }
 
-                                                                MessageBox.Show($"Error no se logro leer JSON de factura electronica,  no se emitira nota credito electronica", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                MessageBox.Show($"No encontro informacion JSON de factura electronica a anular, se registrara nota credito en estado pendiente de Emitir", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                 this.Close();
                                                             }
                                                         }
                                                         else
                                                         {
-                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
-                                                            actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
-                                                            //Actualizar informacion de nota credito electronica en base de datos
-                                                            var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                                                            if (!respActualizaDataNotaCreditoElectronica.Flag)
-                                                            {
-                                                                MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                            }
-
-                                                            MessageBox.Show($"No encontro informacion JSON de factura electronica a anular, se registrara nota credito en estado pendiente de Emitir", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                            MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                             this.Close();
                                                         }
-                                                    }
-                                                    else
-                                                    {
-                                                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                                        this.Close();
-                                                    }
 
-                                                    //Imprime Tirilla
-                                                    var DataTienda = await _ITienda.List();
-                                                    if (DataTienda.Data != null)
-                                                    {
-                                                        if (DataTienda.Data.Count > 0)
+                                                        //Imprime Tirilla
+                                                        var DataTienda = await _ITienda.List();
+                                                        if (DataTienda.Data != null)
                                                         {
-                                                            var DataNotaCr = await _INotaCredito.List(IdNotaCreditoCreada);
-
-                                                            NotaCreditoPOSEntitie DataNotaCredito = new NotaCreditoPOSEntitie();
-
-                                                            DataNotaCredito.NumeroNotaCredito = DataNotaCr.Data![0].NumberNotaCreditoDIAN == "" ? DataNotaCr.Data![0].NotaCredito : DataNotaCr.Data![0].NumberNotaCreditoDIAN;
-                                                            DataNotaCredito.NumeroFactura = DataNotaCr.Data![0].Factura;
-                                                            DataNotaCredito.Fecha = DataNotaCr.Data[0].CreationDate;
-                                                            DataNotaCredito.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
-                                                            DataNotaCredito.DireccionEmpresa = DataTienda.Data[0].Direccion;
-                                                            DataNotaCredito.TelefonoEmpresa = DataTienda.Data[0].Telefono;
-                                                            DataNotaCredito.NIT = DataTienda.Data[0].NumeroDocumento;
-                                                            DataNotaCredito.UserNameNotaCredito = DataNotaCr.Data[0].IdUserActionNotaCredito + " - " + DataNotaCr.Data[0].UserName;
-                                                            DataNotaCredito.NombreCliente = "";
-
-                                                            DataNotaCredito.Estado = DataNotaCr.Data![0].EstadoNotaCreditoDIAN == "" ? DataNotaCr.Data[0].Estado : DataNotaCr.Data![0].EstadoNotaCreditoDIAN;
-
-                                                            Cantidad = 0;
-                                                            Subtotal = 0;
-                                                            Descuento = 0;
-                                                            Impuesto = 0;
-                                                            SubtotalLinea = 0;
-                                                            DescuentoLinea = 0;
-                                                            decimal iva = 0;
-                                                            decimal inc = 0;
-                                                            decimal incBolsa = 0;
-
-                                                            foreach (var item in DataNotaCr.Data)
+                                                            if (DataTienda.Data.Count > 0)
                                                             {
-                                                                Cantidad += Convert.ToDecimal(item.Cantidad);
-                                                                Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-                                                                SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-                                                                Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
-                                                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                                                var DataNotaCr = await _INotaCredito.List(IdNotaCreditoCreada);
 
-                                                                if (item.NombreTributo == "INC Bolsas")
+                                                                NotaCreditoPOSEntitie DataNotaCredito = new NotaCreditoPOSEntitie();
+
+                                                                DataNotaCredito.NumeroNotaCredito = DataNotaCr.Data![0].NumberNotaCreditoDIAN == "" ? DataNotaCr.Data![0].NotaCredito : DataNotaCr.Data![0].NumberNotaCreditoDIAN;
+                                                                DataNotaCredito.NumeroFactura = DataNotaCr.Data![0].Factura;
+                                                                DataNotaCredito.Fecha = DataNotaCr.Data[0].CreationDate;
+                                                                DataNotaCredito.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
+                                                                DataNotaCredito.DireccionEmpresa = DataTienda.Data[0].Direccion;
+                                                                DataNotaCredito.TelefonoEmpresa = DataTienda.Data[0].Telefono;
+                                                                DataNotaCredito.NIT = DataTienda.Data[0].NumeroDocumento;
+                                                                DataNotaCredito.UserNameNotaCredito = DataNotaCr.Data[0].IdUserActionNotaCredito + " - " + DataNotaCr.Data[0].UserName;
+                                                                DataNotaCredito.NombreCliente = "";
+
+                                                                DataNotaCredito.Estado = DataNotaCr.Data![0].EstadoNotaCreditoDIAN == "" ? DataNotaCr.Data[0].Estado : DataNotaCr.Data![0].EstadoNotaCreditoDIAN;
+
+                                                                Cantidad = 0;
+                                                                Subtotal = 0;
+                                                                Descuento = 0;
+                                                                Impuesto = 0;
+                                                                SubtotalLinea = 0;
+                                                                DescuentoLinea = 0;
+                                                                decimal iva = 0;
+                                                                decimal inc = 0;
+                                                                decimal incBolsa = 0;
+
+                                                                foreach (var item in DataNotaCr.Data)
                                                                 {
-                                                                    incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
-                                                                }
-                                                                else if (item.NombreTributo == "IVA")
-                                                                {
-                                                                    iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
-                                                                }
-                                                                else if (item.NombreTributo == "INC")
-                                                                {
-                                                                    inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
-                                                                }
-                                                            }
+                                                                    Cantidad += Convert.ToDecimal(item.Cantidad);
+                                                                    Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                    SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario, new CultureInfo("es-CO")) * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                    Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
+                                                                    DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")));
 
-                                                            Impuesto = iva + inc + incBolsa;
-
-                                                            Total = (Subtotal - Descuento);
-                                                            //Total = (Subtotal - Descuento) + Impuesto;
-                                                            decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
-
-                                                            DataNotaCredito.CantidadTotal = Cantidad;
-                                                            DataNotaCredito.Subtotal = SubtotalMenosImpuesto;
-                                                            DataNotaCredito.Descuento = Descuento;
-                                                            DataNotaCredito.Impuesto = Impuesto;
-                                                            DataNotaCredito.iva = iva;
-                                                            DataNotaCredito.inc = inc;
-                                                            DataNotaCredito.incBolsa = incBolsa;
-                                                            DataNotaCredito.Total = Total;
-
-                                                            List<ItemFacturaEntitie> ListItemFacturaEntitie = new List<ItemFacturaEntitie>();
-
-                                                            decimal precio;
-                                                            decimal cantidad;
-                                                            decimal desc;
-                                                            decimal total;
-
-                                                            foreach (var item in DataNotaCr.Data)
-                                                            {
-                                                                precio = Convert.ToDecimal(item.PrecioUnitario);
-                                                                cantidad = Convert.ToDecimal(item.Cantidad);
-                                                                desc = Convert.ToDecimal(item.Descuento);
-
-                                                                total = CalcularTotal(precio, 0, desc);
-                                                                total = total * cantidad;
-
-                                                                string UnidadMedidaAbreviada;
-
-                                                                switch (item.UnidadMedida)
-                                                                {
-                                                                    case "Unidad":
-                                                                        UnidadMedidaAbreviada = "Und";
-                                                                        break;
-                                                                    case "kilogramo":
-                                                                        UnidadMedidaAbreviada = "KGM";
-                                                                        break;
-                                                                    case "libra":
-                                                                        UnidadMedidaAbreviada = "LBR";
-                                                                        break;
-                                                                    case "metro":
-                                                                        UnidadMedidaAbreviada = "MTR";
-                                                                        break;
-                                                                    case "galón":
-                                                                        UnidadMedidaAbreviada = "GLL";
-                                                                        break;
-                                                                    default:
-                                                                        UnidadMedidaAbreviada = "";
-                                                                        break;
-                                                                }
-
-                                                                var ItemFactura = new ItemFacturaEntitie
-                                                                {
-                                                                    Codigo = item.IdProducto,
-                                                                    Descripcion = item.NombreProducto,
-                                                                    Cantidad = item.Cantidad,
-                                                                    UnidadMedida = UnidadMedidaAbreviada,
-                                                                    PrecioUnitario = item.PrecioUnitario,
-                                                                    Descuento = item.Descuento,
-                                                                    Impuesto = item.Impuesto,
-                                                                    Total = total
-                                                                };
-                                                                ListItemFacturaEntitie.Add(ItemFactura);
-                                                            }
-
-                                                            DataNotaCredito.Items = ListItemFacturaEntitie;
-
-                                                            var DataParametros = await _IParametros.List("");
-
-                                                            if (DataParametros.Data != null)
-                                                            {
-                                                                if (DataParametros.Data.Count > 0)
-                                                                {
-                                                                    int ANCHO_TIRILLA = 0;
-                                                                    string Impresora = "";
-                                                                    string MensajeFinalTirilla = "";
-                                                                    int LineasAbajo = 0;
-                                                                    foreach (var itemParametros in DataParametros.Data)
+                                                                    if (item.NombreTributo == "INC Bolsas")
                                                                     {
-                                                                        switch (itemParametros.Nombre)
+                                                                        incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                                                                    }
+                                                                    else if (item.NombreTributo == "IVA")
+                                                                    {
+                                                                        iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                                                    }
+                                                                    else if (item.NombreTributo == "INC")
+                                                                    {
+                                                                        inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                                                    }
+                                                                }
+
+                                                                Impuesto = iva + inc + incBolsa;
+
+                                                                Total = (Subtotal - Descuento);
+                                                                //Total = (Subtotal - Descuento) + Impuesto;
+                                                                decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
+
+                                                                DataNotaCredito.CantidadTotal = Cantidad;
+                                                                DataNotaCredito.Subtotal = SubtotalMenosImpuesto;
+                                                                DataNotaCredito.Descuento = Descuento;
+                                                                DataNotaCredito.Impuesto = Impuesto;
+                                                                DataNotaCredito.iva = iva;
+                                                                DataNotaCredito.inc = inc;
+                                                                DataNotaCredito.incBolsa = incBolsa;
+                                                                DataNotaCredito.Total = Total;
+
+                                                                List<ItemFacturaEntitie> ListItemFacturaEntitie = new List<ItemFacturaEntitie>();
+
+                                                                decimal precio;
+                                                                decimal cantidad;
+                                                                decimal desc;
+                                                                decimal total;
+
+                                                                foreach (var item in DataNotaCr.Data)
+                                                                {
+                                                                    precio = Convert.ToDecimal(item.PrecioUnitario);
+                                                                    cantidad = Convert.ToDecimal(item.Cantidad);
+                                                                    desc = Convert.ToDecimal(item.Descuento);
+
+                                                                    total = CalcularTotal(precio, 0, desc);
+                                                                    total = total * cantidad;
+
+                                                                    string UnidadMedidaAbreviada;
+
+                                                                    switch (item.UnidadMedida)
+                                                                    {
+                                                                        case "Unidad":
+                                                                            UnidadMedidaAbreviada = "Und";
+                                                                            break;
+                                                                        case "kilogramo":
+                                                                            UnidadMedidaAbreviada = "KGM";
+                                                                            break;
+                                                                        case "libra":
+                                                                            UnidadMedidaAbreviada = "LBR";
+                                                                            break;
+                                                                        case "metro":
+                                                                            UnidadMedidaAbreviada = "MTR";
+                                                                            break;
+                                                                        case "galón":
+                                                                            UnidadMedidaAbreviada = "GLL";
+                                                                            break;
+                                                                        default:
+                                                                            UnidadMedidaAbreviada = "";
+                                                                            break;
+                                                                    }
+
+                                                                    var ItemFactura = new ItemFacturaEntitie
+                                                                    {
+                                                                        Codigo = item.IdProducto,
+                                                                        Descripcion = item.NombreProducto,
+                                                                        Cantidad = item.Cantidad,
+                                                                        UnidadMedida = UnidadMedidaAbreviada,
+                                                                        PrecioUnitario = item.PrecioUnitario,
+                                                                        Descuento = item.Descuento,
+                                                                        Impuesto = item.Impuesto,
+                                                                        Total = total
+                                                                    };
+                                                                    ListItemFacturaEntitie.Add(ItemFactura);
+                                                                }
+
+                                                                DataNotaCredito.Items = ListItemFacturaEntitie;
+
+                                                                var DataParametros = await _IParametros.List("");
+
+                                                                if (DataParametros.Data != null)
+                                                                {
+                                                                    if (DataParametros.Data.Count > 0)
+                                                                    {
+                                                                        int ANCHO_TIRILLA = 0;
+                                                                        string Impresora = "";
+                                                                        string MensajeFinalTirilla = "";
+                                                                        int LineasAbajo = 0;
+                                                                        foreach (var itemParametros in DataParametros.Data)
                                                                         {
-                                                                            case "Ancho tirilla":
-                                                                                ANCHO_TIRILLA = Convert.ToInt32(itemParametros.Value);
-                                                                                break;
-                                                                            case "Impresora":
-                                                                                Impresora = itemParametros.Value;
-                                                                                break;
-                                                                            case "Mensaje final tirilla":
-                                                                                MensajeFinalTirilla = itemParametros.Value;
-                                                                                break;
-                                                                            case "lineas abajo de la tirilla":
-                                                                                LineasAbajo = Convert.ToInt32(itemParametros.Value);
-                                                                                break;
-                                                                            default:
-                                                                                break;
+                                                                            switch (itemParametros.Nombre)
+                                                                            {
+                                                                                case "Ancho tirilla":
+                                                                                    ANCHO_TIRILLA = Convert.ToInt32(itemParametros.Value);
+                                                                                    break;
+                                                                                case "Impresora":
+                                                                                    Impresora = itemParametros.Value;
+                                                                                    break;
+                                                                                case "Mensaje final tirilla":
+                                                                                    MensajeFinalTirilla = itemParametros.Value;
+                                                                                    break;
+                                                                                case "lineas abajo de la tirilla":
+                                                                                    LineasAbajo = Convert.ToInt32(itemParametros.Value);
+                                                                                    break;
+                                                                                default:
+                                                                                    break;
+                                                                            }
                                                                         }
-                                                                    }
 
-                                                                    if (DataNotaCr.Data![0].NumberNotaCreditoDIAN != "") { NotaCreditoElectronica = true; }
-                                                                    DataNotaCredito.NotaCreditoElectronica = NotaCreditoElectronica;
-                                                                    DataNotaCredito.NotaCreditoJSON = !string.IsNullOrEmpty(DataNotaCr.Data![0].NotaCreditoJSON) ? DataNotaCr.Data![0].NotaCreditoJSON : "";
+                                                                        if (DataNotaCr.Data![0].NumberNotaCreditoDIAN != "") { NotaCreditoElectronica = true; }
+                                                                        DataNotaCredito.NotaCreditoElectronica = NotaCreditoElectronica;
+                                                                        DataNotaCredito.NotaCreditoJSON = !string.IsNullOrEmpty(DataNotaCr.Data![0].NotaCreditoJSON) ? DataNotaCr.Data![0].NotaCreditoJSON : "";
 
-                                                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaNotaCredito(DataNotaCredito, ANCHO_TIRILLA, MensajeFinalTirilla, false);
+                                                                        StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaNotaCredito(DataNotaCredito, ANCHO_TIRILLA, MensajeFinalTirilla, false);
 
-                                                                    string carpetaNotasCredito = "NotasCredito";
-                                                                    if (!Directory.Exists(carpetaNotasCredito))
-                                                                    {
-                                                                        Directory.CreateDirectory(carpetaNotasCredito);
-                                                                    }
+                                                                        string carpetaNotasCredito = "NotasCredito";
+                                                                        if (!Directory.Exists(carpetaNotasCredito))
+                                                                        {
+                                                                            Directory.CreateDirectory(carpetaNotasCredito);
+                                                                        }
 
-                                                                    File.WriteAllText(Path.Combine(carpetaNotasCredito, $"nota_credito_{DataNotaCredito.NumeroNotaCredito}.txt"),
-                                                                                              tirilla.ToString(),
-                                                                                              Encoding.UTF8);
+                                                                        File.WriteAllText(Path.Combine(carpetaNotasCredito, $"nota_credito_{DataNotaCredito.NumeroNotaCredito}.txt"),
+                                                                                                  tirilla.ToString(),
+                                                                                                  Encoding.UTF8);
 
-                                                                    if (NotaCreditoElectronica)
-                                                                    {
-                                                                        dynamic datosNotaCreditoElectronica = JsonConvert.DeserializeObject<dynamic>(DataNotaCr.Data![0].NotaCreditoJSON);
+                                                                        if (NotaCreditoElectronica)
+                                                                        {
+                                                                            dynamic datosNotaCreditoElectronica = JsonConvert.DeserializeObject<dynamic>(DataNotaCr.Data![0].NotaCreditoJSON);
 
-                                                                        GuardarTirillaComoImagen(tirilla, datosNotaCreditoElectronica!.data.credit_note.qr_image.ToString(), DataNotaCredito.NumeroNotaCredito);
+                                                                            GuardarTirillaComoImagen(tirilla, datosNotaCreditoElectronica!.data.credit_note.qr_image.ToString(), DataNotaCredito.NumeroNotaCredito);
 
-                                                                        RawPrinterHelper.SendStringToPrinterConQr(Impresora, tirilla.ToString(), LineasAbajo, datosNotaCreditoElectronica!.data.credit_note.qr_image.ToString());
+                                                                            RawPrinterHelper.SendStringToPrinterConQr(Impresora, tirilla.ToString(), LineasAbajo, datosNotaCreditoElectronica!.data.credit_note.qr_image.ToString());
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
+                                                                        }
                                                                     }
                                                                     else
                                                                     {
-                                                                        RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
+                                                                        MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     }
                                                                 }
                                                                 else
@@ -901,7 +914,7 @@ namespace sbx
                                                             }
                                                             else
                                                             {
-                                                                MessageBox.Show("No se encuentra informacion de parametros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                             }
                                                         }
                                                         else
@@ -909,50 +922,46 @@ namespace sbx
                                                             MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                         }
                                                     }
-                                                    else
+                                                    catch (Exception ex)
                                                     {
-                                                        MessageBox.Show("No se encuentra informacion de Tienda", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
+                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                        //Actualizar informacion de nota credito electronica en base de datos
+                                                        var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                        if (!respActualizaDataNotaCreditoElectronica.Flag)
+                                                        {
+                                                            MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        }
+                                                        else
+                                                        {
+                                                            MessageBox.Show("Se presento una excepcion debido a esto se registrara nota credito en estado pendiente de Emitir, Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                        }
+
+                                                        this.Close();
                                                     }
                                                 }
-                                                catch (Exception ex)
+                                                else
                                                 {
-                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
-                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
-                                                    //Actualizar informacion de nota credito electronica en base de datos
-                                                    var respActualizaDataNotaCreditoElectronica = await _INotaCredito.ActualizarDataNotaCreditoElectronica(actualizarNotaCreditoForNotaCreditoElectronicaEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                                                    if (!respActualizaDataNotaCreditoElectronica.Flag)
-                                                    {
-                                                        MessageBox.Show($"Se presento un error al intentar actualizar informacion de nota credito electronica en base de datos, Error: {respActualizaDataNotaCreditoElectronica.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                    }
-                                                    else
-                                                    {
-                                                        MessageBox.Show("Se presento una excepcion debido a esto se registrara nota credito en estado pendiente de Emitir, Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                    }
-
-                                                    this.Close();
+                                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                 }
                                             }
                                             else
                                             {
-                                                MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                MessageBox.Show("No se obtuvo informacion de proceso creacion de nota credito", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                             }
                                         }
                                         else
                                         {
-                                            MessageBox.Show("No se obtuvo informacion de proceso creacion de nota credito", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            MessageBox.Show($"Ha excedido el rango de fechas autorizadas (de {FechaExpedicion} a {FechaVencimiento}) ", "Rango de numeracion vencido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                         }
                                     }
                                     else
                                     {
-                                        MessageBox.Show($"Ha excedido el rango de fechas autorizadas (de {FechaExpedicion} a {FechaVencimiento}) ", "Rango de numeracion vencido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show($@"Ha excedido el rango autorizado de numeración (de {NumDesde} a {NumHasta}).
+                                        MessageBox.Show($@"Ha excedido el rango autorizado de numeración (de {NumDesde} a {NumHasta}).
                                                       Por favor, solicite una nueva resolución de numeración para continuar con la emisión de nota credito.",
-                                                      "Límite de notas credito alcanzado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                          "Límite de notas credito alcanzado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
                                 }
                             }
                             else
