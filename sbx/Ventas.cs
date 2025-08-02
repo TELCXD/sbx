@@ -679,8 +679,10 @@ namespace sbx
                                                                         customer.email = DataFacturaRegistrada.Data[0].Email.ToString();
                                                                         customer.phone = DataFacturaRegistrada.Data[0].Telefono.ToString();
                                                                         customer.legal_organization_id = (TipoIdentificacion == 4 ? 1 : 2).ToString(); // 1. Juridico, 2. Natural
-                                                                        customer.tribute_id = "21"; // 18. IVA, 21. No aplica *
-                                                                        customer.municipality_id = "1079"; //Cali, valle del cauca
+                                                                        customer.tribute_id = DataFacturaRegistrada.Data[0].IdResponsabilidadTributaria == 2 ? "18" :
+                                                                                              DataFacturaRegistrada.Data[0].IdResponsabilidadTributaria == 4 ? "18" :
+                                                                                              "21"; // 18. IVA, 21. No aplica *
+                                                                        customer.municipality_id = DataFacturaRegistrada.Data[0].IdMunicipioApiDian.ToString(); //"1079"; //Cali, valle del cauca
 
                                                                         List<WithholdingTax> ListwithholdingTax = new List<WithholdingTax>();
                                                                         List<Item> Listitems = new List<Item>();
@@ -693,6 +695,33 @@ namespace sbx
                                                                             //};
 
                                                                             //ListwithholdingTax.Add(withholdingTax);
+
+                                                                            int v_is_excluded = 1;
+                                                                            if (ItemsVenta.NombreTributo.ToString() == "IVA" && Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO")) > 0)
+                                                                            {
+                                                                                v_is_excluded = 0;
+                                                                            }
+
+                                                                            if (ItemsVenta.NombreTributo.ToString() == "INC" || ItemsVenta.NombreTributo.ToString() == "INC Bolsas")
+                                                                            {
+                                                                                v_is_excluded = 0;
+                                                                            }
+
+                                                                            int v_tribute_id = 1; //Impuesto sobre la Ventas
+                                                                            switch (ItemsVenta.NombreTributo.ToString())
+                                                                            {
+                                                                                case "IVA":
+                                                                                    v_tribute_id = 1; //Impuesto sobre la Ventas
+                                                                                    break;
+                                                                                case "INC":
+                                                                                    v_tribute_id = 4; //Impuesto Nacional al Consumo
+                                                                                    break;
+                                                                                case "INC Bolsas":
+                                                                                    v_tribute_id = 11; //Impuesto Nacional al Consumo de Bolsa Plástica
+                                                                                    break;
+                                                                                default:
+                                                                                    break;
+                                                                            }
 
                                                                             Item item = new Item
                                                                             {
@@ -710,9 +739,9 @@ namespace sbx
                                                                                 ItemsVenta.IdUnidadMedida == 12 ? 874 : //galón
                                                                                 70), //En cualquier otro caso Unidad
                                                                                 standard_code_id = 1, //Estándar de adopción del contribuyente
-                                                                                is_excluded = 0, // excluido de IVA (0: no, 1: sí).
-                                                                                tribute_id = 1, //Impuesto sobre la Ventas
-                                                                                                //WithholdingTaxes = ListwithholdingTax
+                                                                                is_excluded = v_is_excluded, // excluido de IVA (0: no, 1: sí).
+                                                                                tribute_id = v_tribute_id,
+                                                                                //WithholdingTaxes = ListwithholdingTax
                                                                             };
 
                                                                             Listitems.Add(item);
