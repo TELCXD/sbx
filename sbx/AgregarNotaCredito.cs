@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using sbx.core.Entities.Auth;
 using sbx.core.Entities.NotaCredito;
 using sbx.core.Entities.NotaCreditoElectronica;
@@ -600,7 +601,15 @@ namespace sbx
                                                                     customer.phone = resultado.data.customer.phone;
                                                                     customer.legal_organization_id = resultado.data.customer.legal_organization.id; // 1. Juridico, 2. Natural
                                                                     customer.tribute_id = resultado.data.customer.tribute.id; // 18. IVA, 21. No aplica *
-                                                                    customer.municipality_id = resultado.data.customer.municipality.id.ToString() ?? ""; //"1079"; //Cali, valle del cauca
+                                                                    if (resultado.data.customer.municipality is JArray municipalityArray && municipalityArray.Count > 0) 
+                                                                    {
+                                                                        customer.municipality_id = municipalityArray[0]["id"]?.ToString() ?? "";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        customer.municipality_id = "";
+                                                                    }
+                                                                    //customer.municipality_id = resultado.data.customer.municipality.id.ToString() ?? ""; //"1079"; //Cali, valle del cauca
 
                                                                     List<Item> Listitems = new List<Item>();
                                                                     foreach (var ItemsVenta in resultado.data.items)
