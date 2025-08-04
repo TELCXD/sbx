@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ventas));
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
             dtp_fecha_fin = new DateTimePicker();
             dtp_fecha_inicio = new DateTimePicker();
@@ -64,6 +64,8 @@
             lbl_iva = new Label();
             label3 = new Label();
             dtg_ventas = new DataGridView();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            MEmitir = new ToolStripMenuItem();
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_id_venta = new DataGridViewTextBoxColumn();
             cl_factura = new DataGridViewTextBoxColumn();
@@ -81,8 +83,7 @@
             cl_documento_cliente = new DataGridViewTextBoxColumn();
             cl_nombre_cliente = new DataGridViewTextBoxColumn();
             cl_usuario = new DataGridViewTextBoxColumn();
-            contextMenuStrip1 = new ContextMenuStrip(components);
-            MEmitir = new ToolStripMenuItem();
+            cl_vendedor = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             panel2.SuspendLayout();
@@ -169,7 +170,7 @@
             cbx_client_venta.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cbx_client_venta.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_client_venta.FormattingEnabled = true;
-            cbx_client_venta.Items.AddRange(new object[] { "Factura", "Cliente", "Producto", "Usuario" });
+            cbx_client_venta.Items.AddRange(new object[] { "Factura", "Cliente", "Producto", "Usuario", "Vendedor" });
             cbx_client_venta.Location = new Point(690, 24);
             cbx_client_venta.Name = "cbx_client_venta";
             cbx_client_venta.Size = new Size(87, 23);
@@ -465,41 +466,54 @@
             dtg_ventas.AllowUserToDeleteRows = false;
             dtg_ventas.AllowUserToOrderColumns = true;
             dtg_ventas.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_estado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_tributo, cl_impuesto, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario });
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Window;
-            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle5;
+            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_estado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_tributo, cl_impuesto, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario, cl_vendedor });
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_ventas.Dock = DockStyle.Fill;
             dtg_ventas.Location = new Point(0, 58);
             dtg_ventas.Name = "dtg_ventas";
             dtg_ventas.ReadOnly = true;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_ventas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_ventas.Size = new Size(1223, 344);
             dtg_ventas.TabIndex = 5;
             dtg_ventas.DoubleClick += dtg_ventas_DoubleClick;
             dtg_ventas.MouseDown += dtg_ventas_MouseDown;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { MEmitir });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(106, 26);
+            // 
+            // MEmitir
+            // 
+            MEmitir.Name = "MEmitir";
+            MEmitir.Size = new Size(105, 22);
+            MEmitir.Text = "Emitir";
+            MEmitir.Click += MEmitir_Click;
             // 
             // cl_fecha
             // 
@@ -609,18 +623,12 @@
             cl_usuario.Name = "cl_usuario";
             cl_usuario.ReadOnly = true;
             // 
-            // contextMenuStrip1
+            // cl_vendedor
             // 
-            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { MEmitir });
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(106, 26);
-            // 
-            // MEmitir
-            // 
-            MEmitir.Name = "MEmitir";
-            MEmitir.Size = new Size(105, 22);
-            MEmitir.Text = "Emitir";
-            MEmitir.Click += MEmitir_Click;
+            cl_vendedor.HeaderText = "Vendedor";
+            cl_vendedor.Name = "cl_vendedor";
+            cl_vendedor.ReadOnly = true;
+            cl_vendedor.Width = 150;
             // 
             // Ventas
             // 
@@ -676,6 +684,12 @@
         private Panel panel3;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem MEmitir;
+        private Label lbl_inc_bolsa;
+        private Label label11;
+        private Label lbl_inc;
+        private Label label7;
+        private Label lbl_iva;
+        private Label label3;
         private DataGridViewTextBoxColumn cl_fecha;
         private DataGridViewTextBoxColumn cl_id_venta;
         private DataGridViewTextBoxColumn cl_factura;
@@ -693,11 +707,6 @@
         private DataGridViewTextBoxColumn cl_documento_cliente;
         private DataGridViewTextBoxColumn cl_nombre_cliente;
         private DataGridViewTextBoxColumn cl_usuario;
-        private Label lbl_inc_bolsa;
-        private Label label11;
-        private Label lbl_inc;
-        private Label label7;
-        private Label lbl_iva;
-        private Label label3;
+        private DataGridViewTextBoxColumn cl_vendedor;
     }
 }

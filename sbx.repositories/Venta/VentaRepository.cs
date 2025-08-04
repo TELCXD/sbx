@@ -469,6 +469,7 @@ namespace sbx.repositories.Venta
 									ISNULL((SELECT NT.NumberNotaCreditoDIAN FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) NumberNotaCreditoDIAN,
 									ISNULL((SELECT NT.NotaCreditoJSON FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) NotaCreditoJSON,
                                     ISNULL((SELECT NT.Motivo FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), '') MotivoNotaCredito,
+                                    J.IdVendedor,
                                     J.NumeroDocumento NumeroDocumentoVendedor,
                                     J.Nombre NombreVendedor,
                                     J.Apellido ApellidoVendedor,
@@ -580,6 +581,7 @@ namespace sbx.repositories.Venta
 									ISNULL(A.NumberFacturaDIAN,'') NumberFacturaDIAN,
 									A.FacturaJSON,
                                     ISNULL((SELECT IdNotaCredito FROM T_NotaCredito NT WHERE NT.IdVenta = A.IdVenta), 0) IdNotaCredito,
+                                    J.IdVendedor,
                                     J.NumeroDocumento NumeroDocumentoVendedor,
                                     J.Nombre NombreVendedor,
                                     J.Apellido ApellidoVendedor,
@@ -644,9 +646,20 @@ namespace sbx.repositories.Venta
                                     {
                                         Where = $" AND G.UserName LIKE @Filtro ";
                                     }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND CONCAT(J.Nombre,' ',J.Apellido) LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Num Doc":
-                                    Where = $" AND D.NumeroDocumento LIKE @Filtro ";
+                                    if (clientVenta == "Cliente")
+                                    {
+                                        Where = $" AND D.NumeroDocumento LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND J.NumeroDocumento LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Id":
                                     if (clientVenta == "Producto")
@@ -657,6 +670,10 @@ namespace sbx.repositories.Venta
                                     {
                                         Where = $" AND A.IdUserAction LIKE @Filtro ";
                                     }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND J.IdVendedor LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku LIKE @Filtro ";
@@ -665,7 +682,6 @@ namespace sbx.repositories.Venta
                                     Where = $" AND B.CodigoBarras LIKE @Filtro ";
                                     break;
                                 case "Prefijo-Consecutivo":
-
                                     Where = $" AND CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
                                     break;
                                 default:
@@ -690,9 +706,20 @@ namespace sbx.repositories.Venta
                                     {
                                         Where = $" AND G.UserName = @Filtro ";
                                     }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND CONCAT(J.Nombre,' ',J.Apellido) = @Filtro ";
+                                    }
                                     break;
                                 case "Num Doc":
-                                    Where = $" AND D.NumeroDocumento = @Filtro ";
+                                    if (clientVenta == "Cliente")
+                                    {
+                                        Where = $" AND D.NumeroDocumento = @Filtro ";
+                                    }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND J.NumeroDocumento = @Filtro ";
+                                    }
                                     break;
                                 case "Id":
                                     if (clientVenta == "Producto")
@@ -702,7 +729,11 @@ namespace sbx.repositories.Venta
                                     else if (clientVenta == "Usuario")
                                     {
                                         Where = $" AND A.IdUserAction = @Filtro ";
-                                    }                                   
+                                    }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND J.IdVendedor = @Filtro ";
+                                    }
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku = @Filtro ";
@@ -735,9 +766,20 @@ namespace sbx.repositories.Venta
                                     {
                                         Where = $" AND G.UserName LIKE @Filtro ";
                                     }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND CONCAT(J.Nombre,' ',J.Apellido) LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Num Doc":
-                                    Where = $" AND D.NumeroDocumento = @Filtro ";
+                                    if (clientVenta == "Cliente")
+                                    {
+                                        Where = $" AND D.NumeroDocumento LIKE @Filtro ";
+                                    }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND J.NumeroDocumento LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Id":
                                     if (clientVenta == "Producto")
@@ -747,7 +789,11 @@ namespace sbx.repositories.Venta
                                     else if (clientVenta == "Usuario")
                                     {
                                         Where = $" AND A.IdUserAction LIKE @Filtro ";
-                                    }                                   
+                                    }
+                                    else if (clientVenta == "Vendedor")
+                                    {
+                                        Where = $" AND J.IdVendedor LIKE @Filtro ";
+                                    }
                                     break;
                                 case "Sku":
                                     Where = $" AND B.Sku LIKE @Filtro ";

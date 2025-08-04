@@ -110,6 +110,10 @@ namespace sbx
             {
                 cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id" });
             }
+            else if (cbx_client_venta.Text == "Vendedor")
+            {
+                cbx_campo_filtro.Items.AddRange(new object[] { "Id", "Nombre", "Num Doc" });
+            }
             cbx_campo_filtro.SelectedIndex = 0;
         }
 
@@ -207,7 +211,8 @@ namespace sbx
                             TotalLinea.ToString("N2", new CultureInfo("es-CO")),
                             item.NumeroDocumento,
                             item.NombreRazonSocial,
-                            item.IdUserActionFactura + " - " + item.UserNameFactura);
+                            item.IdUserActionFactura + " - " + item.UserNameFactura,
+                            item.NumeroDocumentoVendedor + " - " + item.NombreCompletoVendedor);
 
                         var celdaEstado = dtg_ventas.Rows[rowIndex].Cells[3];
                         if (celdaEstado.Value.ToString() == "PENDIENTE EMITIR")
@@ -328,7 +333,7 @@ namespace sbx
                                     DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
                                     DataFactura.UserNameFactura = DataVenta.Data[0].IdUserActionFactura + " - " + DataVenta.Data[0].UserNameFactura;
                                     DataFactura.NombreCliente = DataVenta.Data[0].NumeroDocumento + " - " + DataVenta.Data[0].NombreRazonSocial;
-                                    DataFactura.NombreVendedor = DataVenta.Data[0].NumeroDocumentoVendedor + " - " + DataVenta.Data[0].NombreVendedor;
+                                    DataFactura.NombreVendedor = DataVenta.Data[0].IdVendedor + " - " + DataVenta.Data[0].NombreCompletoVendedor;
                                     DataFactura.Estado = DataVenta.Data[0].EstadoFacturaDIAN == "" ? DataVenta.Data[0].Estado : DataVenta.Data[0].EstadoFacturaDIAN;
                                     DataFactura.FormaPago = DataVenta.Data[0].NombreMetodoPago;
                                     DataFactura.Recibido = DataVenta.Data[0].Recibido;

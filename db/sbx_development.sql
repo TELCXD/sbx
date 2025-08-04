@@ -1354,13 +1354,66 @@ INSERT INTO T_CodigoPostal (IdCodigoPostal,Code)
 VALUES(1,'N/A')
 GO
 CREATE TABLE T_ActividadEconomica(
-IdActividadEconomica INT PRIMARY KEY,
+IdActividadEconomica INT PRIMARY KEY IDENTITY(1,1),
 Code VARCHAR(20) UNIQUE,
-Nombre VARCHAR(100) UNIQUE
+Nombre VARCHAR(MAX)
 )
 GO
-INSERT INTO T_ActividadEconomica (IdActividadEconomica,Nombre)
-VALUES(1,'N/A')
+INSERT INTO T_ActividadEconomica (Code,Nombre)
+VALUES('','N/A'),
+('4541','Comercio de motocicletas y de sus partes, piezas y accesorios.'),
+('4542','Mantenimiento y reparación de motocicletas y de sus partes y piezas.'),
+('4620','Comercio al por mayor de materias primas agropecuarias; animales vivos.'),
+('4631','Comercio al por mayor de productos alimenticios.'),
+('4632','Comercio al por mayor de bebidas y tabaco.'),
+('4641','Comercio al por mayor de productos textiles, productos confeccionados para uso doméstico.'),
+('4642','Comercio al por mayor de prendas de vestir.'),
+('4643','Comercio al por mayor de calzado.'),
+('4644','Comercio al por mayor de aparatos y equipo de uso doméstico.'),
+('4645','Comercio al por mayor de productos farmacéuticos, medicinales, cosméticos y de tocador.'),
+('4649','Comercio al por mayor de otros utensilios domésticos n.c.p.'),
+('4651','Comercio al por mayor de computadores, equipo periférico y programas de informática.'),
+('4652','Comercio al por mayor de equipo, partes y piezas electrónicos y de telecomunicaciones.'),
+('4653','Comercio al por mayor de maquinaria y equipo agropecuarios.'),
+('4659','Comercio al por mayor de otros tipos de maquinaria y equipo n.c.p.'),
+('4661','Comercio al por mayor de combustibles sólidos, líquidos, gaseosos y productos conexos.'),
+('4662','Comercio al por mayor de metales y productos metalíferos.'),
+('4663','Comercio al por mayor de materiales de construcción, artículos de ferretería, pinturas, productos de vidrio, equipo y materiales de fontanería y calefacción.'),
+('4664','Comercio al por mayor de productos químicos básicos, cauchos y plásticos en formas primarias y productos químicos de uso agropecuario.'),
+('4665','Comercio al por mayor de desperdicios, desechos y chatarra.'),
+('4669','Comercio al por mayor de otros productos n.c.p.'),
+('4690','Comercio al por mayor no especializado.'),
+('4711','Comercio al por menor en establecimientos no especializados con surtido compuesto principalmente por alimentos, bebidas (alcohólicas y no alcohólicas) o tabaco.'),
+('4719','Comercio al por menor en establecimientos no especializados, con surtido compuesto principalmente por productos diferentes de alimentos (víveres en general), bebidas (alcohólicas y no alcohólicas) y tabaco.'),
+('4721','Comercio al por menor de productos agrícolas para el consumo en establecimientos especializados.'),
+('4722','Comercio al por menor de leche, productos lácteos y huevos, en establecimientos especializados.'),
+('4723','Comercio al por menor de carnes (incluye aves de corral), productos cárnicos, pescados y productos de mar, en establecimientos especializados.'),
+('4724','Comercio al por menor de bebidas y productos del tabaco, en establecimientos especializados.'),
+('4729','Comercio al por menor de otros productos alimenticios n.c.p., en establecimientos especializados.'),
+('4731','Comercio al por menor de combustible para automotores.'),
+('4732','Comercio al por menor de lubricantes (aceites, grasas), aditivos y productos de limpieza para vehículos automotores.'),
+('4741','Comercio al por menor de computadores, equipos periféricos, programas de informática y equipos de telecomunicaciones en establecimientos especializados.'),
+('4742','Comercio al por menor de equipos y aparatos de sonido y de video, en establecimientos especializados.'),
+('4751','Comercio al por menor de productos textiles en establecimientos especializados.'),
+('4752','Comercio al por menor de artículos de ferretería, pinturas y productos de vidrio en establecimientos especializados.'),
+('4753','Comercio al por menor de tapices, alfombras y recubrimientos para paredes y pisos en establecimientos especializados.'),
+('4754','Comercio al por menor de electrodomésticos y gasodomésticos de uso doméstico, muebles y equipos de iluminación en establecimientos especializados.'),
+('4755','Comercio al por menor de artículos y utensilios de uso doméstico en establecimientos especializados.'),
+('4759','Comercio al por menor de otros artículos domésticos en establecimientos especializados.'),
+('4761','Comercio al por menor de libros, periódicos, materiales y artículos de papelería y escritorio, en establecimientos especializados.'),
+('4762','Comercio al por menor de artículos deportivos, en establecimientos especializados.'),
+('4769','Comercio al por menor de otros artículos culturales y de entretenimiento n.c.p. en establecimientos especializados.'),
+('4771','Comercio al por menor de prendas de vestir y sus accesorios (incluye artículos de piel) en establecimientos especializados.'),
+('4772','Comercio al por menor de todo tipo de calzado y artículos de cuero y sucedáneos del cuero en establecimientos especializados.'),
+('4773','Comercio al por menor de productos farmacéuticos y medicinales, cosméticos y artículos de tocador en establecimientos especializados.'),
+('4774','Comercio al por menor de otros productos nuevos en establecimientos especializados.'),
+('4775','Comercio al por menor de artículos de segunda mano.'),
+('4781','Comercio al por menor de alimentos, bebidas y tabaco, en puestos de venta móviles.'),
+('4782','Comercio al por menor de productos textiles, prendas de vestir y calzado, en puestos de venta móviles.'),
+('4789','Comercio al por menor de otros productos en puestos de venta móviles.'),
+('4791','Comercio al por menor realizado a través de Internet.'),
+('4792','Comercio al por menor realizado a través de casas de venta o por correo.'),
+('4799','Otros tipos de comercio al por menor no realizado en establecimientos, puestos de venta o mercados.')
 GO
 CREATE TABLE T_Tienda(
 IdTienda INT PRIMARY KEY,
