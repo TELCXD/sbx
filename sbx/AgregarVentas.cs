@@ -2411,7 +2411,7 @@ namespace sbx
                                                                 DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
                                                                 DataFactura.UserNameFactura = DataFacturaRegistrada.Data[0].IdUserActionFactura + " - " + DataFacturaRegistrada.Data[0].UserNameFactura;
                                                                 DataFactura.NombreCliente = DataFacturaRegistrada.Data[0].NumeroDocumento + " - " + DataFacturaRegistrada.Data[0].NombreRazonSocial;
-                                                                DataFactura.NombreVendedor = DataFacturaRegistrada.Data[0].NumeroDocumentoVendedor + " - " + DataFacturaRegistrada.Data[0].NombreVendedor;
+                                                                DataFactura.NombreVendedor = DataFacturaRegistrada.Data[0].IdVendedor + " - " + DataFacturaRegistrada.Data[0].NombreCompletoVendedor;
                                                                 DataFactura.FormaPago = DataFacturaRegistrada.Data[0].NombreMetodoPago;
                                                                 DataFactura.Recibido = DataFacturaRegistrada.Data[0].Recibido;
 
@@ -3284,7 +3284,7 @@ namespace sbx
                             DtCotizacion.NIT = DataTienda.Data[0].NumeroDocumento;
                             DtCotizacion.UserNameCotizacion = DatosCotizacion.Data[0].IdUserActionCotizacion + " - " + DatosCotizacion.Data[0].UserNameCotizacion;
                             DtCotizacion.NombreCliente = DatosCotizacion.Data[0].NumeroDocumento + " - " + DatosCotizacion.Data[0].NombreRazonSocial;
-                            DtCotizacion.NombreVendedor = DatosCotizacion.Data[0].NumeroDocumentoVendedor + " - " + DatosCotizacion.Data[0].NombreVendedor;
+                            DtCotizacion.NombreVendedor = DatosCotizacion.Data[0].IdVendedor + " - " + DatosCotizacion.Data[0].NombreCompletoVendedor;
                             DtCotizacion.Estado = DatosCotizacion.Data[0].Estado;
                             DtCotizacion.DiasVencimiento = DatosCotizacion.Data[0].DiasVencimiento;
                             DtCotizacion.FechaVencimiento = DatosCotizacion.Data[0].FechaVencimiento;

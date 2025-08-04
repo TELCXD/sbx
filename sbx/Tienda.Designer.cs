@@ -209,15 +209,15 @@
             // 
             cbx_actividad_economica.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_actividad_economica.FormattingEnabled = true;
-            cbx_actividad_economica.Location = new Point(374, 377);
+            cbx_actividad_economica.Location = new Point(41, 430);
             cbx_actividad_economica.Name = "cbx_actividad_economica";
-            cbx_actividad_economica.Size = new Size(303, 23);
+            cbx_actividad_economica.Size = new Size(636, 23);
             cbx_actividad_economica.TabIndex = 15;
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(374, 357);
+            label12.Location = new Point(41, 410);
             label12.Name = "label12";
             label12.Size = new Size(119, 15);
             label12.TabIndex = 23;

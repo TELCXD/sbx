@@ -255,7 +255,7 @@ namespace sbx
                             DataFactura.NIT = DataTienda.Data[0].NumeroDocumento;
                             DataFactura.UserNameFactura = DataVenta.Data[0].IdUserActionFactura + " - " + DataVenta.Data[0].UserNameFactura;
                             DataFactura.NombreCliente = DataVenta.Data[0].NumeroDocumento + " - " + DataVenta.Data[0].NombreRazonSocial;
-                            DataFactura.NombreVendedor = DataVenta.Data[0].NumeroDocumentoVendedor + " - " + DataVenta.Data[0].NombreVendedor;
+                            DataFactura.NombreVendedor = DataVenta.Data[0].IdVendedor + " - " + DataVenta.Data[0].NombreCompletoVendedor;
                             DataFactura.Estado = DataVenta.Data[0].EstadoFacturaDIAN == "" ? DataVenta.Data[0].Estado : DataVenta.Data[0].EstadoFacturaDIAN;
                             DataFactura.FormaPago = DataVenta.Data[0].NombreMetodoPago;
                             DataFactura.Recibido = DataVenta.Data[0].Recibido;
