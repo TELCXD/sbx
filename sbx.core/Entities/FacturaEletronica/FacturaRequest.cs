@@ -9,6 +9,8 @@ namespace sbx.core.Entities.FacturaEletronica
         public string payment_form { get; set; } = string.Empty;
         public string payment_due_date { get; set; } = string.Empty;
         public string payment_method_code { get; set; } = string.Empty;
+        public int operation_type { get; set; }
+        public bool send_email { get; set; }
         public BillingPeriod? billing_period { get; set; }
         public Customer customer { get; set; } = new();
         public List<Item> items { get; set; } = new();

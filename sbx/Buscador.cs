@@ -220,7 +220,9 @@ namespace sbx
                     dtg_buscador.Columns["Nombre"].Width = 500;
                     dtg_buscador.Columns["IdProducto"].Visible = true;
                     dtg_buscador.Columns["CostoBase"].Visible = false;
-                    dtg_buscador.Columns["PrecioBase"].Visible = false;
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                    dtg_buscador.Columns["PrecioBase"].Visible = true;
                     dtg_buscador.Columns["EsInventariable"].Visible = false;
                     dtg_buscador.Columns["Impuesto"].Visible = false;
                     dtg_buscador.Columns["IdCategoria"].Visible = false;

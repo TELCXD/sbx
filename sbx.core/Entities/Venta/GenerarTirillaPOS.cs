@@ -76,9 +76,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(10);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
@@ -104,9 +104,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 6 ? item.Descuento.ToString().Substring(0, 6) : item.Descuento.ToString().PadRight(6);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(14);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(14);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var linea2 = $"{cantidad}|{unidadMedida}|{PrecioUnitario}";
@@ -119,27 +119,27 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                 // Totales
-                sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {factura.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {factura.iva.ToString("N2", new CultureInfo("es-CO"))}");
                 if (factura.inc > 0) 
                 {
-                    sb.AppendLine($"{"INC:",-20} {factura.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC:",-20} {factura.inc.ToString("N2", new CultureInfo("es-CO"))}");
                 }
                 if (factura.incBolsa > 0)
                 {
-                    sb.AppendLine($"{"INC Bolsa:",-20} {factura.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC Bolsa:",-20} {factura.incBolsa.ToString("N2", new CultureInfo("es-CO"))}");
                 }
 
-                sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N2", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
                 // Forma de pago
                 sb.AppendLine($"FORMA DE PAGO: {factura.FormaPago}");
                 if (factura.FormaPago.ToUpper() == "EFECTIVO")
                 {
-                    sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N0", new CultureInfo("es-CO"))}");
-                    sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N2", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N2", new CultureInfo("es-CO"))}");
                 }
 
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
@@ -251,9 +251,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(10);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
@@ -279,9 +279,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 6 ? item.Descuento.ToString().Substring(0, 6) : item.Descuento.ToString().PadRight(6);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(14);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(14);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var linea2 = $"{cantidad}|{unidadMedida}|{PrecioUnitario}";
@@ -294,26 +294,26 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                 // Totales
-                sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {factura.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"SUBTOTAL:",-20} {factura.Subtotal.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"DESCUENTO:",-20} {factura.Descuento.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {factura.iva.ToString("N2", new CultureInfo("es-CO"))}");
                 if (factura.inc > 0)
                 {
-                    sb.AppendLine($"{"INC:",-20} {factura.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC:",-20} {factura.inc.ToString("N2", new CultureInfo("es-CO"))}");
                 }
                 if (factura.incBolsa > 0)
                 {
-                    sb.AppendLine($"{"INC Bolsa:",-20} {factura.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC Bolsa:",-20} {factura.incBolsa.ToString("N2", new CultureInfo("es-CO"))}");
                 }
-                sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N2", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
                 // Forma de pago
                 sb.AppendLine($"FORMA DE PAGO: {factura.FormaPago}");
                 if (factura.FormaPago.ToUpper() == "EFECTIVO")
                 {
-                    sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N0", new CultureInfo("es-CO"))}");
-                    sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N2", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N2", new CultureInfo("es-CO"))}");
                 }
 
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
@@ -389,9 +389,9 @@ namespace sbx.core.Entities.Venta
                     // Línea con cantidad y precio
                     string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                     string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                    string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                    string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                     string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
-                    string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                    string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(10);
                     string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                     var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
@@ -417,9 +417,9 @@ namespace sbx.core.Entities.Venta
                     // Línea con cantidad y precio
                     string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                     string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                    string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                    string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                     string Descuento = item.Descuento.ToString().Length > 6 ? item.Descuento.ToString().Substring(0, 6) : item.Descuento.ToString().PadRight(6);
-                    string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(14);
+                    string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(14);
                     string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                     var linea2 = $"{cantidad}|{unidadMedida}|{PrecioUnitario}";
@@ -432,18 +432,18 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
             // Totales
-            sb.AppendLine($"{"SUBTOTAL:",-20} {cotizacion.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"{"DESCUENTO:",-20} {cotizacion.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"{"IVA:",-20} {cotizacion.iva.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"SUBTOTAL:",-20} {cotizacion.Subtotal.ToString("N2", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"DESCUENTO:",-20} {cotizacion.Descuento.ToString("N2", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"IVA:",-20} {cotizacion.iva.ToString("N2", new CultureInfo("es-CO"))}");
             if (cotizacion.inc > 0)
             {
-                sb.AppendLine($"{"INC:",-20} {cotizacion.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"INC:",-20} {cotizacion.inc.ToString("N2", new CultureInfo("es-CO"))}");
             }
             if (cotizacion.incBolsa > 0)
             {
-                sb.AppendLine($"{"INC Bolsa:",-20} {cotizacion.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"INC Bolsa:",-20} {cotizacion.incBolsa.ToString("N2", new CultureInfo("es-CO"))}");
             }
-            sb.AppendLine($"{"TOTAL:",-20} {cotizacion.Total.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"{"TOTAL:",-20} {cotizacion.Total.ToString("N2", new CultureInfo("es-CO"))}");
             sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
             // Pie de página
@@ -470,11 +470,11 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine($"Hora apertura: {caja.FechaHoraApertura.ToString("HH:mm:ss")}");
             sb.AppendLine($"Fecha cierre: {caja.FechaHoraCierre.ToString("yyyy-MM-dd")}");
             sb.AppendLine($"Hora cierre: {caja.FechaHoraCierre.ToString("HH:mm:ss")}");
-            sb.AppendLine($"Monto inicial: {caja.MontoInicialDeclarado.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"Total ventas: {caja.VentasTotales.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"Pagos en efectivo: {caja.PagosEnEfectivo.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"Monto final: {caja.MontoFinalDeclarado.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"Diferencia: {caja.Diferencia.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Monto inicial: {caja.MontoInicialDeclarado.ToString("N2", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Total ventas: {caja.VentasTotales.ToString("N2", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos en efectivo: {caja.PagosEnEfectivo.ToString("N2", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Monto final: {caja.MontoFinalDeclarado.ToString("N2", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Diferencia: {caja.Diferencia.ToString("N2", new CultureInfo("es-CO"))}");
 
             return sb;
         }
@@ -529,9 +529,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(10);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
@@ -557,9 +557,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 6 ? item.Descuento.ToString().Substring(0, 6) : item.Descuento.ToString().PadRight(6);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(14);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(14);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var linea2 = $"{cantidad}|{unidadMedida}|{PrecioUnitario}";
@@ -572,18 +572,18 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                 // Totales
-                sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {NotaCredito.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {NotaCredito.iva.ToString("N2", new CultureInfo("es-CO"))}");
                 if (NotaCredito.inc > 0)
                 {
-                    sb.AppendLine($"{"INC:",-20} {NotaCredito.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC:",-20} {NotaCredito.inc.ToString("N2", new CultureInfo("es-CO"))}");
                 }
                 if (NotaCredito.incBolsa > 0)
                 {
-                    sb.AppendLine($"{"INC Bolsa:",-20} {NotaCredito.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC Bolsa:",-20} {NotaCredito.incBolsa.ToString("N2", new CultureInfo("es-CO"))}");
                 }
-                sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N2", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
@@ -678,9 +678,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 5 ? item.Descuento.ToString().Substring(0, 5) : item.Descuento.ToString().PadRight(5);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(10);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 10 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 10) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(10);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var lineaCantidad = $"{cantidad}|{unidadMedida}|{PrecioUnitario}|{Descuento}|{Total}|{impuesto}";
@@ -706,9 +706,9 @@ namespace sbx.core.Entities.Venta
                         // Línea con cantidad y precio
                         string cantidad = item.Cantidad.ToString().Length > 6 ? item.Cantidad.ToString().Substring(0, 6) : item.Cantidad.ToString().PadRight(6);
                         string unidadMedida = item.UnidadMedida.Length > 3 ? item.UnidadMedida.Substring(0, 3) : item.UnidadMedida.PadRight(3);
-                        string PrecioUnitario = item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N0", new CultureInfo("es-CO")).PadRight(10);
+                        string PrecioUnitario = item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Length > 10 ? item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).Substring(0, 10) : item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")).PadRight(10);
                         string Descuento = item.Descuento.ToString().Length > 6 ? item.Descuento.ToString().Substring(0, 6) : item.Descuento.ToString().PadRight(6);
-                        string Total = item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N0", new CultureInfo("es-CO")).ToString().PadRight(14);
+                        string Total = item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Length > 14 ? item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().Substring(0, 14) : item.Total.ToString("N2", new CultureInfo("es-CO")).ToString().PadRight(14);
                         string impuesto = item.Impuesto.ToString().Length > 3 ? item.Impuesto.ToString().Substring(0, 3) : item.Impuesto.ToString().PadRight(3);
 
                         var linea2 = $"{cantidad}|{unidadMedida}|{PrecioUnitario}";
@@ -721,18 +721,18 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine(new string('-', ANCHO_TIRILLA));
 
                 // Totales
-                sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N0", new CultureInfo("es-CO"))}");
-                sb.AppendLine($"{"IVA:",-20} {NotaCredito.iva.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"SUBTOTAL:",-20} {NotaCredito.Subtotal.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"DESCUENTO:",-20} {NotaCredito.Descuento.ToString("N2", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"IVA:",-20} {NotaCredito.iva.ToString("N2", new CultureInfo("es-CO"))}");
                 if (NotaCredito.inc > 0)
                 {
-                    sb.AppendLine($"{"INC:",-20} {NotaCredito.inc.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC:",-20} {NotaCredito.inc.ToString("N2", new CultureInfo("es-CO"))}");
                 }
                 if (NotaCredito.incBolsa > 0)
                 {
-                    sb.AppendLine($"{"INC Bolsa:",-20} {NotaCredito.incBolsa.ToString("N0", new CultureInfo("es-CO"))}");
+                    sb.AppendLine($"{"INC Bolsa:",-20} {NotaCredito.incBolsa.ToString("N2", new CultureInfo("es-CO"))}");
                 }
-                sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N0", new CultureInfo("es-CO"))}");
+                sb.AppendLine($"{"TOTAL:",-20} {NotaCredito.Total.ToString("N2", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));

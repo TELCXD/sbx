@@ -2228,6 +2228,8 @@ namespace sbx
                                                                         TipoIdentificacion == 4 ? 6 : 3).ToString(); //NIT
 
                                                                     customer.identification = DataFacturaRegistrada.Data[0].NumeroDocumento.ToString();
+                                                                    int dv = CalcularDigitoVerificacion(customer.identification);
+                                                                    customer.dv = dv.ToString();
                                                                     if (TipoIdentificacion == 4) //NIT
                                                                     {
                                                                         customer.company = DataFacturaRegistrada.Data[0].NombreRazonSocial.ToString();
@@ -2317,6 +2319,8 @@ namespace sbx
                                                                         payment_form = "1", // 1. Pago de contado, 2. Pago a crédito
                                                                         payment_due_date = "",
                                                                         payment_method_code = "10", //10. Efectivo
+                                                                        operation_type = 10, // 10.Estándar, 11. Mandatos
+                                                                        send_email = true,
                                                                         //billing_period = billingPeriod,
                                                                         customer = customer,
                                                                         items = Listitems
@@ -3832,6 +3836,33 @@ namespace sbx
 
                 CantidadInicial = Convert.ToDecimal(celda.Value, new CultureInfo("es-CO"));
             }
+        }
+
+        public static int CalcularDigitoVerificacion(string nit)
+        {
+            if (string.IsNullOrWhiteSpace(nit) || !nit.All(char.IsDigit))
+                throw new ArgumentException("El NIT debe contener solo dígitos");
+
+            int[] pesos = new int[] { 71, 67, 59, 53, 47, 43, 41, 37, 29, 23, 19, 17, 13, 7, 3 };
+
+            // Rellenar con ceros a la izquierda si el NIT tiene menos de 15 dígitos
+            nit = nit.PadLeft(15, '0');
+
+            int suma = 0;
+
+            for (int i = 0; i < 15; i++)
+            {
+                int digito = int.Parse(nit[i].ToString());
+                suma += digito * pesos[i];
+            }
+
+            int residuo = suma % 11;
+            if (residuo == 0)
+                return 0;
+            else if (residuo == 1)
+                return 1;
+            else
+                return 11 - residuo;
         }
     }
 }
