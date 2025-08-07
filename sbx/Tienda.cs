@@ -328,8 +328,8 @@ namespace sbx
 
         public static int CalcularDigitoVerificacion(string nit)
         {
-            if (string.IsNullOrWhiteSpace(nit) || !nit.All(char.IsDigit))
-                throw new ArgumentException("El NIT debe contener solo dígitos");
+            //if (string.IsNullOrWhiteSpace(nit) || !nit.All(char.IsDigit))
+            //    throw new ArgumentException("El NIT debe contener solo dígitos");
 
             int[] pesos = new int[] { 71, 67, 59, 53, 47, 43, 41, 37, 29, 23, 19, 17, 13, 7, 3 };
 
