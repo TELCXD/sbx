@@ -38,6 +38,9 @@ namespace sbx
         decimal Total = 0;
         decimal DescuentoLinea = 0;
         bool FacturaElectronica = false;
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
 
         public Ventas(IVenta venta, IServiceProvider serviceProvider, ITienda tienda,
             IParametros iParametros, IAuthService iAuthService, 
@@ -54,13 +57,45 @@ namespace sbx
             _IRangoNumeracionFE = iRangoNumeracionFE;
         }
 
-        private void Ventas_Load(object sender, EventArgs e)
+        private async void Ventas_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
 
             cbx_client_venta.SelectedIndex = 0;
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
+
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Tipo filtro producto":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
+            }
         }
 
         public dynamic? Permisos
@@ -273,7 +308,36 @@ namespace sbx
                 ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
             }
 
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
             return ValorDescuento;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
 
         private void dtg_ventas_DoubleClick(object sender, EventArgs e)

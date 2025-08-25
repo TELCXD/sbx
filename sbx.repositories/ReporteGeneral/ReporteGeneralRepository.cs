@@ -29,16 +29,20 @@ namespace sbx.repositories.ReporteGeneral
                     await connection.OpenAsync();
 
                     string sql = @"SELECT 
-                                    A.CreationDate,
+                                   A.CreationDate,
                                     B.IdProducto,
-                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)) VentaNetaFinal                                             
+									B.Cantidad,
+									B.PrecioUnitario,
+									B.Descuento,
+									A.Estado,
+									B.Impuesto,
+									B.NombreTributo                                            
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                     WHERE 
                                     (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) 
                                     AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) AND 
                                     A.Estado = 'FACTURADA' 
-                                    GROUP BY A.CreationDate,B.IdProducto
                                     ORDER BY A.CreationDate,B.IdProducto  ";
 
                     dynamic resultado = await connection.QueryAsync(sql, new { FechaIni, FechaFn });
@@ -196,51 +200,77 @@ namespace sbx.repositories.ReporteGeneral
                                     CASE WHEN Modulo = 'GASTOS'  THEN 3 ELSE
                                     CASE WHEN Modulo = 'SALIDAS' THEN 4 END END END END Id,
                                     Modulo,
-                                    Valor,
-                                    CreationDate
+                                    CreationDate,
+                                    IdProducto,
+									Cantidad,
+									Valor,
+									Descuento,
+									Estado,
+									Impuesto,
+									NombreTributo 
                                     FROM 
                                     (
                                     --VENTAS
                                     SELECT 
                                     'VENTAS' Modulo
                                     ,A.CreationDate,
-                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100)) Valor                                            
+                                    B.IdProducto,
+									B.Cantidad,
+									B.PrecioUnitario Valor,
+									B.Descuento,
+									A.Estado,
+									B.Impuesto,
+									B.NombreTributo                                          
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
-                                    WHERE A.Estado = 'FACTURADA'
-                                    GROUP BY A.CreationDate    
+                                    WHERE A.Estado = 'FACTURADA'  
 
                                     UNION ALL
 
                                     --COMPRAS
                                     SELECT 
                                     'COMPRAS' Modulo
-                                    ,CreationDate
-                                    ,SUM((Cantidad * CostoUnitario) * (1 - ISNULL(Descuento, 0) / 100)) Valor
+                                    ,CreationDate,
+                                    IdProducto,
+									Cantidad,
+									CostoUnitario Valor,
+									Descuento,
+									'' Estado,
+									Impuesto,
+									'IVA' NombreTributo      
                                     FROM T_DetalleEntradasInventario
-                                    GROUP BY CreationDate
 
                                     UNION ALL
 
                                     --SALIDAS
                                     SELECT 
                                     'SALIDAS' Modulo
-                                    ,CreationDate
-                                    ,SUM(Cantidad * CostoUnitario) AS Valor
+                                    ,CreationDate,
+                                    IdProducto,
+									Cantidad,
+									CostoUnitario Valor,
+									0 Descuento,
+									'' Estado,
+									0 Impuesto,
+									'IVA' NombreTributo  
                                     FROM T_DetalleSalidasInventario
-                                    GROUP BY CreationDate
 
                                     UNION ALL
 
                                     --GASTOS
                                     SELECT 
                                     'GASTOS' Modulo
-                                    ,CreationDate
-                                    ,SUM(ValorGasto) Valor
+                                    ,CreationDate,
+                                    0 IdProducto,
+									0 Cantidad,
+									ValorGasto Valor,
+									0 Descuento,
+									'' Estado,
+									0 Impuesto,
+									'' NombreTributo  
                                     FROM T_Gastos
-                                    GROUP BY CreationDate
                                     ) R
-                                    WHERE 
+                                    WHERE
                                     (CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) 
                                     AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120))
                                     ORDER BY Id, CreationDate ";

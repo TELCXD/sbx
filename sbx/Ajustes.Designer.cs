@@ -40,6 +40,12 @@
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             TabParametros = new TabPage();
+            cbx_multiplo_redondeo = new ComboBox();
+            label13 = new Label();
+            txt_max_desc_aplicable = new TextBox();
+            label12 = new Label();
+            cbx_modo_redondeo = new ComboBox();
+            label11 = new Label();
             label10 = new Label();
             cbx_lineas_abajo = new ComboBox();
             label9 = new Label();
@@ -66,6 +72,18 @@
             tabControl2 = new TabControl();
             tabPage2 = new TabPage();
             dtg_rangos_numeracion = new DataGridView();
+            cl_Nro = new DataGridViewTextBoxColumn();
+            cl_id_rango_dian = new DataGridViewTextBoxColumn();
+            cl_en_uso = new DataGridViewTextBoxColumn();
+            cl_doc_electronico = new DataGridViewTextBoxColumn();
+            cl_vencido = new DataGridViewTextBoxColumn();
+            cl_estado_ra = new DataGridViewTextBoxColumn();
+            cl_tipo_documento = new DataGridViewTextBoxColumn();
+            cl_prefijo = new DataGridViewTextBoxColumn();
+            cl_numero_desde = new DataGridViewTextBoxColumn();
+            cl_numero_hasta = new DataGridViewTextBoxColumn();
+            cl_nro_resolucion = new DataGridViewTextBoxColumn();
+            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
             panel1 = new Panel();
             btn_buscar_ra = new Button();
             btn_eliminar_ra = new Button();
@@ -111,18 +129,6 @@
             btn_busca_usuario = new Button();
             label5 = new Label();
             errorProvider1 = new ErrorProvider(components);
-            cl_Nro = new DataGridViewTextBoxColumn();
-            cl_id_rango_dian = new DataGridViewTextBoxColumn();
-            cl_en_uso = new DataGridViewTextBoxColumn();
-            cl_doc_electronico = new DataGridViewTextBoxColumn();
-            cl_vencido = new DataGridViewTextBoxColumn();
-            cl_estado_ra = new DataGridViewTextBoxColumn();
-            cl_tipo_documento = new DataGridViewTextBoxColumn();
-            cl_prefijo = new DataGridViewTextBoxColumn();
-            cl_numero_desde = new DataGridViewTextBoxColumn();
-            cl_numero_hasta = new DataGridViewTextBoxColumn();
-            cl_nro_resolucion = new DataGridViewTextBoxColumn();
-            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
             TabParametros.SuspendLayout();
             panel2.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -144,6 +150,12 @@
             // 
             // TabParametros
             // 
+            TabParametros.Controls.Add(cbx_multiplo_redondeo);
+            TabParametros.Controls.Add(label13);
+            TabParametros.Controls.Add(txt_max_desc_aplicable);
+            TabParametros.Controls.Add(label12);
+            TabParametros.Controls.Add(cbx_modo_redondeo);
+            TabParametros.Controls.Add(label11);
             TabParametros.Controls.Add(label10);
             TabParametros.Controls.Add(cbx_lineas_abajo);
             TabParametros.Controls.Add(label9);
@@ -173,10 +185,67 @@
             TabParametros.Text = "Parámetros";
             TabParametros.UseVisualStyleBackColor = true;
             // 
+            // cbx_multiplo_redondeo
+            // 
+            cbx_multiplo_redondeo.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_multiplo_redondeo.FormattingEnabled = true;
+            cbx_multiplo_redondeo.Items.AddRange(new object[] { "50", "100" });
+            cbx_multiplo_redondeo.Location = new Point(253, 373);
+            cbx_multiplo_redondeo.Name = "cbx_multiplo_redondeo";
+            cbx_multiplo_redondeo.Size = new Size(245, 25);
+            cbx_multiplo_redondeo.TabIndex = 26;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(8, 376);
+            label13.Name = "label13";
+            label13.Size = new Size(131, 17);
+            label13.TabIndex = 25;
+            label13.Text = "Multiplo Redondeo";
+            // 
+            // txt_max_desc_aplicable
+            // 
+            txt_max_desc_aplicable.Location = new Point(253, 405);
+            txt_max_desc_aplicable.MaxLength = 4;
+            txt_max_desc_aplicable.Name = "txt_max_desc_aplicable";
+            txt_max_desc_aplicable.Size = new Size(245, 23);
+            txt_max_desc_aplicable.TabIndex = 24;
+            txt_max_desc_aplicable.KeyPress += txt_max_desc_aplicable_KeyPress;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(8, 408);
+            label12.Name = "label12";
+            label12.Size = new Size(210, 17);
+            label12.TabIndex = 23;
+            label12.Text = "Máximo % descuento aplicable";
+            // 
+            // cbx_modo_redondeo
+            // 
+            cbx_modo_redondeo.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_modo_redondeo.FormattingEnabled = true;
+            cbx_modo_redondeo.Items.AddRange(new object[] { "N/A", "Hacia arriba", "Hacia abajo", "Hacia arriba o hacia abajo" });
+            cbx_modo_redondeo.Location = new Point(253, 342);
+            cbx_modo_redondeo.Name = "cbx_modo_redondeo";
+            cbx_modo_redondeo.Size = new Size(245, 25);
+            cbx_modo_redondeo.TabIndex = 21;
+            cbx_modo_redondeo.SelectedValueChanged += cbx_modo_redondeo_SelectedValueChanged;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(8, 350);
+            label11.Name = "label11";
+            label11.Size = new Size(118, 17);
+            label11.TabIndex = 22;
+            label11.Text = "Modo Redondeo";
+            // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(380, 317);
+            label10.Location = new Point(508, 314);
             label10.Name = "label10";
             label10.Size = new Size(148, 17);
             label10.TabIndex = 20;
@@ -189,7 +258,7 @@
             cbx_lineas_abajo.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
             cbx_lineas_abajo.Location = new Point(253, 311);
             cbx_lineas_abajo.Name = "cbx_lineas_abajo";
-            cbx_lineas_abajo.Size = new Size(121, 25);
+            cbx_lineas_abajo.Size = new Size(245, 25);
             cbx_lineas_abajo.TabIndex = 19;
             // 
             // label9
@@ -249,7 +318,7 @@
             cbx_parametro_tipo_filtro_producto.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
             cbx_parametro_tipo_filtro_producto.Location = new Point(253, 160);
             cbx_parametro_tipo_filtro_producto.Name = "cbx_parametro_tipo_filtro_producto";
-            cbx_parametro_tipo_filtro_producto.Size = new Size(121, 25);
+            cbx_parametro_tipo_filtro_producto.Size = new Size(245, 25);
             cbx_parametro_tipo_filtro_producto.TabIndex = 4;
             // 
             // label7
@@ -268,7 +337,7 @@
             cbx_Buscarenventapor.Items.AddRange(new object[] { "Id", "Sku", "Codigo barras" });
             cbx_Buscarenventapor.Location = new Point(253, 128);
             cbx_Buscarenventapor.Name = "cbx_Buscarenventapor";
-            cbx_Buscarenventapor.Size = new Size(121, 25);
+            cbx_Buscarenventapor.Size = new Size(245, 25);
             cbx_Buscarenventapor.TabIndex = 3;
             // 
             // label6
@@ -302,7 +371,7 @@
             cbx_pregunta_imprimir_venta.Items.AddRange(new object[] { "NO", "SI" });
             cbx_pregunta_imprimir_venta.Location = new Point(253, 97);
             cbx_pregunta_imprimir_venta.Name = "cbx_pregunta_imprimir_venta";
-            cbx_pregunta_imprimir_venta.Size = new Size(121, 25);
+            cbx_pregunta_imprimir_venta.Size = new Size(245, 25);
             cbx_pregunta_imprimir_venta.TabIndex = 2;
             // 
             // cbx_valida_stock_venta
@@ -312,7 +381,7 @@
             cbx_valida_stock_venta.Items.AddRange(new object[] { "SI", "NO" });
             cbx_valida_stock_venta.Location = new Point(253, 66);
             cbx_valida_stock_venta.Name = "cbx_valida_stock_venta";
-            cbx_valida_stock_venta.Size = new Size(121, 25);
+            cbx_valida_stock_venta.Size = new Size(245, 25);
             cbx_valida_stock_venta.TabIndex = 1;
             // 
             // label4
@@ -458,6 +527,103 @@
             dtg_rangos_numeracion.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_rangos_numeracion.Size = new Size(1054, 424);
             dtg_rangos_numeracion.TabIndex = 1;
+            // 
+            // cl_Nro
+            // 
+            cl_Nro.HeaderText = "Nro.";
+            cl_Nro.MinimumWidth = 60;
+            cl_Nro.Name = "cl_Nro";
+            cl_Nro.ReadOnly = true;
+            cl_Nro.Visible = false;
+            cl_Nro.Width = 60;
+            // 
+            // cl_id_rango_dian
+            // 
+            cl_id_rango_dian.HeaderText = "Id";
+            cl_id_rango_dian.MinimumWidth = 6;
+            cl_id_rango_dian.Name = "cl_id_rango_dian";
+            cl_id_rango_dian.ReadOnly = true;
+            cl_id_rango_dian.Width = 60;
+            // 
+            // cl_en_uso
+            // 
+            cl_en_uso.HeaderText = "En uso";
+            cl_en_uso.MinimumWidth = 6;
+            cl_en_uso.Name = "cl_en_uso";
+            cl_en_uso.ReadOnly = true;
+            cl_en_uso.Width = 95;
+            // 
+            // cl_doc_electronico
+            // 
+            cl_doc_electronico.HeaderText = "DocElectronico";
+            cl_doc_electronico.Name = "cl_doc_electronico";
+            cl_doc_electronico.ReadOnly = true;
+            // 
+            // cl_vencido
+            // 
+            cl_vencido.HeaderText = "Vencido";
+            cl_vencido.MinimumWidth = 6;
+            cl_vencido.Name = "cl_vencido";
+            cl_vencido.ReadOnly = true;
+            cl_vencido.Width = 125;
+            // 
+            // cl_estado_ra
+            // 
+            cl_estado_ra.HeaderText = "Estado";
+            cl_estado_ra.MinimumWidth = 70;
+            cl_estado_ra.Name = "cl_estado_ra";
+            cl_estado_ra.ReadOnly = true;
+            cl_estado_ra.Resizable = DataGridViewTriState.True;
+            cl_estado_ra.SortMode = DataGridViewColumnSortMode.NotSortable;
+            cl_estado_ra.Width = 70;
+            // 
+            // cl_tipo_documento
+            // 
+            cl_tipo_documento.HeaderText = "Tipo Documento";
+            cl_tipo_documento.MinimumWidth = 150;
+            cl_tipo_documento.Name = "cl_tipo_documento";
+            cl_tipo_documento.ReadOnly = true;
+            cl_tipo_documento.Width = 150;
+            // 
+            // cl_prefijo
+            // 
+            cl_prefijo.HeaderText = "Prefijo";
+            cl_prefijo.MinimumWidth = 60;
+            cl_prefijo.Name = "cl_prefijo";
+            cl_prefijo.ReadOnly = true;
+            cl_prefijo.Width = 60;
+            // 
+            // cl_numero_desde
+            // 
+            cl_numero_desde.HeaderText = "Número Desde";
+            cl_numero_desde.MinimumWidth = 130;
+            cl_numero_desde.Name = "cl_numero_desde";
+            cl_numero_desde.ReadOnly = true;
+            cl_numero_desde.Width = 130;
+            // 
+            // cl_numero_hasta
+            // 
+            cl_numero_hasta.HeaderText = "Número Hasta";
+            cl_numero_hasta.MinimumWidth = 126;
+            cl_numero_hasta.Name = "cl_numero_hasta";
+            cl_numero_hasta.ReadOnly = true;
+            cl_numero_hasta.Width = 126;
+            // 
+            // cl_nro_resolucion
+            // 
+            cl_nro_resolucion.HeaderText = "Nro. Resolucion";
+            cl_nro_resolucion.MinimumWidth = 150;
+            cl_nro_resolucion.Name = "cl_nro_resolucion";
+            cl_nro_resolucion.ReadOnly = true;
+            cl_nro_resolucion.Width = 150;
+            // 
+            // cl_fecha_vencimiento
+            // 
+            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
+            cl_fecha_vencimiento.MinimumWidth = 160;
+            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
+            cl_fecha_vencimiento.ReadOnly = true;
+            cl_fecha_vencimiento.Width = 160;
             // 
             // panel1
             // 
@@ -728,9 +894,9 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre usuario", "Id usuario" });
-            cbx_campo_filtro.Location = new Point(623, 14);
+            cbx_campo_filtro.Location = new Point(574, 14);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
-            cbx_campo_filtro.Size = new Size(114, 25);
+            cbx_campo_filtro.Size = new Size(163, 25);
             cbx_campo_filtro.TabIndex = 32;
             // 
             // btn_buscar_usuario
@@ -998,103 +1164,6 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
-            // cl_Nro
-            // 
-            cl_Nro.HeaderText = "Nro.";
-            cl_Nro.MinimumWidth = 60;
-            cl_Nro.Name = "cl_Nro";
-            cl_Nro.ReadOnly = true;
-            cl_Nro.Visible = false;
-            cl_Nro.Width = 60;
-            // 
-            // cl_id_rango_dian
-            // 
-            cl_id_rango_dian.HeaderText = "Id";
-            cl_id_rango_dian.MinimumWidth = 6;
-            cl_id_rango_dian.Name = "cl_id_rango_dian";
-            cl_id_rango_dian.ReadOnly = true;
-            cl_id_rango_dian.Width = 60;
-            // 
-            // cl_en_uso
-            // 
-            cl_en_uso.HeaderText = "En uso";
-            cl_en_uso.MinimumWidth = 6;
-            cl_en_uso.Name = "cl_en_uso";
-            cl_en_uso.ReadOnly = true;
-            cl_en_uso.Width = 95;
-            // 
-            // cl_doc_electronico
-            // 
-            cl_doc_electronico.HeaderText = "DocElectronico";
-            cl_doc_electronico.Name = "cl_doc_electronico";
-            cl_doc_electronico.ReadOnly = true;
-            // 
-            // cl_vencido
-            // 
-            cl_vencido.HeaderText = "Vencido";
-            cl_vencido.MinimumWidth = 6;
-            cl_vencido.Name = "cl_vencido";
-            cl_vencido.ReadOnly = true;
-            cl_vencido.Width = 125;
-            // 
-            // cl_estado_ra
-            // 
-            cl_estado_ra.HeaderText = "Estado";
-            cl_estado_ra.MinimumWidth = 70;
-            cl_estado_ra.Name = "cl_estado_ra";
-            cl_estado_ra.ReadOnly = true;
-            cl_estado_ra.Resizable = DataGridViewTriState.True;
-            cl_estado_ra.SortMode = DataGridViewColumnSortMode.NotSortable;
-            cl_estado_ra.Width = 70;
-            // 
-            // cl_tipo_documento
-            // 
-            cl_tipo_documento.HeaderText = "Tipo Documento";
-            cl_tipo_documento.MinimumWidth = 150;
-            cl_tipo_documento.Name = "cl_tipo_documento";
-            cl_tipo_documento.ReadOnly = true;
-            cl_tipo_documento.Width = 150;
-            // 
-            // cl_prefijo
-            // 
-            cl_prefijo.HeaderText = "Prefijo";
-            cl_prefijo.MinimumWidth = 60;
-            cl_prefijo.Name = "cl_prefijo";
-            cl_prefijo.ReadOnly = true;
-            cl_prefijo.Width = 60;
-            // 
-            // cl_numero_desde
-            // 
-            cl_numero_desde.HeaderText = "Número Desde";
-            cl_numero_desde.MinimumWidth = 130;
-            cl_numero_desde.Name = "cl_numero_desde";
-            cl_numero_desde.ReadOnly = true;
-            cl_numero_desde.Width = 130;
-            // 
-            // cl_numero_hasta
-            // 
-            cl_numero_hasta.HeaderText = "Número Hasta";
-            cl_numero_hasta.MinimumWidth = 126;
-            cl_numero_hasta.Name = "cl_numero_hasta";
-            cl_numero_hasta.ReadOnly = true;
-            cl_numero_hasta.Width = 126;
-            // 
-            // cl_nro_resolucion
-            // 
-            cl_nro_resolucion.HeaderText = "Nro. Resolucion";
-            cl_nro_resolucion.MinimumWidth = 150;
-            cl_nro_resolucion.Name = "cl_nro_resolucion";
-            cl_nro_resolucion.ReadOnly = true;
-            cl_nro_resolucion.Width = 150;
-            // 
-            // cl_fecha_vencimiento
-            // 
-            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
-            cl_fecha_vencimiento.MinimumWidth = 160;
-            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
-            cl_fecha_vencimiento.ReadOnly = true;
-            cl_fecha_vencimiento.Width = 160;
-            // 
             // Ajustes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1215,5 +1284,11 @@
         private DataGridViewTextBoxColumn cl_numero_hasta;
         private DataGridViewTextBoxColumn cl_nro_resolucion;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
+        private ComboBox cbx_modo_redondeo;
+        private Label label11;
+        private Label label12;
+        private TextBox txt_max_desc_aplicable;
+        private Label label13;
+        private ComboBox cbx_multiplo_redondeo;
     }
 }

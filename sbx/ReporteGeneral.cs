@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.ReporteGeneral;
 using System.Data;
 using System.Globalization;
@@ -15,12 +16,16 @@ namespace sbx
         private DetalleGastos? _DetalleGastos;
         private readonly IServiceProvider _serviceProvider;
         private Inventario? _Inventario;
-
-        public ReporteGeneral(IReporteGeneral reporteGeneral, IServiceProvider serviceProvider)
+        private readonly IParametros _IParametros;
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
+        public ReporteGeneral(IReporteGeneral reporteGeneral, IServiceProvider serviceProvider, IParametros iParametros)
         {
             InitializeComponent();
             _IReporteGeneral = reporteGeneral;
             _serviceProvider = serviceProvider;
+            _IParametros = iParametros;
         }
 
         public dynamic? Permisos
@@ -31,6 +36,36 @@ namespace sbx
 
         private async void ReporteGeneral_Load(object sender, EventArgs e)
         {
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Buscar en venta por":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
             await Buscar();
         }
 
@@ -43,10 +78,10 @@ namespace sbx
         {
             this.Cursor = Cursors.WaitCursor;
 
-            double VentasTotales = 0;
-            double ComprasTotales = 0;
-            double GastosTotales = 0;
-            double SalidasTotales = 0;
+            decimal VentasTotales = 0;
+            decimal ComprasTotales = 0;
+            decimal GastosTotales = 0;
+            decimal SalidasTotales = 0;
 
             chart1.Series.Clear();
 
@@ -54,25 +89,234 @@ namespace sbx
             lbl_ventas_totales.Text = "0";
             lbl_gastos.Text = "0";
 
+            decimal Subtotal = 0;
+            decimal cantidadTotal = 0;
+            decimal DescuentoLinea;
+            decimal Descuento = 0;
+            decimal Impuesto = 0;
+            decimal ImpuestoLinea;
+            decimal SubtotalLinea;
+            decimal TotalLinea;
+            decimal iva = 0;
+            decimal inc = 0;
+            decimal incBolsa = 0;
+
             //VENTAS - COMPRAS - GASTOS - SALIDAS
             var respVentasComprasGastos = await _IReporteGeneral.BuscarReporteGeneral(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
 
-            string jsonVentasComprasGastos = JsonConvert.SerializeObject(respVentasComprasGastos.Data);
+            DataTable dtGrafico = new DataTable();
+            dtGrafico.Columns.Add("Id", typeof(Int64));
+            dtGrafico.Columns.Add("Modulo", typeof(string));
+            dtGrafico.Columns.Add("Valor", typeof(decimal));
 
-            DataTable? dataTableVentasComprasGastos = JsonConvert.DeserializeObject<DataTable>(jsonVentasComprasGastos);
-
-            if (dataTableVentasComprasGastos != null)
+            if (respVentasComprasGastos.Data != null)
             {
-                if (dataTableVentasComprasGastos.Rows.Count > 0)
+                if (respVentasComprasGastos.Data.Count > 0)
                 {
-                    var agrupado = from row in dataTableVentasComprasGastos.AsEnumerable()
+                    foreach (var item in respVentasComprasGastos.Data)
+                    {
+                        switch (item.Modulo)
+                        {
+                            case "COMPRAS":
+
+                                Subtotal = 0;
+                                cantidadTotal = 0;
+                                DescuentoLinea = 0;
+                                Descuento = 0;
+                                Impuesto = 0;
+                                ImpuestoLinea = 0;
+                                SubtotalLinea = 0;
+                                TotalLinea = 0;
+                                iva = 0;
+                                inc = 0;
+                                incBolsa = 0;
+
+                                if (item.Estado == "") { cantidadTotal += Convert.ToDecimal(item.Cantidad); }
+                                if (item.Estado == "") { Subtotal += Convert.ToDecimal(item.Valor) * Convert.ToDecimal(item.Cantidad); }
+                                SubtotalLinea = Convert.ToDecimal(item.Valor) * Convert.ToDecimal(item.Cantidad);
+                                if (item.Estado == "") { Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento)); }
+                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                                if (item.NombreTributo == "INC Bolsas")
+                                {
+                                    if (item.Estado == "") { Impuesto += Convert.ToDecimal(item.Impuesto); }
+                                    ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                                }
+                                else
+                                {
+                                    if (item.Estado == "") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
+                                    ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                }
+
+                                if (item.Estado == "")
+                                {
+                                    if (item.NombreTributo == "INC Bolsas")
+                                    {
+                                        incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                                    }
+                                    else if (item.NombreTributo == "IVA")
+                                    {
+                                        iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                    }
+                                    else if (item.NombreTributo == "INC")
+                                    {
+                                        inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                    }
+                                }
+
+                                //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                                TotalLinea = (SubtotalLinea - DescuentoLinea);
+
+                                dtGrafico.Rows.Add(
+                                    1,
+                                    "COMPRAS",
+                                    TotalLinea
+                                    );
+
+                                break;
+                            case "VENTAS":
+
+                                Subtotal = 0;
+                                cantidadTotal = 0;
+                                DescuentoLinea = 0;
+                                Descuento = 0;
+                                Impuesto = 0;
+                                ImpuestoLinea = 0;
+                                SubtotalLinea = 0;
+                                TotalLinea = 0;
+                                iva = 0;
+                                inc = 0;
+                                incBolsa = 0;
+
+                                if (item.Estado == "FACTURADA") { cantidadTotal += Convert.ToDecimal(item.Cantidad); }
+                                if (item.Estado == "FACTURADA") { Subtotal += Convert.ToDecimal(item.Valor) * Convert.ToDecimal(item.Cantidad); }
+                                SubtotalLinea = Convert.ToDecimal(item.Valor) * Convert.ToDecimal(item.Cantidad);
+                                if (item.Estado == "FACTURADA") { Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento)); }
+                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                                if (item.NombreTributo == "INC Bolsas")
+                                {
+                                    if (item.Estado == "FACTURADA") { Impuesto += Convert.ToDecimal(item.Impuesto); }
+                                    ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                                }
+                                else
+                                {
+                                    if (item.Estado == "FACTURADA") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
+                                    ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                }
+
+                                if (item.Estado == "FACTURADA")
+                                {
+                                    if (item.NombreTributo == "INC Bolsas")
+                                    {
+                                        incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                                    }
+                                    else if (item.NombreTributo == "IVA")
+                                    {
+                                        iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                    }
+                                    else if (item.NombreTributo == "INC")
+                                    {
+                                        inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                    }
+                                }
+
+                                //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                                TotalLinea = (SubtotalLinea - DescuentoLinea);
+
+                                dtGrafico.Rows.Add(
+                                    2,
+                                    "VENTAS",
+                                    TotalLinea
+                                    );
+
+                                break;
+                            case "GASTOS":
+
+                                TotalLinea = 0;
+
+                                TotalLinea = Convert.ToDecimal(item.Valor);
+
+                                dtGrafico.Rows.Add(
+                                    3,
+                                    "GASTOS",
+                                    TotalLinea
+                                    );
+
+                                break;
+                            case "SALIDAS":
+
+                                Subtotal = 0;
+                                cantidadTotal = 0;
+                                DescuentoLinea = 0;
+                                Descuento = 0;
+                                Impuesto = 0;
+                                ImpuestoLinea = 0;
+                                SubtotalLinea = 0;
+                                TotalLinea = 0;
+                                iva = 0;
+                                inc = 0;
+                                incBolsa = 0;
+
+                                if (item.Estado == "") { cantidadTotal += Convert.ToDecimal(item.Cantidad); }
+                                if (item.Estado == "") { Subtotal += Convert.ToDecimal(item.Valor) * Convert.ToDecimal(item.Cantidad); }
+                                SubtotalLinea = Convert.ToDecimal(item.Valor) * Convert.ToDecimal(item.Cantidad);
+                                if (item.Estado == "") { Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento)); }
+                                DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                                if (item.NombreTributo == "INC Bolsas")
+                                {
+                                    if (item.Estado == "") { Impuesto += Convert.ToDecimal(item.Impuesto); }
+                                    ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                                }
+                                else
+                                {
+                                    if (item.Estado == "") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
+                                    ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                }
+
+                                if (item.Estado == "")
+                                {
+                                    if (item.NombreTributo == "INC Bolsas")
+                                    {
+                                        incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                                    }
+                                    else if (item.NombreTributo == "IVA")
+                                    {
+                                        iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                    }
+                                    else if (item.NombreTributo == "INC")
+                                    {
+                                        inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                    }
+                                }
+
+                                //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                                TotalLinea = (SubtotalLinea - DescuentoLinea);
+
+                                dtGrafico.Rows.Add(
+                                    4,
+                                    "SALIDAS",
+                                    TotalLinea
+                                    );
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }                
+                }
+            }
+
+            if (dtGrafico != null)
+            {
+                if (dtGrafico.Rows.Count > 0)
+                {
+                    var agrupado = from row in dtGrafico.AsEnumerable()
                                    let IdModulo = row.Field<Int64>("Id")
                                    group row by IdModulo into g
                                    select new
                                    {
                                        IdModulo = g.Key,
                                        Modulo = g.First().Field<string>("Modulo"),
-                                       Suma = g.Sum(r => r.Field<double>("Valor"))
+                                       Suma = g.Sum(r => r.Field<decimal>("Valor"))
                                    };
 
                     Series serie = new Series("_");
@@ -102,6 +346,24 @@ namespace sbx
                             serie.Points[index].Color = Color.SteelBlue;
                         }
 
+                        switch (row.Modulo)
+                        {
+                            case "COMPRAS":
+                                ComprasTotales = Convert.ToDecimal(row.Suma, new CultureInfo("es-CO"));
+                                break;
+                            case "VENTAS":
+                                VentasTotales = Convert.ToDecimal(row.Suma, new CultureInfo("es-CO"));
+                                break;
+                            case "GASTOS":
+                                GastosTotales = Convert.ToDecimal(row.Suma, new CultureInfo("es-CO"));
+                                break;
+                            case "SALIDAS":
+                                SalidasTotales = Convert.ToDecimal(row.Suma, new CultureInfo("es-CO"));
+                                break;
+                            default:
+                                break;
+                        }
+
                         index++;
                     }
 
@@ -119,82 +381,21 @@ namespace sbx
             }
 
             //VENTAS
-            var respVentas = await _IReporteGeneral.BuscarReporteVentas(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
-
-            string jsonVentas = JsonConvert.SerializeObject(respVentas.Data);
-
-            DataTable? dataTableVentas = JsonConvert.DeserializeObject<DataTable>(jsonVentas);
-
-            if (dataTableVentas != null)
-            {
-                if (dataTableVentas.Rows.Count > 0)
-                {
-                    VentasTotales = dataTableVentas.AsEnumerable().Sum(row => row.Field<double>("VentaNetaFinal"));
-                    lbl_ventas_totales.Text = VentasTotales.ToString("N2", new CultureInfo("es-CO"));
-                }
-            }
+            lbl_ventas_totales.Text = VentasTotales.ToString("N2", new CultureInfo("es-CO"));
 
             //COMPRAS
-            var respCompras = await _IReporteGeneral.BuscarReporteCompras(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
-
-            string jsonCompras = JsonConvert.SerializeObject(respCompras.Data);
-
-            DataTable? dataTableCompras = JsonConvert.DeserializeObject<DataTable>(jsonCompras);
-
-            if (dataTableCompras != null)
-            {
-                if (dataTableCompras.Rows.Count > 0)
-                {
-                    ComprasTotales = dataTableCompras.AsEnumerable().Sum(row => row.Field<double>("CostoNetoFinal"));
-                    lbl_compras.Text = ComprasTotales.ToString("N2", new CultureInfo("es-CO"));
-                }
-            }
+            lbl_compras.Text = ComprasTotales.ToString("N2", new CultureInfo("es-CO"));
 
             //GASTOS
-            var respGastos = await _IReporteGeneral.BuscarReporteGastos(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
-
-            string jsonGastos = JsonConvert.SerializeObject(respGastos.Data);
-
-            DataTable? dataTableGastos = JsonConvert.DeserializeObject<DataTable>(jsonGastos);
-
-            if (dataTableGastos != null)
-            {
-                if (dataTableGastos.Rows.Count > 0)
-                {
-                    GastosTotales = dataTableGastos.AsEnumerable().Sum(row => row.Field<double>("ValorGasto"));
-                    lbl_gastos.Text = GastosTotales.ToString("N2", new CultureInfo("es-CO"));
-                }
-            }
+            lbl_gastos.Text = GastosTotales.ToString("N2", new CultureInfo("es-CO"));
 
             //SALIDAS
-            var respSalidas = await _IReporteGeneral.BuscarReporteSalidas(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
-
-            string jsonSalidas = JsonConvert.SerializeObject(respSalidas.Data);
-
-            DataTable? dataTableSalidas = JsonConvert.DeserializeObject<DataTable>(jsonSalidas);
-
-            if (dataTableSalidas != null)
-            {
-                if (dataTableSalidas.Rows.Count > 0)
-                {
-                    SalidasTotales = dataTableSalidas.AsEnumerable().Sum(row => row.Field<double>("ValorSalidas"));
-                    lbl_salidas.Text = SalidasTotales.ToString("N2", new CultureInfo("es-CO"));
-                }
-            }
+            lbl_salidas.Text = SalidasTotales.ToString("N2", new CultureInfo("es-CO"));
 
             //RESULTADO
-            double Resultado = VentasTotales - (SalidasTotales + GastosTotales);
+            decimal Resultado = VentasTotales - (SalidasTotales + GastosTotales);
 
             lbl_resultado.Text = Resultado.ToString("N2", new CultureInfo("es-CO"));
-
-            //if (Resultado > 0)
-            //{
-            //    lbl_resultado.ForeColor = Color.SeaGreen;
-            //}
-            //else
-            //{
-            //    lbl_resultado.ForeColor = Color.Red;
-            //}
 
             this.Cursor = Cursors.Default;
         }
@@ -267,6 +468,59 @@ namespace sbx
             _Inventario.FechaFin = dtp_fecha_fin.Value;
             _Inventario.FormClosed += (s, args) => _Inventario = null;
             _Inventario.Show();
+        }
+
+        private decimal CalcularIva(decimal valorBase, decimal porcentajeIva)
+        {
+            decimal ValorIva = 0;
+
+            if (valorBase >= 0 && porcentajeIva >= 0)
+            {
+                ValorIva = Math.Round(valorBase * (porcentajeIva / 100m), 2);
+            }
+
+            return ValorIva;
+        }
+
+        private decimal CalcularDescuento(decimal valorBase, decimal porcentajeDescuento)
+        {
+            decimal ValorDescuento = 0;
+
+            if (valorBase >= 0 && porcentajeDescuento >= 0)
+            {
+                ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
+            }
+
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
+            return ValorDescuento;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
     }
 }

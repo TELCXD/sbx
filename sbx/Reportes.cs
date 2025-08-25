@@ -1,25 +1,31 @@
-﻿using sbx.core.Interfaces.Reportes;
-using System.Globalization;
+﻿using Newtonsoft.Json;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using Newtonsoft.Json;
-using System.Data;
 using sbx.core.Entities.Reportes;
+using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Reportes;
+using System.Data;
+using System.Globalization;
 
 namespace sbx
 {
     public partial class Reportes : Form
     {
         private readonly IReportes _IReportes;
+        private readonly IParametros _IParametros;
         private dynamic? _Permisos;
         List<ResumenGananciasPerdidas> ListResumenGananciasPerdidas = new List<ResumenGananciasPerdidas>();
         private DateTime _FechaIni, _FechaFin;
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
 
-        public Reportes(IReportes reportes)
+        public Reportes(IReportes reportes, IParametros iParametros)
         {
             InitializeComponent();
             _IReportes = reportes;
+            _IParametros = iParametros;
         }
 
         public dynamic? Permisos
@@ -50,6 +56,38 @@ namespace sbx
             {
                 dtp_fecha_inicio.Value = FechaIni;
                 dtp_fecha_fin.Value = FechaFin;
+            }
+
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Tipo filtro producto":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
             }
 
             await Buscar();
@@ -148,6 +186,7 @@ namespace sbx
                     decimal TotalCostos = 0;
                     decimal TotalVentas = 0;
                     decimal Ganancia = 0;
+                    decimal GananciaLinea = 0;
 
                     if (cbx_tipo_reporte.Text == "Resumen por factura - Ganancias y perdidas")
                     {
@@ -183,21 +222,24 @@ namespace sbx
                                 Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                                 ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                             }
-                            
-                            TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+
+                            //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            TotalLinea = (SubtotalLinea - DescuentoLinea);
                             TotalCostos += Convert.ToDecimal(item.CostoTotal);
-                            TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
-                            Ganancia += Convert.ToDecimal(item.GananciaBruta);
+                            TotalVentas += Convert.ToDecimal(TotalLinea);
+                            GananciaLinea = TotalLinea - Convert.ToDecimal(item.CostoTotal);
+                            Ganancia += GananciaLinea;
 
                             dtg_reportes.Rows.Add(item.CreationDate, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN, item.IdProducto, item.NombreProducto,
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 Convert.ToDecimal(item.DescuentoPorcentaje, new CultureInfo("es-CO")),
+                                item.NombreTributo,
                                 Convert.ToDecimal(item.ImpuestoPorcentaje, new CultureInfo("es-CO")),
-                                item.VentaNetaFinal.ToString("N2", new CultureInfo("es-CO")),
+                                TotalLinea.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoTotal.ToString("N2", new CultureInfo("es-CO")),
-                                item.GananciaBruta.ToString("N2", new CultureInfo("es-CO")),
+                                GananciaLinea.ToString("N2", new CultureInfo("es-CO")),
                                 item.MargenPorcentaje.ToString("N2", new CultureInfo("es-CO")));
                         }
 
@@ -255,11 +297,13 @@ namespace sbx
                                 Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                                 ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.ImpuestoPorcentaje));
                             }
-                                
-                            TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+
+                            //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                            TotalLinea = (SubtotalLinea - DescuentoLinea);
                             TotalCostos += Convert.ToDecimal(item.CostoTotal);
-                            TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
-                            Ganancia += Convert.ToDecimal(item.GananciaBruta);
+                            TotalVentas += Convert.ToDecimal(TotalLinea);
+                            GananciaLinea = TotalLinea - Convert.ToDecimal(item.CostoTotal);
+                            Ganancia += GananciaLinea;
 
                             dtg_reportes.Rows.Add(item.CreationDate, item.Usuario, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN, item.Cliente, item.Vendedor,
                                 item.IdProducto, item.Sku, item.CodigoBarras, item.NombreProducto, item.UnidadMedida,
@@ -267,10 +311,11 @@ namespace sbx
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 Convert.ToDecimal(item.DescuentoPorcentaje, new CultureInfo("es-CO")),
+                                item.NombreTributo,
                                 Convert.ToDecimal(item.ImpuestoPorcentaje, new CultureInfo("es-CO")),
-                                item.VentaNetaFinal.ToString("N2", new CultureInfo("es-CO")),
+                                TotalLinea.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoTotal.ToString("N2", new CultureInfo("es-CO")),
-                                item.GananciaBruta.ToString("N2", new CultureInfo("es-CO")),
+                                GananciaLinea.ToString("N2", new CultureInfo("es-CO")),
                                 Convert.ToDecimal(item.MargenPorcentaje, new CultureInfo("es-CO")));
                         }
 
@@ -301,15 +346,19 @@ namespace sbx
                         {
                             cantidadTotal += Convert.ToDecimal(item.Cantidad);
                             TotalCostos += Convert.ToDecimal(item.CostoTotal);
-                            TotalVentas += Convert.ToDecimal(item.VentaNetaFinal);
-                            Ganancia += Convert.ToDecimal(item.GananciaBruta);
+                            SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
+                            DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.DescuentoPorcentaje));
+                            TotalLinea = (SubtotalLinea - DescuentoLinea);
+                            TotalVentas += Convert.ToDecimal(TotalLinea);
+                            GananciaLinea = TotalLinea - Convert.ToDecimal(item.CostoTotal);
+                            Ganancia += GananciaLinea;
 
                             dtg_reportes.Rows.Add(
                                 item.IdProducto, item.NombreProducto,
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
-                                item.VentaNetaFinal.ToString("N2", new CultureInfo("es-CO")),
+                                TotalLinea.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoTotal.ToString("N2", new CultureInfo("es-CO")),
-                                item.GananciaBruta.ToString("N2", new CultureInfo("es-CO")));
+                                GananciaLinea.ToString("N2", new CultureInfo("es-CO")));
                         }
 
                         lbl_cantidad_resumen.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
@@ -374,7 +423,36 @@ namespace sbx
                 ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
             }
 
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
             return ValorDescuento;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
 
         private async void txt_buscar_KeyPress(object sender, KeyPressEventArgs e)

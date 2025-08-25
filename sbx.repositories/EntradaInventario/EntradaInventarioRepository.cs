@@ -3,6 +3,8 @@ using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.EntradaInventario;
 using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Producto;
 using System.Data;
 using System.Globalization;
 
@@ -734,45 +736,50 @@ namespace sbx.repositories.EntradaInventario
 
                         int idProducto = await connection.ExecuteScalarAsync<int>(sql, parametrosProducto, transaction);
 
-                        sql = @"INSERT INTO T_EntradasInventario (IdTipoEntrada, IdProveedor, OrdenCompra, NumFactura, Comentario, CreationDate, IdUserAction)
+                        decimal Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO"));
+
+                        if (Cantidad > 0)
+                        {
+                            sql = @"INSERT INTO T_EntradasInventario (IdTipoEntrada, IdProveedor, OrdenCompra, NumFactura, Comentario, CreationDate, IdUserAction)
                             VALUES (@IdTipoEntrada, NULLIF(@IdProveedor,0), @OrdenCompra, @NumFactura, @Comentario, @CreationDate,@IdUserAction);
                             SELECT CAST(SCOPE_IDENTITY() AS INT); ";
 
-                        int idEntrada = await connection.ExecuteScalarAsync<int>(sql,
-                        new
-                        {
-                            IdTipoEntrada = 1,
-                            IdProveedor = 1,
-                            OrdenCompra = "",
-                            NumFactura = "",
-                            Comentario = "",
-                            CreationDate = FechaActual,
-                            IdUserAction = IdUser
-                        },
-                        transaction);
+                            int idEntrada = await connection.ExecuteScalarAsync<int>(sql,
+                            new
+                            {
+                                IdTipoEntrada = 2,
+                                IdProveedor = 1,
+                                OrdenCompra = "",
+                                NumFactura = "",
+                                Comentario = "",
+                                CreationDate = FechaActual,
+                                IdUserAction = IdUser
+                            },
+                            transaction);
 
-                        sql = @"INSERT INTO T_DetalleEntradasInventario (
+                            sql = @"INSERT INTO T_DetalleEntradasInventario (
                             IdEntradasInventario, IdProducto, CodigoLote, FechaVencimiento,
                             Cantidad, CostoUnitario, Descuento, Impuesto, CreationDate, IdUserAction)
                             VALUES (@IdEntradasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
                                     @Cantidad, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction);";
 
-                        await connection.ExecuteAsync(
-                                sql,
-                                new
-                                {
-                                    IdEntradasInventario = idEntrada,
-                                    idProducto,
-                                    CodigoLote = "",
-                                    FechaVencimiento = "",
-                                    Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
-                                    CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
-                                    Descuento = 0,
-                                    Impuesto = 0,
-                                    CreationDate = FechaActual,
-                                    IdUserAction = IdUser
-                                },
-                                transaction);
+                            await connection.ExecuteAsync(
+                                    sql,
+                                    new
+                                    {
+                                        IdEntradasInventario = idEntrada,
+                                        idProducto,
+                                        CodigoLote = "",
+                                        FechaVencimiento = "",
+                                        Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
+                                        CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                                        Descuento = 0,
+                                        Impuesto = 0,
+                                        CreationDate = FechaActual,
+                                        IdUserAction = IdUser
+                                    },
+                                    transaction);
+                        }
                     }
 
                     await transaction.CommitAsync();
@@ -918,6 +925,157 @@ namespace sbx.repositories.EntradaInventario
                 }
                 catch (Exception ex)
                 {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> CargueMasivoEditarProductoEntradaSalidas(DataTable Datos, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    foreach (DataRow item in Datos.Rows)
+                    {
+                        string sql = "";
+
+                        DateTime FechaActual = DateTime.Now;
+                        FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                        sql = @$" UPDATE T_Productos SET Sku = NULLIF(@Sku,''),CodigoBarras = NULLIF(@CodigoBarras, ''),Nombre = @Nombre,
+                                  CostoBase = @CostoBase,PrecioBase = @PrecioBase,Impuesto = @Impuesto,Idtribute = @Idtribute,UpdateDate = @UpdateDate, IdUserAction = @IdUserAction 
+                                  WHERE IdProducto = @Id; ";
+
+                        var parametrosProducto = new
+                        {
+                            Id = item[0],
+                            Sku = item[1],
+                            CodigoBarras = item[2],
+                            Nombre = item[3].ToString()?.Trim(),
+                            CostoBase = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                            PrecioBase = Convert.ToDecimal(item[5], new CultureInfo("es-CO")),
+                            Impuesto = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
+                            Idtribute = item[7].ToString()?.Trim() == "IVA" ? 1 : item[7].ToString()?.Trim() == "INC" ? 2 : 1,
+                            UpdateDate = FechaActual,
+                            IdUserAction = IdUser
+                        };
+
+                        int FilasAfectadas = await connection.ExecuteAsync(sql, parametrosProducto, transaction);
+
+                        string Movimiento = item[8].ToString()!.Trim();
+
+                        decimal Cantidad = Convert.ToDecimal(item[9], new CultureInfo("es-CO"));
+
+                        if (Cantidad > 0)
+                        {
+                            if (Movimiento == "Entrada")
+                            {
+                                sql = @"INSERT INTO T_EntradasInventario (IdTipoEntrada, IdProveedor, OrdenCompra, NumFactura, Comentario, CreationDate, IdUserAction)
+                            VALUES (@IdTipoEntrada, NULLIF(@IdProveedor,0), @OrdenCompra, @NumFactura, @Comentario, @CreationDate,@IdUserAction);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT); ";
+
+                                int idEntrada = await connection.ExecuteScalarAsync<int>(sql,
+                                new
+                                {
+                                    IdTipoEntrada = 2,
+                                    IdProveedor = 1,
+                                    OrdenCompra = "",
+                                    NumFactura = "",
+                                    Comentario = "",
+                                    CreationDate = FechaActual,
+                                    IdUserAction = IdUser
+                                },
+                                transaction);
+
+                                sql = @"INSERT INTO T_DetalleEntradasInventario (
+                            IdEntradasInventario, IdProducto, CodigoLote, FechaVencimiento,
+                            Cantidad, CostoUnitario, Descuento, Impuesto, CreationDate, IdUserAction)
+                            VALUES (@IdEntradasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
+                                    @Cantidad, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction);";
+
+                                int IdProd = Convert.ToInt32(item[0]);
+
+                                await connection.ExecuteAsync(
+                                        sql,
+                                        new
+                                        {
+                                            IdEntradasInventario = idEntrada,
+                                            IdProducto = IdProd,
+                                            CodigoLote = "",
+                                            FechaVencimiento = "",
+                                            Cantidad = Convert.ToDecimal(item[9], new CultureInfo("es-CO")),
+                                            CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                                            Descuento = 0,
+                                            Impuesto = 0,
+                                            CreationDate = FechaActual,
+                                            IdUserAction = IdUser
+                                        },
+                                        transaction);
+                            }
+                            else if (Movimiento == "Salida")
+                            {
+                                sql = @"INSERT INTO T_SalidasInventario (IdTipoSalida, IdProveedor, OrdenCompra, NumFactura, Comentario, CreationDate, IdUserAction)
+                            VALUES (@IdTipoSalida, NULLIF(@IdProveedor,0), @OrdenCompra, @NumFactura, @Comentario, @CreationDate,@IdUserAction);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT); ";
+
+                                int idSalida = await connection.ExecuteScalarAsync<int>(sql,
+                                new
+                                {
+                                    IdTipoSalida = 2,
+                                    IdProveedor = 1,
+                                    OrdenCompra = "",
+                                    NumFactura = "",
+                                    Comentario = "",
+                                    CreationDate = FechaActual,
+                                    IdUserAction = IdUser
+                                },
+                                transaction);
+
+                                sql = @"INSERT INTO T_DetalleSalidasInventario (
+                            IdDetalleSalidasInventario, IdProducto, CodigoLote, FechaVencimiento,
+                            Cantidad, CostoUnitario, CreationDate, IdUserAction)
+                            VALUES (@IdDetalleSalidasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
+                                    @Cantidad, @CostoUnitario, @CreationDate, @IdUserAction);";
+
+                                int IdProd = Convert.ToInt32(item[0]);
+
+                                await connection.ExecuteAsync(
+                                        sql,
+                                        new
+                                        {
+                                            IdDetalleSalidasInventario = idSalida,
+                                            IdProducto = IdProd,
+                                            CodigoLote = "",
+                                            FechaVencimiento = "",
+                                            Cantidad = Convert.ToDecimal(item[9], new CultureInfo("es-CO")),
+                                            CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                                            CreationDate = FechaActual,
+                                            IdUserAction = IdUser
+                                        },
+                                        transaction);
+                            }
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+
+                    response.Flag = true;
+                    response.Message = "Edicion de producto de forma masiva realizada correctamente";
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
                     return response;

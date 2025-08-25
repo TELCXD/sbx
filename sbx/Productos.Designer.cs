@@ -34,6 +34,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            btn_editar_masivo = new Button();
             btn_exportar = new Button();
             btn_importar = new Button();
             btn_promociones = new Button();
@@ -46,7 +47,6 @@
             btn_editar = new Button();
             btn_agregar = new Button();
             dtg_producto = new DataGridView();
-            errorProvider1 = new ErrorProvider(components);
             cl_idProducto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
@@ -60,6 +60,7 @@
             cl_unidadMedida = new DataGridViewTextBoxColumn();
             cl_marca = new DataGridViewTextBoxColumn();
             cl_categoria = new DataGridViewTextBoxColumn();
+            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -69,6 +70,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_editar_masivo);
             panel1.Controls.Add(btn_exportar);
             panel1.Controls.Add(btn_importar);
             panel1.Controls.Add(btn_promociones);
@@ -85,6 +87,20 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1148, 56);
             panel1.TabIndex = 1;
+            // 
+            // btn_editar_masivo
+            // 
+            btn_editar_masivo.Enabled = false;
+            btn_editar_masivo.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_editar_masivo.FlatStyle = FlatStyle.Flat;
+            btn_editar_masivo.Image = (Image)resources.GetObject("btn_editar_masivo.Image");
+            btn_editar_masivo.Location = new Point(657, 3);
+            btn_editar_masivo.Name = "btn_editar_masivo";
+            btn_editar_masivo.Size = new Size(46, 45);
+            btn_editar_masivo.TabIndex = 16;
+            btn_editar_masivo.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_editar_masivo.UseVisualStyleBackColor = true;
+            btn_editar_masivo.Click += btn_editar_masivo_Click;
             // 
             // btn_exportar
             // 
@@ -276,10 +292,6 @@
             dtg_producto.TabIndex = 2;
             dtg_producto.DoubleClick += dtg_producto_DoubleClick;
             // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
-            // 
             // cl_idProducto
             // 
             cl_idProducto.HeaderText = "Id";
@@ -359,6 +371,10 @@
             cl_categoria.Name = "cl_categoria";
             cl_categoria.ReadOnly = true;
             // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
             // Productos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -410,5 +426,6 @@
         private DataGridViewTextBoxColumn cl_unidadMedida;
         private DataGridViewTextBoxColumn cl_marca;
         private DataGridViewTextBoxColumn cl_categoria;
+        private Button btn_editar_masivo;
     }
 }

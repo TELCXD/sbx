@@ -19,7 +19,9 @@ namespace sbx
         private AddCierre? _AddCierre;
         private bool CajaAperturada = false;
         private readonly IParametros _IParametros;
-
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
         public Caja(ICaja caja, IServiceProvider serviceProvider, IParametros iParametros)
         {
             InitializeComponent();
@@ -34,11 +36,43 @@ namespace sbx
             set => _Permisos = value;
         }
 
-        private void Caja_Load(object sender, EventArgs e)
+        private async void Caja_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
+
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Tipo filtro producto":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
+            }
         }
 
         private void ValidaPermisos()

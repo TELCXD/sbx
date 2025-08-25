@@ -20,6 +20,9 @@ namespace sbx
         private readonly IVenta _IVenta;
         private readonly IPagosEfectivo _IPagosEfectivo;
         private readonly IParametros _IParametros;
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
 
         public AddCierre(ICaja caja, IServiceProvider serviceProvider, IVenta venta, IPagosEfectivo pagosEfectivo, IParametros iParametros)
         {
@@ -37,9 +40,39 @@ namespace sbx
             set => _Permisos = value;
         }
 
-        private void AddCierre_Load(object sender, EventArgs e)
+        private async void AddCierre_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
+
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Buscar en venta por":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         private void ValidaPermisos()
@@ -254,7 +287,36 @@ namespace sbx
                 ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
             }
 
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
             return ValorDescuento;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
 
         private async void ImprimirCierre(int Id_Cierre_Apertura)
