@@ -1958,7 +1958,10 @@ VALUES
 	('Impresora','Generic'),
 	('Mensaje final tirilla',''),
 	('Ruta backup',''),
-	('lineas abajo de la tirilla','9')
+	('lineas abajo de la tirilla','9'),
+	('Modo Redondeo','N/A'),
+	('Multiplo Rendondeo','50'),
+	('Máximo % descuento aplicable','')
 GO
 CREATE TABLE T_AperturaCierreCaja (
 IdApertura_Cierre_caja INT IDENTITY(1,1) PRIMARY KEY,

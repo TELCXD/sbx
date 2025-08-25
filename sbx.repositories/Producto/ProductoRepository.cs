@@ -229,6 +229,25 @@ namespace sbx.repositories.Producto
             }
         }
 
+        public async Task<bool> ExisteIdProducto(int Id_Producto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT COUNT(1) FROM T_Productos WHERE IdProducto = @Id_Producto ";
+
+                    return connection.ExecuteScalar<int>(sql, new {Id_Producto}) > 0;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+
         public async Task<bool> ExisteCodigoBarras(string codigoBarras, int Id_Producto)
         {
             using (var connection = new SqlConnection(_connectionString))

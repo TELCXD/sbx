@@ -27,6 +27,10 @@ namespace sbx
         private readonly ICredencialesApi _ICredencialesApi;
         int v_Id_credencialesApi = 0;
         private AgregaApi? _AgregaApi;
+        char decimalSeparator = ',';
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
 
         public Ajustes(IServiceProvider serviceProvider, IRangoNumeracion rangoNumeracion,
             IParametros parametros, IUsuario usuario, IPermisos permisos, ICredencialesApi credencialesApi)
@@ -53,6 +57,40 @@ namespace sbx
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
             cbx_lineas_abajo.SelectedIndex = 0;
+            cbx_modo_redondeo.SelectedIndex = 0;
+            cbx_multiplo_redondeo.SelectedIndex = 0;
+
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Tipo filtro producto":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
+            }
         }
 
         private void ValidaPermisos()
@@ -109,7 +147,7 @@ namespace sbx
                         item.Id_TipoDocumentoRangoNumeracion == 21 ? "Factura de Venta"
                         : item.Id_TipoDocumentoRangoNumeracion == 22 ? "Nota Crédito"
                         : item.Id_TipoDocumentoRangoNumeracion == 23 ? "Nota Débito"
-                        : item.Id_TipoDocumentoRangoNumeracion == 30 ? "Factura de talonario o de papel":"",
+                        : item.Id_TipoDocumentoRangoNumeracion == 30 ? "Factura de talonario o de papel" : "",
                         item.Prefijo,
                         item.NumeroDesde,
                         item.NumeroHasta,
@@ -234,6 +272,15 @@ namespace sbx
                             case "lineas abajo de la tirilla":
                                 cbx_lineas_abajo.Text = item.Value;
                                 break;
+                            case "Modo Redondeo":
+                                cbx_modo_redondeo.Text = item.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                cbx_multiplo_redondeo.Text = item.Value;
+                                break;
+                            case "Máximo % descuento aplicable":
+                                txt_max_desc_aplicable.Text = item.Value;
+                                break;
                             default:
                                 break;
                         }
@@ -246,7 +293,7 @@ namespace sbx
         {
             List<ParametrosEntitie> ListParametros = new List<ParametrosEntitie>();
 
-            for (int i = 0; i <= 8; i++)
+            for (int i = 0; i <= 12; i++)
             {
                 switch (i)
                 {
@@ -326,6 +373,30 @@ namespace sbx
                         {
                             Nombre = "lineas abajo de la tirilla",
                             Value = cbx_lineas_abajo.Text
+                        };
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 9:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Modo Redondeo",
+                            Value = cbx_modo_redondeo.Text
+                        };
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 10:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Multiplo Rendondeo",
+                            Value = cbx_multiplo_redondeo.Text
+                        };
+                        ListParametros.Add(Parametros);
+                        break;
+                    case 11:
+                        Parametros = new ParametrosEntitie
+                        {
+                            Nombre = "Máximo % descuento aplicable",
+                            Value = txt_max_desc_aplicable.Text
                         };
                         ListParametros.Add(Parametros);
                         break;
@@ -590,13 +661,13 @@ namespace sbx
                         {
                             int Id = Convert.ToInt32(row.Cells["cl_Nro"].Value);
 
-                            if (Id > 1) 
+                            if (Id > 1)
                             {
-                                if (row.Cells["cl_en_uso"].Value != null) 
+                                if (row.Cells["cl_en_uso"].Value != null)
                                 {
                                     string EnUso = row.Cells["cl_en_uso"].Value.ToString() ?? "";
 
-                                    if (EnUso == "NO") 
+                                    if (EnUso == "NO")
                                     {
                                         var resp = await _IRangoNumeracion.Eliminar(Id);
 
@@ -642,6 +713,33 @@ namespace sbx
             else
             {
                 MessageBox.Show("No hay datos para Eliminar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void txt_max_desc_aplicable_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsControl(e.KeyChar))
+                return;
+
+            if (char.IsDigit(e.KeyChar))
+                return;
+
+            if (e.KeyChar == decimalSeparator && !((TextBox)sender).Text.Contains(decimalSeparator))
+                return;
+
+            e.Handled = true;
+        }
+
+        private void cbx_modo_redondeo_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cbx_modo_redondeo.SelectedIndex > 0) 
+            {
+                cbx_multiplo_redondeo.Enabled = true;
+            }
+            else
+            {
+                cbx_multiplo_redondeo.Text = "50";
+                cbx_multiplo_redondeo.Enabled = false;
             }
         }
     }

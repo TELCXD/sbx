@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Proveedor;
 using System.Data;
 
@@ -12,13 +13,18 @@ namespace sbx
         private readonly IServiceProvider _serviceProvider;
         private readonly IProveedor _IProveedor;
         private AgregaProveedor? _AgregaProveedor;
+        private readonly IParametros _IParametros;
         private int Id_Proveedor = 0;
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
 
-        public Proveedores(IServiceProvider serviceProvider, IProveedor proveedor)
+        public Proveedores(IServiceProvider serviceProvider, IProveedor proveedor, IParametros iParametros)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IProveedor = proveedor;
+            _IParametros = iParametros;
         }
 
         public dynamic? Permisos
@@ -27,11 +33,43 @@ namespace sbx
             set => _Permisos = value;
         }
 
-        private void Proveedores_Load(object sender, EventArgs e)
+        private async void Proveedores_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
+
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Tipo filtro producto":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
+            }
         }
 
         private void ValidaPermisos()

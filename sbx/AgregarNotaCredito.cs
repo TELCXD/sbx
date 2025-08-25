@@ -52,6 +52,9 @@ namespace sbx
         decimal SubtotalLinea;
         decimal Total = 0;
         decimal TotalLinea;
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
 
         NotaCreditoEntitie notaCreditoEntitie = new NotaCreditoEntitie();
 
@@ -120,6 +123,36 @@ namespace sbx
 
         private async Task CargaDatosIniciales()
         {
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Buscar en venta por":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
             if (Id_Venta > 0) 
             {
                 btn_busca_factura.Enabled = false;
@@ -1012,7 +1045,36 @@ namespace sbx
                 ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
             }
 
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
             return ValorDescuento;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
 
         private decimal CalcularIva(decimal valorBase, decimal porcentajeIva)

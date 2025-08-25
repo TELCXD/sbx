@@ -33,12 +33,13 @@ namespace sbx.repositories.Reportes
                     {
                         case "Resumen - Ganancias y perdidas":
                             sql = @"SELECT 
-                                    B.IdProducto,
+                                   B.IdProducto,
                                     B.NombreProducto,
-                                    SUM(B.Cantidad) Cantidad,
-                                    SUM((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) VentaNetaFinal,
-                                    SUM((B.Cantidad * B.CostoUnitario)) CostoTotal,
-                                    SUM(((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) GananciaBruta        
+                                    B.Cantidad Cantidad,
+                                    B.PrecioUnitario PrecioUnitario,
+                                    B.CostoUnitario CostoUnitario,
+                                    ISNULL(B.Descuento, 0) AS DescuentoPorcentaje,
+                                    (B.Cantidad * B.CostoUnitario) CostoTotal            
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                     INNER JOIN T_Cliente C ON A.IdCliente = C.IdCliente
@@ -273,7 +274,7 @@ namespace sbx.repositories.Reportes
 
                     if (TipoReporte == "Resumen - Ganancias y perdidas") 
                     {
-                        groupby = " GROUP BY B.IdProducto, B.NombreProducto ";
+                        //groupby = " GROUP BY B.IdProducto, B.NombreProducto ";
                         orderby = " ORDER BY B.IdProducto ";
                     }
 

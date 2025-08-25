@@ -7,6 +7,8 @@ using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using System.Data;
 using System.Globalization;
+using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace sbx
 {
@@ -85,6 +87,7 @@ namespace sbx
                             btn_importar.Enabled = item.ToCreate == 1 ? true : false;
                             btn_exportar.Enabled = item.ToRead == 1 ? true : false;
                             btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
+                            btn_editar_masivo.Enabled = item.ToUpdate == 1 ? true : false;
                             break;
                         case "listaPrecios":
                             btn_lista_precios.Enabled = item.ToRead == 1 ? true : false;
@@ -208,6 +211,10 @@ namespace sbx
 
         private async void btn_importar_Click(object sender, EventArgs e)
         {
+            this.Cursor = Cursors.WaitCursor;
+            panel1.Enabled = false;
+            dtg_producto.Enabled = false;
+
             try
             {
                 using OpenFileDialog ofd = new OpenFileDialog
@@ -217,10 +224,6 @@ namespace sbx
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    this.Cursor = Cursors.WaitCursor;
-                    panel1.Enabled = false;
-                    dtg_producto.Enabled = false;
-
                     if (EstaArchivoEnUso(ofd.FileName))
                     {
                         MessageBox.Show("⚠️ El archivo Excel está siendo utilizado por otra aplicación.\n\n" +
@@ -231,10 +234,6 @@ namespace sbx
                                        "Archivo en uso",
                                        MessageBoxButtons.OK,
                                        MessageBoxIcon.Warning);
-
-                        this.Cursor = Cursors.Default;
-                        panel1.Enabled = true;
-                        dtg_producto.Enabled = true;
 
                         return;
                     }
@@ -398,7 +397,7 @@ namespace sbx
                                 string valor = item[8]?.ToString()?.Trim() ?? "";
                                 if (valor != "")
                                 {
-                                    if (valor != "IVA" && valor != "INC") 
+                                    if (valor != "IVA" && valor != "INC")
                                     {
                                         Mensaje += "El Tributo es obligatorio, debe ser IVA ó INC ";
                                         Error++;
@@ -413,9 +412,6 @@ namespace sbx
 
                             if (Error > 0)
                             {
-                                this.Cursor = Cursors.Default;
-                                panel1.Enabled = true;
-                                dtg_producto.Enabled = true;
                                 MessageBox.Show("Hay datos erroneos en fila " + contador + " : " + Mensaje + "Favor revise y vuelta a intentar ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
@@ -427,9 +423,6 @@ namespace sbx
 
                         if (resp != null)
                         {
-                            this.Cursor = Cursors.Default;
-                            panel1.Enabled = true;
-                            dtg_producto.Enabled = true;
                             if (resp.Flag == true)
                             {
                                 MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -442,19 +435,19 @@ namespace sbx
                     }
                     else
                     {
-                        this.Cursor = Cursors.Default;
-                        panel1.Enabled = true;
-                        dtg_producto.Enabled = true;
                         MessageBox.Show("No hay datos para procesar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }
             catch (Exception ex)
             {
+                MessageBox.Show("Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            finally 
+            {
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
                 dtg_producto.Enabled = true;
-                MessageBox.Show("Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -476,17 +469,150 @@ namespace sbx
                 dt.Columns.Add("Col" + col);
             }
 
-            for (int row = startRow; row <= endRow; row++)
+            //Identificar si cumple con los campos requeridos
+            int Error = 0;
+            for (int col = startColumn; col <= endColumn; col++)
             {
-                var dataRow = dt.NewRow();
-
-                for (int col = startColumn; col <= endColumn; col++)
+                var cellValue = worksheet.Cell(1, col).Value.ToString() ?? string.Empty;
+                switch (col)
                 {
-                    var cellValue = worksheet.Cell(row, col).Value.ToString() ?? string.Empty;
-                    dataRow[col - startColumn] = cellValue;
+                    case 1:
+                        if (cellValue != "Sku") { Error++; }
+                        break;
+                    case 2:
+                        if (cellValue != "Codigo barras") { Error++; }
+                        break;
+                    case 3:
+                        if (cellValue != "Nombre *") { Error++; }
+                        break;
+                    case 4:
+                        if (cellValue != "Marca") { Error++; }
+                        break;
+                    case 5:
+                        if (cellValue != "Costo unitario *") { Error++; }
+                        break;
+                    case 6:
+                        if (cellValue != "Precio venta Unitario *") { Error++; }
+                        break;
+                    case 7:
+                        if (cellValue != "Stock *") { Error++; }
+                        break;
+                    case 8:
+                        if (cellValue != "Impuesto % *") { Error++; }
+                        break;
+                    case 9:
+                        if (cellValue != "Tributo (IVA, INC)") { Error++; }
+                        break;
+                    default:
+                        break;
                 }
+            }
 
-                dt.Rows.Add(dataRow);
+            if (Error == 0)
+            {
+                for (int row = startRow; row <= endRow; row++)
+                {
+                    var dataRow = dt.NewRow();
+
+                    for (int col = startColumn; col <= endColumn; col++)
+                    {
+                        var cellValue = worksheet.Cell(row, col).Value.ToString() ?? string.Empty;
+                        dataRow[col - startColumn] = cellValue;
+                    }
+
+                    dt.Rows.Add(dataRow);
+                }
+            }
+            else
+            {
+                MessageBox.Show(@"El archivo no cuenta con los campos necesarios para realizar el proceso, 
+                                  debe tener los siguientes campos: Sku, Codigo barras,Nombre *, Marca, Costo unnitario *,
+                                  Precio venta Unitario *, Stock *, Impuesto % *, Tributo (IVA, INC), Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return dt;
+        }
+
+        private DataTable LeerExcel2(string path)
+        {
+            var dt = new DataTable();
+
+            using var workbook = new XLWorkbook(path);
+            var worksheet = workbook.Worksheets.Worksheet(1);
+
+            int startRow = 2;
+            int endRow = Math.Min(worksheet.LastRowUsed()?.RowNumber() ?? 100, 5000);
+            int startColumn = 1; // Columna A
+            int endColumn = 10;   // Columna J
+
+            // Crear columnas (A-J)
+            for (int col = startColumn; col <= endColumn; col++)
+            {
+                dt.Columns.Add("Col" + col);
+            }
+
+            //Identificar si cumple con los campos requeridos
+            int Error = 0;
+            for (int col = startColumn; col <= endColumn; col++)
+            {
+                var cellValue = worksheet.Cell(1, col).Value.ToString() ?? string.Empty;
+                switch (col)
+                {
+                    case 1:
+                        if (cellValue != "Id") { Error++; }
+                        break;
+                    case 2:
+                        if (cellValue != "Sku") { Error++; }
+                        break;
+                    case 3:
+                        if (cellValue != "Codigo barras") { Error++; }
+                        break;
+                    case 4:
+                        if (cellValue != "Nombre *") { Error++; }
+                        break;
+                    case 5:
+                        if (cellValue != "Costo unitario *") { Error++; }
+                        break;
+                    case 6:
+                        if (cellValue != "Precio venta Unitario *") { Error++; }
+                        break;
+                    case 7:
+                        if (cellValue != "Impuesto % *") { Error++; }
+                        break;
+                    case 8:
+                        if (cellValue != "Tributo (IVA, INC)") { Error++; }
+                        break;
+                    case 9:
+                        if (cellValue != "Movimiento") { Error++; }
+                        break;
+                    case 10:
+                        if (cellValue != "Cantidad") { Error++; }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (Error == 0) 
+            {
+                for (int row = startRow; row <= endRow; row++)
+                {
+                    var dataRow = dt.NewRow();
+
+                    for (int col = startColumn; col <= endColumn; col++)
+                    {
+                        var cellValue = worksheet.Cell(row, col).Value.ToString() ?? string.Empty;
+                        dataRow[col - startColumn] = cellValue;
+                    }
+
+                    dt.Rows.Add(dataRow);
+                }
+            }
+            else
+            {
+                MessageBox.Show(@"El archivo no cuenta con los campos necesarios para realizar el proceso, 
+                                  debe tener los siguientes campos: Id, Sku, Codigo barras,Nombre *, Costo unnitario *,
+                                  Precio venta Unitario *, Impuesto % *, Tributo (IVA, INC), Movimiento y Cantidad. Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return dt;
@@ -613,18 +739,14 @@ namespace sbx
                 }
                 catch (Exception ex)
                 {
+                    MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
                     this.Cursor = Cursors.Default;
                     panel1.Enabled = true;
                     dtg_producto.Enabled = true;
-
-                    MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-            else
-            {
-                this.Cursor = Cursors.Default;
-                panel1.Enabled = true;
-                dtg_producto.Enabled = true;
             }
         }
 
@@ -634,29 +756,30 @@ namespace sbx
             panel1.Enabled = false;
             dtg_producto.Enabled = false;
 
-            var resp = await _IProducto.BuscarExportarExcel(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
-
-            if (resp != null)
+            try
             {
-                if (resp.Data != null)
+                var resp = await _IProducto.BuscarExportarExcel(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+                if (resp != null)
                 {
-                    string json = JsonConvert.SerializeObject(resp.Data);
-
-                    DataTable? dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-                    if (dataTable != null)
+                    if (resp.Data != null)
                     {
-                        ExportarExcel(dataTable);
+                        string json = JsonConvert.SerializeObject(resp.Data);
+
+                        DataTable? dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                        if (dataTable != null)
+                        {
+                            ExportarExcel(dataTable);
+                        }
                     }
                 }
-                else
-                {
-                    this.Cursor = Cursors.Default;
-                    panel1.Enabled = true;
-                    dtg_producto.Enabled = true;
-                }
             }
-            else
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al exportar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
             {
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
@@ -682,6 +805,310 @@ namespace sbx
                         _AgregarProducto.ShowDialog();
                     }
                 }
+            }
+        }
+
+        private async void btn_editar_masivo_Click(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.WaitCursor;
+            panel1.Enabled = false;
+            dtg_producto.Enabled = false;
+            string Mensaje = "";
+            int contador = 1;
+            int Error = 0;
+
+            try
+            {
+                using OpenFileDialog ofd = new OpenFileDialog
+                {
+                    Filter = "Archivos Excel (*.xlsx)|*.xlsx"
+                };
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    if (EstaArchivoEnUso(ofd.FileName))
+                    {
+                        MessageBox.Show("⚠️ El archivo Excel está siendo utilizado por otra aplicación.\n\n" +
+                                       "Por favor:\n" +
+                                       "1. Cierre Microsoft Excel\n" +
+                                       "2. Guarde los cambios si es necesario\n" +
+                                       "3. Intente nuevamente",
+                                       "Archivo en uso",
+                                       MessageBoxButtons.OK,
+                                       MessageBoxIcon.Warning);
+
+                        return;
+                    }
+
+                    DataTable dt = LeerExcel2(ofd.FileName);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        foreach (DataRow item in dt.Rows)
+                        {
+                            if (string.IsNullOrEmpty(item[0]?.ToString()?.Trim()))
+                            {
+                                Mensaje += "El Id producto es obligatorio ";
+                                Error++;
+                            }
+                            else
+                            {
+                                string valor = item[0]?.ToString()?.Trim() ?? "";
+                                if (valor != "")
+                                {
+                                    if (!int.TryParse(valor, out int IdProducto))
+                                    {
+                                        Mensaje += "El Id producto debe ser un valor numérico entero válido, ";
+                                        Error++;
+                                    }
+                                    else if (IdProducto < 0)
+                                    {
+                                        Mensaje += "El Id producto no puede ser negativo, ";
+                                        Error++;
+                                    }
+                                }
+                                else
+                                {
+                                    Mensaje += "El Id producto es obligatorio ";
+                                    Error++;
+                                }
+                            }
+
+                            if (Error == 0) 
+                            {
+                                if (!string.IsNullOrEmpty(item[0]?.ToString()?.Trim()))
+                                {
+                                    var Exist = await _IProducto.ExisteIdProducto(Convert.ToInt32(item[0]));
+                                    if (Exist == false) { Mensaje = "El Id producto NO existe, "; Error++; }
+                                }
+
+                                if (Error == 0) 
+                                {
+                                    if (!string.IsNullOrEmpty(item[1]?.ToString()?.Trim()))
+                                    {
+                                        var Exist = await _IProducto.ExisteSku(item[1].ToString() ?? "", Convert.ToInt32(item[0]));
+                                        if (Exist == true) { Mensaje = "El sku ya existe, en otro Id producto, "; Error++; }
+                                    }
+
+                                    if (!string.IsNullOrEmpty(item[2]?.ToString()?.Trim()))
+                                    {
+                                        var Exist = await _IProducto.ExisteCodigoBarras(item[2].ToString() ?? "", Convert.ToInt32(item[0]));
+                                        if (Exist == true) { Mensaje = "Codigo de barras ya existe, en otro Id producto, "; Error++; }
+                                    }
+
+                                    if (string.IsNullOrEmpty(item[3]?.ToString()?.Trim()))
+                                    {
+                                        Mensaje = "El nombre es obligatorio, "; Error++;
+                                    }
+                                    else
+                                    {
+                                        var Exist = await _IProducto.ExisteNombre(item[3].ToString() ?? "", Convert.ToInt32(item[0]));
+                                        if (Exist == true) { Mensaje = "Nombre ya existe, en otro Id producto "; Error++; }
+                                    }
+
+                                    if (string.IsNullOrEmpty(item[4]?.ToString()?.Trim()))
+                                    {
+                                        Mensaje += "El costo unitario es obligatorio, en caso de no tener colocar el valor en cero (0), ";
+                                        Error++;
+                                    }
+                                    else
+                                    {
+                                        string valor = item[4]?.ToString()?.Trim() ?? "";
+                                        if (valor != "")
+                                        {
+                                            if (!decimal.TryParse(valor, out decimal costoUnitario))
+                                            {
+                                                Mensaje += "El costo unitario debe ser un valor numérico válido, ";
+                                                Error++;
+                                            }
+                                            else if (costoUnitario < 0)
+                                            {
+                                                Mensaje += "El costo unitario no puede ser negativo, ";
+                                                Error++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Mensaje += "El costo unitario es obligatorio, en caso de no tener colocar el valor en cero (0), ";
+                                            Error++;
+                                        }
+                                    }
+
+                                    if (string.IsNullOrEmpty(item[5]?.ToString()?.Trim()))
+                                    {
+                                        Mensaje += "El precio de venta unitario es obligatorio y debe ser mayor a cero (0), ";
+                                        Error++;
+                                    }
+                                    else
+                                    {
+                                        string valor = item[5]?.ToString()?.Trim() ?? "";
+                                        if (valor != "")
+                                        {
+                                            if (!decimal.TryParse(valor, out decimal precioVentaUnitario))
+                                            {
+                                                Mensaje += "El precio de venta unitario debe ser un valor numérico válido, ";
+                                                Error++;
+                                            }
+                                            else if (precioVentaUnitario == 0)
+                                            {
+                                                Mensaje += "El precio de venta unitario debe ser mayor a cero (0), ";
+                                                Error++;
+                                            }
+                                            else if (precioVentaUnitario < 0)
+                                            {
+                                                Mensaje += "El precio de venta unitario no puede ser negativo, ";
+                                                Error++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Mensaje += "El precio de venta unitario es obligatorio, en caso de no tener colocar el valor en cero (0), ";
+                                            Error++;
+                                        }
+                                    }
+
+                                    if (string.IsNullOrEmpty(item[6]?.ToString()?.Trim()))
+                                    {
+                                        Mensaje += "El Impuesto es obligatorio, en caso de no tener colocar el valor en cero (0) ";
+                                        Error++;
+                                    }
+                                    else
+                                    {
+                                        string valor = item[6]?.ToString()?.Trim() ?? "";
+                                        if (valor != "")
+                                        {
+                                            if (!decimal.TryParse(valor, out decimal Impuesto))
+                                            {
+                                                Mensaje += "El impuesto debe ser un valor numérico válido, ";
+                                                Error++;
+                                            }
+                                            else if (Impuesto < 0)
+                                            {
+                                                Mensaje += "El impuesto no puede ser negativo, ";
+                                                Error++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Mensaje += "El impuesto es obligatorio, en caso de no tener colocar el valor en cero (0), ";
+                                            Error++;
+                                        }
+                                    }
+
+                                    if (string.IsNullOrEmpty(item[7]?.ToString()?.Trim()))
+                                    {
+                                        Mensaje += "El Tributo es obligatorio, debe ser IVA ó INC ";
+                                        Error++;
+                                    }
+                                    else
+                                    {
+                                        string valor = item[7]?.ToString()?.Trim() ?? "";
+                                        if (valor != "")
+                                        {
+                                            if (valor != "IVA" && valor != "INC")
+                                            {
+                                                Mensaje += "El Tributo es obligatorio, debe ser IVA ó INC ";
+                                                Error++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Mensaje += "El Tributo es obligatorio, debe ser IVA ó INC ";
+                                            Error++;
+                                        }
+                                    }
+
+                                    if (string.IsNullOrEmpty(item[8]?.ToString()?.Trim()))
+                                    {
+                                        Mensaje += "El Movimiento es obligatorio, debe ser Entrada ó Salida ";
+                                        Error++;
+                                    }
+                                    else
+                                    {
+                                        string valor = item[8]?.ToString()?.Trim() ?? "";
+                                        if (valor != "")
+                                        {
+                                            if (valor != "Entrada" && valor != "Salida")
+                                            {
+                                                Mensaje += "El movimiento es obligatorio, debe ser Entrada ó Salida ";
+                                                Error++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Mensaje += "El Movimiento es obligatorio, debe ser Entrada ó Salida ";
+                                            Error++;
+                                        }
+                                    }
+
+                                    if (string.IsNullOrEmpty(item[9]?.ToString()?.Trim()))
+                                    {
+                                        Mensaje += "La cantidad es obligatoria, en caso de no tener colocar el valor en cero (0) ";
+                                        Error++;
+                                    }
+                                    else
+                                    {
+                                        string valor = item[9]?.ToString()?.Trim() ?? "";
+                                        if (valor != "")
+                                        {
+                                            if (!decimal.TryParse(valor, out decimal precioVentaUnitario))
+                                            {
+                                                Mensaje += "La cantidad debe ser un valor numérico válido, ";
+                                                Error++;
+                                            }
+                                            else if (precioVentaUnitario < 0)
+                                            {
+                                                Mensaje += "La cantidad no puede ser negativo, ";
+                                                Error++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Mensaje += "La cantidad es obligatoria, en caso de no tener colocar el valor en cero (0), ";
+                                            Error++;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (Error > 0)
+                            {
+                                MessageBox.Show("Hay datos erroneos en fila " + contador + " : " + Mensaje + "Favor revise y vuelta a intentar ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            contador++;
+                        }
+
+                        var resp = await _IEntradaInventario.CargueMasivoEditarProductoEntradaSalidas(dt, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                        if (resp != null)
+                        {
+                            if (resp.Flag == true)
+                            {
+                                MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No hay datos para procesar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+                panel1.Enabled = true;
+                dtg_producto.Enabled = true;
             }
         }
     }

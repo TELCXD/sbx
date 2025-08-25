@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using sbx.core.Interfaces.Dashboard;
+using sbx.core.Interfaces.Parametros;
 using System.Data;
 using System.Globalization;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -12,14 +13,20 @@ namespace sbx
         private readonly IDashboard _IDashboard;
         private Reportes? _Reportes;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IParametros _IParametros;
         private dynamic? _Permisos;
 
-        public Dashboard(IDashboard dashboard, IServiceProvider serviceProvider)
+        public Dashboard(IDashboard dashboard, IServiceProvider serviceProvider, IParametros iParametros)
         {
             InitializeComponent();
             _IDashboard = dashboard;
             _serviceProvider = serviceProvider;
+            _IParametros = iParametros;
         }
+
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
 
         public dynamic? Permisos
         {
@@ -29,6 +36,36 @@ namespace sbx
 
         private async void Dashboard_Load(object sender, EventArgs e)
         {
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Buscar en venta por":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
             await Buscar();
         }
 
@@ -36,36 +73,122 @@ namespace sbx
         {
             this.Cursor = Cursors.WaitCursor;
 
+            decimal Subtotal = 0;
+            decimal cantidadTotal = 0;
+            decimal DescuentoLinea;
+            decimal Descuento = 0;
+            decimal Impuesto = 0;
+            decimal ImpuestoLinea;
+            decimal SubtotalLinea;
+            decimal TotalLinea;
+            decimal iva = 0;
+            decimal inc = 0;
+            decimal incBolsa = 0;
+            decimal CostoLinea = 0;
+
             var resp = await _IDashboard.Buscar(dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
 
-            string json = JsonConvert.SerializeObject(resp.Data);
+            DataTable dtGrafico = new DataTable();
+            dtGrafico.Columns.Add("CreationDate", typeof(DateTime));
+            dtGrafico.Columns.Add("IdProducto", typeof(Int64));
+            dtGrafico.Columns.Add("NombreProducto", typeof(string));
+            dtGrafico.Columns.Add("MedioPago", typeof(string));
+            dtGrafico.Columns.Add("CostoTotal", typeof(decimal));
+            dtGrafico.Columns.Add("VentaTotal", typeof(decimal));
+            dtGrafico.Columns.Add("Ganancia", typeof(decimal));
 
-            DataTable? dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-            if (dataTable != null)
+            if (resp.Data != null)
             {
-                if (dataTable.Rows.Count > 0) 
+                if (resp.Data.Count > 0)
+                {
+                    foreach (var item in resp.Data)
+                    {
+                        Subtotal = 0;
+                        cantidadTotal = 0;
+                        DescuentoLinea = 0;
+                        Descuento = 0;
+                        Impuesto = 0;
+                        ImpuestoLinea = 0;
+                        SubtotalLinea = 0;
+                        TotalLinea = 0;
+                        iva = 0;
+                        inc = 0;
+                        incBolsa = 0;
+                        CostoLinea = 0;
+
+                        if (item.Estado == "FACTURADA") { cantidadTotal += Convert.ToDecimal(item.Cantidad); }
+                        if (item.Estado == "FACTURADA") { Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad); }
+                        if (item.Estado == "FACTURADA") { CostoLinea = Convert.ToDecimal(item.CostoUnitario) * Convert.ToDecimal(item.Cantidad); }
+                        SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
+                        if (item.Estado == "FACTURADA") { Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento)); }
+                        DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                        if (item.NombreTributo == "INC Bolsas")
+                        {
+                            if (item.Estado == "FACTURADA") { Impuesto += Convert.ToDecimal(item.Impuesto); }
+                            ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                        }
+                        else
+                        {
+                            if (item.Estado == "FACTURADA") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
+                            ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                        }
+
+                        if (item.Estado == "FACTURADA")
+                        {
+                            if (item.NombreTributo == "INC Bolsas")
+                            {
+                                incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                            }
+                            else if (item.NombreTributo == "IVA")
+                            {
+                                iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                            }
+                            else if (item.NombreTributo == "INC")
+                            {
+                                inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                            }
+                        }
+
+                        //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                        TotalLinea = (SubtotalLinea - DescuentoLinea);
+
+                        dtGrafico.Rows.Add(
+                            item.CreationDate,
+                            item.IdProducto,
+                            item.NombreProducto,
+                            item.MedioPago,
+                            CostoLinea,
+                            TotalLinea,
+                            TotalLinea - CostoLinea
+                            );
+                    }
+                }
+            }
+
+            if (dtGrafico != null)
+            {
+                if (dtGrafico.Rows.Count > 0) 
                 {
                     //Ventas totales
-                    double VentaNetaFinal = dataTable.AsEnumerable().Sum(row => row.Field<double>("VentaNetaFinal"));
+                    decimal VentaNetaFinal = dtGrafico.AsEnumerable().Sum(row => row.Field<decimal>("VentaTotal"));
                     lbl_ventas_totales.Text = VentaNetaFinal.ToString("N2", new CultureInfo("es-CO"));
 
                     //Total ganancias
-                    double TotalGanancias = dataTable.AsEnumerable().Sum(row => row.Field<double>("GananciaBruta"));
+                    decimal TotalGanancias = dtGrafico.AsEnumerable().Sum(row => row.Field<decimal>("Ganancia"));
                     lbl_ganancias_totales.Text = TotalGanancias.ToString("N2", new CultureInfo("es-CO"));
 
                     //Total Costos
-                    double TotalCosto = dataTable.AsEnumerable().Sum(row => row.Field<double>("CostoTotal"));
+                    decimal TotalCosto = dtGrafico.AsEnumerable().Sum(row => row.Field<decimal>("CostoTotal"));
                     lbl_costos_totales.Text = TotalCosto.ToString("N2", new CultureInfo("es-CO"));
 
                     //Ventas por mes
-                    var agrupado = from row in dataTable.AsEnumerable()
+                    var agrupado = from row in dtGrafico.AsEnumerable()
                                    let Mes = row.Field<DateTime>("CreationDate").Month
                                    group row by Mes into g
                                    select new
                                    {
                                        Mes = g.Key,
-                                       Suma = g.Sum(r => r.Field<double>("VentaNetaFinal"))
+                                       Suma = g.Sum(r => r.Field<decimal>("VentaTotal"))
                                    };
 
                     Series serie = new Series("Valor");
@@ -100,14 +223,14 @@ namespace sbx
                     }
 
                     //Ventas por producto
-                    var agrupadoXproducto = (from row in dataTable.AsEnumerable()
+                    var agrupadoXproducto = (from row in dtGrafico.AsEnumerable()
                                             let IdProducto = row.Field<Int64>("IdProducto")
                                             group row by IdProducto into g
                                             select new
                                             {
                                                 IdProducto = g.Key,
                                                 NombreProducto = g.First().Field<string>("NombreProducto"),
-                                                Suma = g.Sum(r => r.Field<double>("VentaNetaFinal"))
+                                                Suma = g.Sum(r => r.Field<decimal>("VentaTotal"))
                                             }).OrderByDescending(x => x.Suma)
                                              .Take(5);
 
@@ -120,8 +243,8 @@ namespace sbx
 
                     serieXproducto.Points.Clear();
 
-                    double maximo = agrupadoXproducto.Max(r => r.Suma);
-                    chart2.ChartAreas[0].AxisY.Maximum = maximo * 1.1;
+                    decimal maximo = agrupadoXproducto.Max(r => r.Suma);
+                    chart2.ChartAreas[0].AxisY.Maximum = Convert.ToDouble(maximo) * 1.1;
                     chart2.ChartAreas[0].AxisY.Minimum = 0;
 
                     int posicion = 1;
@@ -150,16 +273,16 @@ namespace sbx
                     chart2.Invalidate();
 
                     //Medio de pago
-                    var agrupadoXMedioPago = from row in dataTable.AsEnumerable()
+                    var agrupadoXMedioPago = from row in dtGrafico.AsEnumerable()
                                              let MedioPago = row.Field<string>("MedioPago")
                                              group row by MedioPago into g
                                              select new
                                              {
                                                  MedioPago = g.Key,
-                                                 Suma = g.Sum(r => r.Field<double>("VentaNetaFinal"))
+                                                 Suma = g.Sum(r => r.Field<decimal>("VentaTotal"))
                                              };
 
-                    double totalGeneral = agrupadoXMedioPago.Sum(x => x.Suma);
+                    decimal totalGeneral = agrupadoXMedioPago.Sum(x => x.Suma);
 
                     Series serieXMedioPago = new Series("Valor");
                     serieXMedioPago.ChartType = SeriesChartType.Pie;
@@ -167,9 +290,9 @@ namespace sbx
                     foreach (var row in agrupadoXMedioPago.OrderBy(x => x.MedioPago))
                     {
                         string medioPago = row.MedioPago;
-                        double valor = row.Suma;
+                        decimal valor = row.Suma;
 
-                        double porcentaje = (valor / totalGeneral) * 100;
+                        decimal porcentaje = (valor / totalGeneral) * 100;
 
                         int pointIndex = serieXMedioPago.Points.AddY(valor);
                         DataPoint punto = serieXMedioPago.Points[pointIndex];
@@ -187,13 +310,13 @@ namespace sbx
                     chart3.Invalidate();
 
                     //Ventas diarias
-                    var agrupadoXVentasDiarias = from row in dataTable.AsEnumerable()
+                    var agrupadoXVentasDiarias = from row in dtGrafico.AsEnumerable()
                                                  let Day = row.Field<DateTime>("CreationDate").Day
                                                  group row by Day into g
                                                  select new
                                                  {
                                                      Day = g.Key,
-                                                     Suma = g.Sum(r => r.Field<double>("VentaNetaFinal"))
+                                                     Suma = g.Sum(r => r.Field<decimal>("VentaTotal"))
                                                  };
 
                     Series serieXVentasDiarias = new Series("Valor");
@@ -264,6 +387,59 @@ namespace sbx
             _Reportes.FechaFin = dtp_fecha_fin.Value;
             _Reportes.FormClosed += (s, args) => _Reportes = null;
             _Reportes.Show();
+        }
+
+        private decimal CalcularIva(decimal valorBase, decimal porcentajeIva)
+        {
+            decimal ValorIva = 0;
+
+            if (valorBase >= 0 && porcentajeIva >= 0)
+            {
+                ValorIva = Math.Round(valorBase * (porcentajeIva / 100m), 2);
+            }
+
+            return ValorIva;
+        }
+
+        private decimal CalcularDescuento(decimal valorBase, decimal porcentajeDescuento)
+        {
+            decimal ValorDescuento = 0;
+
+            if (valorBase >= 0 && porcentajeDescuento >= 0)
+            {
+                ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
+            }
+
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
+            return ValorDescuento;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
     }
 }

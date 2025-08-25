@@ -167,6 +167,7 @@
             btn_imprimir_pdf.Text = "Pdf";
             btn_imprimir_pdf.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_imprimir_pdf.UseVisualStyleBackColor = true;
+            btn_imprimir_pdf.Visible = false;
             btn_imprimir_pdf.Click += btn_imprimir_pdf_Click;
             // 
             // cbx_tipo_reporte

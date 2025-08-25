@@ -20,7 +20,9 @@ namespace sbx
         int fila = 0;
         int Id = 0;
         private int Id_Cotizacion = 0;
-
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
         public Cotizacion(ICotizacion cotizacion, ITienda tienda, IParametros parametros)
         {
             InitializeComponent();
@@ -43,12 +45,44 @@ namespace sbx
         decimal Total = 0;
         decimal DescuentoLinea = 0;
 
-        private void Cotizacion_Load(object sender, EventArgs e)
+        private async void Cotizacion_Load(object sender, EventArgs e)
         {
             ValidaPermisos();
             cbx_client_venta.SelectedIndex = 0;
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo_filtro.SelectedIndex = 0;
+
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+
+            var DataParametros = await _IParametros.List("");
+
+            if (DataParametros.Data != null)
+            {
+                if (DataParametros.Data.Count > 0)
+                {
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Tipo filtro producto":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    cbx_tipo_filtro.Text = BuscarPor;
+                }
+            }
         }
 
         private void ValidaPermisos()
@@ -114,7 +148,8 @@ namespace sbx
                         DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
                         Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
                         ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                        TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                        //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                        TotalLinea = (SubtotalLinea - DescuentoLinea);
 
                         dtg_cotizaciones.Rows.Add(
                             item.IdCotizacion,
@@ -135,10 +170,12 @@ namespace sbx
                             item.IdUserActionCotizacion + " - " + item.UserNameCotizacion);
                     }
 
-                    Total += (Subtotal - Descuento) + Impuesto;
+                    Total = (Subtotal - Descuento);
+                    decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
+                    //Total += (Subtotal - Descuento) + Impuesto;
 
                     lbl_cantidadProductos.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
-                    lbl_subtotal.Text = Subtotal.ToString("N2", new CultureInfo("es-CO"));
+                    lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
                     lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
                     lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
                     lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
@@ -181,7 +218,36 @@ namespace sbx
                 ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
             }
 
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
             return ValorDescuento;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
 
         private async void btn_buscar_Click(object sender, EventArgs e)

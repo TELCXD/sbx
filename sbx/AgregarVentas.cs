@@ -81,6 +81,10 @@ namespace sbx
         private readonly IAuthService _IAuthService;
         private readonly IFacturas _IFacturas;
         private readonly IRangoNumeracionFE _IRangoNumeracionFE;
+        string BuscarPor = "";
+        string ModoRedondeo = "N/A";
+        string MultiploRendondeo = "50";
+        string DescuentoMaximo = "";
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
@@ -165,13 +169,38 @@ namespace sbx
 
             pnl_pagos.Enabled = false;
 
-            var DataParametros = await _IParametros.List("Buscar en venta por");
+            BuscarPor = "";
+            ModoRedondeo = "N/A";
+            MultiploRendondeo = "50";
+            DescuentoMaximo = "";
+
+            var DataParametros = await _IParametros.List("");
 
             if (DataParametros.Data != null)
             {
                 if (DataParametros.Data.Count > 0)
                 {
-                    string BuscarPor = DataParametros.Data[0].Value;
+                    foreach (var itemParametros in DataParametros.Data)
+                    {
+                        switch (itemParametros.Nombre)
+                        {
+                            case "Buscar en venta por":
+                                BuscarPor = itemParametros.Value;
+                                break;
+                            case "Modo Redondeo":
+                                ModoRedondeo = itemParametros.Value;
+                                break;
+                            case "Multiplo Rendondeo":
+                                MultiploRendondeo = itemParametros.Value;
+                                break;
+                            case "Máximo % descuento aplicable":
+                                DescuentoMaximo = itemParametros.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
                     cbx_busca_por.Text = BuscarPor;
                 }
             }
@@ -1173,6 +1202,12 @@ namespace sbx
                 ValorDescuento = Math.Round(valorBase * (porcentajeDescuento / 100m), 2);
             }
 
+            if (ModoRedondeo != "N/A")
+            {
+                var valorRendondeado = Redondear(ValorDescuento, Convert.ToInt32(MultiploRendondeo));
+                ValorDescuento = valorRendondeado;
+            }
+
             return ValorDescuento;
         }
 
@@ -1180,8 +1215,32 @@ namespace sbx
         {
             var descuento = CalcularDescuento(valorBase, porcentajeDescuento);
             var valor = valorBase - descuento;
+
             var iva = CalcularIva(valor, porcentajeIva);
             return valor + iva;
+        }
+
+        decimal Redondear(decimal valor, int multiplo)
+        {
+            decimal valorRendondeado = 0;
+
+            switch (ModoRedondeo)
+            {
+                case "Hacia arriba":
+                    valorRendondeado = (decimal)(Math.Ceiling((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia abajo":
+                    valorRendondeado = (decimal)(Math.Floor((decimal)valor / multiplo) * multiplo);
+                    break;
+                case "Hacia arriba o hacia abajo":
+                    valorRendondeado = (decimal)(Math.Round((decimal)valor / multiplo) * multiplo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return valorRendondeado;
         }
 
         private async void IdentificarPrecio(dynamic DataProducto)
@@ -1826,6 +1885,16 @@ namespace sbx
                         if (Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) < 0)
                         {
                             celda.Value = 0;
+                        }
+
+                        bool esNumero = decimal.TryParse(DescuentoMaximo, out _);
+
+                        if (esNumero) 
+                        {
+                            if (Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) > Convert.ToDecimal(DescuentoMaximo))
+                            {
+                                celda.Value = 0;
+                            }
                         }
 
                         precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
