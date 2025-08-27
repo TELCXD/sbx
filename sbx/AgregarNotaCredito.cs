@@ -496,7 +496,13 @@ namespace sbx
                                                 {
                                                     if (respGetRangos.Flag)
                                                     {
-                                                        Actual = Convert.ToInt64(respGetRangos.Data!.data[0].current);
+                                                        JObject dataObject = (JObject)respGetRangos.Data!.data;
+                                                        JArray? dataArray = dataObject["data"] as JArray;
+                                                        JObject? item = dataArray![0] as JObject;
+
+                                                        Actual = item!.Value<long>("current");
+
+                                                        //Actual = Convert.ToInt64(respGetRangos.Data!.data[0].current);
                                                     }
                                                     else
                                                     {

@@ -236,65 +236,97 @@ namespace sbx
                                         {
                                             if (respRangoDian.Flag)
                                             {
-                                                int count = ((JArray)respRangoDian.Data.data).Count;
+                                                JObject dataObject = (JObject)respRangoDian.Data.data;
+                                                JArray? dataArray = dataObject["data"] as JArray;
+                                                int count = dataArray!.Count;
 
-                                                if (respRangoDian?.Data != null && ((JArray)respRangoDian!.Data.data).Count == 0)
+                                                if (respRangoDian?.Data != null && count == 0)
                                                 {
                                                     MessageBox.Show($"La respuesta fue exitosa pero NO se encontraron datos: {respRangoDian?.Data} - {respRangoDian?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                 }
                                                 else
                                                 {
-                                                    string id = respRangoDian!.Data.data[0].id;
-                                                    string prefix = respRangoDian.Data.data[0].prefix;
-                                                    string from = respRangoDian.Data.data[0].from;
-                                                    string to = respRangoDian.Data.data[0].to;
-                                                    string resolution_number = respRangoDian.Data.data[0].resolution_number;
-                                                    DateTime start_date = Convert.ToDateTime(respRangoDian.Data.data[0].start_date);
-                                                    DateTime end_date = Convert.ToDateTime(respRangoDian.Data.data[0].end_date);
-                                                    string technical_key = respRangoDian.Data.data[0].technical_key;
-                                                    if(technical_key == null) { technical_key = ""; }
-                                                    bool is_expired = respRangoDian.Data.data[0].is_expired;
-
-                                                    if (Convert.ToInt32(id) == Datos.Id_RangoDIAN
-                                                        &&
-                                                        prefix == Datos.Prefijo &&
-                                                        from == Datos.NumeroDesde &&
-                                                        to == Datos.NumeroHasta &&
-                                                        resolution_number == Datos.NumeroResolucion &&
-                                                        start_date.ToString("yyyy-MM-dd") == Datos.FechaExpedicion.ToString("yyyy-MM-dd") &&
-                                                        end_date.ToString("yyyy-MM-dd") == Datos.FechaVencimiento.ToString("yyyy-MM-dd") &&
-                                                        technical_key == Datos.ClaveTecnica &&
-                                                        is_expired == (Datos.Vencido == 1 ? true : false)
-                                                        )
+                                                    if (dataArray != null && dataArray.Count > 0)
                                                     {
-                                                        if (cbx_en_uso.SelectedIndex == 0)
+                                                        JObject? item = dataArray[0] as JObject;
+
+                                                        if (item != null)
                                                         {
-                                                            var respEnUso = await _IRangoNumeracion.ListEnUso(Datos.Id_RangoNumeracion, Datos.Id_TipoDocumentoRangoNumeracion);
+                                                            string id = item.Value<string>("id") ?? "";
+                                                            string prefix = item.Value<string>("prefix") ?? "";
+                                                            string from = item.Value<string>("from") ?? "";
+                                                            string to = item.Value<string>("to") ?? "";
+                                                            string resolution_number = item.Value<string>("resolution_number") ?? "";
+                                                            DateTime start_date = item.Value<DateTime>("start_date");
+                                                            DateTime end_date = item.Value<DateTime>("end_date");
+                                                            string technical_key = item.Value<string>("technical_key") ?? "";
+                                                            if (technical_key == null) { technical_key = ""; }
+                                                            bool is_expired = item.Value<bool>("is_expired");
 
-                                                            if (respEnUso.Data != null)
+                                                            if (Convert.ToInt32(id) == Datos.Id_RangoDIAN
+                                                                &&
+                                                                prefix == Datos.Prefijo &&
+                                                                from == Datos.NumeroDesde &&
+                                                                to == Datos.NumeroHasta &&
+                                                                resolution_number == Datos.NumeroResolucion &&
+                                                                start_date.ToString("yyyy-MM-dd") == Datos.FechaExpedicion.ToString("yyyy-MM-dd") &&
+                                                                end_date.ToString("yyyy-MM-dd") == Datos.FechaVencimiento.ToString("yyyy-MM-dd") &&
+                                                                technical_key == Datos.ClaveTecnica &&
+                                                                is_expired == (Datos.Vencido == 1 ? true : false)
+                                                                )
                                                             {
-                                                                if (respEnUso.Data.Count > 0)
+                                                                if (cbx_en_uso.SelectedIndex == 0)
                                                                 {
-                                                                    DialogResult result = MessageBox.Show("Otro rango de numeracion esta en uso, esta seguro que desea cambiarlo? si no desea cambiarlo seleccione en campo En uso en NO",
-                                                                   "Confirmar",
-                                                                   MessageBoxButtons.YesNo,
-                                                                   MessageBoxIcon.Question);
-                                                                    if (result == DialogResult.Yes)
-                                                                    {
-                                                                        var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                                                    var respEnUso = await _IRangoNumeracion.ListEnUso(Datos.Id_RangoNumeracion, Datos.Id_TipoDocumentoRangoNumeracion);
 
-                                                                        if (resp != null)
+                                                                    if (respEnUso.Data != null)
+                                                                    {
+                                                                        if (respEnUso.Data.Count > 0)
                                                                         {
-                                                                            if (resp.Flag == true)
+                                                                            DialogResult result = MessageBox.Show("Otro rango de numeracion esta en uso, esta seguro que desea cambiarlo? si no desea cambiarlo seleccione en campo En uso en NO",
+                                                                           "Confirmar",
+                                                                           MessageBoxButtons.YesNo,
+                                                                           MessageBoxIcon.Question);
+                                                                            if (result == DialogResult.Yes)
                                                                             {
-                                                                                MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                                                                this.Close();
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                                var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                                                if (resp != null)
+                                                                                {
+                                                                                    if (resp.Flag == true)
+                                                                                    {
+                                                                                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                                        this.Close();
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                                    }
+                                                                                }
                                                                             }
                                                                         }
+                                                                        else
+                                                                        {
+                                                                            var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                                                                            if (resp != null)
+                                                                            {
+                                                                                if (resp.Flag == true)
+                                                                                {
+                                                                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                                    //Limpiar();
+                                                                                    this.Close();
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        MessageBox.Show("No se encontro data", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     }
                                                                 }
                                                                 else
@@ -318,31 +350,9 @@ namespace sbx
                                                             }
                                                             else
                                                             {
-                                                                MessageBox.Show("No se encontro data", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                                MessageBox.Show($"Rango de numeracion no coincide: {respRangoDian?.Data} - {respRangoDian?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                             }
                                                         }
-                                                        else
-                                                        {
-                                                            var resp = await _IRangoNumeracion.CreateUpdate(Datos, Convert.ToInt32(_Permisos?[0]?.IdUser));
-
-                                                            if (resp != null)
-                                                            {
-                                                                if (resp.Flag == true)
-                                                                {
-                                                                    MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                                                    //Limpiar();
-                                                                    this.Close();
-                                                                }
-                                                                else
-                                                                {
-                                                                    MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        MessageBox.Show($"Rango de numeracion no coincide: {respRangoDian?.Data} - {respRangoDian?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                     }
                                                 }
                                             }

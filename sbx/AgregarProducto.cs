@@ -1,4 +1,5 @@
-﻿using sbx.core.Entities.Producto;
+﻿using Microsoft.Extensions.DependencyInjection;
+using sbx.core.Entities.Producto;
 using sbx.core.Interfaces.Categoria;
 using sbx.core.Interfaces.Marca;
 using sbx.core.Interfaces.Producto;
@@ -18,8 +19,9 @@ namespace sbx
         private readonly IUnidadMedida _IUnidadMedida;
         private readonly IProducto _IProducto;
         private readonly ITribute _ITribute;
-
-        public AgregarProducto(ICategoria categoria, IMarca marca, IUnidadMedida unidadMedida, IProducto producto, ITribute tribute)
+        private Marcas? _Marcas;
+        private readonly IServiceProvider _serviceProvider;
+        public AgregarProducto(ICategoria categoria, IMarca marca, IUnidadMedida unidadMedida, IProducto producto, ITribute tribute, IServiceProvider iServiceProvider)
         {
             InitializeComponent();
 
@@ -28,6 +30,7 @@ namespace sbx
             _IUnidadMedida = unidadMedida;
             _IProducto = producto;
             _ITribute = tribute;
+            _serviceProvider = iServiceProvider;
         }
 
         public dynamic? Permisos
@@ -292,7 +295,7 @@ namespace sbx
             var item = (dynamic?)cbx_tipo_tributo.SelectedItem;
             string Nombre = item!.Nombre;
 
-            if (Nombre == "INC Bolsas") 
+            if (Nombre == "INC Bolsas")
             {
                 lbl_tributo.Text = "Valor Impuesto bolsa *";
             }
@@ -300,6 +303,13 @@ namespace sbx
             {
                 lbl_tributo.Text = "Impuesto (%) *";
             }
+        }
+
+        private void btn_agregaMarca_Click(object sender, EventArgs e)
+        {
+            _Marcas = _serviceProvider.GetRequiredService<Marcas>();
+            _Marcas.FormClosed += (s, args) => _Marcas = null;
+            _Marcas.ShowDialog();
         }
     }
 }

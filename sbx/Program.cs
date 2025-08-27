@@ -238,6 +238,10 @@ namespace sbx
 
                 services.AddTransient<NotasCredito>();
 
+                services.AddTransient<Marcas>();
+
+                services.AddTransient<AgregaMarca>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 

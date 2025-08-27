@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using sbx.core.Entities;
 using sbx.core.Entities.AgregaVenta;
 using sbx.core.Entities.Auth;
@@ -2152,7 +2153,11 @@ namespace sbx
                                                 {
                                                     if (respGetRangos.Flag)
                                                     {
-                                                        Actual = Convert.ToInt64(respGetRangos.Data!.data[0].current);
+                                                        JObject dataObject = (JObject)respGetRangos.Data!.data;
+                                                        JArray? dataArray = dataObject["data"] as JArray;
+                                                        JObject? item = dataArray![0] as JObject;
+
+                                                        Actual = item!.Value<long>("current");
                                                     }
                                                     else
                                                     {
@@ -2658,7 +2663,7 @@ namespace sbx
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
+                                                                                    RawPrinterHelper.SendStringToPrinter2(Impresora, tirilla.ToString(), LineasAbajo);
                                                                                 }
                                                                             }
                                                                         }
@@ -2670,7 +2675,7 @@ namespace sbx
                                                                             }
                                                                             else
                                                                             {
-                                                                                RawPrinterHelper.SendStringToPrinter(Impresora, tirilla.ToString(), LineasAbajo);
+                                                                                RawPrinterHelper.SendStringToPrinter2(Impresora, tirilla.ToString(), LineasAbajo);
                                                                             }
                                                                         }
                                                                     }

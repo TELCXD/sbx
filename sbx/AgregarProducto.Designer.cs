@@ -57,6 +57,7 @@
             errorProvider1 = new ErrorProvider(components);
             cbx_tipo_tributo = new ComboBox();
             label11 = new Label();
+            btn_agregaMarca = new Button();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -255,7 +256,7 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(750, 56);
+            panel3.Size = new Size(769, 56);
             panel3.TabIndex = 61;
             // 
             // btn_guardar
@@ -310,16 +311,30 @@
             label11.AutoSize = true;
             label11.Location = new Point(363, 74);
             label11.Name = "label11";
-            label11.Size = new Size(70, 15);
+            label11.Size = new Size(72, 15);
             label11.TabIndex = 65;
             label11.Text = "Tipo Tributo";
+            // 
+            // btn_agregaMarca
+            // 
+            btn_agregaMarca.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btn_agregaMarca.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_agregaMarca.FlatStyle = FlatStyle.Flat;
+            btn_agregaMarca.Image = (Image)resources.GetObject("btn_agregaMarca.Image");
+            btn_agregaMarca.Location = new Point(733, 257);
+            btn_agregaMarca.Name = "btn_agregaMarca";
+            btn_agregaMarca.Size = new Size(26, 26);
+            btn_agregaMarca.TabIndex = 66;
+            btn_agregaMarca.UseVisualStyleBackColor = true;
+            btn_agregaMarca.Click += btn_agregaMarca_Click;
             // 
             // AgregarProducto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(750, 407);
+            ClientSize = new Size(769, 407);
+            Controls.Add(btn_agregaMarca);
             Controls.Add(cbx_tipo_tributo);
             Controls.Add(label11);
             Controls.Add(label10);
@@ -347,8 +362,8 @@
             Controls.Add(txt_sku);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(766, 446);
-            MinimumSize = new Size(766, 446);
+            MaximumSize = new Size(785, 446);
+            MinimumSize = new Size(785, 446);
             Name = "AgregarProducto";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AgregarProducto";
@@ -390,5 +405,6 @@
         private ErrorProvider errorProvider1;
         private ComboBox cbx_tipo_tributo;
         private Label label11;
+        private Button btn_agregaMarca;
     }
 }

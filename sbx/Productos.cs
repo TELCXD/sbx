@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using sbx.core.Interfaces.EntradaInventario;
@@ -7,8 +6,6 @@ using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using System.Data;
 using System.Globalization;
-using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace sbx
 {

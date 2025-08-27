@@ -255,7 +255,7 @@
             // 
             cbx_lineas_abajo.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_lineas_abajo.FormattingEnabled = true;
-            cbx_lineas_abajo.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+            cbx_lineas_abajo.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" });
             cbx_lineas_abajo.Location = new Point(253, 311);
             cbx_lineas_abajo.Name = "cbx_lineas_abajo";
             cbx_lineas_abajo.Size = new Size(245, 25);

@@ -1,7 +1,9 @@
-﻿using System.Drawing;
+﻿
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
-using ESCPOS_NET.Emitters;
 
 namespace sbx.core.Helper.Impresion
 {
@@ -79,6 +81,32 @@ namespace sbx.core.Helper.Impresion
             return bSuccess;
         }
 
+        public static bool SendStringToPrinter2(string impresora, string tirilla, int lineasAbajo)
+        {
+            // Comandos ESC/POS
+            byte[] initPrinter = new byte[] { 0x1B, 0x40 }; // ESC @ – inicializar
+            byte[] feedBottom = new byte[] { 0x1B, 0x64, (byte)lineasAbajo }; // ESC d n – avanzar líneas
+            byte[] cutPaper = new byte[] { 0x1D, 0x56, 0x00 }; // GS V 0 – cortar
+
+            // Convertir texto a bytes ANSI
+            byte[] textoBytes = Encoding.GetEncoding(1252).GetBytes(tirilla);
+
+            // Combinar todo
+            byte[] finalBytes = initPrinter
+                .Concat(textoBytes)
+                .Concat(feedBottom)
+                .Concat(cutPaper)
+                .ToArray();
+
+            // Enviar a impresora
+            IntPtr pBytes = Marshal.AllocCoTaskMem(finalBytes.Length);
+            Marshal.Copy(finalBytes, 0, pBytes, finalBytes.Length);
+            bool result = SendBytesToPrinter(impresora, pBytes, finalBytes.Length);
+            Marshal.FreeCoTaskMem(pBytes);
+
+            return result;
+        }
+
         public static bool SendStringToPrinter(string Impresora, string tirilla, int LineasAbajo)
         {
             string initPrinter = "\x1B\x40";
@@ -105,16 +133,28 @@ namespace sbx.core.Helper.Impresion
             byte[] textoBytes = Encoding.GetEncoding(1252).GetBytes(initPrinter + tirilla);
 
             // 2. Convertir imagen base64 a ESC/POS bytes
-            byte[] qrBytes = ConvertBase64QrToEscPos(qrBase64);
+            byte[] qrBytes = ConvertBase64QrToEscPosManual(qrBase64);
 
             // 3. Agregar feed final
             byte[] feedBytes = Encoding.GetEncoding(1252).GetBytes(feedBottom);
 
+            byte[] alignCenter = new byte[] { 0x1B, 0x61, 0x01 }; // ESC a 1 (centrar)
+            byte[] alignLeft = new byte[] { 0x1B, 0x61, 0x00 };   // ESC a 0 (alinear a la izquierda, si quieres restaurarlo después)
+
+            string saltoLinea = "\n"; // o varios: "\n\n"
+            byte[] saltoLineaBytes = Encoding.GetEncoding(1252).GetBytes(saltoLinea);
+
+            byte[] cutPaper = new byte[] { 0x1D, 0x56, 0x00 };
+
             // 4. Unir todo
             byte[] finalBytes = textoBytes
-                .Concat(qrBytes)
-                .Concat(feedBytes)
-                .ToArray();
+             .Concat(saltoLineaBytes)
+             .Concat(alignCenter)  // Centrar
+             .Concat(qrBytes)      // Imprimir QR
+             .Concat(alignLeft)    // (opcional) volver a alinear a la izquierda
+             .Concat(feedBytes)    // Salto final
+             .Concat(cutPaper)
+             .ToArray();
 
             // 5. Enviar a impresora
             IntPtr pBytes = Marshal.AllocCoTaskMem(finalBytes.Length);
@@ -148,5 +188,133 @@ namespace sbx.core.Helper.Impresion
             // Ahora sí: pasar los bytes PNG a PrintImage
             return e.PrintImage(pngBytes,false);
         }
+
+
+        #region  ESC/POS Manualmente
+
+        //Convertir Base64 a ESC/POS Manualmente
+        public static byte[] ConvertBase64QrToEscPosManual(string base64Image)
+        {
+            // 1. Limpiar base64
+            string base64 = base64Image.Substring(base64Image.IndexOf(",") + 1);
+            byte[] imageBytes = Convert.FromBase64String(base64);
+
+            using var ms = new MemoryStream(imageBytes);
+            using var original = new Bitmap(ms);
+
+            //Bitmap resized = ResizeBitmap(original, 384);
+
+            // 2. Convertir a blanco y negro (1bpp)
+            Bitmap monochrome = ConvertToMonochrome(original);
+
+            // 3. Obtener bytes ESC/POS
+            return ConvertBitmapToEscPosRaster(monochrome);
+        }
+
+        public static Bitmap ResizeBitmap(Bitmap original, int width)
+        {
+            int originalWidth = original.Width;
+            int originalHeight = original.Height;
+            float scale = (float)width / originalWidth;
+            int newHeight = (int)(originalHeight * scale);
+
+            Bitmap resized = new Bitmap(width, newHeight);
+            using (Graphics g = Graphics.FromImage(resized))
+            {
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.DrawImage(original, 0, 0, width, newHeight);
+            }
+            return resized;
+        }
+
+        //Convertir a Blanco y Negro
+        private static Bitmap ConvertToMonochrome(Bitmap original)
+        {
+            int width = original.Width;
+            int height = original.Height;
+
+            // Crear nuevo Bitmap en formato 1bpp
+            Bitmap monoBitmap = new Bitmap(width, height, PixelFormat.Format1bppIndexed);
+
+            // Bloqueo de bits para acceso rápido
+            BitmapData bmpData = monoBitmap.LockBits(
+                new Rectangle(0, 0, width, height),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format1bppIndexed);
+
+            int stride = bmpData.Stride;
+            int bytes = stride * height;
+            byte[] pixelData = new byte[bytes];
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel = original.GetPixel(x, y);
+                    int luminance = (int)(pixel.R * 0.3 + pixel.G * 0.59 + pixel.B * 0.11);
+                    bool isBlack = luminance < 80;
+
+                    if (isBlack)
+                    {
+                        int index = y * stride + (x >> 3);
+                        pixelData[index] |= (byte)(0x80 >> (x & 0x7));
+                    }
+                }
+            }
+
+            // Copiar datos al bitmap
+            Marshal.Copy(pixelData, 0, bmpData.Scan0, bytes);
+            monoBitmap.UnlockBits(bmpData);
+
+            return monoBitmap;
+        }
+
+        //Convertir Bitmap a ESC/POS Raster (GS v 0)
+        private static byte[] ConvertBitmapToEscPosRaster(Bitmap bmp)
+        {
+            List<byte> escPosBytes = new();
+
+            int width = bmp.Width;
+            int height = bmp.Height;
+
+            int widthBytes = (width + 7) / 8;
+
+            // ESC * m nL nH d1...dk (GS v 0 raster format)
+            escPosBytes.Add(0x1D); // GS
+            escPosBytes.Add(0x76); // 'v'
+            escPosBytes.Add(0x30); // '0'
+            escPosBytes.Add(0x00); // mode: normal
+
+            escPosBytes.Add((byte)(widthBytes % 256)); // xL
+            escPosBytes.Add((byte)(widthBytes / 256)); // xH
+            escPosBytes.Add((byte)(height % 256));     // yL
+            escPosBytes.Add((byte)(height / 256));     // yH
+
+            // Leer datos directamente del Bitmap 1bpp
+            BitmapData bmpData = bmp.LockBits(
+                new Rectangle(0, 0, bmp.Width, bmp.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format1bppIndexed);
+
+            int stride = bmpData.Stride;
+            int bytes = stride * bmp.Height;
+            byte[] rawData = new byte[bytes];
+            Marshal.Copy(bmpData.Scan0, rawData, 0, bytes);
+            bmp.UnlockBits(bmpData);
+
+            // Copiar directamente línea por línea
+            for (int y = 0; y < height; y++)
+            {
+                int offset = y * stride;
+                for (int i = 0; i < widthBytes; i++)
+                {
+                    escPosBytes.Add(rawData[offset + i]);
+                }
+            }
+
+            return escPosBytes.ToArray();
+        }
+        #endregion
     }
 }
