@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using sbx.core.Entities;
 using sbx.core.Entities.AgregaVenta;
@@ -2260,6 +2261,9 @@ namespace sbx
                                                     ActualizarFacturaForFacturaElectronicaEntitie actualizarFacturaForFacturaElectronicaEntitie
                                                     = new ActualizarFacturaForFacturaElectronicaEntitie();
 
+                                                    actualizarFacturaForFacturaElectronicaEntitie.FacturaRequestJSON = "";
+                                                    actualizarFacturaForFacturaElectronicaEntitie.ResponseFactusError = "";
+
                                                     int IdVentaCreada = respGuardado.Data;
                                                     var DataFacturaRegistrada = new Response<dynamic>();
                                                     DataFacturaRegistrada = await _IVenta.List(IdVentaCreada);
@@ -2404,10 +2408,18 @@ namespace sbx
 
                                                                     var responseFacturaElectronica = _IFacturas.CreaValidaFactura(Token, UrlCrearValidarFactura, facturaRequest);
 
+                                                                    string JsonFactura = JsonConvert.SerializeObject(facturaRequest, new JsonSerializerSettings
+                                                                    {
+                                                                        NullValueHandling = NullValueHandling.Ignore
+                                                                    });
+
+                                                                    actualizarFacturaForFacturaElectronicaEntitie.FacturaRequestJSON = JsonFactura;
+
                                                                     if (!responseFacturaElectronica.Flag)
                                                                     {
                                                                         actualizarFacturaForFacturaElectronicaEntitie.IdVenta = Convert.ToInt32(DataFacturaRegistrada.Data[0].IdVenta);
                                                                         actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN = "PENDIENTE EMITIR";
+                                                                        actualizarFacturaForFacturaElectronicaEntitie.ResponseFactusError = $"Error en Emicion de factura electronica: {responseFacturaElectronica?.Data} - {responseFacturaElectronica?.Message}";
 
                                                                         MessageBox.Show($"Error en Emicion de factura electronica: {responseFacturaElectronica?.Data} - {responseFacturaElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     }

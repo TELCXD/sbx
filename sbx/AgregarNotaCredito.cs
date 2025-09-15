@@ -603,6 +603,9 @@ namespace sbx
                                                     ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie =
                                                         new ActualizarNotaCreditoForNotaCreditoElectronicaEntitie();
 
+                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoRequestJSON = "";
+                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.ResponseFactusError = "";
+
                                                     try
                                                     {
                                                         if (NotaCreditoElectronica == true)
@@ -696,10 +699,18 @@ namespace sbx
 
                                                                     var responseNotaCreditoElectronica = _INotasCreditoElectronica.CreaValidaNotaCredito(Token, UrlCrearValidarNotaCredito, notaCreditoRequest);
 
+                                                                    string JsonNotaCredito = JsonConvert.SerializeObject(notaCreditoRequest, new JsonSerializerSettings
+                                                                    {
+                                                                        NullValueHandling = NullValueHandling.Ignore
+                                                                    });
+
+                                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoRequestJSON = JsonNotaCredito;
+
                                                                     if (!responseNotaCreditoElectronica.Flag)
                                                                     {
                                                                         actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
                                                                         actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.ResponseFactusError = $"Error en Emicion de nota electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}";
 
                                                                         MessageBox.Show($"Error en Emicion de nota electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     }

@@ -515,8 +515,8 @@ namespace sbx.repositories.NotaCredito
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
                     sql = @$" UPDATE T_NotaCredito SET NumberNotaCreditoDIAN = @NumberNotaCreditoDIAN,
-                              EstadoNotaCreditoDIAN = @EstadoNotaCreditoDIAN, NotaCreditoJSON = @NotaCreditoJSON,
-                              UpdateDate = @UpdateDate, IdUserAction = @IdUserAction
+                              EstadoNotaCreditoDIAN = @EstadoNotaCreditoDIAN,NotaCreditoRequestJSON = @NotaCreditoRequestJSON, NotaCreditoJSON = @NotaCreditoJSON,
+                              UpdateDate = @UpdateDate,ResponseFactusError = @ResponseFactusError, IdUserAction = @IdUserAction
                               WHERE IdNotaCredito = @IdNotaCredito ";
 
                     var parametros = new
@@ -525,6 +525,8 @@ namespace sbx.repositories.NotaCredito
                         actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NumberNotaCreditoDIAN,
                         actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN,
                         actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoJSON,
+                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoRequestJSON,
+                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.ResponseFactusError,
                         UpdateDate = FechaActual,
                         IdUserAction = IdUser
                     };

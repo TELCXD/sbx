@@ -1421,7 +1421,8 @@ namespace sbx.repositories.Venta
                     FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
 
                     sql = @$" UPDATE T_Ventas SET NumberFacturaDIAN = @NumberFacturaDIAN,
-                              EstadoFacturaDIAN = @EstadoFacturaDIAN, FacturaJSON = @FacturaJSON,
+                              EstadoFacturaDIAN = @EstadoFacturaDIAN,FacturaRequestJSON = @FacturaRequestJSON, FacturaJSON = @FacturaJSON,
+                              ResponseFactusError = @ResponseFactusError,
                               UpdateDate = @UpdateDate, IdUserAction = @IdUserAction
                               WHERE IdVenta = @IdVenta ";
 
@@ -1430,7 +1431,9 @@ namespace sbx.repositories.Venta
                         actualizarFacturaForFacturaElectronicaEntitie.IdVenta,
                         actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN,
                         actualizarFacturaForFacturaElectronicaEntitie.EstadoFacturaDIAN,
+                        actualizarFacturaForFacturaElectronicaEntitie.FacturaRequestJSON,
                         actualizarFacturaForFacturaElectronicaEntitie.FacturaJSON,
+                        actualizarFacturaForFacturaElectronicaEntitie.ResponseFactusError,
                         UpdateDate = FechaActual,
                         IdUserAction = IdUser
                     };
