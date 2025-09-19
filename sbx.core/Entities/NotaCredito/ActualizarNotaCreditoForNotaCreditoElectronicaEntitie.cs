@@ -8,5 +8,7 @@ namespace sbx.core.Entities.NotaCredito
         public string EstadoNotaCreditoDIAN { get; set; } = string.Empty;
         public string NotaCreditoJSON { get; set; } = string.Empty;
         public string qr_image { get; set; } = string.Empty;
+        public string NotaCreditoRequestJSON { get; set; } = string.Empty;
+        public string ResponseFactusError { get; set; } = string.Empty;
     }
 }

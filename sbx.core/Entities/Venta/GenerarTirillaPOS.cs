@@ -32,7 +32,7 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine(CentrarTextoLargo(factura.DireccionEmpresa));
                 sb.AppendLine(CentrarTexto($"Tel: {factura.TelefonoEmpresa}"));
                 sb.AppendLine(CentrarTexto($"NIT: {factura.NIT}"));
-                sb.AppendLine(CentrarTexto($"FACTURA ELECTRÓNICA DE VENTA"));
+                sb.AppendLine(CentrarTexto($"FACTURA ELECTRONICA DE VENTA"));
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
                 // Información de la factura
@@ -150,7 +150,7 @@ namespace sbx.core.Entities.Venta
                 dynamic datosFacturaElectronica = JsonConvert.DeserializeObject<dynamic>(factura.FacturaJSON);
                 if (ANCHO_TIRILLA == 42)
                 {
-                    sb.AppendLine(CentrarTexto("Autorización numeración de facturación"));
+                    sb.AppendLine(CentrarTexto("Autorizacion numeracion de facturacion"));
                     sb.AppendLine(CentrarTexto($"DIAN {datosFacturaElectronica!.data.numbering_range.resolution_number} - Prefijo: {datosFacturaElectronica!.data.numbering_range.prefix}"));
                     sb.AppendLine(CentrarTexto($"Habilita rangos de:{datosFacturaElectronica!.data.numbering_range.from.ToString()}"));
                     sb.AppendLine(CentrarTexto($"hasta: {datosFacturaElectronica!.data.numbering_range.to.ToString()}"));
@@ -158,13 +158,13 @@ namespace sbx.core.Entities.Venta
                     sb.AppendLine(CentrarTexto($"hasta: {datosFacturaElectronica!.data.numbering_range.end_date.ToString()}"));
                     sb.AppendLine(CentrarTexto($"Vigencia {datosFacturaElectronica!.data.numbering_range.months} meses."));
                     sb.AppendLine();
-                    sb.AppendLine(CentrarTexto("Fecha y hora de Generación:"));
+                    sb.AppendLine(CentrarTexto("Fecha y hora de Generacion:"));
                     sb.AppendLine(CentrarTexto(datosFacturaElectronica!.data.bill.validated.ToString()));
                 }
                 else if (ANCHO_TIRILLA == 32) 
                 {
-                    sb.AppendLine(CentrarTexto("Autorización de numeración"));
-                    sb.AppendLine(CentrarTexto("de facturación"));
+                    sb.AppendLine(CentrarTexto("Autorizacion de numeracion"));
+                    sb.AppendLine(CentrarTexto("de facturacion"));
                     sb.AppendLine(CentrarTexto($"DIAN {datosFacturaElectronica!.data.numbering_range.resolution_number}"));
                     sb.AppendLine(CentrarTexto($"Prefijo: {datosFacturaElectronica!.data.numbering_range.prefix}"));
                     sb.AppendLine(CentrarTexto($"Habilita rangos de:"));
@@ -177,13 +177,13 @@ namespace sbx.core.Entities.Venta
                     sb.AppendLine(CentrarTexto(datosFacturaElectronica!.data.numbering_range.end_date.ToString()));
                     sb.AppendLine(CentrarTexto($"Vigencia {datosFacturaElectronica!.data.numbering_range.months} meses."));
                     sb.AppendLine();
-                    sb.AppendLine("Fecha y hora de Generación:");
+                    sb.AppendLine("Fecha y hora de Generacion:");
                     sb.AppendLine(datosFacturaElectronica!.data.bill.validated.ToString());                   
                 }
 
                 sb.AppendLine();
 
-                var LineasCUFE = DividirTexto($"Código CUFE: {datosFacturaElectronica!.data.bill.cufe}", ANCHO_TIRILLA - 1);
+                var LineasCUFE = DividirTexto($"Codigo CUFE: {datosFacturaElectronica!.data.bill.cufe}", ANCHO_TIRILLA - 1);
                 foreach (var linea in LineasCUFE)
                 {
                     sb.AppendLine($"{linea}");
@@ -498,7 +498,7 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine(CentrarTextoLargo(NotaCredito.DireccionEmpresa));
                 sb.AppendLine(CentrarTexto($"Tel: {NotaCredito.TelefonoEmpresa}"));
                 sb.AppendLine(CentrarTexto($"NIT: {NotaCredito.NIT}"));
-                sb.AppendLine(CentrarTexto($"NOTA CREDITO ELECTRÓNICA"));
+                sb.AppendLine(CentrarTexto($"NOTA CREDITO ELECTRONICA"));
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
                 // Información de nota credito
@@ -602,7 +602,7 @@ namespace sbx.core.Entities.Venta
                     //sb.AppendLine(CentrarTexto($"hasta: {datosNotaCreditoElectronica!.data.numbering_range.end_date.ToString()}"));
                     //sb.AppendLine(CentrarTexto($"Vigencia {datosNotaCreditoElectronica!.data.numbering_range.months} meses."));
                     //sb.AppendLine();
-                    sb.AppendLine(CentrarTexto("Fecha y hora de Generación:"));
+                    sb.AppendLine(CentrarTexto("Fecha y hora de Generacion:"));
                     sb.AppendLine(CentrarTexto(datosNotaCreditoElectronica!.data.credit_note.validated.ToString()));
                 }
                 else if (ANCHO_TIRILLA == 32)
@@ -621,13 +621,13 @@ namespace sbx.core.Entities.Venta
                     //sb.AppendLine(CentrarTexto(datosNotaCreditoElectronica!.data.numbering_range.end_date.ToString()));
                     //sb.AppendLine(CentrarTexto($"Vigencia {datosNotaCreditoElectronica!.data.numbering_range.months} meses."));
                     //sb.AppendLine();
-                    sb.AppendLine("Fecha y hora de Generación:");
+                    sb.AppendLine("Fecha y hora de Generacion:");
                     sb.AppendLine(datosNotaCreditoElectronica!.data.credit_note.validated.ToString());
                 }
 
                 sb.AppendLine();
 
-                var LineasCUFE = DividirTexto($"Código CUFE: {datosNotaCreditoElectronica!.data.credit_note.cufe}", ANCHO_TIRILLA - 1);
+                var LineasCUFE = DividirTexto($"Codigo CUFE: {datosNotaCreditoElectronica!.data.credit_note.cufe}", ANCHO_TIRILLA - 1);
                 foreach (var linea in LineasCUFE)
                 {
                     sb.AppendLine($"{linea}");

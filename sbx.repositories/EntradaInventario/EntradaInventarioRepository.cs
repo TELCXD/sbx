@@ -763,22 +763,33 @@ namespace sbx.repositories.EntradaInventario
                             VALUES (@IdEntradasInventario, @IdProducto, @CodigoLote, @FechaVencimiento,
                                     @Cantidad, @CostoUnitario, @Descuento, @Impuesto, @CreationDate, @IdUserAction);";
 
-                            await connection.ExecuteAsync(
-                                    sql,
-                                    new
-                                    {
-                                        IdEntradasInventario = idEntrada,
-                                        idProducto,
-                                        CodigoLote = "",
-                                        FechaVencimiento = "",
-                                        Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
-                                        CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
-                                        Descuento = 0,
-                                        Impuesto = 0,
-                                        CreationDate = FechaActual,
-                                        IdUserAction = IdUser
-                                    },
-                                    transaction);
+                            DateTime FechaVencimiento = new DateTime();
+                            if (!string.IsNullOrEmpty(item[9].ToString()?.Trim())) 
+                            {
+                                FechaVencimiento = Convert.ToDateTime(item[9].ToString()?.Trim());
+                                FechaVencimiento = Convert.ToDateTime(FechaVencimiento.ToString("yyyy-MM-dd"));
+                            }
+                            else
+                            {
+                                FechaVencimiento = Convert.ToDateTime("1900-01-01");
+                            }
+
+                                await connection.ExecuteAsync(
+                                        sql,
+                                        new
+                                        {
+                                            IdEntradasInventario = idEntrada,
+                                            idProducto,
+                                            CodigoLote = "",
+                                            FechaVencimiento,
+                                            Cantidad = Convert.ToDecimal(item[6], new CultureInfo("es-CO")),
+                                            CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
+                                            Descuento = 0,
+                                            Impuesto = 0,
+                                            CreationDate = FechaActual,
+                                            IdUserAction = IdUser
+                                        },
+                                        transaction);
                         }
                     }
 
@@ -1004,6 +1015,17 @@ namespace sbx.repositories.EntradaInventario
 
                                 int IdProd = Convert.ToInt32(item[0]);
 
+                                DateTime FechaVencimiento = new DateTime();
+                                if (!string.IsNullOrEmpty(item[10].ToString()?.Trim()))
+                                {
+                                    FechaVencimiento = Convert.ToDateTime(item[10].ToString()?.Trim());
+                                    FechaVencimiento = Convert.ToDateTime(FechaVencimiento.ToString("yyyy-MM-dd"));
+                                }
+                                else
+                                {
+                                    FechaVencimiento = Convert.ToDateTime("1900-01-01");
+                                }
+
                                 await connection.ExecuteAsync(
                                         sql,
                                         new
@@ -1011,7 +1033,7 @@ namespace sbx.repositories.EntradaInventario
                                             IdEntradasInventario = idEntrada,
                                             IdProducto = IdProd,
                                             CodigoLote = "",
-                                            FechaVencimiento = "",
+                                            FechaVencimiento,
                                             Cantidad = Convert.ToDecimal(item[9], new CultureInfo("es-CO")),
                                             CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
                                             Descuento = 0,
@@ -1048,6 +1070,17 @@ namespace sbx.repositories.EntradaInventario
 
                                 int IdProd = Convert.ToInt32(item[0]);
 
+                                DateTime FechaVencimiento = new DateTime();
+                                if (!string.IsNullOrEmpty(item[10].ToString()?.Trim()))
+                                {
+                                    FechaVencimiento = Convert.ToDateTime(item[10].ToString()?.Trim());
+                                    FechaVencimiento = Convert.ToDateTime(FechaVencimiento.ToString("yyyy-MM-dd"));
+                                }
+                                else
+                                {
+                                    FechaVencimiento = Convert.ToDateTime("1900-01-01");
+                                }
+
                                 await connection.ExecuteAsync(
                                         sql,
                                         new
@@ -1055,7 +1088,7 @@ namespace sbx.repositories.EntradaInventario
                                             IdDetalleSalidasInventario = idSalida,
                                             IdProducto = IdProd,
                                             CodigoLote = "",
-                                            FechaVencimiento = "",
+                                            FechaVencimiento,
                                             Cantidad = Convert.ToDecimal(item[9], new CultureInfo("es-CO")),
                                             CostoUnitario = Convert.ToDecimal(item[4], new CultureInfo("es-CO")),
                                             CreationDate = FechaActual,

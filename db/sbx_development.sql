@@ -1893,7 +1893,9 @@ IdMetodoPago INT,
 Estado VARCHAR(100), --FACTURADA, --ANULADA
 NumberFacturaDIAN VARCHAR(20),
 EstadoFacturaDIAN VARCHAR(20), --EMITIDA,PENDIENTE EMITIR, ANULADA
-FacturaJSON VARCHAR(MAX),
+FacturaRequestJSON VARCHAR(MAX), -- JSON que se envia a factus
+FacturaJSON VARCHAR(MAX), --JSON Respuesta de factus en caso exitoso
+ResponseFactusError VARCHAR(MAX), --Respuesta de Api Factus en caso de error
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
@@ -1986,7 +1988,9 @@ Motivo NVARCHAR(255),
 Estado VARCHAR(100), --REGISTRADA
 NumberNotaCreditoDIAN VARCHAR(20),
 EstadoNotaCreditoDIAN VARCHAR(20), --EMITIDA,PENDIENTE EMITIR
+NotaCreditoRequestJSON VARCHAR(MAX), -- JSON que se envia a factus
 NotaCreditoJSON VARCHAR(MAX),
+ResponseFactusError VARCHAR(MAX), --Respuesta de Api Factus en caso de error
 UpdateDate DATETIME,
 CreationDate DATETIME,
 IdUserAction INT,

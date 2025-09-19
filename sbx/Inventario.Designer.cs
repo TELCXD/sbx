@@ -61,11 +61,11 @@
             cl_id_producto = new DataGridViewTextBoxColumn();
             cl_nombre = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
-            cl_comentario = new DataGridViewTextBoxColumn();
+            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
             cl_tipo = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
             cl_codigo_lote = new DataGridViewTextBoxColumn();
-            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
+            cl_comentario = new DataGridViewTextBoxColumn();
             cl_usuario = new DataGridViewTextBoxColumn();
             cl_costo = new DataGridViewTextBoxColumn();
             cl_valor = new DataGridViewTextBoxColumn();
@@ -319,7 +319,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_inventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_inventario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_id_documento, cl_fecha, cl_documento, cl_movimiento, cl_cantidad, cl_id_producto, cl_nombre, cl_sku, cl_comentario, cl_tipo, cl_codigo_barras, cl_codigo_lote, cl_fecha_vencimiento, cl_usuario, cl_costo, cl_valor, cl_descuento, cl_impuesto, cl_total });
+            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_id_documento, cl_fecha, cl_documento, cl_movimiento, cl_cantidad, cl_id_producto, cl_nombre, cl_sku, cl_fecha_vencimiento, cl_tipo, cl_codigo_barras, cl_codigo_lote, cl_comentario, cl_usuario, cl_costo, cl_valor, cl_descuento, cl_impuesto, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -389,7 +389,6 @@
             cl_cantidad.MinimumWidth = 6;
             cl_cantidad.Name = "cl_cantidad";
             cl_cantidad.ReadOnly = true;
-            cl_cantidad.Width = 125;
             // 
             // cl_id_producto
             // 
@@ -413,15 +412,15 @@
             cl_sku.MinimumWidth = 6;
             cl_sku.Name = "cl_sku";
             cl_sku.ReadOnly = true;
-            cl_sku.Width = 125;
+            cl_sku.Width = 90;
             // 
-            // cl_comentario
+            // cl_fecha_vencimiento
             // 
-            cl_comentario.HeaderText = "Comentario";
-            cl_comentario.MinimumWidth = 6;
-            cl_comentario.Name = "cl_comentario";
-            cl_comentario.ReadOnly = true;
-            cl_comentario.Width = 125;
+            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
+            cl_fecha_vencimiento.MinimumWidth = 6;
+            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
+            cl_fecha_vencimiento.ReadOnly = true;
+            cl_fecha_vencimiento.Width = 155;
             // 
             // cl_tipo
             // 
@@ -447,13 +446,13 @@
             cl_codigo_lote.ReadOnly = true;
             cl_codigo_lote.Width = 125;
             // 
-            // cl_fecha_vencimiento
+            // cl_comentario
             // 
-            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
-            cl_fecha_vencimiento.MinimumWidth = 6;
-            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
-            cl_fecha_vencimiento.ReadOnly = true;
-            cl_fecha_vencimiento.Width = 155;
+            cl_comentario.HeaderText = "Comentario";
+            cl_comentario.MinimumWidth = 6;
+            cl_comentario.Name = "cl_comentario";
+            cl_comentario.ReadOnly = true;
+            cl_comentario.Width = 125;
             // 
             // cl_usuario
             // 
@@ -534,6 +533,12 @@
         private Button btn_eliminar;
         private Label lbl_total;
         private Button btn_exportar;
+        private DataGridViewTextBoxColumn cl_iva;
+        private ComboBox cbx_tipo;
+        private DateTimePicker dtp_fecha_fin;
+        private DateTimePicker dtp_fecha_inicio;
+        private Label label2;
+        private Label lbl_fechaVencimiento;
         private DataGridViewTextBoxColumn cl_id_documento;
         private DataGridViewTextBoxColumn cl_fecha;
         private DataGridViewTextBoxColumn cl_documento;
@@ -542,22 +547,16 @@
         private DataGridViewTextBoxColumn cl_id_producto;
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_sku;
-        private DataGridViewTextBoxColumn cl_comentario;
+        private DataGridViewTextBoxColumn cl_fecha_vencimiento;
         private DataGridViewTextBoxColumn cl_tipo;
         private DataGridViewTextBoxColumn cl_codigo_barras;
         private DataGridViewTextBoxColumn cl_codigo_lote;
-        private DataGridViewTextBoxColumn cl_fecha_vencimiento;
+        private DataGridViewTextBoxColumn cl_comentario;
         private DataGridViewTextBoxColumn cl_usuario;
         private DataGridViewTextBoxColumn cl_costo;
         private DataGridViewTextBoxColumn cl_valor;
         private DataGridViewTextBoxColumn cl_descuento;
-        private DataGridViewTextBoxColumn cl_iva;
-        private DataGridViewTextBoxColumn cl_total;
-        private ComboBox cbx_tipo;
-        private DateTimePicker dtp_fecha_fin;
-        private DateTimePicker dtp_fecha_inicio;
-        private Label label2;
-        private Label lbl_fechaVencimiento;
         private DataGridViewTextBoxColumn cl_impuesto;
+        private DataGridViewTextBoxColumn cl_total;
     }
 }

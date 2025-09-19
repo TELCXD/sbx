@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using sbx.core.Interfaces.EntradaInventario;
@@ -7,8 +6,6 @@ using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using System.Data;
 using System.Globalization;
-using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace sbx
 {
@@ -410,6 +407,16 @@ namespace sbx
                                 }
                             }
 
+                            if (!string.IsNullOrEmpty(item[9]?.ToString()?.Trim()))
+                            {
+                                bool esFecha = DateTime.TryParse(item[9]?.ToString()?.Trim(), out DateTime fecha);
+                                if (!esFecha) 
+                                {
+                                    Mensaje += "La fecha de vencimiento no tiene un formato de fecha valido ";
+                                    Error++;
+                                }
+                            }
+
                             if (Error > 0)
                             {
                                 MessageBox.Show("Hay datos erroneos en fila " + contador + " : " + Mensaje + "Favor revise y vuelta a intentar ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -461,9 +468,9 @@ namespace sbx
             int startRow = 2;
             int endRow = Math.Min(worksheet.LastRowUsed()?.RowNumber() ?? 100, 5000);
             int startColumn = 1; // Columna A
-            int endColumn = 9;   // Columna G
+            int endColumn = 10;   // Columna J
 
-            // Crear columnas (A-G)
+            // Crear columnas (A-J)
             for (int col = startColumn; col <= endColumn; col++)
             {
                 dt.Columns.Add("Col" + col);
@@ -503,6 +510,9 @@ namespace sbx
                     case 9:
                         if (cellValue != "Tributo (IVA, INC)") { Error++; }
                         break;
+                    case 10:
+                        if (cellValue != "FechaVencimiento") { Error++; }
+                        break;
                     default:
                         break;
                 }
@@ -527,7 +537,7 @@ namespace sbx
             {
                 MessageBox.Show(@"El archivo no cuenta con los campos necesarios para realizar el proceso, 
                                   debe tener los siguientes campos: Sku, Codigo barras,Nombre *, Marca, Costo unnitario *,
-                                  Precio venta Unitario *, Stock *, Impuesto % *, Tributo (IVA, INC), Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                  Precio venta Unitario *, Stock *, Impuesto % *, Tributo (IVA, INC), FechaVencimiento Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return dt;
@@ -543,9 +553,9 @@ namespace sbx
             int startRow = 2;
             int endRow = Math.Min(worksheet.LastRowUsed()?.RowNumber() ?? 100, 5000);
             int startColumn = 1; // Columna A
-            int endColumn = 10;   // Columna J
+            int endColumn = 11;   // Columna K
 
-            // Crear columnas (A-J)
+            // Crear columnas (A-K)
             for (int col = startColumn; col <= endColumn; col++)
             {
                 dt.Columns.Add("Col" + col);
@@ -588,6 +598,9 @@ namespace sbx
                     case 10:
                         if (cellValue != "Cantidad") { Error++; }
                         break;
+                    case 11:
+                        if (cellValue != "FechaVencimiento") { Error++; }
+                        break;
                     default:
                         break;
                 }
@@ -612,7 +625,7 @@ namespace sbx
             {
                 MessageBox.Show(@"El archivo no cuenta con los campos necesarios para realizar el proceso, 
                                   debe tener los siguientes campos: Id, Sku, Codigo barras,Nombre *, Costo unnitario *,
-                                  Precio venta Unitario *, Impuesto % *, Tributo (IVA, INC), Movimiento y Cantidad. Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                  Precio venta Unitario *, Impuesto % *, Tributo (IVA, INC), Movimiento, Cantidad, FechaVencimiento. Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return dt;
@@ -1065,6 +1078,16 @@ namespace sbx
                                         else
                                         {
                                             Mensaje += "La cantidad es obligatoria, en caso de no tener colocar el valor en cero (0), ";
+                                            Error++;
+                                        }
+                                    }
+
+                                    if (!string.IsNullOrEmpty(item[10]?.ToString()?.Trim()))
+                                    {
+                                        bool esFecha = DateTime.TryParse(item[10]?.ToString()?.Trim(), out DateTime fecha);
+                                        if (!esFecha)
+                                        {
+                                            Mensaje += "La fecha de vencimiento no tiene un formato de fecha valido ";
                                             Error++;
                                         }
                                     }

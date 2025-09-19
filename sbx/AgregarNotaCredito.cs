@@ -496,7 +496,13 @@ namespace sbx
                                                 {
                                                     if (respGetRangos.Flag)
                                                     {
-                                                        Actual = Convert.ToInt64(respGetRangos.Data!.data[0].current);
+                                                        JObject dataObject = (JObject)respGetRangos.Data!.data;
+                                                        JArray? dataArray = dataObject["data"] as JArray;
+                                                        JObject? item = dataArray![0] as JObject;
+
+                                                        Actual = item!.Value<long>("current");
+
+                                                        //Actual = Convert.ToInt64(respGetRangos.Data!.data[0].current);
                                                     }
                                                     else
                                                     {
@@ -597,6 +603,9 @@ namespace sbx
                                                     ActualizarNotaCreditoForNotaCreditoElectronicaEntitie actualizarNotaCreditoForNotaCreditoElectronicaEntitie =
                                                         new ActualizarNotaCreditoForNotaCreditoElectronicaEntitie();
 
+                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoRequestJSON = "";
+                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.ResponseFactusError = "";
+
                                                     try
                                                     {
                                                         if (NotaCreditoElectronica == true)
@@ -690,10 +699,18 @@ namespace sbx
 
                                                                     var responseNotaCreditoElectronica = _INotasCreditoElectronica.CreaValidaNotaCredito(Token, UrlCrearValidarNotaCredito, notaCreditoRequest);
 
+                                                                    string JsonNotaCredito = JsonConvert.SerializeObject(notaCreditoRequest, new JsonSerializerSettings
+                                                                    {
+                                                                        NullValueHandling = NullValueHandling.Ignore
+                                                                    });
+
+                                                                    actualizarNotaCreditoForNotaCreditoElectronicaEntitie.NotaCreditoRequestJSON = JsonNotaCredito;
+
                                                                     if (!responseNotaCreditoElectronica.Flag)
                                                                     {
                                                                         actualizarNotaCreditoForNotaCreditoElectronicaEntitie.IdNotaCredito = IdNotaCreditoCreada;
                                                                         actualizarNotaCreditoForNotaCreditoElectronicaEntitie.EstadoNotaCreditoDIAN = "PENDIENTE EMITIR";
+                                                                        actualizarNotaCreditoForNotaCreditoElectronicaEntitie.ResponseFactusError = $"Error en Emicion de nota electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}";
 
                                                                         MessageBox.Show($"Error en Emicion de nota electronica: {responseNotaCreditoElectronica?.Data} - {responseNotaCreditoElectronica?.Message}", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                                     }
