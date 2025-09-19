@@ -326,53 +326,73 @@ namespace sbx
                     //Enter
                     if (e.KeyChar == (char)13)
                     {
-                        if (txt_busca_cliente.Text.Trim() != "")
+                        bool esEnteroValido = int.TryParse(txt_buscar_producto.Text, out int resultado);
+
+                        if (esEnteroValido) 
                         {
-                            var resp = await _ICliente.ListNumDoc(txt_busca_cliente.Text);
-
-                            if (resp.Data != null)
+                            if (txt_busca_cliente.Text.Trim() != "")
                             {
-                                if (resp.Data.Count == 0)
-                                {
-                                    errorProvider1.SetError(txt_busca_cliente, $"Numero documento {txt_busca_cliente.Text} no encontrado");
-                                    lbl_nombre_cliente.Text = "_";
-                                    continuar = false;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var resp = await _ICliente.List(1);
-                            if (resp.Data != null)
-                            {
-                                if (resp.Data.Count > 0)
-                                {
-                                    agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
-                                    txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
-                                    lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
-                                    IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
-                                }
-                            }
-                        }
+                                var resp = await _ICliente.ListNumDoc(txt_busca_cliente.Text);
 
-                        if (continuar)
-                        {
-                            if (txt_buscar_producto.Text.Trim() != "")
-                            {
-                                CajaAperturada = false;
-
-                                var DataProducto = await _IProducto.List(Convert.ToInt32(txt_buscar_producto.Text));
-
-                                if (DataProducto.Data != null)
+                                if (resp.Data != null)
                                 {
-                                    if (DataProducto.Data.Count > 0)
+                                    if (resp.Data.Count == 0)
                                     {
-                                        var estadoCaja = await _ICaja.EstadoCaja(Convert.ToInt32(_Permisos?[0]?.IdUser));
-                                        if (estadoCaja.Data != null)
+                                        errorProvider1.SetError(txt_busca_cliente, $"Numero documento {txt_busca_cliente.Text} no encontrado");
+                                        lbl_nombre_cliente.Text = "_";
+                                        continuar = false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var resp = await _ICliente.List(1);
+                                if (resp.Data != null)
+                                {
+                                    if (resp.Data.Count > 0)
+                                    {
+                                        agregaVentaEntitie.IdCliente = Convert.ToInt32(resp.Data[0].IdCliente);
+                                        txt_busca_cliente.Text = resp.Data[0].NumeroDocumento;
+                                        lbl_nombre_cliente.Text = resp.Data[0].NombreRazonSocial;
+                                        IdTipoCliente = Convert.ToInt32(resp.Data[0].IdTipoCliente);
+                                    }
+                                }
+                            }
+
+                            if (continuar)
+                            {
+                                if (txt_buscar_producto.Text.Trim() != "")
+                                {
+                                    CajaAperturada = false;
+
+                                    var DataProducto = await _IProducto.List(Convert.ToInt32(txt_buscar_producto.Text));
+
+                                    if (DataProducto.Data != null)
+                                    {
+                                        if (DataProducto.Data.Count > 0)
                                         {
-                                            if (estadoCaja.Data.Count > 0)
+                                            var estadoCaja = await _ICaja.EstadoCaja(Convert.ToInt32(_Permisos?[0]?.IdUser));
+                                            if (estadoCaja.Data != null)
                                             {
-                                                if (estadoCaja.Data[0].Estado == "CERRADA")
+                                                if (estadoCaja.Data.Count > 0)
+                                                {
+                                                    if (estadoCaja.Data[0].Estado == "CERRADA")
+                                                    {
+                                                        if (_Permisos != null)
+                                                        {
+                                                            _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
+                                                            _AddApertura.Permisos = _Permisos;
+                                                            _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
+                                                            _AddApertura.FormClosed += (s, args) => _AddApertura = null;
+                                                            _AddApertura.ShowDialog();
+                                                        }
+                                                    }
+                                                    else if (estadoCaja.Data[0].Estado == "ABIERTA")
+                                                    {
+                                                        CajaAperturada = true;
+                                                    }
+                                                }
+                                                else
                                                 {
                                                     if (_Permisos != null)
                                                     {
@@ -383,160 +403,149 @@ namespace sbx
                                                         _AddApertura.ShowDialog();
                                                     }
                                                 }
-                                                else if (estadoCaja.Data[0].Estado == "ABIERTA")
-                                                {
-                                                    CajaAperturada = true;
-                                                }
                                             }
                                             else
                                             {
-                                                if (_Permisos != null)
+                                                MessageBox.Show($"No se logro obtener informacion de estado de caja", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                CajaAperturada = false;
+                                            }
+
+                                            if (CajaAperturada)
+                                            {
+                                                var DataParametros = await _IParametros.List("Validar stock para venta");
+
+                                                if (DataParametros.Data != null)
                                                 {
-                                                    _AddApertura = _serviceProvider.GetRequiredService<AddApertura>();
-                                                    _AddApertura.Permisos = _Permisos;
-                                                    _AddApertura.ConfirmacionAperturaCaja += ConfirmacionAperturaCaja;
-                                                    _AddApertura.FormClosed += (s, args) => _AddApertura = null;
-                                                    _AddApertura.ShowDialog();
+                                                    if (DataParametros.Data.Count > 0)
+                                                    {
+                                                        string ValidaStock = DataParametros.Data[0].Value;
+                                                        if (ValidaStock == "SI")
+                                                        {
+                                                            decimal CantidadEquivalenteVentaTemp = 0;
+                                                            decimal CantidadConversionTemp = 0;
+                                                            decimal Stock = DataProducto.Data[0].Stock;
+                                                            decimal StockInicial = DataProducto.Data[0].Stock;
+
+                                                            //Identificar si tiene productos padre en listay restar del stock
+                                                            var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
+                                                            if (ProductosPadre != null)
+                                                            {
+                                                                if (ProductosPadre.Data.Count > 0)
+                                                                {
+                                                                    foreach (var item in ProductosPadre.Data)
+                                                                    {
+                                                                        CantidadEquivalenteVentaTemp = 0;
+
+                                                                        foreach (DataGridViewRow row in dtg_producto.Rows)
+                                                                        {
+                                                                            if (Convert.ToInt32(item.IdProductoPadre) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                                            {
+                                                                                decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+
+                                                                                if (CantidadConversionTemp > 0)
+                                                                                {
+                                                                                    CantidadEquivalenteVenta *= CantidadConversionTemp;
+                                                                                }
+
+                                                                                Stock -= CantidadEquivalenteVenta;
+
+                                                                                CantidadEquivalenteVentaTemp = CantidadEquivalenteVenta;
+                                                                            }
+                                                                        }
+
+                                                                        CantidadConversionTemp = Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            CantidadEquivalenteVentaTemp = 0;
+                                                            CantidadConversionTemp = 0;
+
+                                                            //Identificar si tiene productos hijo en lista y restas del stock
+                                                            var ProductosHijo = await _IVenta.IdentificaProductoHijoNivel(DataProducto.Data[0].IdProducto);
+                                                            if (ProductosHijo != null)
+                                                            {
+                                                                if (ProductosHijo.Data.Count > 0)
+                                                                {
+                                                                    foreach (var item in ProductosHijo.Data)
+                                                                    {
+                                                                        CantidadEquivalenteVentaTemp = 0;
+
+                                                                        foreach (DataGridViewRow row in dtg_producto.Rows)
+                                                                        {
+                                                                            if (Convert.ToInt32(item.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                                            {
+                                                                                decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                                                                                decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+
+                                                                                if (CantidadConversionTemp > 0)
+                                                                                {
+                                                                                    CantidadEquivalenteVenta /= CantidadConversionTemp;
+                                                                                }
+
+                                                                                Stock -= CantidadEquivalenteVenta;
+
+                                                                                CantidadEquivalenteVentaTemp = CantidadEquivalenteVenta;
+                                                                            }
+                                                                        }
+
+                                                                        CantidadConversionTemp = Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            decimal CantParaVenta = 0;
+
+                                                            //Identificar si hay mas productos del mismo en lista y restar del stock
+                                                            foreach (DataGridViewRow row in dtg_producto.Rows)
+                                                            {
+                                                                if (Convert.ToInt32(DataProducto.Data[0].IdProducto) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
+                                                                {
+                                                                    CantParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+
+                                                                    Stock -= CantParaVenta;
+                                                                }
+                                                            }
+
+                                                            if (Stock >= (StockInicial > 0 && StockInicial < 1 ? StockInicial : 1))
+                                                            {
+                                                                DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
+
+                                                                IdentificarPrecio(DataProducto);
+                                                            }
+                                                            else
+                                                            {
+                                                                MessageBox.Show("Producto sin Stock", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            IdentificarPrecio(DataProducto);
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            MessageBox.Show($"No se logro obtener informacion de estado de caja", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                            CajaAperturada = false;
-                                        }
-
-                                        if (CajaAperturada)
-                                        {
-                                            var DataParametros = await _IParametros.List("Validar stock para venta");
-
-                                            if (DataParametros.Data != null)
-                                            {
-                                                if (DataParametros.Data.Count > 0)
-                                                {
-                                                    string ValidaStock = DataParametros.Data[0].Value;
-                                                    if (ValidaStock == "SI")
-                                                    {
-                                                        decimal CantidadEquivalenteVentaTemp = 0;
-                                                        decimal CantidadConversionTemp = 0;
-                                                        decimal Stock = DataProducto.Data[0].Stock;
-                                                        decimal StockInicial = DataProducto.Data[0].Stock;
-
-                                                        //Identificar si tiene productos padre en listay restar del stock
-                                                        var ProductosPadre = await _IVenta.IdentificaProductoPadreNivel1(DataProducto.Data[0].IdProducto);
-                                                        if (ProductosPadre != null)
-                                                        {
-                                                            if (ProductosPadre.Data.Count > 0)
-                                                            {
-                                                                foreach (var item in ProductosPadre.Data)
-                                                                {
-                                                                    CantidadEquivalenteVentaTemp = 0;
-
-                                                                    foreach (DataGridViewRow row in dtg_producto.Rows)
-                                                                    {
-                                                                        if (Convert.ToInt32(item.IdProductoPadre) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
-                                                                        {
-                                                                            decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta * Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-
-                                                                            if (CantidadConversionTemp > 0)
-                                                                            {
-                                                                                CantidadEquivalenteVenta *= CantidadConversionTemp;
-                                                                            }
-
-                                                                            Stock -= CantidadEquivalenteVenta;
-
-                                                                            CantidadEquivalenteVentaTemp = CantidadEquivalenteVenta;
-                                                                        }
-                                                                    }
-
-                                                                    CantidadConversionTemp = Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-                                                                }
-                                                            }
-                                                        }
-
-                                                        CantidadEquivalenteVentaTemp = 0;
-                                                        CantidadConversionTemp = 0;
-
-                                                        //Identificar si tiene productos hijo en lista y restas del stock
-                                                        var ProductosHijo = await _IVenta.IdentificaProductoHijoNivel(DataProducto.Data[0].IdProducto);
-                                                        if (ProductosHijo != null)
-                                                        {
-                                                            if (ProductosHijo.Data.Count > 0)
-                                                            {
-                                                                foreach (var item in ProductosHijo.Data)
-                                                                {
-                                                                    CantidadEquivalenteVentaTemp = 0;
-
-                                                                    foreach (DataGridViewRow row in dtg_producto.Rows)
-                                                                    {
-                                                                        if (Convert.ToInt32(item.IdProductoHijo) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
-                                                                        {
-                                                                            decimal CantidadParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-                                                                            decimal CantidadEquivalenteVenta = CantidadParaVenta / Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-
-                                                                            if (CantidadConversionTemp > 0)
-                                                                            {
-                                                                                CantidadEquivalenteVenta /= CantidadConversionTemp;
-                                                                            }
-
-                                                                            Stock -= CantidadEquivalenteVenta;
-
-                                                                            CantidadEquivalenteVentaTemp = CantidadEquivalenteVenta;
-                                                                        }
-                                                                    }
-
-                                                                    CantidadConversionTemp = Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO"));
-                                                                }
-                                                            }
-                                                        }
-
-                                                        decimal CantParaVenta = 0;
-
-                                                        //Identificar si hay mas productos del mismo en lista y restar del stock
-                                                        foreach (DataGridViewRow row in dtg_producto.Rows)
-                                                        {
-                                                            if (Convert.ToInt32(DataProducto.Data[0].IdProducto) == Convert.ToInt32(row.Cells["cl_idProducto"].Value))
-                                                            {
-                                                                CantParaVenta = Convert.ToDecimal(row.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
-
-                                                                Stock -= CantParaVenta;
-                                                            }
-                                                        }
-
-                                                        if (Stock >= (StockInicial > 0 && StockInicial < 1 ? StockInicial : 1))
-                                                        {
-                                                            DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
-
-                                                            IdentificarPrecio(DataProducto);
-                                                        }
-                                                        else
-                                                        {
-                                                            MessageBox.Show("Producto sin Stock", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        IdentificarPrecio(DataProducto);
-                                                    }
-                                                }
-                                            }
+                                            errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
                                         }
                                     }
                                     else
                                     {
-                                        errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
+                                        MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No se encontro informacion del producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    errorProvider1.SetError(txt_buscar_producto, $"Debe ingresar un {cbx_busca_por.Text}");
                                 }
                             }
-                            else
-                            {
-                                errorProvider1.SetError(txt_buscar_producto, $"Debe ingresar un {cbx_busca_por.Text}");
-                            }
+                        }
+                        else
+                        {
+                            errorProvider1.SetError(txt_buscar_producto, "Por favor, ingrese un valor entero válido para consultar el ID del producto.");
                         }
                     }
                 }
