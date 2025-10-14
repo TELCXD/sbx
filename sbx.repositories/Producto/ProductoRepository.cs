@@ -685,7 +685,7 @@ namespace sbx.repositories.Producto
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
                                   ,A.Idtribute
-                                  ,E.Nombre NombreTributo
+                                  ,F.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -727,7 +727,7 @@ namespace sbx.repositories.Producto
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
 								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida 
                                   LEFT JOIN T_ConversionesProducto E ON E.IdProductoPadre = A.IdProducto
-                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
+                                  INNER JOIN T_Tributes F ON A.Idtribute = F.Idtribute ";
 
                     string Where = "";
                     string Filtro = "";
@@ -856,7 +856,7 @@ namespace sbx.repositories.Producto
                                   ,A.IdUnidadMedida
 								  ,D.Nombre NombreUnidadMedida
                                   ,A.Idtribute
-                                  ,E.Nombre NombreTributo
+                                  ,G.Nombre NombreTributo
                                   ,A.CreationDate
                                   ,A.UpdateDate
                                   ,A.IdUserAction
@@ -900,7 +900,7 @@ namespace sbx.repositories.Producto
 								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida 
                                   LEFT JOIN T_ConversionesProducto E ON E.IdProductoHijo = A.IdProducto
 								  LEFT JOIN T_ConversionesProducto F ON F.IdProductoPadre = A.IdProducto 
-                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
+                                  INNER JOIN T_Tributes G ON A.Idtribute = G.Idtribute ";
 
                     string Where = "";
                     string Filtro = "";

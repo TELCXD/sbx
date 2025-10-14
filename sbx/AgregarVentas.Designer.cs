@@ -799,7 +799,6 @@
             // 
             cl_precio.HeaderText = "Precio";
             cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
             cl_precio.Width = 150;
             // 
             // cl_cantidad
