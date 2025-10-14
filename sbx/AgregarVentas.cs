@@ -1512,7 +1512,7 @@ namespace sbx
             // Remover eventos anteriores para evitar duplicados
             e.Control.KeyPress -= new KeyPressEventHandler(dtg_producto_KeyPress);
 
-            if (dtg_producto.CurrentCell.ColumnIndex == 5 || dtg_producto.CurrentCell.ColumnIndex == 6)
+            if (dtg_producto.CurrentCell.ColumnIndex == 4 || dtg_producto.CurrentCell.ColumnIndex == 5 || dtg_producto.CurrentCell.ColumnIndex == 6)
             {
                 e.Control.KeyPress += new KeyPressEventHandler(dtg_producto_KeyPress);
             }
@@ -1534,15 +1534,16 @@ namespace sbx
 
         private async void dtg_producto_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            decimal precio = 0;
+            decimal cantidad = 0;
+            decimal desc = 0;
+            decimal iva = 0;
+            decimal total = 0;
+
             if (e.ColumnIndex == 5 || e.ColumnIndex == 6)
             {
                 var celda = dtg_producto[e.ColumnIndex, e.RowIndex];
-                decimal precio = 0;
-                decimal cantidad = 0;
-                decimal desc = 0;
-                decimal iva = 0;
-                decimal total = 0;
-
+                
                 if (celda.Value == null || string.IsNullOrWhiteSpace(celda.Value.ToString()))
                 {
                     if (e.ColumnIndex == 5)
@@ -1921,6 +1922,55 @@ namespace sbx
                         RecalcularTotal();
                     }
                 }
+            }
+            else if (e.ColumnIndex == 4)
+            {
+                var celda2 = dtg_producto[e.ColumnIndex, e.RowIndex];
+                var celdaId = dtg_producto[0, e.RowIndex];
+
+                if (celda2.Value == null || string.IsNullOrWhiteSpace(celda2.Value.ToString()))
+                {
+                    int Id = Convert.ToInt32(celdaId.Value);
+
+                    var DataProducto2 = await _IProducto.List(Id);
+                    if (DataProducto2.Data != null)
+                    {
+                        if (DataProducto2.Data.Count > 0)
+                        {
+                            decimal PrecioBase = DataProducto2.Data[0].PrecioBase;
+                            celda2.Value = PrecioBase.ToString("N2", new CultureInfo("es-CO"));
+                        }
+                    }
+                }
+                else
+                {
+                    if (Convert.ToDecimal(celda2.Value, new CultureInfo("es-CO")) <= 0)
+                    {
+                        int Id = Convert.ToInt32(celdaId.Value);
+
+                        var DataProducto2 = await _IProducto.List(Id);
+                        if (DataProducto2.Data != null)
+                        {
+                            if (DataProducto2.Data.Count > 0)
+                            {
+                                decimal PrecioBase = DataProducto2.Data[0].PrecioBase;
+                                celda2.Value = PrecioBase.ToString("N2", new CultureInfo("es-CO"));
+                            }
+                        }
+                    }
+                }
+
+                precio = Convert.ToDecimal(dtg_producto[4, e.RowIndex].Value, new CultureInfo("es-CO"));
+                cantidad = Convert.ToDecimal(dtg_producto[5, e.RowIndex].Value, new CultureInfo("es-CO"));
+                desc = Convert.ToDecimal(dtg_producto[6, e.RowIndex].Value, new CultureInfo("es-CO"));
+                iva = Convert.ToDecimal(dtg_producto[7, e.RowIndex].Value, new CultureInfo("es-CO"));
+
+                total = CalcularTotal(precio, 0, desc);
+                total = total * cantidad;
+
+                dtg_producto[8, e.RowIndex].Value = total.ToString("N2", new CultureInfo("es-CO"));
+
+                RecalcularTotal();
             }
         }
 

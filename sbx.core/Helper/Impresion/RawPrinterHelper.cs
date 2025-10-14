@@ -109,17 +109,27 @@ namespace sbx.core.Helper.Impresion
 
         public static bool SendStringToPrinter(string Impresora, string tirilla, int LineasAbajo)
         {
-            string initPrinter = "\x1B\x40";
-            string feedBottom = $"\x1B\x64{(char)LineasAbajo}";
+            byte[] initPrinter = new byte[] { 0x1B, 0x40 }; // ESC @ – inicializar
+            byte[] feedBottom = new byte[] { 0x1B, 0x64, (byte)LineasAbajo }; // ESC d n – avanzar líneas
+            byte[] cutPaper = new byte[] { 0x1D, 0x56, 0x00 }; // GS V 0 – cortar
+
+            // Convertir texto a bytes ANSI
+            byte[] textoBytes = Encoding.GetEncoding(1252).GetBytes(tirilla);
+
+            // Combinar todo
+            byte[] finalBytes = initPrinter
+                .Concat(textoBytes)
+                .Concat(feedBottom)
+                .Concat(cutPaper)
+                .ToArray();
 
             /// Construye tirilla final
             string tirillaFinal = initPrinter + tirilla + feedBottom;
 
-            IntPtr pBytes;
-            Int32 dwCount;
-            dwCount = tirillaFinal.Length;
-            pBytes = Marshal.StringToCoTaskMemAnsi(tirillaFinal);
-            SendBytesToPrinter(Impresora, pBytes, dwCount);
+            // Enviar a impresora
+            IntPtr pBytes = Marshal.AllocCoTaskMem(finalBytes.Length);
+            Marshal.Copy(finalBytes, 0, pBytes, finalBytes.Length);
+            bool result = SendBytesToPrinter(Impresora, pBytes, finalBytes.Length);
             Marshal.FreeCoTaskMem(pBytes);
             return true;
         }

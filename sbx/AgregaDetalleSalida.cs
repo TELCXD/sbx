@@ -100,7 +100,7 @@ namespace sbx
                         {
                             DetalleSalida.CodigoLote = txt_lote.Text;
                             if (chek_fecha_vencimiento.Checked) { DetalleSalida.FechaVencimiento = dtp_fecha_vencimiento.Value; } else { DetalleSalida.FechaVencimiento = DateTime.Parse("1900-01-01"); }
-                            DetalleSalida.Cantidad = Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.'));
+                            DetalleSalida.Cantidad = Convert.ToDecimal(txt_cantidad.Text, new CultureInfo("es-CO"));
                             DetalleSalida.CostoUnitario = Convert.ToDecimal(txt_costo.Text, new CultureInfo("es-CO"));
                             DetalleSalida.Total = Convert.ToDecimal(txt_total.Text, new CultureInfo("es-CO"));
 

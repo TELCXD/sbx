@@ -229,7 +229,7 @@ namespace sbx
             txt_subtotal.Text = "";
             if (txt_cantidad.Text.Trim() != "" && txt_costo.Text.Trim() != "")
             {
-                decimal Cantidad = Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.'));
+                decimal Cantidad = Convert.ToDecimal(txt_cantidad.Text, new CultureInfo("es-CO"));
                 decimal Costo = Convert.ToDecimal(txt_costo.Text, new CultureInfo("es-CO"));
                 decimal SubTotal = Costo * Cantidad;
 

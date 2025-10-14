@@ -3,7 +3,6 @@ using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.EntradaInventario;
 using sbx.core.Entities.NotaCredito;
-using sbx.core.Entities.Venta;
 using sbx.core.Interfaces.NotaCredito;
 using sbx.repositories.EntradaInventario;
 
@@ -170,7 +169,7 @@ namespace sbx.repositories.NotaCredito
                                 EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
                                 EntradaInventarioRepository entradaInventarioRepository = new EntradaInventarioRepository(_connectionString);
 
-                                entradasInventarioEntitie2.IdTipoEntrada = Convert.ToInt32(3);
+                                entradasInventarioEntitie2.IdTipoEntrada = Convert.ToInt32(2);
                                 entradasInventarioEntitie2.IdProveedor = 1;
                                 entradasInventarioEntitie2.OrdenCompra = "";
                                 entradasInventarioEntitie2.NumFactura = "";
@@ -268,7 +267,7 @@ namespace sbx.repositories.NotaCredito
                                     EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
                                     EntradaInventarioRepository entradaInventarioRepository = new EntradaInventarioRepository(_connectionString);
 
-                                    entradasInventarioEntitie2.IdTipoEntrada = Convert.ToInt32(3);
+                                    entradasInventarioEntitie2.IdTipoEntrada = Convert.ToInt32(2);
                                     entradasInventarioEntitie2.IdProveedor = 1;
                                     entradasInventarioEntitie2.OrdenCompra = "";
                                     entradasInventarioEntitie2.NumFactura = "";
@@ -368,7 +367,7 @@ namespace sbx.repositories.NotaCredito
                                     EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
                                     EntradaInventarioRepository entradaInventarioRepository = new EntradaInventarioRepository(_connectionString);
 
-                                    entradasInventarioEntitie2.IdTipoEntrada = Convert.ToInt32(3);
+                                    entradasInventarioEntitie2.IdTipoEntrada = Convert.ToInt32(2);
                                     entradasInventarioEntitie2.IdProveedor = 1;
                                     entradasInventarioEntitie2.OrdenCompra = "";
                                     entradasInventarioEntitie2.NumFactura = "";

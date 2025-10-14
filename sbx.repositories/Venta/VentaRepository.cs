@@ -179,7 +179,7 @@ namespace sbx.repositories.Venta
                                 SalidaInventarioEntitie salidaInventarioEntitie = new SalidaInventarioEntitie();
                                 SalidaInventarioRepository inventarioRepository = new SalidaInventarioRepository(_connectionString);
 
-                                salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(4);
+                                salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(2);
                                 salidaInventarioEntitie.OrdenCompra = "";
                                 salidaInventarioEntitie.NumFactura = "";
                                 salidaInventarioEntitie.Comentario = $"{Factura} Salida por venta de producto padre";
@@ -276,7 +276,7 @@ namespace sbx.repositories.Venta
                                     SalidaInventarioEntitie salidaInventarioEntitie = new SalidaInventarioEntitie();
                                     SalidaInventarioRepository inventarioRepository = new SalidaInventarioRepository(_connectionString);
 
-                                    salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(4);
+                                    salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(2);
                                     salidaInventarioEntitie.OrdenCompra = "";
                                     salidaInventarioEntitie.NumFactura = "";
                                     salidaInventarioEntitie.Comentario = $"{Factura} Salida por venta de producto hijo";
@@ -375,7 +375,7 @@ namespace sbx.repositories.Venta
                                     SalidaInventarioEntitie salidaInventarioEntitie = new SalidaInventarioEntitie();
                                     SalidaInventarioRepository inventarioRepository = new SalidaInventarioRepository(_connectionString);
 
-                                    salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(4);
+                                    salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(2);
                                     salidaInventarioEntitie.OrdenCompra = "";
                                     salidaInventarioEntitie.NumFactura = "";
                                     salidaInventarioEntitie.Comentario = $"{Factura} Salida por venta de producto hijo";
@@ -924,7 +924,7 @@ namespace sbx.repositories.Venta
                             switch (campoFiltro)
                             {
                                 case "Factura":
-                                    Where = $"WHERE CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    Where = $"WHERE CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
                                     break;
                                 case "Identificacion cliente":
                                     Where = $"WHERE D.NumeroDocumento LIKE @Filtro ";
@@ -942,7 +942,7 @@ namespace sbx.repositories.Venta
                             switch (campoFiltro)
                             {
                                 case "Factura":
-                                    Where = $"WHERE CONCAT(A.Prefijo,'-',A.Consecutivo) = @Filtro ";
+                                    Where = $"WHERE CONCAT(A.Prefijo,A.Consecutivo) = @Filtro ";
                                     break;
                                 case "Identificacion cliente":
                                     Where = $"WHERE D.NumeroDocumento = @Filtro ";
@@ -960,7 +960,7 @@ namespace sbx.repositories.Venta
                             switch (campoFiltro)
                             {
                                 case "Factura":
-                                    Where = $"WHERE CONCAT(A.Prefijo,'-',A.Consecutivo) LIKE @Filtro ";
+                                    Where = $"WHERE CONCAT(A.Prefijo,A.Consecutivo) LIKE @Filtro ";
                                     break;
                                 case "Identificacion cliente":
                                     Where = $"WHERE D.NumeroDocumento LIKE @Filtro ";
