@@ -34,6 +34,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            btn_kit = new Button();
             btn_editar_masivo = new Button();
             btn_exportar = new Button();
             btn_importar = new Button();
@@ -70,6 +71,7 @@
             // 
             panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_kit);
             panel1.Controls.Add(btn_editar_masivo);
             panel1.Controls.Add(btn_exportar);
             panel1.Controls.Add(btn_importar);
@@ -85,8 +87,23 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1148, 56);
+            panel1.Size = new Size(1148, 96);
             panel1.TabIndex = 1;
+            // 
+            // btn_kit
+            // 
+            btn_kit.Enabled = false;
+            btn_kit.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_kit.FlatStyle = FlatStyle.Flat;
+            btn_kit.Image = (Image)resources.GetObject("btn_kit.Image");
+            btn_kit.Location = new Point(709, 3);
+            btn_kit.Name = "btn_kit";
+            btn_kit.Size = new Size(101, 45);
+            btn_kit.TabIndex = 17;
+            btn_kit.Text = "Kits";
+            btn_kit.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_kit.UseVisualStyleBackColor = true;
+            btn_kit.Click += btn_kit_Click;
             // 
             // btn_editar_masivo
             // 
@@ -166,7 +183,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(838, 15);
+            cbx_tipo_filtro.Location = new Point(820, 65);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 10;
@@ -177,7 +194,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(718, 15);
+            cbx_campo_filtro.Location = new Point(700, 65);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 9;
@@ -188,7 +205,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(1114, 13);
+            btn_buscar.Location = new Point(1113, 63);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 7;
@@ -199,7 +216,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(931, 15);
+            txt_buscar.Location = new Point(913, 65);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 6;
@@ -276,7 +293,7 @@
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dtg_producto.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_producto.Dock = DockStyle.Fill;
-            dtg_producto.Location = new Point(0, 56);
+            dtg_producto.Location = new Point(0, 96);
             dtg_producto.Name = "dtg_producto";
             dtg_producto.ReadOnly = true;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -288,7 +305,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_producto.Size = new Size(1148, 496);
+            dtg_producto.Size = new Size(1148, 456);
             dtg_producto.TabIndex = 2;
             dtg_producto.DoubleClick += dtg_producto_DoubleClick;
             // 
@@ -427,5 +444,6 @@
         private DataGridViewTextBoxColumn cl_marca;
         private DataGridViewTextBoxColumn cl_categoria;
         private Button btn_editar_masivo;
+        private Button btn_kit;
     }
 }

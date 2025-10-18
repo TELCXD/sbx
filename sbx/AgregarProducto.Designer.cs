@@ -58,6 +58,8 @@
             cbx_tipo_tributo = new ComboBox();
             label11 = new Label();
             btn_agregaMarca = new Button();
+            cbx_tipo_producto = new ComboBox();
+            label5 = new Label();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -328,12 +330,34 @@
             btn_agregaMarca.UseVisualStyleBackColor = true;
             btn_agregaMarca.Click += btn_agregaMarca_Click;
             // 
+            // cbx_tipo_producto
+            // 
+            cbx_tipo_producto.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbx_tipo_producto.FormattingEnabled = true;
+            cbx_tipo_producto.Items.AddRange(new object[] { "Individual", "Grupo" });
+            cbx_tipo_producto.Location = new Point(12, 422);
+            cbx_tipo_producto.Name = "cbx_tipo_producto";
+            cbx_tipo_producto.Size = new Size(303, 23);
+            cbx_tipo_producto.TabIndex = 67;
+            cbx_tipo_producto.SelectedIndexChanged += cbx_tipo_producto_SelectedIndexChanged;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(12, 404);
+            label5.Name = "label5";
+            label5.Size = new Size(83, 15);
+            label5.TabIndex = 68;
+            label5.Text = "Tipo producto";
+            // 
             // AgregarProducto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(769, 407);
+            ClientSize = new Size(769, 454);
+            Controls.Add(cbx_tipo_producto);
+            Controls.Add(label5);
             Controls.Add(btn_agregaMarca);
             Controls.Add(cbx_tipo_tributo);
             Controls.Add(label11);
@@ -362,8 +386,8 @@
             Controls.Add(txt_sku);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(785, 446);
-            MinimumSize = new Size(785, 446);
+            MaximumSize = new Size(785, 493);
+            MinimumSize = new Size(785, 493);
             Name = "AgregarProducto";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AgregarProducto";
@@ -406,5 +430,7 @@
         private ComboBox cbx_tipo_tributo;
         private Label label11;
         private Button btn_agregaMarca;
+        private ComboBox cbx_tipo_producto;
+        private Label label5;
     }
 }

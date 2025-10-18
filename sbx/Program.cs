@@ -242,6 +242,10 @@ namespace sbx
 
                 services.AddTransient<AgregaMarca>();
 
+                services.AddTransient<Kits>();
+
+                services.AddTransient<AgregaProductoGrupo>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 

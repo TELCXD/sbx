@@ -18,6 +18,7 @@ namespace sbx
         private int Id_Producto = 0;
         private ListaPrecios? _ListaPrecios;
         private Promociones? _Promociones;
+        private Kits? _Kits;
         private readonly IEntradaInventario _IEntradaInventario;
         private readonly IParametros _IParametros;
 
@@ -85,6 +86,7 @@ namespace sbx
                             btn_exportar.Enabled = item.ToRead == 1 ? true : false;
                             btn_eliminar.Enabled = item.ToDelete == 1 ? true : false;
                             btn_editar_masivo.Enabled = item.ToUpdate == 1 ? true : false;
+                            btn_kit.Enabled = item.ToRead == 1 ? true : false;
                             break;
                         case "listaPrecios":
                             btn_lista_precios.Enabled = item.ToRead == 1 ? true : false;
@@ -410,7 +412,7 @@ namespace sbx
                             if (!string.IsNullOrEmpty(item[9]?.ToString()?.Trim()))
                             {
                                 bool esFecha = DateTime.TryParse(item[9]?.ToString()?.Trim(), out DateTime fecha);
-                                if (!esFecha) 
+                                if (!esFecha)
                                 {
                                     Mensaje += "La fecha de vencimiento no tiene un formato de fecha valido ";
                                     Error++;
@@ -450,7 +452,7 @@ namespace sbx
             {
                 MessageBox.Show("Error: " + ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            finally 
+            finally
             {
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
@@ -606,7 +608,7 @@ namespace sbx
                 }
             }
 
-            if (Error == 0) 
+            if (Error == 0)
             {
                 for (int row = startRow; row <= endRow; row++)
                 {
@@ -887,7 +889,7 @@ namespace sbx
                                 }
                             }
 
-                            if (Error == 0) 
+                            if (Error == 0)
                             {
                                 if (!string.IsNullOrEmpty(item[0]?.ToString()?.Trim()))
                                 {
@@ -895,7 +897,7 @@ namespace sbx
                                     if (Exist == false) { Mensaje = "El Id producto NO existe, "; Error++; }
                                 }
 
-                                if (Error == 0) 
+                                if (Error == 0)
                                 {
                                     if (!string.IsNullOrEmpty(item[1]?.ToString()?.Trim()))
                                     {
@@ -1132,6 +1134,17 @@ namespace sbx
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
                 dtg_producto.Enabled = true;
+            }
+        }
+
+        private void btn_kit_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _Kits = _serviceProvider.GetRequiredService<Kits>();
+                _Kits.Permisos = _Permisos;
+                _Kits.FormClosed += (s, args) => _Kits = null;
+                _Kits.ShowDialog();
             }
         }
     }

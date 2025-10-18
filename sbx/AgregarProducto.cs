@@ -20,6 +20,7 @@ namespace sbx
         private readonly IProducto _IProducto;
         private readonly ITribute _ITribute;
         private Marcas? _Marcas;
+        private AgregaProductoGrupo? _AgregaProductoGrupo;
         private readonly IServiceProvider _serviceProvider;
         public AgregarProducto(ICategoria categoria, IMarca marca, IUnidadMedida unidadMedida, IProducto producto, ITribute tribute, IServiceProvider iServiceProvider)
         {
@@ -103,6 +104,7 @@ namespace sbx
             cbx_tipo_tributo.SelectedIndex = 0;
 
             cbx_es_inventariable.SelectedIndex = 0;
+            cbx_tipo_producto.SelectedIndex = 0;
 
             if (Id_Producto > 0)
             {
@@ -122,6 +124,7 @@ namespace sbx
                     cbx_marca.SelectedValue = resp.Data[0].IdMarca;
                     cbx_unidad_medida.SelectedValue = resp.Data[0].IdUnidadMedida;
                     cbx_tipo_tributo.SelectedValue = resp.Data[0].Idtribute;
+                    cbx_tipo_producto.SelectedIndex = resp.Data[0].TipoProducto == "Individual" ? 0 : 1;
                 }
                 else
                 {
@@ -158,7 +161,8 @@ namespace sbx
                 IdMarca = Convert.ToInt32(cbx_marca.SelectedValue),
                 IdUnidadMedida = Convert.ToInt32(cbx_unidad_medida.SelectedValue),
                 Idtribute = Convert.ToInt32(cbx_tipo_tributo.SelectedValue),
-                EsInventariable = cbx_es_inventariable.Text == "SI" ? 1 : 0
+                EsInventariable = cbx_es_inventariable.Text == "SI" ? 1 : 0,
+                TipoProducto = cbx_tipo_producto.Text
             };
 
             var validationContext = new ValidationContext(Datos);
@@ -310,6 +314,11 @@ namespace sbx
             _Marcas = _serviceProvider.GetRequiredService<Marcas>();
             _Marcas.FormClosed += (s, args) => _Marcas = null;
             _Marcas.ShowDialog();
+        }
+
+        private void cbx_tipo_producto_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
