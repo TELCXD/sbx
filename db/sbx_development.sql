@@ -1539,6 +1539,7 @@ CostoBase DECIMAL(10,2),
 PrecioBase DECIMAL(10,2),
 EsInventariable BIT NOT NULL,
 Impuesto DECIMAL(10,2),
+TipoProducto NVARCHAR(20),
 CreationDate DATETIME,
 UpdateDate DATETIME,
 IdUserAction INT,
@@ -2170,3 +2171,14 @@ IdUserAction INT,
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser),
 FOREIGN KEY(IdGrupoApis) REFERENCES T_GrupoApis(IdGrupoApis)
 )
+GO
+CREATE TABLE T_Producto_grupo_detalle (
+    IdProductoGrupo INT, -- FK a T_Productos.Idproducto donde TipoProducto = 'Grupo'
+    IdProductoIndividual INT, -- FK a T_Productos.Idproducto donde TipoProducto = 'individual'
+    Cantidad DECIMAL(10,2),
+    IdUserAction INT,
+    CreationDate DATETIME,
+    PRIMARY KEY (IdProductoGrupo, IdProductoIndividual),
+    FOREIGN KEY (IdProductoGrupo) REFERENCES T_Productos(Idproducto),
+    FOREIGN KEY (IdProductoIndividual) REFERENCES T_Productos(Idproducto)
+);

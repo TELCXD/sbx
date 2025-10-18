@@ -18,5 +18,14 @@ namespace sbx.core.Interfaces.Producto
         Task<Response<dynamic>> BuscarExportarExcel(string dato, string campoFiltro, string tipoFiltro);
         Task<Response<dynamic>> Eliminar(int Id);
         Task<bool> ExisteIdProducto(int Id_Producto);
+        Task<Response<dynamic>> BuscarProductoGrupo(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> BuscarProductoIndividual(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> AgregaProdIndiviToProdGrupo(int IdProductoGrupo, int IdProductoIndividual, decimal Cantidad, int IdUser);
+        Task<bool> ExistePrdIndiv(int id_prd_grupo, int id_prd_indiv);
+        Task<Response<dynamic>> BuscarXProdGrupo(int IdProductoGrupo);
+        Task<Response<dynamic>> EliminarPrdIndvXPrdGrp(int id_prd_grupo, int id_prd_indiv);
+        Task<Response<dynamic>> UpdateCantidadProdIndiviToProdGrupo(int IdProductoGrupo, int IdProductoIndividual, decimal Cantidad, int IdUser);
+        Task<Response<dynamic>> BuscarProdGrupoDetalle(string dato, string campoFiltro, string tipoFiltro);
+        Task<Response<dynamic>> EliminarPrdGrp(int Id);
     }
 }

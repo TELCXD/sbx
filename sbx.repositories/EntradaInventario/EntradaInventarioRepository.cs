@@ -712,9 +712,9 @@ namespace sbx.repositories.EntradaInventario
                         int idMarca = await connection.ExecuteScalarAsync<int>(sql, new { NombreMarca = (item[3].ToString()?.Trim() == "" ? "N/A" : item[3].ToString()?.Trim()) }, transaction);
 
                         sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
-                                  CostoBase,PrecioBase,EsInventariable,Impuesto,IdCategoria,IdMarca,IdUnidadMedida,Idtribute,CreationDate, IdUserAction)
+                                  CostoBase,PrecioBase,EsInventariable,Impuesto,TipoProducto,IdCategoria,IdMarca,IdUnidadMedida,Idtribute,CreationDate, IdUserAction)
                                   VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
-                                  @CostoBase,@PrecioBase,@EsInventariable,@Impuesto,@IdCategoria,@IdMarca,@IdUnidadMedida,@Idtribute,@CreationDate,@IdUserAction);
+                                  @CostoBase,@PrecioBase,@EsInventariable,@Impuesto,@TipoProducto,@IdCategoria,@IdMarca,@IdUnidadMedida,@Idtribute,@CreationDate,@IdUserAction);
                                   SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                         var parametrosProducto = new
@@ -726,6 +726,7 @@ namespace sbx.repositories.EntradaInventario
                             PrecioBase = Convert.ToDecimal(item[5], new CultureInfo("es-CO")),
                             EsInventariable = 1,
                             Impuesto = Convert.ToDecimal(item[7], new CultureInfo("es-CO")),
+                            TipoProducto = "Individual",
                             IdCategoria = 1,
                             IdMarca = idMarca,
                             IdUnidadMedida = 1,

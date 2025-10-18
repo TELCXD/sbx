@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using sbx.core.Interfaces.Cliente;
-using sbx.core.Interfaces.ConversionProducto;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
@@ -92,6 +91,12 @@ namespace sbx
                 case "Add_ConversionProductoHijo":
                     await ConsultaProductoHijo();
                     break;
+                case "busca_producto_tipo_grupo":
+                    await ConsultaProductoTipoGrupo();
+                    break;
+                case "busca_producto_tipo_individual":
+                    await ConsultaProductoTipoIndividual();
+                    break;
                 default:
                     break;
             }
@@ -142,6 +147,12 @@ namespace sbx
                     opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
                     break;
                 case "Add_ConversionProductoHijo":
+                    opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
+                    break;
+                case "busca_producto_tipo_grupo":
+                    opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
+                    break;
+                case "busca_producto_tipo_individual":
                     opciones = new List<string> { "Nombre", "Id", "Sku", "Codigo barras" };
                     break;
                 default:
@@ -481,6 +492,84 @@ namespace sbx
             }
         }
 
+        private async Task ConsultaProductoTipoGrupo()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _IProducto.BuscarProductoGrupo(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["Nombre"].Width = 500;
+                    dtg_buscador.Columns["IdProducto"].Visible = true;
+                    dtg_buscador.Columns["CostoBase"].Visible = false;
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                    dtg_buscador.Columns["PrecioBase"].Visible = true;
+                    dtg_buscador.Columns["EsInventariable"].Visible = false;
+                    dtg_buscador.Columns["Impuesto"].Visible = false;
+                    dtg_buscador.Columns["IdCategoria"].Visible = false;
+                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                    dtg_buscador.Columns["IdMarca"].Visible = false;
+                    dtg_buscador.Columns["NombreMarca"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["Idtribute"].Visible = false;
+                    dtg_buscador.Columns["NombreTributo"].Visible = false;
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                }
+            }
+        }
+
+        private async Task ConsultaProductoTipoIndividual()
+        {
+            dtg_buscador.DataSource = null;
+
+            var resp = await _IProducto.BuscarProductoIndividual(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text);
+
+            if (resp.Data != null)
+            {
+                var json = JsonConvert.SerializeObject(resp.Data);
+                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                if (dataTable.Rows.Count > 0)
+                {
+                    dtg_buscador.DataSource = dataTable;
+
+                    dtg_buscador.Columns["Nombre"].Width = 500;
+                    dtg_buscador.Columns["IdProducto"].Visible = true;
+                    dtg_buscador.Columns["CostoBase"].Visible = false;
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                    dtg_buscador.Columns["PrecioBase"].Visible = true;
+                    dtg_buscador.Columns["EsInventariable"].Visible = false;
+                    dtg_buscador.Columns["Impuesto"].Visible = false;
+                    dtg_buscador.Columns["IdCategoria"].Visible = false;
+                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                    dtg_buscador.Columns["IdMarca"].Visible = false;
+                    dtg_buscador.Columns["NombreMarca"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                    dtg_buscador.Columns["Idtribute"].Visible = false;
+                    dtg_buscador.Columns["NombreTributo"].Visible = false;
+                    dtg_buscador.Columns["CreationDate"].Visible = false;
+                    dtg_buscador.Columns["UpdateDate"].Visible = false;
+                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                }
+            }
+        }
+
         private void dtg_buscador_DoubleClick(object sender, EventArgs e)
         {
             if (dtg_buscador.Rows.Count > 0)
@@ -539,6 +628,12 @@ namespace sbx
                         break;
                     case "Add_ConversionProductoHijo":
                         await ConsultaProductoHijo();
+                        break;
+                    case "busca_producto_tipo_grupo":
+                        await ConsultaProductoTipoGrupo();
+                        break;
+                    case "busca_producto_tipo_individual":
+                        await ConsultaProductoTipoIndividual();
                         break;
                     default:
                         break;

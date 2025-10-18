@@ -20,5 +20,6 @@ namespace sbx.core.Entities.Producto
         public int IdMarca { get; set; }
         public int IdUnidadMedida { get; set; }
         public int Idtribute { get; set; }
+        public string TipoProducto { get; set; }
     }
 }
