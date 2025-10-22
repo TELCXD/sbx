@@ -18,5 +18,6 @@ namespace sbx.core.Entities.NotaCredito
         public DateTime CreationDate { get; set; }
         public int IdUserAction { get; set; }
         public string NombreTributo { get; set; }
+        public DateTime FechaVencimiento { get; set; }
     }
 }

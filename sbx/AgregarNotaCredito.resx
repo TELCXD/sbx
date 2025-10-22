@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
-    Microsoft ResX Schema 
+    Microsoft ResX Schema
 
     Version 2.0
 
@@ -48,7 +48,7 @@
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -121,11 +121,11 @@
   <data name="btn_busca_factura.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        cAAAAHABznhikwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADfSURBVDhPpdHN
-        CkFBGMbxY4PiFuwVysLWDViQJdmIlYWwtBC5ApYUC1YoQrktNyD+j7E4dY7xcZ765T1T77xjxvFJBiXk
-        EdHCt8nhjDGq6OCEFj5GzVuUscPm9dtHFwNYo0lxqCGmhVcq0F+aIakFv6ShY9uSxdCU3hRRM+XbRLEy
-        pTe6bV2YLQlMTemNnupoyrfpoWBK/+ip2qb0JIU9Qs8vS/RUum1dWBg6tiYfcMESDVijpxphjQl0bE1e
-        4I4bmvg5mqzmQJuoyb1JHT/HvclVC/9Ek9U8f34Fi+M8AHucKJkBrR4IAAAAAElFTkSuQmCC
+        cAAAAHABznhikwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADgSURBVDhPpdGx
+        KodxFMbxjwXFLdgVymB1AwYykkVMBmE0iFwBI8XAhCKU23IDolO/f70e+vfGd3nrOb/nPOc9h5/MYQWL
+        GMviMBbwilOsYw8v2MmHv1Hme6ziAXfte4h9HKUhqaTJZpjo6Gvtly4w3dG/MdvGHsY8jlMcsIyNFINx
+        3KQ4oLZdCxvGFM5THFCnek4xOMBSil3qVLspNmbwiJEsJHWq2nYtbLSNXclPeMM1ttKU1KlOcIuzNnYl
+        X+ETH9hOUx8qucz/alKmbpPNfNCHbpP3LPalkst8mYU/8QV7nCiZntig8AAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="cl_id_detalle_venta.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -170,16 +170,19 @@
   <metadata name="cl_total.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="cl_fecha_vencimiento.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <data name="btn_devolucion.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        qAAAAKgBefSzxgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEwSURBVEhLzdY7
-        TgJRGMXxaTDRJdBILGyUgkJpSCSR2p4NuAVbCwt5ROiIS9AN8EwM1G7Bwp34PzPzTQZyHS/DoJ7kF27I
-        vfcMk3kQxDlAHa0dXeMQaylhjgEeY5+psS+tGWKMIyS5RC8aJnmLP7PyAB2YnMLW3GCtpIn7aJjEp8Dm
-        aK32SK+xkvB07aNA6eBKg30V2Pe5CxZ4xjsa2KpgijOcZKhBp0CqmCCdzAJdWSPoCH1o7gXSySwoIn9T
-        oHP5CruBtqW151CcBSscR8NcqWAZDd0FPpfnT9m8P74taOPWk+Za/k9BGa4bzEVzLd4FT3DdVC6aa/Eu
-        yBvvghe4rnUXzbX8/i/Qg62vASmyQHuGD0C99GfQG+gDdzvSHl3oka+9w2hQxN8Wo73YMwi+ABoKkVlb
-        GJ/JAAAAAElFTkSuQmCC
+        qAAAAKgBefSzxgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAExSURBVEhLzZa/
+        LgZBFMV/DQmPoCEKDQoFGgkJtd4LeAWtQoFP0IlH4AX8TYTaKyi8iZxxL5MxOxmz3xdOcpLZ3XvPbzOZ
+        mV341DiwCmz19CYwYZlfGgMegDPg0PwejWutnnPgBpiMASvAIL4BPCXXOR3Yi8lzUc92CtkA9r/7gmoA
+        XqNeZcQ9DgnTNQqAdASsazAqgN9vBjwCl8ArsJbpKQLugHlgtuAlmwJ5EbhNMooArawLe8Maq3Y5ySgC
+        hqG/AWgur6MN9Furd6EEeAGmbdyiGeDZxllAutRalO6PTsAOsFtp1br+D2Aqs7m6rFpXNeA0s6G6rFpX
+        NaBV1YCrzDrvsmpd1YBW/QDoYDtJHvaRZygzHID66N/bF+gN2OtpZRzbka/sIA2G8dviVlYI/wAaCpFZ
+        ZToyHgAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

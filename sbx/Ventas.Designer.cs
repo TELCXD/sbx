@@ -70,6 +70,7 @@
             cl_id_venta = new DataGridViewTextBoxColumn();
             cl_factura = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
+            cl_forma_pago = new DataGridViewTextBoxColumn();
             cl_idProducto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
@@ -475,7 +476,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_estado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_tributo, cl_impuesto, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario, cl_vendedor });
+            dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_fecha, cl_id_venta, cl_factura, cl_estado, cl_forma_pago, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_tributo, cl_impuesto, cl_total_linea, cl_documento_cliente, cl_nombre_cliente, cl_usuario, cl_vendedor });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -540,6 +541,13 @@
             cl_estado.Name = "cl_estado";
             cl_estado.ReadOnly = true;
             cl_estado.Width = 140;
+            // 
+            // cl_forma_pago
+            // 
+            cl_forma_pago.HeaderText = "Forma pago";
+            cl_forma_pago.Name = "cl_forma_pago";
+            cl_forma_pago.ReadOnly = true;
+            cl_forma_pago.Width = 120;
             // 
             // cl_idProducto
             // 
@@ -694,6 +702,7 @@
         private DataGridViewTextBoxColumn cl_id_venta;
         private DataGridViewTextBoxColumn cl_factura;
         private DataGridViewTextBoxColumn cl_estado;
+        private DataGridViewTextBoxColumn cl_forma_pago;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;

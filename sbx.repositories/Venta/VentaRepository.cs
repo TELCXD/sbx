@@ -57,9 +57,9 @@ namespace sbx.repositories.Venta
                     int idVenta = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_DetalleVenta (
-                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto, NombreTributo,CreationDate, IdUserAction)
+                            IdVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, CostoUnitario, Descuento, Impuesto, NombreTributo, FechaVencimiento,CreationDate, IdUserAction)
                             VALUES (@IdVenta, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @NombreTributo, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @CostoUnitario, @Descuento, @Impuesto, @NombreTributo, @FechaVencimiento, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in ventaEntitie.detalleVentas)
                     {
@@ -79,6 +79,7 @@ namespace sbx.repositories.Venta
                                 detalle.Descuento,
                                 detalle.Impuesto,
                                 detalle.NombreTributo,
+                                detalle.FechaVencimiento,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },
@@ -119,6 +120,7 @@ namespace sbx.repositories.Venta
 
                     string Factura = await ListFactura(idVenta);
 
+                    //verificacion para salidas de inventario por productos padres o hijos
                     foreach (var detalle in ventaEntitie.detalleVentas)
                     {
                         contador = 0;
@@ -419,9 +421,82 @@ namespace sbx.repositories.Venta
                         }
                     }
 
+                    //verificacion para salidas de inventario por productos tipo Grupo (kits)
+                    foreach (var detalle in ventaEntitie.detalleVentas)
+                    {
+                        sql = $@" SELECT 
+                                    A.IdProductoGrupo, 
+                                    A.IdProductoIndividual, 
+                                    A.Cantidad,
+                                    B.IdProducto,
+                                    B.Sku,
+                                    B.CodigoBarras,
+                                    B.Nombre
+                                    FROM T_Producto_grupo_detalle A
+                                    INNER JOIN T_Productos B 
+                                    ON A.IdProductoIndividual = B.IdProducto
+                                  WHERE IdProductoGrupo = {detalle.IdProducto} ";
+
+                        var resultado = await connection.QueryAsync(sql);
+
+                        int cantidadRegistros = resultado.Count();
+
+                        if (cantidadRegistros > 0)
+                        {
+                            foreach (var item in resultado)
+                            {
+                                SalidaInventarioEntitie salidaInventarioEntitie = new SalidaInventarioEntitie();
+                                SalidaInventarioRepository inventarioRepository = new SalidaInventarioRepository(_connectionString);
+
+                                salidaInventarioEntitie.IdTipoSalida = Convert.ToInt32(2);
+                                salidaInventarioEntitie.OrdenCompra = "";
+                                salidaInventarioEntitie.NumFactura = "";
+                                salidaInventarioEntitie.Comentario = $"{Factura} Salida por venta de producto tipo grupo (Kit)";
+
+                                int IdProductoIndiv = item.IdProductoIndividual;
+                                decimal CantidadSaleIndiv = item.Cantidad;
+                                decimal CantidadPrdGrupo = detalle.Cantidad;
+                                decimal TotalCantidadSale = CantidadPrdGrupo * CantidadSaleIndiv;
+
+                                var nuevoDetalle = new DetalleSalidaInventarioEntitie
+                                {
+                                    IdProducto = IdProductoIndiv,
+                                    Sku = item.Sku,
+                                    CodigoBarras = item.CodigoBarras,
+                                    Nombre = item.Nombre,
+                                    CodigoLote = "",
+                                    FechaVencimiento = DateTime.Parse("1900-01-01"),
+                                    Cantidad = TotalCantidadSale,
+                                    CostoUnitario = 0,
+                                    Total = 0
+                                };
+
+                                salidaInventarioEntitie.detalleSalidaInventarios.Add(nuevoDetalle);
+
+                                var resp = await inventarioRepository.CreateUpdate(salidaInventarioEntitie, IdUser);
+
+                                if (resp != null)
+                                {
+                                    if (resp.Flag == true)
+                                    {
+                                        Correcto++;
+                                    }
+                                    else
+                                    {
+                                        Error++;
+                                    }
+                                }
+                                else
+                                {
+                                    Error++;
+                                }
+                            }
+                        }
+                    }
+
                     response.Flag = true;
                     response.Data = idVenta;
-                    response.Message = $"Venta creada correctamente, al momento de realizar salidas de inventario por podructos padres o hijo Correctos: {Correcto} y Errores: {Error} ";
+                    response.Message = $"Venta creada correctamente, al momento de realizar salidas de inventario, Correctos: {Correcto} y Errores: {Error} ";
                     return response;
                 }
                 catch (Exception ex)
@@ -489,6 +564,7 @@ namespace sbx.repositories.Venta
                                     B.Descuento,
                                     B.Impuesto,
                                     B.NombreTributo,
+                                    B.FechaVencimiento,
                                     B.CreationDate FechaDetalleFactura,
                                     B.IdUserAction IdUserActionDetalleFactura,
                                     --H.UserName UserNameDetalleFactura,

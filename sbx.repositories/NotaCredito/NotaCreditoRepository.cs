@@ -56,9 +56,9 @@ namespace sbx.repositories.NotaCredito
                     int idNotaCredito = await connection.ExecuteScalarAsync<int>(sql, parametros, transaction);
 
                     sql = @"INSERT INTO T_NotaCreditoDetalle (
-                            IdNotaCredito, IdDetalleVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, Descuento,NombreTributo, Impuesto,CreationDate, IdUserAction)
+                            IdNotaCredito, IdDetalleVenta, IdProducto, Sku, CodigoBarras, NombreProducto, Cantidad, UnidadMedida, PrecioUnitario, Descuento,NombreTributo, Impuesto, FechaVencimiento,CreationDate, IdUserAction)
                             VALUES (@IdNotaCredito, @IdDetalleVenta, @IdProducto, @Sku, @CodigoBarras,
-                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @Descuento,@NombreTributo, @Impuesto, @CreationDate, @IdUserAction)";
+                                    @NombreProducto, @Cantidad, @UnidadMedida, @PrecioUnitario, @Descuento,@NombreTributo, @Impuesto, @FechaVencimiento, @CreationDate, @IdUserAction)";
 
                     foreach (var detalle in notaCredito.detalleNotaCredito)
                     {
@@ -78,6 +78,7 @@ namespace sbx.repositories.NotaCredito
                                 detalle.Descuento,
                                 detalle.NombreTributo,
                                 detalle.Impuesto,
+                                detalle.FechaVencimiento,
                                 CreationDate = FechaActual,
                                 IdUserAction = IdUser
                             },
@@ -107,6 +108,7 @@ namespace sbx.repositories.NotaCredito
                     sql = " SELECT Consecutivo FROM T_NotaCredito WHERE IdNotaCredito = " + idNotaCredito;
                     int consecutivo = connection.QuerySingle<int>(sql);
 
+                    //verificacion para entradas de inventario por productos padres o hijos
                     foreach (var detalle in notaCredito.detalleNotaCredito)
                     {
                         contador = 0;
@@ -411,9 +413,83 @@ namespace sbx.repositories.NotaCredito
                         }
                     }
 
+                    //verificacion para entradas de inventario por productos tipo Grupo (kits)
+                    foreach (var detalle in notaCredito.detalleNotaCredito)
+                    {
+                        sql = $@" SELECT 
+                                    A.IdProductoGrupo, 
+                                    A.IdProductoIndividual, 
+                                    A.Cantidad,
+                                    B.IdProducto,
+                                    B.Sku,
+                                    B.CodigoBarras,
+                                    B.Nombre
+                                    FROM T_Producto_grupo_detalle A
+                                    INNER JOIN T_Productos B 
+                                    ON A.IdProductoIndividual = B.IdProducto
+                                  WHERE IdProductoGrupo = {detalle.IdProducto} ";
+
+                        var resultado = await connection.QueryAsync(sql);
+
+                        int cantidadRegistros = resultado.Count();
+
+                        if (cantidadRegistros > 0)
+                        {
+                            foreach (var item in resultado)
+                            {
+                                string Documento = notaCredito.Prefijo + consecutivo;
+
+                                EntradasInventarioEntitie entradasInventarioEntitie2 = new EntradasInventarioEntitie();
+                                EntradaInventarioRepository entradaInventarioRepository = new EntradaInventarioRepository(_connectionString);
+
+                                entradasInventarioEntitie2.IdTipoEntrada = Convert.ToInt32(2);
+                                entradasInventarioEntitie2.IdProveedor = 1;
+                                entradasInventarioEntitie2.OrdenCompra = "";
+                                entradasInventarioEntitie2.NumFactura = "";
+                                entradasInventarioEntitie2.Comentario = $"{Documento} Entrada por nota credito de producto tipo grupo (Kit)";
+
+                                int IdProductoIndiv = item.IdProductoIndividual;
+                                decimal CantidadPrdGrupo = detalle.Cantidad;
+                                decimal CantidadEntraIndiv = item.Cantidad;
+                                decimal TotalCantidadEntrada = CantidadPrdGrupo * CantidadEntraIndiv;
+
+                                var nuevoDetalle = new DetalleEntradasInventarioEntitie
+                                {
+                                    IdProducto = IdProductoIndiv,
+                                    CodigoLote = "",
+                                    FechaVencimiento = DateTime.Parse("1900-01-01"),
+                                    Cantidad = TotalCantidadEntrada,
+                                    CostoUnitario = 0,
+                                    Descuento = 0,
+                                    Impuesto = 0,
+                                    Total = 0
+                                };
+
+                                entradasInventarioEntitie2.detalleEntradasInventarios.Add(nuevoDetalle);
+                                var resp = await entradaInventarioRepository.CreateUpdate(entradasInventarioEntitie2, IdUser);
+
+                                if (resp != null)
+                                {
+                                    if (resp.Flag == true)
+                                    {
+                                        Correcto++;
+                                    }
+                                    else
+                                    {
+                                        Error++;
+                                    }
+                                }
+                                else
+                                {
+                                    Error++;
+                                }
+                            }
+                        }
+                    }
+
                     response.Flag = true;
                     response.Data = idNotaCredito;
-                    response.Message = $"Nota credito creada correctamente, al momento de realizar entradas de inventario por podructos padres o hijo Correctos: {Correcto} y Errores: {Error}";
+                    response.Message = $"Nota credito creada correctamente, al momento de realizar entradas de inventario, Correctos: {Correcto} y Errores: {Error}";
                     return response;
                 }
                 catch (Exception ex)

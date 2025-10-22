@@ -234,6 +234,7 @@ namespace sbx
                             item.IdVenta,
                             item.NumberFacturaDIAN != "" ? item.NumberFacturaDIAN : item.Factura,
                             item.EstadoFacturaDIAN != "" ? item.Estado == "FACTURADA" ? item.EstadoFacturaDIAN : item.Estado : item.Estado,
+                            item.NombreMetodoPago,
                             item.IdProducto,
                             item.Sku,
                             item.CodigoBarras,

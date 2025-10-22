@@ -21,6 +21,7 @@ using sbx.core.Interfaces.Dashboard;
 using sbx.core.Interfaces.Departamento;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.FacturacionElectronica;
+using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.Gastos;
 using sbx.core.Interfaces.IdentificationType;
 using sbx.core.Interfaces.ListaPrecios;
@@ -71,6 +72,7 @@ using sbx.repositories.CredencialesApi;
 using sbx.repositories.Dashboard;
 using sbx.repositories.Departamento;
 using sbx.repositories.EntradaInventario;
+using sbx.repositories.FechaVecimiento;
 using sbx.repositories.Gastos;
 using sbx.repositories.IdentificationType;
 using sbx.repositories.ListaPrecios;
@@ -246,6 +248,10 @@ namespace sbx
 
                 services.AddTransient<AgregaProductoGrupo>();
 
+                services.AddTransient<FechasVencimiento>();
+
+                services.AddTransient<ConfirmaFechaVecimiento>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -392,6 +398,9 @@ namespace sbx
 
                 services.AddTransient<ITribute>(provider =>
                 new TributeRepository(connectionString));
+
+                services.AddTransient<IFechaVencimiento>(provider =>
+                new FechaVencimientoRepository(connectionString));
 
                 services.AddTransient<IAuthService, Auth>();
 

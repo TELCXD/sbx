@@ -39,10 +39,13 @@ namespace sbx.repositories.Reportes
                                     B.PrecioUnitario PrecioUnitario,
                                     B.CostoUnitario CostoUnitario,
                                     ISNULL(B.Descuento, 0) AS DescuentoPorcentaje,
-                                    (B.Cantidad * B.CostoUnitario) CostoTotal            
+                                    (B.Cantidad * B.CostoUnitario) CostoTotal,
+                                    A.IdMetodoPago,
+                                    F.Nombre NombreMetodoPago 
                                     FROM T_Ventas A
                                     INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                     INNER JOIN T_Cliente C ON A.IdCliente = C.IdCliente
+                                    INNER JOIN T_MetodoPago F ON F.IdMetodoPago = A.IdMetodoPago
                                     INNER JOIN T_User D ON D.IdUser = A.IdUserAction
                                     WHERE 
                                     (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) 
@@ -75,10 +78,13 @@ namespace sbx.repositories.Reportes
                                         THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) / 
                                               ((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) )) * 100
                                         ELSE 0 
-                                    END AS MargenPorcentaje      
+                                    END AS MargenPorcentaje,
+                                    A.IdMetodoPago,
+                                    F.Nombre NombreMetodoPago 
                                 FROM T_Ventas A
                                 INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                 INNER JOIN T_Cliente C ON A.IdCliente = C.IdCliente
+                                INNER JOIN T_MetodoPago F ON F.IdMetodoPago = A.IdMetodoPago
                                 INNER JOIN T_User D ON D.IdUser = A.IdUserAction
                                 WHERE (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) AND
                                 A.Estado = 'FACTURADA' ";
@@ -137,11 +143,13 @@ namespace sbx.repositories.Reportes
                                         THEN ((((B.Cantidad * B.PrecioUnitario) * (1 - ISNULL(B.Descuento, 0) / 100) ) - (B.Cantidad * B.CostoUnitario)) / 
                                               (B.Cantidad * B.CostoUnitario)) * 100
                                         ELSE 0 
-                                    END AS MarkupPorcentaje
-    
+                                    END AS MarkupPorcentaje,
+                                    A.IdMetodoPago,
+                                    F.Nombre NombreMetodoPago 
                                 FROM T_Ventas A
                                 INNER JOIN T_DetalleVenta B ON A.IdVenta = B.IdVenta
                                 INNER JOIN T_Cliente C ON C.IdCliente = A.IdCliente
+                                INNER JOIN T_MetodoPago F ON F.IdMetodoPago = A.IdMetodoPago
                                 INNER JOIN T_User D ON D.IdUser = A.IdUserAction
                                 INNER JOIN T_Vendedor E ON E.IdVendedor = A.IdVendedor
                                 WHERE (A.CreationDate BETWEEN CONVERT(DATETIME,@FechaIni+' 00:00:00',120) AND CONVERT(DATETIME,@FechaFn+' 23:59:59',120)) AND 
