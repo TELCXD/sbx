@@ -96,6 +96,7 @@
             cl_unidad_medida = new DataGridViewTextBoxColumn();
             cl_costo = new DataGridViewTextBoxColumn();
             cl_tributo = new DataGridViewTextBoxColumn();
+            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             panel3.SuspendLayout();
@@ -331,7 +332,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_impuesto, cl_total, cl_unidad_medida, cl_costo, cl_tributo });
+            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_impuesto, cl_total, cl_unidad_medida, cl_costo, cl_tributo, cl_fecha_vencimiento });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -844,6 +845,11 @@
             cl_tributo.Name = "cl_tributo";
             cl_tributo.Visible = false;
             // 
+            // cl_fecha_vencimiento
+            // 
+            cl_fecha_vencimiento.HeaderText = "FechaVencimiento";
+            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
+            // 
             // AgregarVentas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -950,5 +956,6 @@
         private DataGridViewTextBoxColumn cl_unidad_medida;
         private DataGridViewTextBoxColumn cl_costo;
         private DataGridViewTextBoxColumn cl_tributo;
+        private DataGridViewTextBoxColumn cl_fecha_vencimiento;
     }
 }

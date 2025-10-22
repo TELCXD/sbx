@@ -374,7 +374,8 @@ namespace sbx
                             Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
                             item.NombreTributo,
                             Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
-                            TotalLinea.ToString("N2", new CultureInfo("es-CO")));
+                            TotalLinea.ToString("N2", new CultureInfo("es-CO")),
+                            item.FechaVencimiento);
                     }
 
                     Total += (Subtotal - Descuento);
@@ -585,7 +586,8 @@ namespace sbx
                                                         UnidadMedida = fila.Cells["cl_unidadMedida"].Value.ToString() ?? "",
                                                         Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
                                                         Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
-                                                        NombreTributo = fila.Cells["cl_tributo"].Value.ToString() ?? ""
+                                                        NombreTributo = fila.Cells["cl_tributo"].Value.ToString() ?? "",
+                                                        FechaVencimiento = Convert.ToDateTime(fila.Cells["cl_fecha_vencimiento"].Value)
                                                     };
 
                                                     notaCreditoEntitie.detalleNotaCredito.Add(detalleNotaCredito);

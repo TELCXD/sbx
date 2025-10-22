@@ -192,6 +192,7 @@ namespace sbx
                     {
                         dtg_reportes.Columns.Add("cl_CreationDate", "Fecha");
                         dtg_reportes.Columns.Add("cl_Factura", "Factura");
+                        dtg_reportes.Columns.Add("cl_Forma_pago", "Forma pago");
                         dtg_reportes.Columns.Add("cl_IdProducto", "Id");
                         dtg_reportes.Columns.Add("cl_NombreProducto", "Nombre");
                         dtg_reportes.Columns.Add("cl_Cantidad", "Cantidad");
@@ -230,7 +231,7 @@ namespace sbx
                             GananciaLinea = TotalLinea - Convert.ToDecimal(item.CostoTotal);
                             Ganancia += GananciaLinea;
 
-                            dtg_reportes.Rows.Add(item.CreationDate, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN, item.IdProducto, item.NombreProducto,
+                            dtg_reportes.Rows.Add(item.CreationDate, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN,item.NombreMetodoPago, item.IdProducto, item.NombreProducto,
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
                                 item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
@@ -262,6 +263,7 @@ namespace sbx
                         dtg_reportes.Columns.Add("cl_CreationDate", "Fecha");
                         dtg_reportes.Columns.Add("cl_Usuario", "Usuario");
                         dtg_reportes.Columns.Add("cl_Factura", "Factura");
+                        dtg_reportes.Columns.Add("cl_Forma_pago", "Forma pago");
                         dtg_reportes.Columns.Add("cl_Cliente", "Cliente");
                         dtg_reportes.Columns.Add("cl_Vendedor", "Vendedor");
                         dtg_reportes.Columns.Add("cl_IdProducto", "Id");
@@ -305,7 +307,7 @@ namespace sbx
                             GananciaLinea = TotalLinea - Convert.ToDecimal(item.CostoTotal);
                             Ganancia += GananciaLinea;
 
-                            dtg_reportes.Rows.Add(item.CreationDate, item.Usuario, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN, item.Cliente, item.Vendedor,
+                            dtg_reportes.Rows.Add(item.CreationDate, item.Usuario, item.NumberFacturaDIAN == "" ? item.Factura : item.NumberFacturaDIAN, item.NombreMetodoPago, item.Cliente, item.Vendedor,
                                 item.IdProducto, item.Sku, item.CodigoBarras, item.NombreProducto, item.UnidadMedida,
                                 Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
                                 item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),

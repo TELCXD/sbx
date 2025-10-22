@@ -34,6 +34,8 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            chk_usar_fechas = new CheckBox();
+            btn_fecha_vencimiento = new Button();
             dtp_fecha_fin = new DateTimePicker();
             dtp_fecha_inicio = new DateTimePicker();
             label2 = new Label();
@@ -52,7 +54,6 @@
             lbl_total = new Label();
             label1 = new Label();
             dtg_inventario = new DataGridView();
-            errorProvider1 = new ErrorProvider(components);
             cl_id_documento = new DataGridViewTextBoxColumn();
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_documento = new DataGridViewTextBoxColumn();
@@ -72,6 +73,7 @@
             cl_descuento = new DataGridViewTextBoxColumn();
             cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
+            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).BeginInit();
@@ -82,6 +84,8 @@
             // 
             panel1.BackColor = Color.White;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(chk_usar_fechas);
+            panel1.Controls.Add(btn_fecha_vencimiento);
             panel1.Controls.Add(dtp_fecha_fin);
             panel1.Controls.Add(dtp_fecha_inicio);
             panel1.Controls.Add(label2);
@@ -102,11 +106,37 @@
             panel1.Size = new Size(1190, 110);
             panel1.TabIndex = 0;
             // 
+            // chk_usar_fechas
+            // 
+            chk_usar_fechas.AutoSize = true;
+            chk_usar_fechas.Location = new Point(5, 80);
+            chk_usar_fechas.Name = "chk_usar_fechas";
+            chk_usar_fechas.Size = new Size(88, 19);
+            chk_usar_fechas.TabIndex = 165;
+            chk_usar_fechas.Text = "Usar Fechas";
+            chk_usar_fechas.UseVisualStyleBackColor = true;
+            chk_usar_fechas.CheckedChanged += chk_usar_fechas_CheckedChanged;
+            // 
+            // btn_fecha_vencimiento
+            // 
+            btn_fecha_vencimiento.Enabled = false;
+            btn_fecha_vencimiento.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_fecha_vencimiento.FlatStyle = FlatStyle.Flat;
+            btn_fecha_vencimiento.Image = (Image)resources.GetObject("btn_fecha_vencimiento.Image");
+            btn_fecha_vencimiento.Location = new Point(442, 3);
+            btn_fecha_vencimiento.Name = "btn_fecha_vencimiento";
+            btn_fecha_vencimiento.Size = new Size(111, 45);
+            btn_fecha_vencimiento.TabIndex = 164;
+            btn_fecha_vencimiento.Text = "Fecha Vence";
+            btn_fecha_vencimiento.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_fecha_vencimiento.UseVisualStyleBackColor = true;
+            btn_fecha_vencimiento.Click += btn_fecha_vencimiento_Click;
+            // 
             // dtp_fecha_fin
             // 
             dtp_fecha_fin.Anchor = AnchorStyles.Top;
             dtp_fecha_fin.Format = DateTimePickerFormat.Short;
-            dtp_fecha_fin.Location = new Point(212, 78);
+            dtp_fecha_fin.Location = new Point(306, 78);
             dtp_fecha_fin.Name = "dtp_fecha_fin";
             dtp_fecha_fin.Size = new Size(187, 23);
             dtp_fecha_fin.TabIndex = 161;
@@ -115,7 +145,7 @@
             // 
             dtp_fecha_inicio.Anchor = AnchorStyles.Top;
             dtp_fecha_inicio.Format = DateTimePickerFormat.Short;
-            dtp_fecha_inicio.Location = new Point(4, 78);
+            dtp_fecha_inicio.Location = new Point(98, 78);
             dtp_fecha_inicio.Name = "dtp_fecha_inicio";
             dtp_fecha_inicio.Size = new Size(200, 23);
             dtp_fecha_inicio.TabIndex = 160;
@@ -124,7 +154,7 @@
             // 
             label2.Anchor = AnchorStyles.Top;
             label2.AutoSize = true;
-            label2.Location = new Point(212, 60);
+            label2.Location = new Point(306, 60);
             label2.Name = "label2";
             label2.Size = new Size(55, 15);
             label2.TabIndex = 163;
@@ -134,7 +164,7 @@
             // 
             lbl_fechaVencimiento.Anchor = AnchorStyles.Top;
             lbl_fechaVencimiento.AutoSize = true;
-            lbl_fechaVencimiento.Location = new Point(4, 60);
+            lbl_fechaVencimiento.Location = new Point(98, 60);
             lbl_fechaVencimiento.Name = "lbl_fechaVencimiento";
             lbl_fechaVencimiento.Size = new Size(70, 15);
             lbl_fechaVencimiento.TabIndex = 162;
@@ -146,7 +176,7 @@
             cbx_tipo.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo.FormattingEnabled = true;
             cbx_tipo.Items.AddRange(new object[] { "Todo", "Entrada", "Salida", "Salida por Venta", "Entrada por Nota credito" });
-            cbx_tipo.Location = new Point(409, 78);
+            cbx_tipo.Location = new Point(518, 78);
             cbx_tipo.Name = "cbx_tipo";
             cbx_tipo.Size = new Size(114, 23);
             cbx_tipo.TabIndex = 24;
@@ -171,7 +201,7 @@
             btn_eliminar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar.FlatStyle = FlatStyle.Flat;
             btn_eliminar.Image = (Image)resources.GetObject("btn_eliminar.Image");
-            btn_eliminar.Location = new Point(442, 3);
+            btn_eliminar.Location = new Point(559, 3);
             btn_eliminar.Name = "btn_eliminar";
             btn_eliminar.Size = new Size(101, 45);
             btn_eliminar.TabIndex = 22;
@@ -202,7 +232,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(649, 78);
+            cbx_tipo_filtro.Location = new Point(758, 78);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 20;
@@ -213,7 +243,7 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(529, 78);
+            cbx_campo_filtro.Location = new Point(638, 78);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 19;
@@ -224,7 +254,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(939, 76);
+            btn_buscar.Location = new Point(1048, 76);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 18;
@@ -235,7 +265,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(742, 78);
+            txt_buscar.Location = new Point(851, 78);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 17;
@@ -345,10 +375,6 @@
             dtg_inventario.Size = new Size(1190, 438);
             dtg_inventario.TabIndex = 6;
             dtg_inventario.DoubleClick += dtg_inventario_DoubleClick;
-            // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
             // 
             // cl_id_documento
             // 
@@ -492,6 +518,10 @@
             cl_total.Name = "cl_total";
             cl_total.ReadOnly = true;
             // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
             // Inventario
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -558,5 +588,7 @@
         private DataGridViewTextBoxColumn cl_descuento;
         private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
+        private Button btn_fecha_vencimiento;
+        private CheckBox chk_usar_fechas;
     }
 }

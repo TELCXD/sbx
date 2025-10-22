@@ -16,6 +16,7 @@ using sbx.core.Interfaces.Cliente;
 using sbx.core.Interfaces.Cotizacion;
 using sbx.core.Interfaces.CredencialesApi;
 using sbx.core.Interfaces.FacturacionElectronica;
+using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.Parametros;
@@ -42,6 +43,7 @@ namespace sbx
         private readonly IMedioPago _IMedioPago;
         private readonly IBanco _IBanco;
         private Buscador? _Buscador;
+        private ConfirmaFechaVecimiento? _ConfirmaFechaVecimiento;
         private readonly IServiceProvider _serviceProvider;
         private readonly IProducto _IProducto;
         private readonly ICliente _ICliente;
@@ -87,12 +89,14 @@ namespace sbx
         string ModoRedondeo = "N/A";
         string MultiploRendondeo = "50";
         string DescuentoMaximo = "";
+        DateTime FechaVSeleccionada = new DateTime(1900, 1, 1);
+        private readonly IFechaVencimiento _IFechaVencimiento;
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
             IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta,
             ITienda tienda, IParametros parametros, ICaja caja, ICotizacion cotizacion, 
-            ICredencialesApi credencialesApi, IAuthService authService, IFacturas facturas, IRangoNumeracionFE iRangoNumeracionFE)
+            ICredencialesApi credencialesApi, IAuthService authService, IFacturas facturas, IRangoNumeracionFE iRangoNumeracionFE, IFechaVencimiento fechaVencimiento)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -115,6 +119,7 @@ namespace sbx
             _IAuthService = authService;
             _IFacturas = facturas;
             _IRangoNumeracionFE = iRangoNumeracionFE;
+            _IFechaVencimiento = fechaVencimiento;
         }
 
         public dynamic? Permisos
@@ -512,6 +517,13 @@ namespace sbx
                                                             {
                                                                 DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
 
+                                                                //Preguntar fecha de vencimiento si aplica
+                                                                await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                                if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                                DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                                 IdentificarPrecio(DataProducto);
                                                             }
                                                             else
@@ -521,6 +533,13 @@ namespace sbx
                                                         }
                                                         else
                                                         {
+                                                            //Preguntar fecha de vencimiento si aplica
+                                                            await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                            if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                            DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                             IdentificarPrecio(DataProducto);
                                                         }
                                                     }
@@ -737,6 +756,13 @@ namespace sbx
                                                         {
                                                             DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
 
+                                                            //Preguntar fecha de vencimiento si aplica
+                                                            await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                            if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                            DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                             IdentificarPrecio(DataProducto);
                                                         }
                                                         else
@@ -746,6 +772,13 @@ namespace sbx
                                                     }
                                                     else
                                                     {
+                                                        //Preguntar fecha de vencimiento si aplica
+                                                        await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                        if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                        DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                         IdentificarPrecio(DataProducto);
                                                     }
                                                 }
@@ -907,6 +940,13 @@ namespace sbx
                                                         {
                                                             DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
 
+                                                            //Preguntar fecha de vencimiento si aplica
+                                                            await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                            if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                            DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                             IdentificarPrecio(DataProducto);
                                                         }
                                                         else
@@ -916,6 +956,13 @@ namespace sbx
                                                     }
                                                     else
                                                     {
+                                                        //Preguntar fecha de vencimiento si aplica
+                                                        await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                        if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                        DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                         IdentificarPrecio(DataProducto);
                                                     }
                                                 }
@@ -1164,6 +1211,13 @@ namespace sbx
                                             {
                                                 DataProducto.Data[0].CantidadF = StockInicial > 0 && StockInicial < 1 ? StockInicial : 1;
 
+                                                //Preguntar fecha de vencimiento si aplica
+                                                await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                 IdentificarPrecio(DataProducto);
                                             }
                                             else
@@ -1173,6 +1227,13 @@ namespace sbx
                                         }
                                         else
                                         {
+                                            //Preguntar fecha de vencimiento si aplica
+                                            await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                            if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                            DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                             IdentificarPrecio(DataProducto);
                                         }
                                     }
@@ -1190,6 +1251,29 @@ namespace sbx
                     }
                 }
             }
+        }
+
+        public async Task ValidarFechaVencimiento(int IdPrd)
+        {
+            FechaVSeleccionada = new DateTime(1900, 1, 1);
+
+            var resp = await _IFechaVencimiento.BuscarxIdProductoTieneVence(IdPrd);
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 0)
+                {
+                    _ConfirmaFechaVecimiento = _serviceProvider.GetRequiredService<ConfirmaFechaVecimiento>();
+                    _ConfirmaFechaVecimiento.Id_producto = IdPrd;
+                    _ConfirmaFechaVecimiento.retornaFechaVencimiento += _RetornaFechaVencimiento;
+                    _ConfirmaFechaVecimiento.FormClosed += (s, args) => _ConfirmaFechaVecimiento = null;
+                    _ConfirmaFechaVecimiento.ShowDialog();
+                }
+            }
+        }
+
+        public void _RetornaFechaVencimiento(DateTime fechaVenceSeleccionada)
+        {
+            FechaVSeleccionada = fechaVenceSeleccionada;
         }
 
         private decimal CalcularIva(decimal valorBase, decimal porcentajeIva)
@@ -1288,7 +1372,8 @@ namespace sbx
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].NombreTributo
+                             DataProducto.Data[0].NombreTributo,
+                             DataProducto.Data[0].FechaVencimiento
                             );
                         dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -1321,7 +1406,8 @@ namespace sbx
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].NombreTributo
+                             DataProducto.Data[0].NombreTributo,
+                             DataProducto.Data[0].FechaVencimiento
                             );
                         dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -1351,7 +1437,8 @@ namespace sbx
                              Total.ToString("N2", new CultureInfo("es-CO")),
                              DataProducto.Data[0].NombreUnidadMedida,
                              DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
-                             DataProducto.Data[0].NombreTributo
+                             DataProducto.Data[0].NombreTributo,
+                             DataProducto.Data[0].FechaVencimiento
                             );
                         dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -1376,7 +1463,8 @@ namespace sbx
                      Total.ToString("N2", new CultureInfo("es-CO")),
                      DataProducto.Data[0].NombreUnidadMedida,
                      DataProducto.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO")),
-                     DataProducto.Data[0].NombreTributo
+                     DataProducto.Data[0].NombreTributo,
+                     DataProducto.Data[0].FechaVencimiento
                     );
                 dtg_producto.Rows[rowIndex].Tag = Guid.NewGuid().ToString();
 
@@ -2291,7 +2379,8 @@ namespace sbx
                                                     Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
                                                     Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
                                                     CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo"].Value, new CultureInfo("es-CO")),
-                                                    NombreTributo = fila.Cells["cl_tributo"].Value?.ToString() ?? ""
+                                                    NombreTributo = fila.Cells["cl_tributo"].Value?.ToString() ?? "",
+                                                    FechaVencimiento = Convert.ToDateTime(fila.Cells["cl_fecha_vencimiento"].Value)
                                                 };
 
                                                 detalleVentas.Add(Detalle);

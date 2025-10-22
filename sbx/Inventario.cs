@@ -3,10 +3,12 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using System.Data;
 using System.Globalization;
+using System.Threading;
 
 namespace sbx
 {
@@ -23,6 +25,7 @@ namespace sbx
         private DetalleProdDevo? _DetalleProdDevo;
         private DateTime _FechaIni, _FechaFin;
         private string _TipoMovimiento;
+        private FechasVencimiento? _FechasVencimiento;
 
         public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros)
         {
@@ -61,6 +64,7 @@ namespace sbx
             ValidaPermisos();
             cbx_campo_filtro.SelectedIndex = 0;
             cbx_tipo.SelectedIndex = 0;
+            chk_usar_fechas.Checked = true;
 
             var DataParametros = await _IParametros.List("Tipo filtro producto");
 
@@ -73,7 +77,7 @@ namespace sbx
                 }
             }
 
-            if (TipoMovimiento != null) 
+            if (TipoMovimiento != null)
             {
                 cbx_tipo.Text = TipoMovimiento;
                 dtp_fecha_inicio.Value = FechaIni;
@@ -95,6 +99,7 @@ namespace sbx
                             btn_entrada.Enabled = item.ToCreate == 1 ? true : false;
                             btn_salida.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_exportar.Enabled = item.ToRead == 1 ? true : false;
+                            btn_fecha_vencimiento.Enabled = item.ToRead == 1 ? true : false;
                             break;
                         case "conversionProducto":
                             btn_agrupar_productos.Enabled = item.ToCreate == 1 ? true : false;
@@ -140,7 +145,16 @@ namespace sbx
                 }
             }
 
-            var resp = await _IEntradaInventario.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_tipo.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value);
+            DateTime FIncio = dtp_fecha_inicio.Value;
+            DateTime FFin = dtp_fecha_fin.Value;
+
+            if (!chk_usar_fechas.Checked)
+            {
+                FIncio = new DateTime(2024, 1, 1);
+                FFin = DateTime.Now.AddDays(1);
+            }
+
+            var resp = await _IEntradaInventario.Buscar(txt_buscar.Text, cbx_campo_filtro.Text, cbx_tipo_filtro.Text, cbx_tipo.Text, FIncio, FFin);
 
             dtg_inventario.Rows.Clear();
 
@@ -473,6 +487,31 @@ namespace sbx
                 this.Cursor = Cursors.Default;
                 panel1.Enabled = true;
                 dtg_inventario.Enabled = true;
+            }
+        }
+
+        private void btn_fecha_vencimiento_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _FechasVencimiento = _serviceProvider.GetRequiredService<FechasVencimiento>();
+                _FechasVencimiento.Permisos = _Permisos;
+                _FechasVencimiento.FormClosed += (s, args) => _Entradas = null;
+                _FechasVencimiento.ShowDialog();
+            }
+        }
+
+        private void chk_usar_fechas_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_usar_fechas.Checked)
+            {
+                dtp_fecha_inicio.Enabled = true;
+                dtp_fecha_fin.Enabled = true;
+            }
+            else
+            {
+                dtp_fecha_inicio.Enabled = false;
+                dtp_fecha_fin.Enabled = false;
             }
         }
     }
