@@ -252,6 +252,8 @@ namespace sbx
 
                 services.AddTransient<ConfirmaFechaVecimiento>();
 
+                services.AddTransient<EditarInventario>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 

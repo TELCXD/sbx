@@ -8,5 +8,6 @@ namespace sbx.core.Interfaces.SalidaInventario
         Task<Response<dynamic>> CreateUpdate(SalidaInventarioEntitie salidaInventarioEntitie, int IdUser);
         Task<Response<dynamic>> Buscar(string dato, string campoFiltro, string tipoFiltro);
         Task<Response<dynamic>> List(int Id);
+        Task<Response<dynamic>> UpdateFechaVencimiento(int IdSalida, DateTime FechaVencimiento, int IdUser);
     }
 }

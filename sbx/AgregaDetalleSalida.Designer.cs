@@ -39,7 +39,6 @@
             label8 = new Label();
             txt_total = new TextBox();
             lbl_fechaVencimiento = new Label();
-            dtp_fecha_vencimiento = new DateTimePicker();
             label4 = new Label();
             txt_cantidad = new TextBox();
             label3 = new Label();
@@ -50,6 +49,7 @@
             label1 = new Label();
             txt_producto = new TextBox();
             errorProvider1 = new ErrorProvider(components);
+            dtp_fecha_vencimiento = new DateTimePicker();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -129,7 +129,7 @@
             label8.AutoSize = true;
             label8.Location = new Point(455, 200);
             label8.Name = "label8";
-            label8.Size = new Size(32, 15);
+            label8.Size = new Size(33, 15);
             label8.TabIndex = 143;
             label8.Text = "Total";
             // 
@@ -151,17 +151,6 @@
             lbl_fechaVencimiento.TabIndex = 140;
             lbl_fechaVencimiento.Text = "Fecha vencimiento";
             lbl_fechaVencimiento.Visible = false;
-            // 
-            // dtp_fecha_vencimiento
-            // 
-            dtp_fecha_vencimiento.Format = DateTimePickerFormat.Short;
-            dtp_fecha_vencimiento.Location = new Point(455, 164);
-            dtp_fecha_vencimiento.MinDate = new DateTime(2025, 5, 12, 0, 0, 0, 0);
-            dtp_fecha_vencimiento.Name = "dtp_fecha_vencimiento";
-            dtp_fecha_vencimiento.Size = new Size(193, 23);
-            dtp_fecha_vencimiento.TabIndex = 129;
-            dtp_fecha_vencimiento.Value = new DateTime(2025, 5, 12, 20, 35, 24, 0);
-            dtp_fecha_vencimiento.Visible = false;
             // 
             // label4
             // 
@@ -257,18 +246,27 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // dtp_fecha_vencimiento
+            // 
+            dtp_fecha_vencimiento.Format = DateTimePickerFormat.Short;
+            dtp_fecha_vencimiento.Location = new Point(455, 164);
+            dtp_fecha_vencimiento.Name = "dtp_fecha_vencimiento";
+            dtp_fecha_vencimiento.Size = new Size(193, 23);
+            dtp_fecha_vencimiento.TabIndex = 147;
+            dtp_fecha_vencimiento.Visible = false;
+            // 
             // AgregaDetalleSalida
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
             ClientSize = new Size(673, 260);
+            Controls.Add(dtp_fecha_vencimiento);
             Controls.Add(chek_fecha_vencimiento);
             Controls.Add(lbl_nombre_producto);
             Controls.Add(label8);
             Controls.Add(txt_total);
             Controls.Add(lbl_fechaVencimiento);
-            Controls.Add(dtp_fecha_vencimiento);
             Controls.Add(label4);
             Controls.Add(txt_cantidad);
             Controls.Add(label3);
@@ -305,7 +303,6 @@
         private Label label8;
         private TextBox txt_total;
         private Label lbl_fechaVencimiento;
-        private DateTimePicker dtp_fecha_vencimiento;
         private Label label4;
         private TextBox txt_cantidad;
         private Label label3;
@@ -316,5 +313,6 @@
         private Label label1;
         private TextBox txt_producto;
         private ErrorProvider errorProvider1;
+        private DateTimePicker dtp_fecha_vencimiento;
     }
 }

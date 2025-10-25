@@ -220,7 +220,25 @@ namespace sbx.repositories.FechaVecimiento
                                         IdProducto, 
                                         FechaVencimiento, 
                                         -Cantidad AS Cantidad
-                                    FROM T_DetalleSalidasInventario IdEntradaOrSalida
+                                    FROM T_DetalleSalidasInventario
+
+                                    UNION ALL
+
+                                    --Ventas
+									SELECT
+									IdProducto,
+									FechaVencimiento,
+									-Cantidad AS Cantidad
+									FROM T_DetalleVenta
+
+									UNION ALL
+
+									--Notas credito
+									SELECT
+									IdProducto,
+									FechaVencimiento,
+									Cantidad
+									FROM T_NotaCreditoDetalle
                                 ) AS M
                                 INNER JOIN T_Productos P ON M.IdProducto = P.IdProducto
 								

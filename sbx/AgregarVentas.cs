@@ -1260,13 +1260,17 @@ namespace sbx
             var resp = await _IFechaVencimiento.BuscarxIdProductoTieneVence(IdPrd);
             if (resp.Data != null)
             {
-                if (resp.Data.Count > 0)
+                if (resp.Data.Count > 1)
                 {
                     _ConfirmaFechaVecimiento = _serviceProvider.GetRequiredService<ConfirmaFechaVecimiento>();
                     _ConfirmaFechaVecimiento.Id_producto = IdPrd;
                     _ConfirmaFechaVecimiento.retornaFechaVencimiento += _RetornaFechaVencimiento;
                     _ConfirmaFechaVecimiento.FormClosed += (s, args) => _ConfirmaFechaVecimiento = null;
                     _ConfirmaFechaVecimiento.ShowDialog();
+                }
+                else if(resp.Data.Count == 1)
+                {
+                    FechaVSeleccionada = Convert.ToDateTime(resp.Data[0].FechaVencimiento);
                 }
             }
         }

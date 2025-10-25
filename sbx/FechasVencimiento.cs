@@ -100,51 +100,54 @@ namespace sbx
                 {
                     foreach (var item in resp.Data)
                     {
-                        int diasDiferencia = (Convert.ToDateTime(item.FechaVencimiento) - hoy).Days;
+                        if (Convert.ToDecimal(item.EntradasMenosSalidas) > 0) 
+                        {
+                            int diasDiferencia = (Convert.ToDateTime(item.FechaVencimiento) - hoy).Days;
 
-                        if (diasDiferencia < 0)
-                        {
-                            Estado = "Vencido.";
-                        }
-                        else if (diasDiferencia == 0)
-                        {
-                            Estado = "¡Vence hoy!";
-                        }
-                        else if (diasDiferencia <= 7)
-                        {
-                            Estado = "Próximo a vencer.";
-                        }
-                        else
-                        {
-                            Estado = $"Faltan {diasDiferencia} días para vencerse.";
-                        }
+                            if (diasDiferencia < 0)
+                            {
+                                Estado = $"Vencido hace {diasDiferencia} dias";
+                            }
+                            else if (diasDiferencia == 0)
+                            {
+                                Estado = "¡Vence hoy!";
+                            }
+                            else if (diasDiferencia <= 7)
+                            {
+                                Estado = $"Próximo a vencer en {diasDiferencia} días";
+                            }
+                            else
+                            {
+                                Estado = $"Faltan {diasDiferencia} días para vencerse.";
+                            }
 
-                        int rowIndex = dtg_producto.Rows.Add(
-                            item.IdProducto,
-                            item.Sku,
-                            item.CodigoBarras,
-                            item.Nombre,
-                            item.FechaVencimiento,
-                            item.EntradasMenosSalidas,
-                            Estado);
+                            int rowIndex = dtg_producto.Rows.Add(
+                                item.IdProducto,
+                                item.Sku,
+                                item.CodigoBarras,
+                                item.Nombre,
+                                item.FechaVencimiento,
+                                item.EntradasMenosSalidas,
+                                Estado);
 
-                        DataGridViewRow fila = dtg_producto.Rows[rowIndex];
+                            DataGridViewRow fila = dtg_producto.Rows[rowIndex];
 
-                        if (diasDiferencia < 0)
-                        {
-                            fila.Cells["cl_estado"].Style.BackColor = Color.Red;
-                        }
-                        else if (diasDiferencia == 0)
-                        {
-                            fila.Cells["cl_estado"].Style.BackColor = Color.Orange;
-                        }
-                        else if (diasDiferencia <= 7)
-                        {
-                            fila.Cells["cl_estado"].Style.BackColor = Color.Yellow;
-                        }
-                        else
-                        {
-                            fila.Cells["cl_estado"].Style.BackColor = Color.LightGreen;
+                            if (diasDiferencia < 0)
+                            {
+                                fila.Cells["cl_estado"].Style.BackColor = Color.Red;
+                            }
+                            else if (diasDiferencia == 0)
+                            {
+                                fila.Cells["cl_estado"].Style.BackColor = Color.Orange;
+                            }
+                            else if (diasDiferencia <= 7)
+                            {
+                                fila.Cells["cl_estado"].Style.BackColor = Color.Yellow;
+                            }
+                            else
+                            {
+                                fila.Cells["cl_estado"].Style.BackColor = Color.LightGreen;
+                            }
                         }
                     }
                 }

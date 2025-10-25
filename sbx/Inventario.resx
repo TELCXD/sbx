@@ -121,7 +121,7 @@
   <data name="btn_fecha_vencimiento.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        rAAAAKwBhgk01AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJMSURBVEhLpZZL
+        qAAAAKgBefSzxgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJMSURBVEhLpZZL
         iE9RHMc/GSONTB5ZzCwsWLDxzGsyzUYTJit5LWQhrzTKhigLjIVSSg3D1LBgIu+d8krJZKFYSBYkNAqT
         R4SFhb7T9+rnuP/b3P9869e953vPPd9zv7/fOefCv9gDfAF6AjcWeAB8AJYHfhnwHugD6gP/H+qA8Y4B
         YCLwCphmbj1wEWgFboa+NyxyHtgQ+BGpwDfgpeOXucfAa3OaZRcwF/gR+up+AdDpPuI0wV3J+HwO9/1A
@@ -213,6 +213,9 @@
 </value>
   </data>
   <metadata name="cl_id_documento.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="cl_id_detalle_documento.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="cl_fecha.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -2418,4 +2421,7 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 </value>
   </data>
+  <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>168, 17</value>
+  </metadata>
 </root>
