@@ -54,7 +54,11 @@
             lbl_total = new Label();
             label1 = new Label();
             dtg_inventario = new DataGridView();
+            errorProvider1 = new ErrorProvider(components);
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            editarFechaVencimientoToolStripMenuItem = new ToolStripMenuItem();
             cl_id_documento = new DataGridViewTextBoxColumn();
+            cl_id_detalle_documento = new DataGridViewTextBoxColumn();
             cl_fecha = new DataGridViewTextBoxColumn();
             cl_documento = new DataGridViewTextBoxColumn();
             cl_movimiento = new DataGridViewTextBoxColumn();
@@ -73,11 +77,11 @@
             cl_descuento = new DataGridViewTextBoxColumn();
             cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
-            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            contextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -349,7 +353,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_inventario.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_inventario.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_id_documento, cl_fecha, cl_documento, cl_movimiento, cl_cantidad, cl_id_producto, cl_nombre, cl_sku, cl_fecha_vencimiento, cl_tipo, cl_codigo_barras, cl_codigo_lote, cl_comentario, cl_usuario, cl_costo, cl_valor, cl_descuento, cl_impuesto, cl_total });
+            dtg_inventario.Columns.AddRange(new DataGridViewColumn[] { cl_id_documento, cl_id_detalle_documento, cl_fecha, cl_documento, cl_movimiento, cl_cantidad, cl_id_producto, cl_nombre, cl_sku, cl_fecha_vencimiento, cl_tipo, cl_codigo_barras, cl_codigo_lote, cl_comentario, cl_usuario, cl_costo, cl_valor, cl_descuento, cl_impuesto, cl_total });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -375,15 +379,39 @@
             dtg_inventario.Size = new Size(1190, 438);
             dtg_inventario.TabIndex = 6;
             dtg_inventario.DoubleClick += dtg_inventario_DoubleClick;
+            dtg_inventario.MouseDown += dtg_inventario_MouseDown;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { editarFechaVencimientoToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(206, 26);
+            // 
+            // editarFechaVencimientoToolStripMenuItem
+            // 
+            editarFechaVencimientoToolStripMenuItem.Name = "editarFechaVencimientoToolStripMenuItem";
+            editarFechaVencimientoToolStripMenuItem.Size = new Size(205, 22);
+            editarFechaVencimientoToolStripMenuItem.Text = "Editar fecha vencimiento";
+            editarFechaVencimientoToolStripMenuItem.Click += editarFechaVencimientoToolStripMenuItem_Click;
             // 
             // cl_id_documento
             // 
-            cl_id_documento.HeaderText = "Id Documento";
+            cl_id_documento.HeaderText = "Id";
             cl_id_documento.MinimumWidth = 6;
             cl_id_documento.Name = "cl_id_documento";
             cl_id_documento.ReadOnly = true;
             cl_id_documento.Visible = false;
-            cl_id_documento.Width = 125;
+            cl_id_documento.Width = 50;
+            // 
+            // cl_id_detalle_documento
+            // 
+            cl_id_detalle_documento.HeaderText = "Id Detalle";
+            cl_id_detalle_documento.Name = "cl_id_detalle_documento";
+            cl_id_detalle_documento.ReadOnly = true;
             // 
             // cl_fecha
             // 
@@ -518,10 +546,6 @@
             cl_total.Name = "cl_total";
             cl_total.ReadOnly = true;
             // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
-            // 
             // Inventario
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -542,6 +566,7 @@
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).EndInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            contextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -569,7 +594,12 @@
         private DateTimePicker dtp_fecha_inicio;
         private Label label2;
         private Label lbl_fechaVencimiento;
+        private Button btn_fecha_vencimiento;
+        private CheckBox chk_usar_fechas;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem editarFechaVencimientoToolStripMenuItem;
         private DataGridViewTextBoxColumn cl_id_documento;
+        private DataGridViewTextBoxColumn cl_id_detalle_documento;
         private DataGridViewTextBoxColumn cl_fecha;
         private DataGridViewTextBoxColumn cl_documento;
         private DataGridViewTextBoxColumn cl_movimiento;
@@ -588,7 +618,5 @@
         private DataGridViewTextBoxColumn cl_descuento;
         private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
-        private Button btn_fecha_vencimiento;
-        private CheckBox chk_usar_fechas;
     }
 }

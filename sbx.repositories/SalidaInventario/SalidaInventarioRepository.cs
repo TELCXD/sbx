@@ -671,5 +671,58 @@ namespace sbx.repositories.SalidaInventario
                 }
             }
         }
+
+        public async Task<Response<dynamic>> UpdateFechaVencimiento(int IdSalida, DateTime FechaVencimiento, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                try
+                {
+                    string sql = "";
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sql = @$" UPDATE T_DetalleSalidasInventario SET 
+                                  FechaVencimiento = @FechaVencimiento,
+                                  UpdateDate = @UpdateDate,
+                                  IdUserAction = @IdUserAction 
+                                  WHERE IdDetalleSalidasInventario = @IdSalida";
+
+                    var parametros = new
+                    {
+                        IdSalida,
+                        FechaVencimiento,
+                        UpdateDate = FechaActual,
+                        IdUserAction = IdUser
+                    };
+
+                    int FilasAfectadas = await connection.ExecuteAsync(sql, parametros);
+
+                    if (FilasAfectadas > 0)
+                    {
+                        response.Flag = true;
+                        response.Message = "Fecha vencimiento actualizada correctamente";
+                    }
+                    else
+                    {
+                        response.Flag = false;
+                        response.Message = "Se presento un error al intentar actualizar fecha vencimiento";
+                    }
+
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

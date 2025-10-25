@@ -6,9 +6,12 @@ using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
+using sbx.core.Interfaces.SalidaInventario;
+using sbx.core.Interfaces.Venta;
 using System.Data;
 using System.Globalization;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace sbx
 {
@@ -20,19 +23,24 @@ namespace sbx
         private ConversionProducto? _ConversionProducto;
         private readonly IServiceProvider _serviceProvider;
         private readonly IEntradaInventario _IEntradaInventario;
+        private readonly ISalidaInventario _ISalidaInventario;
         private readonly IParametros _IParametros;
         private DetalleVenta? _DetalleVenta;
         private DetalleProdDevo? _DetalleProdDevo;
+        private EditarInventario? _EditarInventario;
         private DateTime _FechaIni, _FechaFin;
         private string _TipoMovimiento;
         private FechasVencimiento? _FechasVencimiento;
+        int IdDetalleDoc = 0;
+        string v_Movimiento = string.Empty;
 
-        public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros)
+        public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros, ISalidaInventario salidaInventario)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IEntradaInventario = entradaInventario;
             _IParametros = iParametros;
+            _ISalidaInventario = salidaInventario;
         }
 
         public dynamic? Permisos
@@ -177,6 +185,7 @@ namespace sbx
 
                         dtg_inventario.Rows.Add(
                             item.IdDocumento,
+                            item.IdDetalleDocumento,
                             item.Fecha,
                             item.Documento,
                             item.TipoMovimiento,
@@ -513,6 +522,98 @@ namespace sbx
                 dtp_fecha_inicio.Enabled = false;
                 dtp_fecha_fin.Enabled = false;
             }
+        }
+
+        private void dtg_inventario_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var hit = dtg_inventario.HitTest(e.X, e.Y);
+
+                if (hit.RowIndex >= 0)
+                {
+                    dtg_inventario.ClearSelection();
+                    dtg_inventario.Rows[hit.RowIndex].Selected = true;
+
+                    dtg_inventario.CurrentCell = dtg_inventario.Rows[hit.RowIndex].Cells[1];
+                  
+                    var row = dtg_inventario.SelectedRows[0];
+                    if (row.Cells["cl_movimiento"].Value.ToString() == "Entrada" || row.Cells["cl_movimiento"].Value.ToString() == "Salida")
+                    {
+                        contextMenuStrip1.Show(dtg_inventario, e.Location);
+                    }
+                }
+            }
+        }
+
+        private void editarFechaVencimientoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.WaitCursor;
+
+            try
+            {
+                var row = dtg_inventario.SelectedRows[0];
+                IdDetalleDoc = Convert.ToInt32(row.Cells["cl_id_detalle_documento"].Value);
+                DateTime v_FechaVenceActual = Convert.ToDateTime(row.Cells["cl_fecha_vencimiento"].Value);
+                v_Movimiento = row.Cells["cl_movimiento"].Value.ToString();
+
+                if (IdDetalleDoc > 0)
+                {
+                    _EditarInventario = _serviceProvider.GetRequiredService<EditarInventario>();
+                    _EditarInventario.FechaVenceActual = v_FechaVenceActual;
+                    _EditarInventario.NuevaFechaV += _NuevaFechaV;
+                    _EditarInventario.FormClosed += (s, args) => _EditarInventario = null;
+                    _EditarInventario.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Cursor = Cursors.Default;
+
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
+        }
+
+        private async void _NuevaFechaV(DateTime NuevaFechaVencimiento)
+        {
+            if (v_Movimiento == "Entrada") 
+            {
+                var resp = await _IEntradaInventario.UpdateFechaVencimiento(IdDetalleDoc, NuevaFechaVencimiento, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                if (resp != null)
+                {
+                    if (resp.Flag == true)
+                    {
+                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await ConsultaInventario();
+                    }
+                    else
+                    {
+                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+            else if(v_Movimiento == "Salida")
+            {
+                var resp = await _ISalidaInventario.UpdateFechaVencimiento(IdDetalleDoc, NuevaFechaVencimiento, Convert.ToInt32(_Permisos?[0]?.IdUser));
+
+                if (resp != null)
+                {
+                    if (resp.Flag == true)
+                    {
+                        MessageBox.Show(resp.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await ConsultaInventario();
+                    }
+                    else
+                    {
+                        MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }              
         }
     }
 }

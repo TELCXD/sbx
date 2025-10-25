@@ -12,5 +12,6 @@ namespace sbx.core.Interfaces.EntradaInventario
         Task<Response<dynamic>> CargueMasivoProductoEntrada(DataTable Datos, int IdUser);
         Task<Response<dynamic>> List(int Id);
         Task<Response<dynamic>> CargueMasivoEditarProductoEntradaSalidas(DataTable Datos, int IdUser);
+        Task<Response<dynamic>> UpdateFechaVencimiento(int IdEntrada, DateTime FechaVencimiento, int IdUser);
     }
 }

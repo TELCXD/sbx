@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using sbx.core.Entities;
 using sbx.core.Entities.EntradaInventario;
+using sbx.core.Entities.Producto;
 using sbx.core.Interfaces.EntradaInventario;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
@@ -431,11 +432,12 @@ namespace sbx.repositories.EntradaInventario
                     await connection.OpenAsync();
 
                     string sql = @" SELECT Fecha,IdUserAction,UserName ,Usuario , IdDocumento,Documento, TipoMovimiento, Cantidad, Tipo, IdProducto, Nombre, Sku, 
-                                    CodigoBarras, CodigoLote, FechaVencimiento,Costo,Valor,Descuento,Impuesto,Total,Comentario 
+                                    CodigoBarras, CodigoLote, FechaVencimiento,Costo,Valor,Descuento,Impuesto,Total,Comentario, IdDetalleDocumento 
                                     FROM
                                     (
                                     SELECT 
                                         e.IdEntradasInventario IdDocumento,
+                                        e.IdDetalleEntradasInventario IdDetalleDocumento,
                                         e.CreationDate AS Fecha,
 										e.IdUserAction,
 										usr.UserName,
@@ -466,6 +468,7 @@ namespace sbx.repositories.EntradaInventario
 
                                     SELECT 
                                         s.IdSalidasInventario IdDocumento,
+                                        s.IdDetalleSalidasInventario IdDetalleDocumento,
                                         s.CreationDate AS Fecha,
 										s.IdUserAction,
 										usr.UserName,
@@ -496,6 +499,7 @@ namespace sbx.repositories.EntradaInventario
 
 	                                SELECT
                                         vt.IdVenta IdDocumento,
+                                        dvt.IdDetalleVenta IdDetalleDocumento, 
 	                                    dvt.CreationDate AS Fecha,
 										dvt.IdUserAction,
 										usr.UserName,
@@ -524,6 +528,7 @@ namespace sbx.repositories.EntradaInventario
 
 									SELECT
                                         nc.IdNotaCredito IdDocumento,
+                                        ncd.IdNotaCreditoDetalle IdDetalleDocumento,
 									    ncd.CreationDate AS Fecha,
 										ncd.IdUserAction,
 										usr.UserName,
@@ -1110,6 +1115,59 @@ namespace sbx.repositories.EntradaInventario
                 {
                     await transaction.RollbackAsync();
 
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> UpdateFechaVencimiento(int IdEntrada,DateTime FechaVencimiento, int IdUser)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                await connection.OpenAsync();
+
+                try
+                {
+                    string sql = "";
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sql = @$" UPDATE T_DetalleEntradasInventario SET 
+                                  FechaVencimiento = @FechaVencimiento,
+                                  UpdateDate = @UpdateDate,
+                                  IdUserAction = @IdUserAction 
+                                  WHERE IdDetalleEntradasInventario = @IdEntrada";
+
+                    var parametros = new
+                    {
+                        IdEntrada,
+                        FechaVencimiento,
+                        UpdateDate = FechaActual,
+                        IdUserAction = IdUser
+                    };
+
+                    int FilasAfectadas = await connection.ExecuteAsync(sql, parametros);
+
+                    if (FilasAfectadas > 0)
+                    {
+                        response.Flag = true;
+                        response.Message = "Fecha vencimiento actualizada correctamente";
+                    }
+                    else
+                    {
+                        response.Flag = false;
+                        response.Message = "Se presento un error al intentar actualizar fecha vencimiento";
+                    }
+
+                    return response;
+                }
+                catch (Exception ex)
+                {
                     response.Flag = false;
                     response.Message = "Error: " + ex.Message;
                     return response;
