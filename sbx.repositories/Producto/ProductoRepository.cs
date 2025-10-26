@@ -202,7 +202,8 @@ namespace sbx.repositories.Producto
 	                                     FROM T_DetalleVenta dvt
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock,
-                                         A.TipoProducto
+                                         A.TipoProducto,
+                                        (SELECT ISNULL(COUNT(*),0) FROM T_Producto_grupo_detalle WHERE IdProductoGrupo = A.IdProducto) CantidadPrdIndiv 
                                   FROM T_Productos A
 								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
 								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
@@ -2117,6 +2118,87 @@ namespace sbx.repositories.Producto
                     }
 
                     response.Message = Mensaje;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListPrdGrp(int Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                    IdProductoGrupo,
+                                    IdProductoIndividual,
+                                    Cantidad,
+                                    ISNULL((SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                    (
+                                    SELECT
+                                    e.IdProducto, 
+                                    'Entrada' AS TipoMovimiento,
+                                    e.Cantidad
+                                    FROM T_DetalleEntradasInventario e
+                                    INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                    UNION ALL
+
+                                    SELECT
+                                    dnc.IdProducto, 
+                                    'Entrada por Nota credito' AS TipoMovimiento,
+                                    dnc.Cantidad
+                                    FROM T_NotaCreditoDetalle dnc
+                                    INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                    UNION ALL
+
+                                    SELECT
+                                    s.IdProducto, 
+                                    'Salida' AS TipoMovimiento,
+                                    s.Cantidad
+                                    FROM T_DetalleSalidasInventario s
+                                    INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+                                    UNION ALL
+
+                                    SELECT
+                                    dvt.IdProducto,
+                                    'Salida por Venta' AS TipoMovimiento,
+                                    dvt.Cantidad
+                                    FROM T_DetalleVenta dvt
+                                    ) R
+                                    WHERE R.IdProducto = IdProductoIndividual),0) StockPrdIndiv
+
+                                    FROM T_Producto_grupo_detalle ";
+
+                    string Where = "";
+
+                    if (Id > 0)
+                    {
+                        Where = $"WHERE IdProductoGrupo = {Id}";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
                     return response;
                 }
                 catch (Exception ex)
