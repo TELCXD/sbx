@@ -74,6 +74,11 @@ namespace sbx
             var resp = await _IProducto.List(id);
             if (resp.Data != null)
             {
+                if (resp.Data[0].TipoProducto == "Grupo" && Convert.ToInt32(resp.Data[0].CantidadPrdIndiv) <= 0)
+                {
+                    MessageBox.Show("Los productos de tipo Grupo requieren al menos un producto individual asignado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
                 DetalleSalida.IdProducto = resp.Data[0].IdProducto;
                 DetalleSalida.Sku = resp.Data[0].Sku;

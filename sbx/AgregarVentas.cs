@@ -417,6 +417,12 @@ namespace sbx
 
                                             if (CajaAperturada)
                                             {
+                                                if (DataProducto.Data[0].TipoProducto == "Grupo" && Convert.ToInt32(DataProducto.Data[0].CantidadPrdIndiv) <= 0)
+                                                {
+                                                    MessageBox.Show("Los productos de tipo Grupo requieren al menos un producto individual asignado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    return;
+                                                }
+
                                                 var DataParametros = await _IParametros.List("Validar stock para venta");
 
                                                 if (DataParametros.Data != null)
@@ -1111,6 +1117,12 @@ namespace sbx
 
                             if (CajaAperturada)
                             {
+                                if (DataProducto.Data[0].TipoProducto == "Grupo" && Convert.ToInt32(DataProducto.Data[0].CantidadPrdIndiv) <= 0)
+                                {
+                                    MessageBox.Show("Los productos de tipo Grupo requieren al menos un producto individual asignado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    return;
+                                }
+
                                 var DataParametros = await _IParametros.List("Validar stock para venta");
 
                                 if (DataParametros.Data != null)

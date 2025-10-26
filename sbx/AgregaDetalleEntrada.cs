@@ -71,6 +71,12 @@ namespace sbx
             var resp = await _IProducto.List(id);
             if (resp.Data != null)
             {
+                if (resp.Data[0].TipoProducto == "Grupo" && Convert.ToInt32(resp.Data[0].CantidadPrdIndiv) <= 0) 
+                {
+                    MessageBox.Show("Los productos de tipo Grupo requieren al menos un producto individual asignado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 DetalleEntrada.IdProducto = resp.Data[0].IdProducto;
                 DetalleEntrada.Sku = resp.Data[0].Sku;
                 DetalleEntrada.CodigoBarras = resp.Data[0].CodigoBarras;
@@ -187,7 +193,7 @@ namespace sbx
             errorProvider1.Clear();
             if (txt_producto.Text.Trim() != "" && txt_cantidad.Text.Trim() != "" && txt_costo.Text.Trim() != "" && txt_subtotal.Text.Trim() != "" && txt_total.Text.Trim() != "" && txt_descuento.Text != "" && txt_impuesto.Text.Trim() != "")
             {
-                if (Convert.ToDecimal(txt_cantidad.Text.Replace(',', '.')) > 0)
+                if (Convert.ToDecimal(txt_cantidad.Text, new CultureInfo("es-CO")) > 0)
                 {
                     DetalleEntrada.CodigoLote = txt_lote.Text;
                     if (chek_fecha_vencimiento.Checked) { DetalleEntrada.FechaVencimiento = dtp_fecha_vencimiento.Value; } else { DetalleEntrada.FechaVencimiento = DateTime.Parse("1900-01-01"); }
