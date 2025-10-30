@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Salidas));
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel3 = new Panel();
             btn_guardar = new Button();
             panel1 = new Panel();
@@ -48,6 +48,7 @@
             cbx_tipo_salida = new ComboBox();
             label6 = new Label();
             panel2 = new Panel();
+            btn_quitar = new Button();
             btn_add_producto = new Button();
             panel4 = new Panel();
             lbl_total = new Label();
@@ -62,7 +63,7 @@
             cl_cantidad = new DataGridViewTextBoxColumn();
             cl_costo_unitario = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
-            btn_quitar = new Button();
+            cl_tipo_producto = new DataGridViewTextBoxColumn();
             panel3.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -224,7 +225,7 @@
             label6.AutoSize = true;
             label6.Location = new Point(12, 11);
             label6.Name = "label6";
-            label6.Size = new Size(63, 15);
+            label6.Size = new Size(64, 15);
             label6.TabIndex = 100;
             label6.Text = "Tipo salida";
             // 
@@ -239,6 +240,21 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1015, 56);
             panel2.TabIndex = 67;
+            // 
+            // btn_quitar
+            // 
+            btn_quitar.Enabled = false;
+            btn_quitar.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_quitar.FlatStyle = FlatStyle.Flat;
+            btn_quitar.Image = (Image)resources.GetObject("btn_quitar.Image");
+            btn_quitar.Location = new Point(112, 5);
+            btn_quitar.Name = "btn_quitar";
+            btn_quitar.Size = new Size(101, 45);
+            btn_quitar.TabIndex = 9;
+            btn_quitar.Text = "Quitar";
+            btn_quitar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_quitar.UseVisualStyleBackColor = true;
+            btn_quitar.Click += btn_quitar_Click;
             // 
             // btn_add_producto
             // 
@@ -293,36 +309,36 @@
             dtg_detalle_salida.AllowUserToDeleteRows = false;
             dtg_detalle_salida.AllowUserToOrderColumns = true;
             dtg_detalle_salida.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Control;
-            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dtg_detalle_salida.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dtg_detalle_salida.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_detalle_salida.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_detalle_salida.Columns.AddRange(new DataGridViewColumn[] { cl_id_producto, cl_sku, cl_codigo_barras, cl_Nombre, cl_lote, cl_fecha_vencimiento, cl_cantidad, cl_costo_unitario, cl_total });
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Window;
-            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dtg_detalle_salida.DefaultCellStyle = dataGridViewCellStyle5;
+            dtg_detalle_salida.Columns.AddRange(new DataGridViewColumn[] { cl_id_producto, cl_sku, cl_codigo_barras, cl_Nombre, cl_lote, cl_fecha_vencimiento, cl_cantidad, cl_costo_unitario, cl_total, cl_tipo_producto });
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dtg_detalle_salida.DefaultCellStyle = dataGridViewCellStyle2;
             dtg_detalle_salida.Dock = DockStyle.Fill;
             dtg_detalle_salida.Location = new Point(0, 233);
             dtg_detalle_salida.Name = "dtg_detalle_salida";
             dtg_detalle_salida.ReadOnly = true;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Control;
-            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dtg_detalle_salida.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dtg_detalle_salida.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_detalle_salida.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_detalle_salida.Size = new Size(1015, 297);
             dtg_detalle_salida.TabIndex = 70;
@@ -386,20 +402,12 @@
             cl_total.ReadOnly = true;
             cl_total.Width = 130;
             // 
-            // btn_quitar
+            // cl_tipo_producto
             // 
-            btn_quitar.Enabled = false;
-            btn_quitar.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_quitar.FlatStyle = FlatStyle.Flat;
-            btn_quitar.Image = (Image)resources.GetObject("btn_quitar.Image");
-            btn_quitar.Location = new Point(112, 5);
-            btn_quitar.Name = "btn_quitar";
-            btn_quitar.Size = new Size(101, 45);
-            btn_quitar.TabIndex = 9;
-            btn_quitar.Text = "Quitar";
-            btn_quitar.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_quitar.UseVisualStyleBackColor = true;
-            btn_quitar.Click += btn_quitar_Click;
+            cl_tipo_producto.HeaderText = "Tipo producto";
+            cl_tipo_producto.Name = "cl_tipo_producto";
+            cl_tipo_producto.ReadOnly = true;
+            cl_tipo_producto.Visible = false;
             // 
             // Salidas
             // 
@@ -452,6 +460,8 @@
 
         private DataGridView dtg_detalle_salida;
         private Label label4;
+        private Label lbl_total;
+        private Button btn_quitar;
         private DataGridViewTextBoxColumn cl_id_producto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
@@ -461,7 +471,6 @@
         private DataGridViewTextBoxColumn cl_cantidad;
         private DataGridViewTextBoxColumn cl_costo_unitario;
         private DataGridViewTextBoxColumn cl_total;
-        private Label lbl_total;
-        private Button btn_quitar;
+        private DataGridViewTextBoxColumn cl_tipo_producto;
     }
 }

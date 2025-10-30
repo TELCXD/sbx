@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inventario));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Inventario));
             panel1 = new Panel();
             chk_usar_fechas = new CheckBox();
             btn_fecha_vencimiento = new Button();
@@ -54,9 +54,6 @@
             lbl_total = new Label();
             label1 = new Label();
             dtg_inventario = new DataGridView();
-            errorProvider1 = new ErrorProvider(components);
-            contextMenuStrip1 = new ContextMenuStrip(components);
-            editarFechaVencimientoToolStripMenuItem = new ToolStripMenuItem();
             cl_id_documento = new DataGridViewTextBoxColumn();
             cl_id_detalle_documento = new DataGridViewTextBoxColumn();
             cl_fecha = new DataGridViewTextBoxColumn();
@@ -77,6 +74,10 @@
             cl_descuento = new DataGridViewTextBoxColumn();
             cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
+            errorProvider1 = new ErrorProvider(components);
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            editarFechaVencimientoToolStripMenuItem = new ToolStripMenuItem();
+            btn_stock = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_inventario).BeginInit();
@@ -88,6 +89,7 @@
             // 
             panel1.BackColor = Color.White;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btn_stock);
             panel1.Controls.Add(chk_usar_fechas);
             panel1.Controls.Add(btn_fecha_vencimiento);
             panel1.Controls.Add(dtp_fecha_fin);
@@ -205,7 +207,7 @@
             btn_eliminar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_eliminar.FlatStyle = FlatStyle.Flat;
             btn_eliminar.Image = (Image)resources.GetObject("btn_eliminar.Image");
-            btn_eliminar.Location = new Point(559, 3);
+            btn_eliminar.Location = new Point(676, 3);
             btn_eliminar.Name = "btn_eliminar";
             btn_eliminar.Size = new Size(101, 45);
             btn_eliminar.TabIndex = 22;
@@ -381,23 +383,6 @@
             dtg_inventario.DoubleClick += dtg_inventario_DoubleClick;
             dtg_inventario.MouseDown += dtg_inventario_MouseDown;
             // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
-            // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { editarFechaVencimientoToolStripMenuItem });
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(206, 26);
-            // 
-            // editarFechaVencimientoToolStripMenuItem
-            // 
-            editarFechaVencimientoToolStripMenuItem.Name = "editarFechaVencimientoToolStripMenuItem";
-            editarFechaVencimientoToolStripMenuItem.Size = new Size(205, 22);
-            editarFechaVencimientoToolStripMenuItem.Text = "Editar fecha vencimiento";
-            editarFechaVencimientoToolStripMenuItem.Click += editarFechaVencimientoToolStripMenuItem_Click;
-            // 
             // cl_id_documento
             // 
             cl_id_documento.HeaderText = "Id";
@@ -546,6 +531,38 @@
             cl_total.Name = "cl_total";
             cl_total.ReadOnly = true;
             // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { editarFechaVencimientoToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(206, 26);
+            // 
+            // editarFechaVencimientoToolStripMenuItem
+            // 
+            editarFechaVencimientoToolStripMenuItem.Name = "editarFechaVencimientoToolStripMenuItem";
+            editarFechaVencimientoToolStripMenuItem.Size = new Size(205, 22);
+            editarFechaVencimientoToolStripMenuItem.Text = "Editar fecha vencimiento";
+            editarFechaVencimientoToolStripMenuItem.Click += editarFechaVencimientoToolStripMenuItem_Click;
+            // 
+            // btn_stock
+            // 
+            btn_stock.Enabled = false;
+            btn_stock.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_stock.FlatStyle = FlatStyle.Flat;
+            btn_stock.Image = (Image)resources.GetObject("btn_stock.Image");
+            btn_stock.Location = new Point(559, 3);
+            btn_stock.Name = "btn_stock";
+            btn_stock.Size = new Size(111, 45);
+            btn_stock.TabIndex = 166;
+            btn_stock.Text = "Stock";
+            btn_stock.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_stock.UseVisualStyleBackColor = true;
+            btn_stock.Click += btn_stock_Click;
+            // 
             // Inventario
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -618,5 +635,6 @@
         private DataGridViewTextBoxColumn cl_descuento;
         private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
+        private Button btn_stock;
     }
 }

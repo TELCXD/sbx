@@ -81,6 +81,7 @@ namespace sbx
                 DetalleEntrada.Sku = resp.Data[0].Sku;
                 DetalleEntrada.CodigoBarras = resp.Data[0].CodigoBarras;
                 DetalleEntrada.Nombre = resp.Data[0].Nombre;
+                DetalleEntrada.TipoProducto = resp.Data[0].TipoProducto;
                 txt_producto.Text = resp.Data[0].IdProducto + " " + resp.Data[0].Sku + " " + resp.Data[0].CodigoBarras;
                 lbl_nombre_producto.Text = resp.Data[0].Nombre;
                 txt_impuesto.Text = resp.Data[0].Impuesto.ToString(new CultureInfo("es-CO"));

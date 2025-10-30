@@ -254,6 +254,8 @@ namespace sbx
 
                 services.AddTransient<EditarInventario>();
 
+                services.AddTransient<Stock>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 

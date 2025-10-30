@@ -35,7 +35,11 @@ namespace sbx
                     {
                         dtg_fecha_vence.Rows.Add(
                             item.IdProducto,
-                            item.FechaVencimiento);
+                            item.Sku,
+                            item.CodigoBarras,
+                            item.Nombre,
+                            item.FechaVencimiento,
+                            item.Stock);
                     }
                 }
             }
@@ -46,7 +50,7 @@ namespace sbx
             if (dtg_fecha_vence.Rows.Count > 0)
             {
                 int fila = dtg_fecha_vence.CurrentRow.Index;
-                DateTime FechaV = Convert.ToDateTime(dtg_fecha_vence[1, fila].Value);
+                DateTime FechaV = Convert.ToDateTime(dtg_fecha_vence[4, fila].Value);
                 cerrandoDesdeCodigo = true;
                 retornaFechaVencimiento(FechaV);
                 this.Close();

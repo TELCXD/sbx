@@ -1,7 +1,7 @@
-﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using sbx.core.Entities.EntradaInventario;
 using sbx.core.Interfaces.EntradaInventario;
+using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.Proveedor;
 using sbx.core.Interfaces.TipoEntrada;
@@ -21,8 +21,11 @@ namespace sbx
         private readonly IProducto _IProducto;
         private readonly IEntradaInventario _IEntradaInventario;
         private int _Id_Entrada;
+        DateTime FechaVSeleccionada = new DateTime(1900, 1, 1);
+        private readonly IFechaVencimiento _IFechaVencimiento;
+        private ConfirmaFechaVecimiento? _ConfirmaFechaVecimiento;
 
-        public Entradas(ITipoEntrada tipoEntrada, IServiceProvider serviceProvider, IProveedor proveedor, IProducto iProducto, IEntradaInventario entradaInventario)
+        public Entradas(ITipoEntrada tipoEntrada, IServiceProvider serviceProvider, IProveedor proveedor, IProducto iProducto, IEntradaInventario entradaInventario, IFechaVencimiento fechaVencimiento)
         {
             InitializeComponent();
             _ITipoEntrada = tipoEntrada;
@@ -30,6 +33,7 @@ namespace sbx
             _IProveedor = proveedor;
             _IProducto = iProducto;
             _IEntradaInventario = entradaInventario;
+            _IFechaVencimiento = fechaVencimiento;
         }
 
         public dynamic? Permisos
@@ -188,7 +192,8 @@ namespace sbx
                 CostoUnitario = detalleEntradasInv.CostoUnitario,
                 Descuento = detalleEntradasInv.Descuento,
                 Impuesto = detalleEntradasInv.Impuesto,
-                Total = detalleEntradasInv.Total
+                Total = detalleEntradasInv.Total,
+                TipoProducto = detalleEntradasInv.TipoProducto
             };
 
             bool Existe = false;
@@ -218,7 +223,8 @@ namespace sbx
                         item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
                         item.Descuento.ToString(new CultureInfo("es-CO")),
                         item.Impuesto.ToString(new CultureInfo("es-CO")),
-                        item.Total.ToString("N2", new CultureInfo("es-CO"))
+                        item.Total.ToString("N2", new CultureInfo("es-CO")),
+                        item.TipoProducto
                         );
                 }
 
@@ -271,10 +277,43 @@ namespace sbx
                         Cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO")),
                         CostoUnitario = Convert.ToDecimal(fila.Cells["cl_costo_unitario"].Value, new CultureInfo("es-CO")),
                         Descuento = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")),
-                        Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO"))
+                        Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO")),
+                        TipoProducto = fila.Cells["cl_tipo_producto"].Value.ToString()!
                     };
-
+                    
                     entradasInventarioEntitie.detalleEntradasInventarios.Add(nuevoDetalle);
+
+                    //Si es producto tipo Grupo, agrega a la entrada los productos de tipo individual pertenecientes al Kit
+                    if (nuevoDetalle.TipoProducto == "Grupo")
+                    {
+                        var respPrdIndv = await _IProducto.ListPrdGrp(nuevoDetalle.IdProducto);
+                        if (respPrdIndv.Data != null)
+                        {
+                            if (respPrdIndv.Data.Count > 0)
+                            {
+                                foreach (var item in respPrdIndv.Data)
+                                {
+                                    //Preguntar fecha de vencimiento si aplica
+                                    await ValidarFechaVencimiento(Convert.ToInt32(item.IdProductoIndividual));
+                                    if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { MessageBox.Show("Se deben seleccionar las fechas de vencimiento requeridas, intente nuevamente", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
+
+                                    var nuevoDetalleIndiv = new DetalleEntradasInventarioEntitie
+                                    {
+                                        IdProducto = Convert.ToInt32(item.IdProductoIndividual),
+                                        CodigoLote = "",
+                                        FechaVencimiento = FechaVSeleccionada,
+                                        Cantidad = Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")) * nuevoDetalle.Cantidad,
+                                        CostoUnitario = Convert.ToDecimal(item.CostoBase, new CultureInfo("es-CO")),
+                                        Descuento = 0,
+                                        Impuesto = 0,
+                                        TipoProducto = item.TipoProducto
+                                    };
+
+                                    entradasInventarioEntitie.detalleEntradasInventarios.Add(nuevoDetalleIndiv);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 var resp = await _IEntradaInventario.CreateUpdate(entradasInventarioEntitie, Convert.ToInt32(_Permisos?[0]?.IdUser));
@@ -296,6 +335,33 @@ namespace sbx
             {
                 MessageBox.Show("No hay datos para guardar", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        public async Task ValidarFechaVencimiento(int IdPrd)
+        {
+            FechaVSeleccionada = new DateTime(1900, 1, 1);
+
+            var resp = await _IFechaVencimiento.BuscarxIdProductoTieneVence(IdPrd);
+            if (resp.Data != null)
+            {
+                if (resp.Data.Count > 1)
+                {
+                    _ConfirmaFechaVecimiento = _serviceProvider.GetRequiredService<ConfirmaFechaVecimiento>();
+                    _ConfirmaFechaVecimiento.Id_producto = IdPrd;
+                    _ConfirmaFechaVecimiento.retornaFechaVencimiento += _RetornaFechaVencimiento;
+                    _ConfirmaFechaVecimiento.FormClosed += (s, args) => _ConfirmaFechaVecimiento = null;
+                    _ConfirmaFechaVecimiento.ShowDialog();
+                }
+                else if (resp.Data.Count == 1)
+                {
+                    FechaVSeleccionada = Convert.ToDateTime(resp.Data[0].FechaVencimiento);
+                }
+            }
+        }
+
+        public void _RetornaFechaVencimiento(DateTime fechaVenceSeleccionada)
+        {
+            FechaVSeleccionada = fechaVenceSeleccionada;
         }
 
         private void btn_quitar_Click(object sender, EventArgs e)

@@ -31,6 +31,7 @@ namespace sbx
         private DateTime _FechaIni, _FechaFin;
         private string _TipoMovimiento;
         private FechasVencimiento? _FechasVencimiento;
+        private Stock? _Stock;
         int IdDetalleDoc = 0;
         string v_Movimiento = string.Empty;
 
@@ -108,6 +109,7 @@ namespace sbx
                             btn_salida.Enabled = item.ToUpdate == 1 ? true : false;
                             btn_exportar.Enabled = item.ToRead == 1 ? true : false;
                             btn_fecha_vencimiento.Enabled = item.ToRead == 1 ? true : false;
+                            btn_stock.Enabled = item.ToRead == 1 ? true : false;
                             break;
                         case "conversionProducto":
                             btn_agrupar_productos.Enabled = item.ToCreate == 1 ? true : false;
@@ -505,7 +507,7 @@ namespace sbx
             {
                 _FechasVencimiento = _serviceProvider.GetRequiredService<FechasVencimiento>();
                 _FechasVencimiento.Permisos = _Permisos;
-                _FechasVencimiento.FormClosed += (s, args) => _Entradas = null;
+                _FechasVencimiento.FormClosed += (s, args) => _FechasVencimiento = null;
                 _FechasVencimiento.ShowDialog();
             }
         }
@@ -526,24 +528,24 @@ namespace sbx
 
         private void dtg_inventario_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                var hit = dtg_inventario.HitTest(e.X, e.Y);
+            //if (e.Button == MouseButtons.Right)
+            //{
+            //    var hit = dtg_inventario.HitTest(e.X, e.Y);
 
-                if (hit.RowIndex >= 0)
-                {
-                    dtg_inventario.ClearSelection();
-                    dtg_inventario.Rows[hit.RowIndex].Selected = true;
+            //    if (hit.RowIndex >= 0)
+            //    {
+            //        dtg_inventario.ClearSelection();
+            //        dtg_inventario.Rows[hit.RowIndex].Selected = true;
 
-                    dtg_inventario.CurrentCell = dtg_inventario.Rows[hit.RowIndex].Cells[1];
-                  
-                    var row = dtg_inventario.SelectedRows[0];
-                    if (row.Cells["cl_movimiento"].Value.ToString() == "Entrada" || row.Cells["cl_movimiento"].Value.ToString() == "Salida")
-                    {
-                        contextMenuStrip1.Show(dtg_inventario, e.Location);
-                    }
-                }
-            }
+            //        dtg_inventario.CurrentCell = dtg_inventario.Rows[hit.RowIndex].Cells[1];
+
+            //        var row = dtg_inventario.SelectedRows[0];
+            //        if (row.Cells["cl_movimiento"].Value.ToString() == "Entrada" || row.Cells["cl_movimiento"].Value.ToString() == "Salida")
+            //        {
+            //            contextMenuStrip1.Show(dtg_inventario, e.Location);
+            //        }
+            //    }
+            //}
         }
 
         private void editarFechaVencimientoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -580,7 +582,7 @@ namespace sbx
 
         private async void _NuevaFechaV(DateTime NuevaFechaVencimiento)
         {
-            if (v_Movimiento == "Entrada") 
+            if (v_Movimiento == "Entrada")
             {
                 var resp = await _IEntradaInventario.UpdateFechaVencimiento(IdDetalleDoc, NuevaFechaVencimiento, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
@@ -597,7 +599,7 @@ namespace sbx
                     }
                 }
             }
-            else if(v_Movimiento == "Salida")
+            else if (v_Movimiento == "Salida")
             {
                 var resp = await _ISalidaInventario.UpdateFechaVencimiento(IdDetalleDoc, NuevaFechaVencimiento, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
@@ -613,7 +615,18 @@ namespace sbx
                         MessageBox.Show(resp.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
-            }              
+            }
+        }
+
+        private void btn_stock_Click(object sender, EventArgs e)
+        {
+            if (_Permisos != null)
+            {
+                _Stock = _serviceProvider.GetRequiredService<Stock>();
+                _Stock.Permisos = _Permisos;
+                _Stock.FormClosed += (s, args) => _Stock = null;
+                _Stock.ShowDialog();
+            }
         }
     }
 }

@@ -65,6 +65,7 @@
             cl_descuento = new DataGridViewTextBoxColumn();
             cl_impuesto = new DataGridViewTextBoxColumn();
             cl_total = new DataGridViewTextBoxColumn();
+            cl_tipo_producto = new DataGridViewTextBoxColumn();
             panel3.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -226,7 +227,7 @@
             label6.AutoSize = true;
             label6.Location = new Point(12, 11);
             label6.Name = "label6";
-            label6.Size = new Size(73, 15);
+            label6.Size = new Size(74, 15);
             label6.TabIndex = 100;
             label6.Text = "Tipo entrada";
             // 
@@ -319,7 +320,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_detalle_entrada.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_detalle_entrada.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_detalle_entrada.Columns.AddRange(new DataGridViewColumn[] { cl_id_producto, cl_sku, cl_codigo_barras, cl_Nombre, cl_lote, cl_fecha_vencimiento, cl_cantidad, cl_costo_unitario, cl_descuento, cl_impuesto, cl_total });
+            dtg_detalle_entrada.Columns.AddRange(new DataGridViewColumn[] { cl_id_producto, cl_sku, cl_codigo_barras, cl_Nombre, cl_lote, cl_fecha_vencimiento, cl_cantidad, cl_costo_unitario, cl_descuento, cl_impuesto, cl_total, cl_tipo_producto });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -417,6 +418,13 @@
             cl_total.ReadOnly = true;
             cl_total.Width = 130;
             // 
+            // cl_tipo_producto
+            // 
+            cl_tipo_producto.HeaderText = "Tipo producto";
+            cl_tipo_producto.Name = "cl_tipo_producto";
+            cl_tipo_producto.ReadOnly = true;
+            cl_tipo_producto.Visible = false;
+            // 
             // Entradas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -480,5 +488,6 @@
         private DataGridViewTextBoxColumn cl_descuento;
         private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
+        private DataGridViewTextBoxColumn cl_tipo_producto;
     }
 }
