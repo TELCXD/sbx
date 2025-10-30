@@ -27,5 +27,6 @@ namespace sbx.core.Interfaces.Producto
         Task<Response<dynamic>> UpdateCantidadProdIndiviToProdGrupo(int IdProductoGrupo, int IdProductoIndividual, decimal Cantidad, int IdUser);
         Task<Response<dynamic>> BuscarProdGrupoDetalle(string dato, string campoFiltro, string tipoFiltro);
         Task<Response<dynamic>> EliminarPrdGrp(int Id);
+        Task<Response<dynamic>> ListPrdGrp(int Id);
     }
 }

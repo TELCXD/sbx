@@ -84,7 +84,7 @@ namespace sbx
                 DetalleSalida.Sku = resp.Data[0].Sku;
                 DetalleSalida.CodigoBarras = resp.Data[0].CodigoBarras;
                 DetalleSalida.Nombre = resp.Data[0].Nombre;
-
+                DetalleSalida.TipoProducto = resp.Data[0].TipoProducto;
                 txt_producto.Text = resp.Data[0].IdProducto + " " + resp.Data[0].Sku + " " + resp.Data[0].CodigoBarras;
                 lbl_nombre_producto.Text = resp.Data[0].Nombre;
             }

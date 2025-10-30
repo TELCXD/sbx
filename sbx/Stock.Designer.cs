@@ -1,6 +1,6 @@
 ﻿namespace sbx
 {
-    partial class FechasVencimiento
+    partial class Stock
     {
         /// <summary>
         /// Required designer variable.
@@ -29,24 +29,24 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FechasVencimiento));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Stock));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
             cbx_tipo_filtro = new ComboBox();
             cbx_campo_filtro = new ComboBox();
-            btn_buscar = new Button();
+            button1 = new Button();
             txt_buscar = new TextBox();
+            btn_buscar = new Button();
             dtg_producto = new DataGridView();
-            errorProvider1 = new ErrorProvider(components);
             cl_idProducto = new DataGridViewTextBoxColumn();
             cl_sku = new DataGridViewTextBoxColumn();
             cl_codigo_barras = new DataGridViewTextBoxColumn();
             cl_nombre = new DataGridViewTextBoxColumn();
             cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
             cl_stock = new DataGridViewTextBoxColumn();
-            cl_estado = new DataGridViewTextBoxColumn();
+            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -54,16 +54,18 @@
             // 
             // panel1
             // 
+            panel1.BackColor = SystemColors.Window;
             panel1.BorderStyle = BorderStyle.Fixed3D;
             panel1.Controls.Add(cbx_tipo_filtro);
             panel1.Controls.Add(cbx_campo_filtro);
-            panel1.Controls.Add(btn_buscar);
+            panel1.Controls.Add(button1);
             panel1.Controls.Add(txt_buscar);
+            panel1.Controls.Add(btn_buscar);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1028, 47);
-            panel1.TabIndex = 0;
+            panel1.Size = new Size(805, 47);
+            panel1.TabIndex = 1;
             // 
             // cbx_tipo_filtro
             // 
@@ -71,10 +73,10 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(696, 11);
+            cbx_tipo_filtro.Location = new Point(472, 12);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
-            cbx_tipo_filtro.TabIndex = 14;
+            cbx_tipo_filtro.TabIndex = 18;
             // 
             // cbx_campo_filtro
             // 
@@ -82,10 +84,33 @@
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
             cbx_campo_filtro.Items.AddRange(new object[] { "Nombre", "Id", "Sku", "Codigo barras" });
-            cbx_campo_filtro.Location = new Point(576, 11);
+            cbx_campo_filtro.Location = new Point(352, 12);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
-            cbx_campo_filtro.TabIndex = 13;
+            cbx_campo_filtro.TabIndex = 17;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.FlatAppearance.MouseDownBackColor = Color.Gray;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Image = (Image)resources.GetObject("button1.Image");
+            button1.Location = new Point(765, 10);
+            button1.Name = "button1";
+            button1.Size = new Size(26, 26);
+            button1.TabIndex = 16;
+            button1.TextImageRelation = TextImageRelation.ImageBeforeText;
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // txt_buscar
+            // 
+            txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txt_buscar.Location = new Point(565, 12);
+            txt_buscar.Name = "txt_buscar";
+            txt_buscar.Size = new Size(177, 23);
+            txt_buscar.TabIndex = 15;
+            txt_buscar.KeyPress += txt_buscar_KeyPress;
             // 
             // btn_buscar
             // 
@@ -93,22 +118,12 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(989, 9);
+            btn_buscar.Location = new Point(1590, 9);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 12;
             btn_buscar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_buscar.UseVisualStyleBackColor = true;
-            btn_buscar.Click += btn_buscar_Click;
-            // 
-            // txt_buscar
-            // 
-            txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(789, 11);
-            txt_buscar.Name = "txt_buscar";
-            txt_buscar.Size = new Size(177, 23);
-            txt_buscar.TabIndex = 11;
-            txt_buscar.KeyPress += txt_buscar_KeyPress;
             // 
             // dtg_producto
             // 
@@ -125,7 +140,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_fecha_vencimiento, cl_stock, cl_estado });
+            dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_fecha_vencimiento, cl_stock });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -147,12 +162,8 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_producto.Size = new Size(1028, 403);
-            dtg_producto.TabIndex = 3;
-            // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
+            dtg_producto.Size = new Size(805, 403);
+            dtg_producto.TabIndex = 4;
             // 
             // cl_idProducto
             // 
@@ -192,28 +203,24 @@
             cl_stock.Name = "cl_stock";
             cl_stock.ReadOnly = true;
             // 
-            // cl_estado
+            // errorProvider1
             // 
-            cl_estado.HeaderText = "Estado";
-            cl_estado.Name = "cl_estado";
-            cl_estado.ReadOnly = true;
-            cl_estado.Width = 220;
+            errorProvider1.ContainerControl = this;
             // 
-            // FechasVencimiento
+            // Stock
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.Window;
-            ClientSize = new Size(1028, 450);
+            ClientSize = new Size(805, 450);
             Controls.Add(dtg_producto);
             Controls.Add(panel1);
             MaximizeBox = false;
-            MaximumSize = new Size(1044, 489);
-            MinimumSize = new Size(1044, 489);
-            Name = "FechasVencimiento";
+            MaximumSize = new Size(821, 489);
+            MinimumSize = new Size(821, 489);
+            Name = "Stock";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "FechasVencimiento";
-            Load += FechasVencimiento_Load;
+            Text = "Stock";
+            Load += Stock_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).EndInit();
@@ -224,18 +231,18 @@
         #endregion
 
         private Panel panel1;
+        private Button btn_buscar;
         private ComboBox cbx_tipo_filtro;
         private ComboBox cbx_campo_filtro;
-        private Button btn_buscar;
+        private Button button1;
         private TextBox txt_buscar;
         private DataGridView dtg_producto;
-        private ErrorProvider errorProvider1;
         private DataGridViewTextBoxColumn cl_idProducto;
         private DataGridViewTextBoxColumn cl_sku;
         private DataGridViewTextBoxColumn cl_codigo_barras;
         private DataGridViewTextBoxColumn cl_nombre;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
         private DataGridViewTextBoxColumn cl_stock;
-        private DataGridViewTextBoxColumn cl_estado;
+        private ErrorProvider errorProvider1;
     }
 }

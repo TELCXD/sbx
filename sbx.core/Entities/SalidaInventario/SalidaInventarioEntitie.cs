@@ -25,5 +25,6 @@ namespace sbx.core.Entities.SalidaInventario
         public decimal Cantidad { get; set; }
         public decimal CostoUnitario { get; set; }
         public decimal Total { get; set; }
+        public string TipoProducto { get; set; }
     }
 }

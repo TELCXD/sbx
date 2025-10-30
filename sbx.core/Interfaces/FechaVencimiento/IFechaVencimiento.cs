@@ -14,5 +14,7 @@ namespace sbx.core.Interfaces.FechaVencimiento
         Task<Response<dynamic>> BuscarxIdProducto(int IdProducto);
 
         Task<Response<dynamic>> BuscarxIdProductoTieneVence(int IdProducto);
+
+        Task<Response<dynamic>> BuscarStock(string dato, string campoFiltro, string tipoFiltro);
     }
 }

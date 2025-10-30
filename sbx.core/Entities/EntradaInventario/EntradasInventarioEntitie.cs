@@ -31,5 +31,6 @@ namespace sbx.core.Entities.EntradaInventario
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
+        public string TipoProducto { get; set; }
     }
 }

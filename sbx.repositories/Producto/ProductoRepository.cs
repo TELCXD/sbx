@@ -2140,9 +2140,9 @@ namespace sbx.repositories.Producto
                     await connection.OpenAsync();
 
                     string sql = @"SELECT 
-                                    IdProductoGrupo,
-                                    IdProductoIndividual,
-                                    Cantidad,
+                                    A.IdProductoGrupo,
+                                    A.IdProductoIndividual,
+                                    A.Cantidad,
                                     ISNULL((SELECT 
                                     SUM(CASE WHEN 
                                     R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
@@ -2182,9 +2182,12 @@ namespace sbx.repositories.Producto
                                     dvt.Cantidad
                                     FROM T_DetalleVenta dvt
                                     ) R
-                                    WHERE R.IdProducto = IdProductoIndividual),0) StockPrdIndiv
+                                    WHERE R.IdProducto = IdProductoIndividual),0) StockPrdIndiv,
+                                    B.CostoBase,
+									B.TipoProducto
 
-                                    FROM T_Producto_grupo_detalle ";
+                                    FROM T_Producto_grupo_detalle A
+                                    INNER JOIN T_Productos B ON A.IdProductoIndividual = B.IdProducto ";
 
                     string Where = "";
 
