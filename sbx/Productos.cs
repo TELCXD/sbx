@@ -151,6 +151,46 @@ namespace sbx
                             item.NombreCategoria);
                     }
                 }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IProducto.Buscar(Idprd.ToString(),"Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        foreach (var item in respFn.Data)
+                                        {
+                                            dtg_producto.Rows.Add(
+                                                item.IdProducto,
+                                                item.Sku,
+                                                item.CodigoBarras,
+                                                item.Nombre,
+                                                item.Stock,
+                                                item.CostoBase.ToString("N2", new CultureInfo("es-CO")),
+                                                item.PrecioBase.ToString("N2", new CultureInfo("es-CO")),
+                                                item.NombreTributo,
+                                                item.Impuesto.ToString(new CultureInfo("es-CO")),
+                                                item.EsInventariable == true ? "Si" : "No",
+                                                item.NombreUnidadMedida,
+                                                item.NombreMarca,
+                                                item.NombreCategoria);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             btn_buscar.Enabled = true;

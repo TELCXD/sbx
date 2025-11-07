@@ -221,33 +221,87 @@ namespace sbx
 
             if (resp.Data != null)
             {
-                var json = JsonConvert.SerializeObject(resp.Data);
-                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-                if (dataTable.Rows.Count > 0)
+                if (resp.Data.Count > 0)
                 {
-                    dtg_buscador.DataSource = dataTable;
+                    var json = JsonConvert.SerializeObject(resp.Data);
+                    var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
 
-                    dtg_buscador.Columns["Nombre"].Width = 500;
-                    dtg_buscador.Columns["IdProducto"].Visible = true;
-                    dtg_buscador.Columns["CostoBase"].Visible = false;
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
-                    dtg_buscador.Columns["PrecioBase"].Visible = true;
-                    dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Impuesto"].Visible = false;
-                    dtg_buscador.Columns["IdCategoria"].Visible = false;
-                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
-                    dtg_buscador.Columns["IdMarca"].Visible = false;
-                    dtg_buscador.Columns["NombreMarca"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["Idtribute"].Visible = false;
-                    dtg_buscador.Columns["NombreTributo"].Visible = false;
-                    dtg_buscador.Columns["CreationDate"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        dtg_buscador.DataSource = dataTable;
+
+                        dtg_buscador.Columns["Nombre"].Width = 500;
+                        dtg_buscador.Columns["IdProducto"].Visible = true;
+                        dtg_buscador.Columns["CostoBase"].Visible = false;
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                        dtg_buscador.Columns["PrecioBase"].Visible = true;
+                        dtg_buscador.Columns["EsInventariable"].Visible = false;
+                        dtg_buscador.Columns["Impuesto"].Visible = false;
+                        dtg_buscador.Columns["IdCategoria"].Visible = false;
+                        dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                        dtg_buscador.Columns["IdMarca"].Visible = false;
+                        dtg_buscador.Columns["NombreMarca"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["Idtribute"].Visible = false;
+                        dtg_buscador.Columns["NombreTributo"].Visible = false;
+                        dtg_buscador.Columns["CreationDate"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IProducto.Buscar(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        var json = JsonConvert.SerializeObject(respFn.Data);
+                                        var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                                        if (dataTable.Rows.Count > 0)
+                                        {
+                                            dtg_buscador.DataSource = dataTable;
+
+                                            dtg_buscador.Columns["Nombre"].Width = 500;
+                                            dtg_buscador.Columns["IdProducto"].Visible = true;
+                                            dtg_buscador.Columns["CostoBase"].Visible = false;
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                                            dtg_buscador.Columns["PrecioBase"].Visible = true;
+                                            dtg_buscador.Columns["EsInventariable"].Visible = false;
+                                            dtg_buscador.Columns["Impuesto"].Visible = false;
+                                            dtg_buscador.Columns["IdCategoria"].Visible = false;
+                                            dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                                            dtg_buscador.Columns["IdMarca"].Visible = false;
+                                            dtg_buscador.Columns["NombreMarca"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["Idtribute"].Visible = false;
+                                            dtg_buscador.Columns["NombreTributo"].Visible = false;
+                                            dtg_buscador.Columns["CreationDate"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUserAction"].Visible = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -260,31 +314,83 @@ namespace sbx
 
             if (resp.Data != null)
             {
-                var json = JsonConvert.SerializeObject(resp.Data);
-                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-                if (dataTable.Rows.Count > 0)
+                if (resp.Data.Count > 0)
                 {
-                    dtg_buscador.DataSource = dataTable;
+                    var json = JsonConvert.SerializeObject(resp.Data);
+                    var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
 
-                    dtg_buscador.Columns["Nombre"].Width = 450;
-                    dtg_buscador.Columns["IdProducto"].Visible = true;
-                    dtg_buscador.Columns["CostoBase"].Visible = false;
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
-                    dtg_buscador.Columns["PrecioBase"].Visible = true;
-                    dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Impuesto"].Visible = false;
-                    dtg_buscador.Columns["IdCategoria"].Visible = false;
-                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
-                    dtg_buscador.Columns["IdMarca"].Visible = false;
-                    dtg_buscador.Columns["NombreMarca"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["CreationDate"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        dtg_buscador.DataSource = dataTable;
+
+                        dtg_buscador.Columns["Nombre"].Width = 450;
+                        dtg_buscador.Columns["IdProducto"].Visible = true;
+                        dtg_buscador.Columns["CostoBase"].Visible = false;
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                        dtg_buscador.Columns["PrecioBase"].Visible = true;
+                        dtg_buscador.Columns["EsInventariable"].Visible = false;
+                        dtg_buscador.Columns["Impuesto"].Visible = false;
+                        dtg_buscador.Columns["IdCategoria"].Visible = false;
+                        dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                        dtg_buscador.Columns["IdMarca"].Visible = false;
+                        dtg_buscador.Columns["NombreMarca"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["CreationDate"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IProducto.Buscar(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        var json = JsonConvert.SerializeObject(respFn.Data);
+                                        var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                                        if (dataTable.Rows.Count > 0)
+                                        {
+                                            dtg_buscador.DataSource = dataTable;
+
+                                            dtg_buscador.Columns["Nombre"].Width = 450;
+                                            dtg_buscador.Columns["IdProducto"].Visible = true;
+                                            dtg_buscador.Columns["CostoBase"].Visible = false;
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                                            dtg_buscador.Columns["PrecioBase"].Visible = true;
+                                            dtg_buscador.Columns["EsInventariable"].Visible = false;
+                                            dtg_buscador.Columns["Impuesto"].Visible = false;
+                                            dtg_buscador.Columns["IdCategoria"].Visible = false;
+                                            dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                                            dtg_buscador.Columns["IdMarca"].Visible = false;
+                                            dtg_buscador.Columns["NombreMarca"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["CreationDate"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUserAction"].Visible = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -429,30 +535,81 @@ namespace sbx
 
             if (resp.Data != null)
             {
-                var json = JsonConvert.SerializeObject(resp.Data);
-                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-                if (dataTable.Rows.Count > 0)
+                if (resp.Data.Count > 0)
                 {
-                    dtg_buscador.DataSource = dataTable;
+                    var json = JsonConvert.SerializeObject(resp.Data);
+                    var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
 
-                    dtg_buscador.Columns["Nombre"].Width = 500;
-                    dtg_buscador.Columns["IdProducto"].Visible = true;
-                    dtg_buscador.Columns["CostoBase"].Visible = false;
-                    dtg_buscador.Columns["PrecioBase"].Visible = false;
-                    dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Impuesto"].Visible = false;
-                    dtg_buscador.Columns["Impuesto"].Visible = false;
-                    dtg_buscador.Columns["IdCategoria"].Visible = false;
-                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
-                    dtg_buscador.Columns["IdMarca"].Visible = false;
-                    dtg_buscador.Columns["NombreMarca"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["CreationDate"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        dtg_buscador.DataSource = dataTable;
+
+                        dtg_buscador.Columns["Nombre"].Width = 500;
+                        dtg_buscador.Columns["IdProducto"].Visible = true;
+                        dtg_buscador.Columns["CostoBase"].Visible = false;
+                        dtg_buscador.Columns["PrecioBase"].Visible = false;
+                        dtg_buscador.Columns["EsInventariable"].Visible = false;
+                        dtg_buscador.Columns["Impuesto"].Visible = false;
+                        dtg_buscador.Columns["Impuesto"].Visible = false;
+                        dtg_buscador.Columns["IdCategoria"].Visible = false;
+                        dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                        dtg_buscador.Columns["IdMarca"].Visible = false;
+                        dtg_buscador.Columns["NombreMarca"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["CreationDate"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IProducto.BuscarProductoPadre(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        var json = JsonConvert.SerializeObject(respFn.Data);
+                                        var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                                        if (dataTable.Rows.Count > 0)
+                                        {
+                                            dtg_buscador.DataSource = dataTable;
+
+                                            dtg_buscador.Columns["Nombre"].Width = 500;
+                                            dtg_buscador.Columns["IdProducto"].Visible = true;
+                                            dtg_buscador.Columns["CostoBase"].Visible = false;
+                                            dtg_buscador.Columns["PrecioBase"].Visible = false;
+                                            dtg_buscador.Columns["EsInventariable"].Visible = false;
+                                            dtg_buscador.Columns["Impuesto"].Visible = false;
+                                            dtg_buscador.Columns["Impuesto"].Visible = false;
+                                            dtg_buscador.Columns["IdCategoria"].Visible = false;
+                                            dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                                            dtg_buscador.Columns["IdMarca"].Visible = false;
+                                            dtg_buscador.Columns["NombreMarca"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["CreationDate"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUserAction"].Visible = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -465,29 +622,79 @@ namespace sbx
 
             if (resp.Data != null)
             {
-                var json = JsonConvert.SerializeObject(resp.Data);
-                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-                if (dataTable.Rows.Count > 0)
+                if (resp.Data.Count > 0)
                 {
-                    dtg_buscador.DataSource = dataTable;
+                    var json = JsonConvert.SerializeObject(resp.Data);
+                    var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
 
-                    dtg_buscador.Columns["Nombre"].Width = 500;
-                    dtg_buscador.Columns["IdProducto"].Visible = true;
-                    dtg_buscador.Columns["CostoBase"].Visible = false;
-                    dtg_buscador.Columns["PrecioBase"].Visible = false;
-                    dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Impuesto"].Visible = false;
-                    dtg_buscador.Columns["IdCategoria"].Visible = false;
-                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
-                    dtg_buscador.Columns["IdMarca"].Visible = false;
-                    dtg_buscador.Columns["NombreMarca"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["CreationDate"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        dtg_buscador.DataSource = dataTable;
+
+                        dtg_buscador.Columns["Nombre"].Width = 500;
+                        dtg_buscador.Columns["IdProducto"].Visible = true;
+                        dtg_buscador.Columns["CostoBase"].Visible = false;
+                        dtg_buscador.Columns["PrecioBase"].Visible = false;
+                        dtg_buscador.Columns["EsInventariable"].Visible = false;
+                        dtg_buscador.Columns["Impuesto"].Visible = false;
+                        dtg_buscador.Columns["IdCategoria"].Visible = false;
+                        dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                        dtg_buscador.Columns["IdMarca"].Visible = false;
+                        dtg_buscador.Columns["NombreMarca"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["CreationDate"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IProducto.BuscarProductoHijo(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        var json = JsonConvert.SerializeObject(respFn.Data);
+                                        var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                                        if (dataTable.Rows.Count > 0)
+                                        {
+                                            dtg_buscador.DataSource = dataTable;
+
+                                            dtg_buscador.Columns["Nombre"].Width = 500;
+                                            dtg_buscador.Columns["IdProducto"].Visible = true;
+                                            dtg_buscador.Columns["CostoBase"].Visible = false;
+                                            dtg_buscador.Columns["PrecioBase"].Visible = false;
+                                            dtg_buscador.Columns["EsInventariable"].Visible = false;
+                                            dtg_buscador.Columns["Impuesto"].Visible = false;
+                                            dtg_buscador.Columns["IdCategoria"].Visible = false;
+                                            dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                                            dtg_buscador.Columns["IdMarca"].Visible = false;
+                                            dtg_buscador.Columns["NombreMarca"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["CreationDate"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUserAction"].Visible = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -500,33 +707,87 @@ namespace sbx
 
             if (resp.Data != null)
             {
-                var json = JsonConvert.SerializeObject(resp.Data);
-                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-                if (dataTable.Rows.Count > 0)
+                if (resp.Data.Count > 0)
                 {
-                    dtg_buscador.DataSource = dataTable;
+                    var json = JsonConvert.SerializeObject(resp.Data);
+                    var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
 
-                    dtg_buscador.Columns["Nombre"].Width = 500;
-                    dtg_buscador.Columns["IdProducto"].Visible = true;
-                    dtg_buscador.Columns["CostoBase"].Visible = false;
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
-                    dtg_buscador.Columns["PrecioBase"].Visible = true;
-                    dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Impuesto"].Visible = false;
-                    dtg_buscador.Columns["IdCategoria"].Visible = false;
-                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
-                    dtg_buscador.Columns["IdMarca"].Visible = false;
-                    dtg_buscador.Columns["NombreMarca"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["Idtribute"].Visible = false;
-                    dtg_buscador.Columns["NombreTributo"].Visible = false;
-                    dtg_buscador.Columns["CreationDate"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        dtg_buscador.DataSource = dataTable;
+
+                        dtg_buscador.Columns["Nombre"].Width = 500;
+                        dtg_buscador.Columns["IdProducto"].Visible = true;
+                        dtg_buscador.Columns["CostoBase"].Visible = false;
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                        dtg_buscador.Columns["PrecioBase"].Visible = true;
+                        dtg_buscador.Columns["EsInventariable"].Visible = false;
+                        dtg_buscador.Columns["Impuesto"].Visible = false;
+                        dtg_buscador.Columns["IdCategoria"].Visible = false;
+                        dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                        dtg_buscador.Columns["IdMarca"].Visible = false;
+                        dtg_buscador.Columns["NombreMarca"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["Idtribute"].Visible = false;
+                        dtg_buscador.Columns["NombreTributo"].Visible = false;
+                        dtg_buscador.Columns["CreationDate"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IProducto.BuscarProductoGrupo(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        var json = JsonConvert.SerializeObject(respFn.Data);
+                                        var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                                        if (dataTable.Rows.Count > 0)
+                                        {
+                                            dtg_buscador.DataSource = dataTable;
+
+                                            dtg_buscador.Columns["Nombre"].Width = 500;
+                                            dtg_buscador.Columns["IdProducto"].Visible = true;
+                                            dtg_buscador.Columns["CostoBase"].Visible = false;
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                                            dtg_buscador.Columns["PrecioBase"].Visible = true;
+                                            dtg_buscador.Columns["EsInventariable"].Visible = false;
+                                            dtg_buscador.Columns["Impuesto"].Visible = false;
+                                            dtg_buscador.Columns["IdCategoria"].Visible = false;
+                                            dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                                            dtg_buscador.Columns["IdMarca"].Visible = false;
+                                            dtg_buscador.Columns["NombreMarca"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["Idtribute"].Visible = false;
+                                            dtg_buscador.Columns["NombreTributo"].Visible = false;
+                                            dtg_buscador.Columns["CreationDate"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUserAction"].Visible = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -539,33 +800,87 @@ namespace sbx
 
             if (resp.Data != null)
             {
-                var json = JsonConvert.SerializeObject(resp.Data);
-                var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
-
-                if (dataTable.Rows.Count > 0)
+                if (resp.Data.Count > 0)
                 {
-                    dtg_buscador.DataSource = dataTable;
+                    var json = JsonConvert.SerializeObject(resp.Data);
+                    var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
 
-                    dtg_buscador.Columns["Nombre"].Width = 500;
-                    dtg_buscador.Columns["IdProducto"].Visible = true;
-                    dtg_buscador.Columns["CostoBase"].Visible = false;
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
-                    dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
-                    dtg_buscador.Columns["PrecioBase"].Visible = true;
-                    dtg_buscador.Columns["EsInventariable"].Visible = false;
-                    dtg_buscador.Columns["Impuesto"].Visible = false;
-                    dtg_buscador.Columns["IdCategoria"].Visible = false;
-                    dtg_buscador.Columns["NombreCategoria"].Visible = false;
-                    dtg_buscador.Columns["IdMarca"].Visible = false;
-                    dtg_buscador.Columns["NombreMarca"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
-                    dtg_buscador.Columns["Idtribute"].Visible = false;
-                    dtg_buscador.Columns["NombreTributo"].Visible = false;
-                    dtg_buscador.Columns["CreationDate"].Visible = false;
-                    dtg_buscador.Columns["UpdateDate"].Visible = false;
-                    dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        dtg_buscador.DataSource = dataTable;
+
+                        dtg_buscador.Columns["Nombre"].Width = 500;
+                        dtg_buscador.Columns["IdProducto"].Visible = true;
+                        dtg_buscador.Columns["CostoBase"].Visible = false;
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                        dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                        dtg_buscador.Columns["PrecioBase"].Visible = true;
+                        dtg_buscador.Columns["EsInventariable"].Visible = false;
+                        dtg_buscador.Columns["Impuesto"].Visible = false;
+                        dtg_buscador.Columns["IdCategoria"].Visible = false;
+                        dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                        dtg_buscador.Columns["IdMarca"].Visible = false;
+                        dtg_buscador.Columns["NombreMarca"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                        dtg_buscador.Columns["Idtribute"].Visible = false;
+                        dtg_buscador.Columns["NombreTributo"].Visible = false;
+                        dtg_buscador.Columns["CreationDate"].Visible = false;
+                        dtg_buscador.Columns["UpdateDate"].Visible = false;
+                        dtg_buscador.Columns["IdUserAction"].Visible = false;
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IProducto.BuscarProductoIndividual(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        var json = JsonConvert.SerializeObject(respFn.Data);
+                                        var dataTable = JsonConvert.DeserializeObject<DataTable>(json);
+
+                                        if (dataTable.Rows.Count > 0)
+                                        {
+                                            dtg_buscador.DataSource = dataTable;
+
+                                            dtg_buscador.Columns["Nombre"].Width = 500;
+                                            dtg_buscador.Columns["IdProducto"].Visible = true;
+                                            dtg_buscador.Columns["CostoBase"].Visible = false;
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.Format = "N2";
+                                            dtg_buscador.Columns["PrecioBase"].DefaultCellStyle.FormatProvider = new CultureInfo("es-CO");
+                                            dtg_buscador.Columns["PrecioBase"].Visible = true;
+                                            dtg_buscador.Columns["EsInventariable"].Visible = false;
+                                            dtg_buscador.Columns["Impuesto"].Visible = false;
+                                            dtg_buscador.Columns["IdCategoria"].Visible = false;
+                                            dtg_buscador.Columns["NombreCategoria"].Visible = false;
+                                            dtg_buscador.Columns["IdMarca"].Visible = false;
+                                            dtg_buscador.Columns["NombreMarca"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["NombreUnidadMedida"].Visible = false;
+                                            dtg_buscador.Columns["Idtribute"].Visible = false;
+                                            dtg_buscador.Columns["NombreTributo"].Visible = false;
+                                            dtg_buscador.Columns["CreationDate"].Visible = false;
+                                            dtg_buscador.Columns["UpdateDate"].Visible = false;
+                                            dtg_buscador.Columns["IdUserAction"].Visible = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

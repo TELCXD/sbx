@@ -2184,3 +2184,11 @@ CREATE TABLE T_Producto_grupo_detalle (
     FOREIGN KEY (IdProductoGrupo) REFERENCES T_Productos(Idproducto),
     FOREIGN KEY (IdProductoIndividual) REFERENCES T_Productos(Idproducto)
 );
+GO
+CREATE TABLE T_CodigosBarras (
+    IdCodigo INT IDENTITY(1,1) PRIMARY KEY,
+    CodigoBarra NVARCHAR(50) NOT NULL UNIQUE,  
+    IdProducto INT NOT NULL,
+    FOREIGN KEY (IdProducto) REFERENCES T_Productos(IdProducto)
+        ON DELETE CASCADE
+);

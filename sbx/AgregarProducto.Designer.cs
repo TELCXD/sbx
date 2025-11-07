@@ -60,6 +60,7 @@
             btn_agregaMarca = new Button();
             cbx_tipo_producto = new ComboBox();
             label5 = new Label();
+            btn_agrega_codigos_barras = new Button();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -323,9 +324,9 @@
             btn_agregaMarca.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_agregaMarca.FlatStyle = FlatStyle.Flat;
             btn_agregaMarca.Image = (Image)resources.GetObject("btn_agregaMarca.Image");
-            btn_agregaMarca.Location = new Point(733, 257);
+            btn_agregaMarca.Location = new Point(730, 256);
             btn_agregaMarca.Name = "btn_agregaMarca";
-            btn_agregaMarca.Size = new Size(26, 26);
+            btn_agregaMarca.Size = new Size(28, 28);
             btn_agregaMarca.TabIndex = 66;
             btn_agregaMarca.UseVisualStyleBackColor = true;
             btn_agregaMarca.Click += btn_agregaMarca_Click;
@@ -350,12 +351,26 @@
             label5.TabIndex = 68;
             label5.Text = "Tipo producto";
             // 
+            // btn_agrega_codigos_barras
+            // 
+            btn_agrega_codigos_barras.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btn_agrega_codigos_barras.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_agrega_codigos_barras.FlatStyle = FlatStyle.Flat;
+            btn_agrega_codigos_barras.Image = (Image)resources.GetObject("btn_agrega_codigos_barras.Image");
+            btn_agrega_codigos_barras.Location = new Point(321, 201);
+            btn_agrega_codigos_barras.Name = "btn_agrega_codigos_barras";
+            btn_agrega_codigos_barras.Size = new Size(28, 28);
+            btn_agrega_codigos_barras.TabIndex = 69;
+            btn_agrega_codigos_barras.UseVisualStyleBackColor = true;
+            btn_agrega_codigos_barras.Click += btn_agrega_codigos_barras_Click;
+            // 
             // AgregarProducto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
             ClientSize = new Size(769, 454);
+            Controls.Add(btn_agrega_codigos_barras);
             Controls.Add(cbx_tipo_producto);
             Controls.Add(label5);
             Controls.Add(btn_agregaMarca);
@@ -432,5 +447,6 @@
         private Button btn_agregaMarca;
         private ComboBox cbx_tipo_producto;
         private Label label5;
+        private Button btn_agrega_codigos_barras;
     }
 }

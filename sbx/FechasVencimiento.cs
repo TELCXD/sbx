@@ -1,5 +1,6 @@
 ﻿using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Producto;
 
 namespace sbx
 {
@@ -8,12 +9,14 @@ namespace sbx
         private readonly IFechaVencimiento _IFechaVencimiento;
         private readonly IParametros _IParametros;
         private dynamic? _Permisos;
+        private readonly IProducto _IProducto;
 
-        public FechasVencimiento(IFechaVencimiento fechaVencimiento, IParametros parametros)
+        public FechasVencimiento(IFechaVencimiento fechaVencimiento, IParametros parametros, IProducto iProducto)
         {
             InitializeComponent();
             _IFechaVencimiento = fechaVencimiento;
             _IParametros = parametros;
+            _IProducto = iProducto;
         }
 
         public dynamic? Permisos
@@ -147,6 +150,81 @@ namespace sbx
                             else
                             {
                                 fila.Cells["cl_estado"].Style.BackColor = Color.LightGreen;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IFechaVencimiento.Buscar(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        foreach (var item in respFn.Data)
+                                        {
+                                            if (Convert.ToDecimal(item.Stock) > 0)
+                                            {
+                                                int diasDiferencia = (Convert.ToDateTime(item.FechaVencimiento) - hoy).Days;
+
+                                                if (diasDiferencia < 0)
+                                                {
+                                                    Estado = $"Vencido hace {diasDiferencia} dias";
+                                                }
+                                                else if (diasDiferencia == 0)
+                                                {
+                                                    Estado = "¡Vence hoy!";
+                                                }
+                                                else if (diasDiferencia <= 7)
+                                                {
+                                                    Estado = $"Próximo a vencer en {diasDiferencia} días";
+                                                }
+                                                else
+                                                {
+                                                    Estado = $"Faltan {diasDiferencia} días para vencerse.";
+                                                }
+
+                                                int rowIndex = dtg_producto.Rows.Add(
+                                                    item.IdProducto,
+                                                    item.Sku,
+                                                    item.CodigoBarras,
+                                                    item.Nombre,
+                                                    item.FechaVencimiento,
+                                                    item.Stock,
+                                                    Estado);
+
+                                                DataGridViewRow fila = dtg_producto.Rows[rowIndex];
+
+                                                if (diasDiferencia < 0)
+                                                {
+                                                    fila.Cells["cl_estado"].Style.BackColor = Color.Red;
+                                                }
+                                                else if (diasDiferencia == 0)
+                                                {
+                                                    fila.Cells["cl_estado"].Style.BackColor = Color.Orange;
+                                                }
+                                                else if (diasDiferencia <= 7)
+                                                {
+                                                    fila.Cells["cl_estado"].Style.BackColor = Color.Yellow;
+                                                }
+                                                else
+                                                {
+                                                    fila.Cells["cl_estado"].Style.BackColor = Color.LightGreen;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

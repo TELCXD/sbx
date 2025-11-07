@@ -28,5 +28,13 @@ namespace sbx.core.Interfaces.Producto
         Task<Response<dynamic>> BuscarProdGrupoDetalle(string dato, string campoFiltro, string tipoFiltro);
         Task<Response<dynamic>> EliminarPrdGrp(int Id);
         Task<Response<dynamic>> ListPrdGrp(int Id);
+        Task<bool> ListIdCodigoBarras(int IdProducto, string CodigoBarras);
+        Task<Response<dynamic>> ListCodigoBarras(int IdProducto);
+        Task<Response<dynamic>> ListCodigoBarrasTexto(string CodigoBarras, int Id_Producto);
+        Task<Response<dynamic>> CreateCodigoBarras(string CodigoBarras,int IdProducto, int IdUser);
+        Task<Response<dynamic>> EliminarCodigoBarras(string CodigoBarras, int IdProducto);
+        Task<bool> ListIdCodigoBarras2(int IdProducto, string CodigoBarras);
+        Task<Response<dynamic>> ListCodigoBarras2(string CodigoBarras);
+        Task<Response<dynamic>> ListCodigoBarras3(int IdProducto);
     }
 }

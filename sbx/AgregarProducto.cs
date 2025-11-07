@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using sbx.core.Entities.Producto;
 using sbx.core.Interfaces.Categoria;
 using sbx.core.Interfaces.Marca;
@@ -20,6 +21,7 @@ namespace sbx
         private readonly IProducto _IProducto;
         private readonly ITribute _ITribute;
         private Marcas? _Marcas;
+        private AgregaCodigosBarras? _AgregaCodigosBarras;
         private AgregaProductoGrupo? _AgregaProductoGrupo;
         private readonly IServiceProvider _serviceProvider;
         public AgregarProducto(ICategoria categoria, IMarca marca, IUnidadMedida unidadMedida, IProducto producto, ITribute tribute, IServiceProvider iServiceProvider)
@@ -131,6 +133,15 @@ namespace sbx
                     MessageBox.Show("No hay informacion", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+
+            if (txt_codigo_interno.Text.IsNullOrEmpty())
+            {
+                btn_agrega_codigos_barras.Enabled = false;
+            }
+            else
+            {
+                btn_agrega_codigos_barras.Enabled = true;
+            }
         }
 
         private async void btn_guardar_Click(object sender, EventArgs e)
@@ -176,6 +187,8 @@ namespace sbx
                 if (Exist) { errorProvider1.SetError(txt_sku, "Sku ya existe"); valido++; }
                 Exist = await _IProducto.ExisteCodigoBarras(txt_codigo_barras.Text.Trim(), Id_Producto);
                 if (Exist) { errorProvider1.SetError(txt_codigo_barras, "Codigo de barras ya existe"); valido++; }
+                Exist = await _IProducto.ListIdCodigoBarras(Id_Producto, txt_codigo_barras.Text.Trim());
+                if (Exist) { MessageBox.Show("Codigo de barras ya existe en otro producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); valido++; }
                 Exist = await _IProducto.ExisteNombre(txt_nombre.Text.Trim(), Id_Producto);
                 if (Exist) { errorProvider1.SetError(txt_nombre, "Nombre ya existe"); valido++; }
 
@@ -319,6 +332,15 @@ namespace sbx
         private void cbx_tipo_producto_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btn_agrega_codigos_barras_Click(object sender, EventArgs e)
+        {
+            _AgregaCodigosBarras = _serviceProvider.GetRequiredService<AgregaCodigosBarras>();
+            _AgregaCodigosBarras.Permisos = _Permisos;
+            _AgregaCodigosBarras.Id_Producto = Convert.ToInt32(txt_codigo_interno.Text);
+            _AgregaCodigosBarras.FormClosed += (s, args) => _AgregaCodigosBarras = null;
+            _AgregaCodigosBarras.ShowDialog();
         }
     }
 }
