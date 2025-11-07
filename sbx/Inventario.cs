@@ -1,17 +1,12 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using sbx.core.Interfaces.EntradaInventario;
-using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.SalidaInventario;
-using sbx.core.Interfaces.Venta;
 using System.Data;
 using System.Globalization;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace sbx
 {
@@ -34,14 +29,16 @@ namespace sbx
         private Stock? _Stock;
         int IdDetalleDoc = 0;
         string v_Movimiento = string.Empty;
+        private readonly IProducto _IProducto;
 
-        public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros, ISalidaInventario salidaInventario)
+        public Inventario(IServiceProvider serviceProvider, IEntradaInventario entradaInventario, IParametros iParametros, ISalidaInventario salidaInventario, IProducto producto)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _IEntradaInventario = entradaInventario;
             _IParametros = iParametros;
             _ISalidaInventario = salidaInventario;
+            _IProducto = producto;
         }
 
         public dynamic? Permisos
@@ -223,6 +220,80 @@ namespace sbx
                     }
 
                     lbl_total.Text = TotalStock.ToString("N2", new CultureInfo("es-CO"));
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IEntradaInventario.Buscar(Idprd.ToString(), "Id", "Igual a", cbx_tipo.Text, FIncio, FFin);
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        decimal TotalStock = 0;
+
+                                        foreach (var item in respFn.Data)
+                                        {
+                                            if (item.TipoMovimiento == "Entrada")
+                                            { TotalStock += item.Cantidad; }
+                                            else if (item.TipoMovimiento == "Salida")
+                                            { TotalStock -= item.Cantidad; }
+                                            else if (item.TipoMovimiento == "Salida por Venta")
+                                            { TotalStock -= item.Cantidad; }
+                                            else if (item.TipoMovimiento == "Entrada por Nota credito")
+                                            { TotalStock += item.Cantidad; }
+
+                                            dtg_inventario.Rows.Add(
+                                                item.IdDocumento,
+                                                item.IdDetalleDocumento,
+                                                item.Fecha,
+                                                item.Documento,
+                                                item.TipoMovimiento,
+                                                item.Cantidad,
+                                                item.IdProducto,
+                                                item.Nombre,
+                                                item.Sku,
+                                                item.FechaVencimiento,
+                                                item.Tipo,
+                                                item.CodigoBarras,
+                                                item.CodigoLote,
+                                                item.Comentario,
+                                                item.Usuario,
+                                                item.Costo,
+                                                item.Valor,
+                                                item.Descuento,
+                                                item.Impuesto,
+                                                0);
+                                        }
+
+                                        if (dtg_inventario.Rows.Count > 0)
+                                        {
+                                            foreach (DataGridViewRow fila in dtg_inventario.Rows)
+                                            {
+                                                decimal precio = Convert.ToDecimal(fila.Cells["cl_valor"].Value, new CultureInfo("es-CO"));
+                                                decimal cantidad = Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
+                                                decimal desc = Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO"));
+                                                decimal Impuesto = Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO"));
+                                                decimal total = CalcularTotal(precio, 0, desc);
+                                                total = total * cantidad;
+                                                fila.Cells["cl_total"].Value = total.ToString("N2", new CultureInfo("es-CO"));
+                                            }
+                                        }
+
+                                        lbl_total.Text = TotalStock.ToString("N2", new CultureInfo("es-CO"));
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

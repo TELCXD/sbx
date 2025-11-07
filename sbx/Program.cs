@@ -256,6 +256,8 @@ namespace sbx
 
                 services.AddTransient<Stock>();
 
+                services.AddTransient<AgregaCodigosBarras>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 

@@ -133,10 +133,21 @@
   <metadata name="errorProvider1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="btn_agrega_codigos_barras.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
+        cAAAAHABznhikwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEVSURBVDhPfZJJ
+        LkZBFIU/Eia6VTBAotmciW7GRJNfrEKwAMzsAFvAGAuQT079KfWak5zkvntenarbQBebwCXwCvyExubU
+        BjEPXAMfwD6wDSyEO8mpXeXfzuEn4AZYasUKy8At8NiaeLOHZ+oksAasNrnZmExKwrreB24+CluspJwN
+        P2yO9fXhOOzDIXBu8AZstWowZmBjXwy+qudb817Fh7DOlZ54xrP/DBRPgNPwOSzfasXAifwZWIIz78NY
+        CbulhAvgoFWDMQOnc2bgKByJT2oxNsZPYL0kXE+XwyWpYb19i3Sf8U/hWrqemug+BLW7TGauFTVxPX2a
+        S2KTFjMhY3Nq3tw5XMOeuGF2+Ds0tmHTmgt+ARukPsAg44LmAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="btn_agregaMarca.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        cgAAAHIBsYahGgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEVSURBVDhPfZJJ
+        cQAAAHEBHD+AdwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEVSURBVDhPfZJJ
         LkZBFIU/Eia6VTBAotmciW7GRJNfrEKwAMzsAFvAGAuQT079KfWak5zkvntenarbQBebwCXwCvyExubU
         BjEPXAMfwD6wDSyEO8mpXeXfzuEn4AZYasUKy8At8NiaeLOHZ+oksAasNrnZmExKwrreB24+CluspJwN
         P2yO9fXhOOzDIXBu8AZstWowZmBjXwy+qudb817Fh7DOlZ54xrP/DBRPgNPwOSzfasXAifwZWIIz78NY

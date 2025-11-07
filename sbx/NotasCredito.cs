@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using sbx.core.Entities.Auth;
 using sbx.core.Entities.NotaCredito;
 using sbx.core.Entities.NotaCreditoElectronica;
@@ -12,6 +11,7 @@ using sbx.core.Interfaces.FacturacionElectronica;
 using sbx.core.Interfaces.NotaCredito;
 using sbx.core.Interfaces.NotaCreditoElectronica;
 using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Venta;
@@ -35,10 +35,11 @@ namespace sbx
         private readonly IAuthService _IAuthService;
         private readonly IVenta _IVenta;
         private readonly IRangoNumeracionFE _IRangoNumeracionFE;
+        private readonly IProducto _IProducto;
 
         public NotasCredito(INotaCredito notaCredito, ITienda tienda, IParametros parametros, IServiceProvider serviceProvider,
             IRangoNumeracion rangoNumeracion, INotasCreditoElectronica notasCreditoElectronica, 
-            IAuthService iAuthService, IVenta iVenta, IRangoNumeracionFE iRangoNumeracionFE)
+            IAuthService iAuthService, IVenta iVenta, IRangoNumeracionFE iRangoNumeracionFE, IProducto producto)
         {
             InitializeComponent();
             _INotaCredito = notaCredito;
@@ -50,6 +51,7 @@ namespace sbx
             _IAuthService = iAuthService;
             _IVenta = iVenta;
             _IRangoNumeracionFE = iRangoNumeracionFE;
+            _IProducto = producto;
         }
 
         decimal Cantidad = 0;
@@ -254,13 +256,126 @@ namespace sbx
                 }
                 else
                 {
-                    lbl_cantidadProductos.Text = "_";
-                    lbl_subtotal.Text = "_";
-                    lbl_descuento.Text = "_";
-                    lbl_impuesto.Text = "_";
-                    lbl_total.Text = "_";
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
 
-                    MessageBox.Show("No se encuentran datos", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _INotaCredito.Buscar(Idprd.ToString(), "Id", "Igual a", cbx_client_venta.Text, dtp_fecha_inicio.Value, dtp_fecha_fin.Value, Convert.ToInt32(_Permisos?[0]?.IdUser), _Permisos?[0]?.NameRole);
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        decimal Subtotal = 0;
+                                        decimal cantidadTotal = 0;
+                                        decimal DescuentoLinea;
+                                        decimal Descuento = 0;
+                                        decimal Impuesto = 0;
+                                        decimal ImpuestoLinea;
+                                        decimal SubtotalLinea;
+                                        decimal Total = 0;
+                                        decimal TotalLinea;
+                                        decimal iva = 0;
+                                        decimal inc = 0;
+                                        decimal incBolsa = 0;
+
+                                        foreach (var item in respFn.Data)
+                                        {
+                                            if (item.Estado == "REGISTRADA") { cantidadTotal += Convert.ToDecimal(item.Cantidad); }
+                                            if (item.Estado == "REGISTRADA") { Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad); }
+                                            SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
+                                            if (item.Estado == "REGISTRADA") { Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento)); }
+                                            DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                                            if (item.NombreTributo == "INC Bolsas")
+                                            {
+                                                if (item.Estado == "REGISTRADA") { Impuesto += Convert.ToDecimal(item.Impuesto); }
+                                                ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
+                                            }
+                                            else
+                                            {
+                                                if (item.Estado == "REGISTRADA") { Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto)); }
+                                                ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
+                                            }
+
+                                            if (item.Estado == "REGISTRADA")
+                                            {
+                                                if (item.NombreTributo == "INC Bolsas")
+                                                {
+                                                    incBolsa += Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO"));
+                                                }
+                                                else if (item.NombreTributo == "IVA")
+                                                {
+                                                    iva += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                                }
+                                                else if (item.NombreTributo == "INC")
+                                                {
+                                                    inc += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")));
+                                                }
+                                            }
+
+                                            //TotalLinea = (SubtotalLinea - DescuentoLinea) + ImpuestoLinea;
+                                            TotalLinea = (SubtotalLinea - DescuentoLinea);
+
+                                            int rowIndex = dtg_nota_credito.Rows.Add(
+                                                item.CreationDate,
+                                                item.IdNotaCredito,
+                                                item.IdVenta,
+                                                item.NumberNotaCreditoDIAN != "" ? item.NumberNotaCreditoDIAN : item.NotaCredito,
+                                                item.EstadoNotaCreditoDIAN != "" ? item.Estado == "REGISTRADA" ? item.EstadoNotaCreditoDIAN : item.Estado : item.Estado,
+                                                item.IdProducto,
+                                                item.Sku,
+                                                item.CodigoBarras,
+                                                item.NombreProducto,
+                                                item.PrecioUnitario.ToString("N2", new CultureInfo("es-CO")),
+                                                Convert.ToDecimal(item.Cantidad, new CultureInfo("es-CO")),
+                                                Convert.ToDecimal(item.Descuento, new CultureInfo("es-CO")),
+                                                item.NombreTributo,
+                                                Convert.ToDecimal(item.Impuesto, new CultureInfo("es-CO")),
+                                                TotalLinea.ToString("N2", new CultureInfo("es-CO")),
+                                                item.IdUserAction + " - " + item.UserName);
+
+                                            var celdaEstado = dtg_nota_credito.Rows[rowIndex].Cells[4];
+                                            if (celdaEstado.Value.ToString() == "PENDIENTE EMITIR")
+                                            {
+                                                celdaEstado.Style.BackColor = Color.LightSalmon;
+                                                //celdaEstado.Style.ForeColor = Color.White;
+                                            }
+
+                                            if (item.NumberNotaCreditoDIAN != "") { NotaCreditoElectronica = true; }
+                                        }
+
+                                        Total = (Subtotal - Descuento);
+                                        decimal SubtotalMenosImpuesto = Subtotal - Impuesto;
+                                        //Total += (Subtotal - Descuento) + Impuesto;
+
+                                        lbl_cantidadProductos.Text = cantidadTotal.ToString(new CultureInfo("es-CO"));
+                                        lbl_subtotal.Text = SubtotalMenosImpuesto.ToString("N2", new CultureInfo("es-CO"));
+                                        lbl_descuento.Text = Descuento.ToString("N2", new CultureInfo("es-CO"));
+                                        lbl_impuesto.Text = Impuesto.ToString("N2", new CultureInfo("es-CO"));
+                                        lbl_total.Text = Total.ToString("N2", new CultureInfo("es-CO"));
+                                        lbl_inc_bolsa.Text = incBolsa.ToString("N2", new CultureInfo("es-CO"));
+                                        lbl_inc.Text = inc.ToString("N2", new CultureInfo("es-CO"));
+                                        lbl_iva.Text = iva.ToString("N2", new CultureInfo("es-CO"));
+                                    }
+                                    else
+                                    {
+                                        lbl_cantidadProductos.Text = "_";
+                                        lbl_subtotal.Text = "_";
+                                        lbl_descuento.Text = "_";
+                                        lbl_impuesto.Text = "_";
+                                        lbl_total.Text = "_";
+
+                                        MessageBox.Show("No se encuentran datos", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             else

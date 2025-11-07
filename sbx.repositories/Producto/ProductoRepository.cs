@@ -356,6 +356,15 @@ namespace sbx.repositories.Producto
 
                                          UNION ALL
 
+									     SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
                                          SELECT
 	                                     s.IdProducto, 
                                          'Salida' AS TipoMovimiento,
@@ -516,12 +525,21 @@ namespace sbx.repositories.Producto
                                     THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
                                     FROM
                                         (
-                                         SELECT
+                                        SELECT
 	                                     e.IdProducto, 
                                          'Entrada' AS TipoMovimiento,
 	                                     e.Cantidad
                                          FROM T_DetalleEntradasInventario e
                                          INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+									     SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
 
                                          UNION ALL
 
@@ -538,7 +556,8 @@ namespace sbx.repositories.Producto
 	                                     dvt.IdProducto,
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
-	                                     FROM T_DetalleVenta dvt
+	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
+										 WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
                                   FROM T_Productos A
@@ -617,6 +636,15 @@ namespace sbx.repositories.Producto
 
                                          UNION ALL
 
+									     SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
                                          SELECT
 	                                     s.IdProducto, 
                                          'Salida' AS TipoMovimiento,
@@ -630,7 +658,8 @@ namespace sbx.repositories.Producto
 	                                     dvt.IdProducto,
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
-	                                     FROM T_DetalleVenta dvt
+	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
+										 WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
                                   FROM T_Productos A
@@ -646,6 +675,105 @@ namespace sbx.repositories.Producto
                         Where = $"WHERE A.CodigoBarras = '{CodigoBarras}'";
                         sql += Where;
                     }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListCodigoBarras3(int IdProducto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdProducto
+                                  ,A.Sku
+                                  ,A.CodigoBarras
+                                  ,A.Nombre
+                                  ,A.CostoBase
+                                  ,A.PrecioBase
+                                  ,A.EsInventariable
+                                  ,A.Impuesto
+                                  ,A.IdCategoria
+								  ,B.Nombre NombreCategoria
+                                  ,A.IdMarca
+								  ,C.Nombre NombreMarca
+                                  ,A.UpdateDate
+                                  ,A.IdUnidadMedida
+								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
+                                  ,A.CreationDate
+                                  ,A.UpdateDate
+                                  ,A.IdUserAction
+                                  ,ISNULL((SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                        (
+                                         SELECT
+	                                     e.IdProducto, 
+                                         'Entrada' AS TipoMovimiento,
+	                                     e.Cantidad
+                                         FROM T_DetalleEntradasInventario e
+                                         INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+									     SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
+                                         SELECT
+	                                     s.IdProducto, 
+                                         'Salida' AS TipoMovimiento,
+	                                     s.Cantidad
+                                         FROM T_DetalleSalidasInventario s
+                                         INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+	                                     UNION ALL
+
+	                                     SELECT
+	                                     dvt.IdProducto,
+	                                     'Salida por Venta' AS TipoMovimiento,
+	                                     dvt.Cantidad
+	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
+										 WHERE vt.Estado = 'FACTURADA'
+                                         ) R
+	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
+                                  FROM T_Productos A
+								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
+								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
+
+                    string Where = "";
+
+                    Where = $"WHERE A.IdProducto = {IdProducto}";
+                    sql += Where;
 
                     dynamic resultado = await connection.QueryAsync(sql);
 
@@ -706,6 +834,15 @@ namespace sbx.repositories.Producto
 	                                     e.Cantidad
                                          FROM T_DetalleEntradasInventario e
                                          INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+									     SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
 
                                          UNION ALL
 
@@ -2202,6 +2339,281 @@ namespace sbx.repositories.Producto
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";
                     response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListCodigoBarras(int IdProducto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+		                           IdCodigo,
+		                           CodigoBarra,
+		                           IdProducto
+		                           FROM T_CodigosBarras ";
+
+                    string Where = "";
+
+                    if (IdProducto > 0)
+                    {
+                        Where = $"WHERE IdProducto = {IdProducto}";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListCodigoBarrasTexto(string CodigoBarras, int Id_Producto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT 
+		                           IdCodigo,
+		                           CodigoBarra,
+		                           IdProducto
+		                           FROM T_CodigosBarras 
+                                   WHERE CodigoBarra LIKE '{CodigoBarras}%' AND IdProducto = {Id_Producto}";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<bool> ListIdCodigoBarras(int IdProducto, string CodigoBarras)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+		                           IdCodigo,
+		                           CodigoBarra,
+		                           IdProducto
+		                           FROM T_CodigosBarras ";
+
+                    string Where = "";
+
+                    if (IdProducto > 0)
+                    {
+                        Where = $"WHERE IdProducto != {IdProducto} AND CodigoBarra = '{CodigoBarras}' ";
+                        sql += Where;
+                    }
+
+                    return connection.ExecuteScalar<int>(sql) > 0;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public async Task<bool> ListIdCodigoBarras2(int IdProducto, string CodigoBarras)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+		                           IdCodigo,
+		                           CodigoBarra,
+		                           IdProducto
+		                           FROM T_CodigosBarras ";
+
+                    string Where = "";
+
+                    if (IdProducto > 0)
+                    {
+                        Where = $"WHERE IdProducto = {IdProducto} AND CodigoBarra = '{CodigoBarras}' ";
+                        sql += Where;
+                    }
+
+                    return connection.ExecuteScalar<int>(sql) > 0;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListCodigoBarras2(string CodigoBarras)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = $@"SELECT 
+		                           IdCodigo,
+		                           CodigoBarra,
+		                           IdProducto
+		                           FROM T_CodigosBarras 
+                                   WHERE CodigoBarra = '{CodigoBarras}' ";
+
+                    dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> CreateCodigoBarras(string CodigoBarras, int IdProducto, int IdUser)
+        {
+            var response = new Response<dynamic>();
+
+            var resp = await ListIdCodigoBarras(IdProducto, CodigoBarras);
+
+            if (resp)
+            {
+                response.Flag = false;
+                response.Message = "Codigo de barras ya existe en otro producto";
+                response.Data = null;
+                return response;
+            }
+
+            var resp2 = await ListIdCodigoBarras2(IdProducto, CodigoBarras);
+
+            if (resp2)
+            {
+                response.Flag = false;
+                response.Message = "Codigo de barras ya existe";
+                response.Data = null;
+                return response;
+            }
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = "";
+
+                    DateTime FechaActual = DateTime.Now;
+                    FechaActual = Convert.ToDateTime(FechaActual.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sql = @$" INSERT INTO T_CodigosBarras (CodigoBarra,IdProducto)
+                                  VALUES(@CodigoBarras, @IdProducto)";
+
+                    var parametros = new
+                    {
+                        CodigoBarras,
+                        IdProducto
+                    };
+
+                    int FilasAfectadas = await connection.ExecuteAsync(sql, parametros);
+
+                    if (FilasAfectadas > 0)
+                    {
+                        response.Flag = true;
+                        response.Message = "Codigo de barras creado correctamente";
+                    }
+                    else
+                    {
+                        response.Flag = false;
+                        response.Message = "Se presento un error al intentar crear codigo de barras";
+                    }
+
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> EliminarCodigoBarras(string CodigoBarras, int IdProducto)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string Mensaje = "";
+
+                    string sql = $"DELETE FROM T_CodigosBarras WHERE IdProducto = {IdProducto} AND CodigoBarra = '{CodigoBarras}'";
+
+                    var rowsAffected = await connection.ExecuteAsync(sql);
+
+                    if (rowsAffected > 0)
+                    {
+                        Mensaje = "Se elimino correctamente el codigo de barras";
+                        response.Flag = true;
+                    }
+                    else
+                    {
+                        Mensaje = "Se presento un error al intentar eliminar el codigo de barras";
+                        response.Flag = false;
+                    }
+
+                    response.Message = Mensaje;
                     return response;
                 }
                 catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.Parametros;
+using sbx.core.Interfaces.Producto;
 
 namespace sbx
 {
@@ -8,12 +9,14 @@ namespace sbx
         private readonly IFechaVencimiento _IFechaVencimiento;
         private readonly IParametros _IParametros;
         private dynamic? _Permisos;
+        private readonly IProducto _IProducto;
 
-        public Stock(IFechaVencimiento fechaVencimiento, IParametros parametros)
+        public Stock(IFechaVencimiento fechaVencimiento, IParametros parametros, IProducto producto)
         {
             InitializeComponent();
             _IFechaVencimiento = fechaVencimiento;
             _IParametros = parametros;
+            _IProducto = producto;
         }
 
         public dynamic? Permisos
@@ -99,6 +102,39 @@ namespace sbx
                                 item.Nombre,
                                 item.FechaVencimiento,
                                 item.Stock);
+                    }
+                }
+                else
+                {
+                    if (cbx_campo_filtro.Text == "Codigo barras")
+                    {
+                        var respVerificaCB = await _IProducto.ListCodigoBarras2(txt_buscar.Text);
+
+                        if (respVerificaCB.Data != null)
+                        {
+                            if (respVerificaCB.Data.Count > 0)
+                            {
+                                int Idprd = respVerificaCB.Data[0].IdProducto;
+                                var respFn = await _IFechaVencimiento.BuscarStock(Idprd.ToString(), "Id", "Igual a");
+
+                                if (respFn.Data != null)
+                                {
+                                    if (respFn.Data.Count > 0)
+                                    {
+                                        foreach (var item in respFn.Data)
+                                        {
+                                            dtg_producto.Rows.Add(
+                                                    item.IdProducto,
+                                                    item.Sku,
+                                                    item.CodigoBarras,
+                                                    item.Nombre,
+                                                    item.FechaVencimiento,
+                                                    item.Stock);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
