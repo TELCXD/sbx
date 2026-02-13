@@ -672,11 +672,11 @@ namespace sbx.repositories.Producto
 
                     if (!string.IsNullOrEmpty(CodigoBarras))
                     {
-                        Where = $"WHERE A.CodigoBarras = '{CodigoBarras}'";
+                        Where = $"WHERE A.CodigoBarras = @CodigoBarras";
                         sql += Where;
                     }
 
-                    dynamic resultado = await connection.QueryAsync(sql);
+                    dynamic resultado = await connection.QueryAsync(sql, new { CodigoBarras });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";
@@ -2439,11 +2439,8 @@ namespace sbx.repositories.Producto
 
                     string Where = "";
 
-                    if (IdProducto > 0)
-                    {
-                        Where = $"WHERE IdProducto != {IdProducto} AND CodigoBarra = '{CodigoBarras}' ";
-                        sql += Where;
-                    }
+                    Where = $"WHERE IdProducto != {IdProducto} AND CodigoBarra = '{CodigoBarras}' ";
+                    sql += Where;
 
                     return connection.ExecuteScalar<int>(sql) > 0;
                 }
