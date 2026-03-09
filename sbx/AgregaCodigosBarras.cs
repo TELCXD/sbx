@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using sbx.core.Interfaces.Producto;
+using System.Windows.Forms;
 
 namespace sbx
 {
@@ -112,6 +113,14 @@ namespace sbx
         {
             if (!txt_codigo_barras.Text.IsNullOrEmpty()) 
             {
+                bool Exist = await _IProducto.ExisteCodigoBarras(txt_codigo_barras.Text.Trim(), Id_Producto);
+                
+                if (Exist == true)
+                {
+                        MessageBox.Show("El codigo de barras ya existe en otro producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                }
+
                 var resp = await _IProducto.CreateCodigoBarras(txt_codigo_barras.Text.Trim(), Id_Producto, Convert.ToInt32(_Permisos?[0]?.IdUser));
 
                 if (resp != null)

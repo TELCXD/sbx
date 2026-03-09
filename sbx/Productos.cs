@@ -135,6 +135,8 @@ namespace sbx
                 {
                     foreach (var item in resp.Data)
                     {
+                        decimal Margen = calculoPorcentajeMargen(Convert.ToDecimal(item.CostoBase), Convert.ToDecimal(item.PrecioBase));
+
                         dtg_producto.Rows.Add(
                             item.IdProducto,
                             item.Sku,
@@ -143,6 +145,7 @@ namespace sbx
                             item.Stock,
                             item.CostoBase.ToString("N2", new CultureInfo("es-CO")),
                             item.PrecioBase.ToString("N2", new CultureInfo("es-CO")),
+                            Margen.ToString("N2"),
                             item.NombreTributo,
                             item.Impuesto.ToString(new CultureInfo("es-CO")),
                             item.EsInventariable == true ? "Si" : "No",
@@ -170,6 +173,8 @@ namespace sbx
                                     {
                                         foreach (var item in respFn.Data)
                                         {
+                                            decimal Margen = calculoPorcentajeMargen(Convert.ToDecimal(item.CostoBase), Convert.ToDecimal(item.PrecioBase));
+
                                             dtg_producto.Rows.Add(
                                                 item.IdProducto,
                                                 item.Sku,
@@ -178,6 +183,7 @@ namespace sbx
                                                 item.Stock,
                                                 item.CostoBase.ToString("N2", new CultureInfo("es-CO")),
                                                 item.PrecioBase.ToString("N2", new CultureInfo("es-CO")),
+                                                Margen.ToString("N2"),
                                                 item.NombreTributo,
                                                 item.Impuesto.ToString(new CultureInfo("es-CO")),
                                                 item.EsInventariable == true ? "Si" : "No",
@@ -1186,6 +1192,37 @@ namespace sbx
                 _Kits.FormClosed += (s, args) => _Kits = null;
                 _Kits.ShowDialog();
             }
+        }
+
+        private decimal calculoPorcentajeMargen(decimal costo, decimal precioVenta)
+        {
+            decimal Margen = 0;
+
+            if (string.IsNullOrEmpty(costo.ToString().Trim()) || string.IsNullOrEmpty(precioVenta.ToString().Trim()))
+                return 0;
+
+            if (costo > 0 && precioVenta > 0)
+            {
+                Margen = calcula_Margen(costo, precioVenta);
+            }
+
+
+            return Margen;
+        }
+
+        private decimal calcula_Margen(decimal costo, decimal precioVenta)
+        {
+            decimal Margen = 0;
+            decimal ganancia = 0;
+
+            if (costo > 0 && precioVenta > 0)
+            {
+
+                ganancia = precioVenta - costo;
+                Margen = (ganancia / precioVenta) * 100;
+            }
+
+            return Margen;
         }
     }
 }

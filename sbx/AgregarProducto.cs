@@ -120,6 +120,7 @@ namespace sbx
                     txt_nombre.Text = resp.Data[0].Nombre;
                     txt_costo.Text = resp.Data[0].CostoBase.ToString("N2", new CultureInfo("es-CO"));
                     txt_precio.Text = resp.Data[0].PrecioBase.ToString("N2", new CultureInfo("es-CO"));
+                    calculoPorcentajeMargen();
                     cbx_es_inventariable.SelectedIndex = resp.Data[0].EsInventariable == true ? 0 : 1;
                     txt_impuesto.Text = resp.Data[0].Impuesto.ToString(new CultureInfo("es-CO"));
                     cbx_categoria.SelectedValue = resp.Data[0].IdCategoria;
@@ -341,6 +342,47 @@ namespace sbx
             _AgregaCodigosBarras.Id_Producto = Convert.ToInt32(txt_codigo_interno.Text);
             _AgregaCodigosBarras.FormClosed += (s, args) => _AgregaCodigosBarras = null;
             _AgregaCodigosBarras.ShowDialog();
+        }
+
+        private decimal calcula_Margen(decimal costo, decimal precioVenta)
+        {
+            decimal Margen = 0;
+            decimal ganancia = 0;
+
+            if (costo > 0 && precioVenta > 0)
+            {
+
+                ganancia = precioVenta - costo;
+                Margen = (ganancia / precioVenta) * 100;
+            }
+
+            return Margen;
+        }
+
+        private void txt_costo_KeyUp(object sender, KeyEventArgs e)
+        {
+            calculoPorcentajeMargen();
+        }
+
+        private void txt_precio_KeyUp(object sender, KeyEventArgs e)
+        {
+            calculoPorcentajeMargen();
+        }
+
+        private void calculoPorcentajeMargen()
+        {
+            decimal Porcentaje = 0;
+
+            if (string.IsNullOrEmpty(txt_costo.Text.Trim()) || string.IsNullOrEmpty(txt_precio.Text.Trim()))
+                return;
+
+            if (Convert.ToDecimal(txt_costo.Text) > 0 && Convert.ToDecimal(txt_precio.Text) > 0)
+            {
+                Porcentaje = calcula_Margen(Convert.ToDecimal(txt_costo.Text), Convert.ToDecimal(txt_precio.Text));
+            }
+
+
+            txt_margen.Text = Porcentaje.ToString("N2");
         }
     }
 }
