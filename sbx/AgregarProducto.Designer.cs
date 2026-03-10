@@ -461,7 +461,6 @@
         private TextBox txt_sku;
         private Panel panel3;
         private Button button1;
-        private TextBox textBox1;
         private Button btn_guardar;
         private Label label10;
         private TextBox txt_codigo_barras;
