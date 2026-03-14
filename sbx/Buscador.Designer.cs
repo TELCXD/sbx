@@ -53,7 +53,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1019, 65);
+            panel1.Size = new Size(1072, 65);
             panel1.TabIndex = 0;
             // 
             // cbx_tipo_filtro
@@ -62,7 +62,7 @@
             cbx_tipo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_tipo_filtro.FormattingEnabled = true;
             cbx_tipo_filtro.Items.AddRange(new object[] { "Inicia con", "Igual a", "Contiene" });
-            cbx_tipo_filtro.Location = new Point(702, 21);
+            cbx_tipo_filtro.Location = new Point(755, 21);
             cbx_tipo_filtro.Name = "cbx_tipo_filtro";
             cbx_tipo_filtro.Size = new Size(87, 23);
             cbx_tipo_filtro.TabIndex = 14;
@@ -72,7 +72,7 @@
             cbx_campo_filtro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cbx_campo_filtro.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_campo_filtro.FormattingEnabled = true;
-            cbx_campo_filtro.Location = new Point(582, 21);
+            cbx_campo_filtro.Location = new Point(635, 21);
             cbx_campo_filtro.Name = "cbx_campo_filtro";
             cbx_campo_filtro.Size = new Size(114, 23);
             cbx_campo_filtro.TabIndex = 13;
@@ -83,7 +83,7 @@
             btn_buscar.FlatAppearance.MouseDownBackColor = Color.Gray;
             btn_buscar.FlatStyle = FlatStyle.Flat;
             btn_buscar.Image = (Image)resources.GetObject("btn_buscar.Image");
-            btn_buscar.Location = new Point(983, 19);
+            btn_buscar.Location = new Point(1036, 19);
             btn_buscar.Name = "btn_buscar";
             btn_buscar.Size = new Size(26, 26);
             btn_buscar.TabIndex = 12;
@@ -94,7 +94,7 @@
             // txt_buscar
             // 
             txt_buscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txt_buscar.Location = new Point(795, 21);
+            txt_buscar.Location = new Point(848, 21);
             txt_buscar.Name = "txt_buscar";
             txt_buscar.Size = new Size(177, 23);
             txt_buscar.TabIndex = 11;
@@ -136,7 +136,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dtg_buscador.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dtg_buscador.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_buscador.Size = new Size(1019, 385);
+            dtg_buscador.Size = new Size(1072, 385);
             dtg_buscador.TabIndex = 3;
             dtg_buscador.DoubleClick += dtg_buscador_DoubleClick;
             // 
@@ -144,7 +144,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1019, 450);
+            ClientSize = new Size(1072, 450);
             Controls.Add(dtg_buscador);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");

@@ -63,6 +63,11 @@
             btn_agrega_codigos_barras = new Button();
             label12 = new Label();
             txt_margen = new TextBox();
+            rbEntrada = new RadioButton();
+            rd_Salida = new RadioButton();
+            txt_cantidad_E_S = new TextBox();
+            label13 = new Label();
+            txt_stock = new TextBox();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -386,12 +391,67 @@
             txt_margen.Size = new Size(303, 23);
             txt_margen.TabIndex = 70;
             // 
+            // rbEntrada
+            // 
+            rbEntrada.AutoSize = true;
+            rbEntrada.Location = new Point(12, 461);
+            rbEntrada.Name = "rbEntrada";
+            rbEntrada.Size = new Size(65, 19);
+            rbEntrada.TabIndex = 72;
+            rbEntrada.TabStop = true;
+            rbEntrada.Text = "Entrada";
+            rbEntrada.UseVisualStyleBackColor = true;
+            // 
+            // rd_Salida
+            // 
+            rd_Salida.AutoSize = true;
+            rd_Salida.Location = new Point(105, 461);
+            rd_Salida.Name = "rd_Salida";
+            rd_Salida.Size = new Size(56, 19);
+            rd_Salida.TabIndex = 73;
+            rd_Salida.TabStop = true;
+            rd_Salida.Text = "Salida";
+            rd_Salida.UseVisualStyleBackColor = true;
+            // 
+            // txt_cantidad_E_S
+            // 
+            txt_cantidad_E_S.Location = new Point(12, 486);
+            txt_cantidad_E_S.MaxLength = 13;
+            txt_cantidad_E_S.Name = "txt_cantidad_E_S";
+            txt_cantidad_E_S.Size = new Size(303, 23);
+            txt_cantidad_E_S.TabIndex = 74;
+            txt_cantidad_E_S.KeyPress += txt_cantidad_E_S_KeyPress;
+            txt_cantidad_E_S.Validating += txt_cantidad_E_S_Validating;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(361, 466);
+            label13.Name = "label13";
+            label13.Size = new Size(36, 15);
+            label13.TabIndex = 76;
+            label13.Text = "Stock";
+            // 
+            // txt_stock
+            // 
+            txt_stock.Enabled = false;
+            txt_stock.Location = new Point(361, 486);
+            txt_stock.MaxLength = 13;
+            txt_stock.Name = "txt_stock";
+            txt_stock.Size = new Size(360, 23);
+            txt_stock.TabIndex = 75;
+            // 
             // AgregarProducto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
-            ClientSize = new Size(769, 454);
+            ClientSize = new Size(769, 521);
+            Controls.Add(label13);
+            Controls.Add(txt_stock);
+            Controls.Add(txt_cantidad_E_S);
+            Controls.Add(rd_Salida);
+            Controls.Add(rbEntrada);
             Controls.Add(label12);
             Controls.Add(txt_margen);
             Controls.Add(btn_agrega_codigos_barras);
@@ -425,7 +485,6 @@
             Controls.Add(txt_sku);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(785, 493);
             MinimumSize = new Size(785, 493);
             Name = "AgregarProducto";
             StartPosition = FormStartPosition.CenterScreen;
@@ -473,5 +532,10 @@
         private Button btn_agrega_codigos_barras;
         private Label label12;
         private TextBox txt_margen;
+        private RadioButton rd_Salida;
+        private RadioButton rbEntrada;
+        private TextBox txt_cantidad_E_S;
+        private Label label13;
+        private TextBox txt_stock;
     }
 }
