@@ -334,7 +334,7 @@
             // 
             cbx_Buscarenventapor.DropDownStyle = ComboBoxStyle.DropDownList;
             cbx_Buscarenventapor.FormattingEnabled = true;
-            cbx_Buscarenventapor.Items.AddRange(new object[] { "Id", "Sku", "Codigo barras" });
+            cbx_Buscarenventapor.Items.AddRange(new object[] { "Id", "Sku", "Codigo barras", "Id, Sku, CodBar" });
             cbx_Buscarenventapor.Location = new Point(253, 128);
             cbx_Buscarenventapor.Name = "cbx_Buscarenventapor";
             cbx_Buscarenventapor.Size = new Size(245, 25);

@@ -36,5 +36,6 @@ namespace sbx.core.Interfaces.Producto
         Task<bool> ListIdCodigoBarras2(int IdProducto, string CodigoBarras);
         Task<Response<dynamic>> ListCodigoBarras2(string CodigoBarras);
         Task<Response<dynamic>> ListCodigoBarras3(int IdProducto);
+        Task<Response<dynamic>> ListByIdSkuCodBar(string Clave);
     }
 }

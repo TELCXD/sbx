@@ -86,7 +86,8 @@ namespace sbx.repositories.Producto
                         sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
                                   CostoBase,PrecioBase,EsInventariable,Impuesto,IdCategoria,IdMarca,IdUnidadMedida,Idtribute,TipoProducto,CreationDate, IdUserAction)
                                   VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
-                                  @CostoBase,@PrecioBase,@EsInventariable,@Impuesto,@IdCategoria,@IdMarca,@IdUnidadMedida,@Idtribute,@TipoProducto,@CreationDate,@IdUserAction)";
+                                  @CostoBase,@PrecioBase,@EsInventariable,@Impuesto,@IdCategoria,@IdMarca,@IdUnidadMedida,@Idtribute,@TipoProducto,@CreationDate,@IdUserAction); 
+                                  SELECT CAST(SCOPE_IDENTITY() as int); ";
 
                         var parametros = new
                         {
@@ -106,12 +107,14 @@ namespace sbx.repositories.Producto
                             IdUserAction = IdUser
                         };
 
-                        int FilasAfectadas = await connection.ExecuteAsync(sql, parametros);
+                        //int FilasAfectadas = await connection.ExecuteAsync(sql, parametros);
+                        int IdProductoCreado = await connection.ExecuteScalarAsync<int>(sql, parametros);
 
-                        if (FilasAfectadas > 0)
+                        if (IdProductoCreado > 0)
                         {
                             response.Flag = true;
                             response.Message = "Producto creado correctamente";
+                            response.Data = IdProductoCreado;
                         }
                         else
                         {
@@ -379,7 +382,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock                                 
                                   FROM T_Productos A
@@ -557,7 +560,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
                                   FROM T_Productos A
@@ -659,7 +662,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
                                   FROM T_Productos A
@@ -761,7 +764,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
                                   FROM T_Productos A
@@ -776,6 +779,111 @@ namespace sbx.repositories.Producto
                     sql += Where;
 
                     dynamic resultado = await connection.QueryAsync(sql);
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<dynamic>> ListByIdSkuCodBar(string Clave)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<dynamic>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT 
+                                   A.IdProducto
+                                  ,A.Sku
+                                  ,A.CodigoBarras
+                                  ,A.Nombre
+                                  ,A.CostoBase
+                                  ,A.PrecioBase
+                                  ,A.EsInventariable
+                                  ,A.Impuesto
+                                  ,A.IdCategoria
+								  ,B.Nombre NombreCategoria
+                                  ,A.IdMarca
+								  ,C.Nombre NombreMarca
+                                  ,A.UpdateDate
+                                  ,A.IdUnidadMedida
+								  ,D.Nombre NombreUnidadMedida
+                                  ,A.Idtribute
+                                  ,E.Nombre NombreTributo
+                                  ,A.CreationDate
+                                  ,A.UpdateDate
+                                  ,A.IdUserAction
+                                  ,ISNULL((SELECT 
+                                    SUM(CASE WHEN 
+                                    R.TipoMovimiento = 'Salida' OR R.TipoMovimiento = 'Salida por Venta' 
+                                    THEN (R.Cantidad * -1) ELSE R.Cantidad END ) Stock
+                                    FROM
+                                        (
+                                        SELECT
+	                                     e.IdProducto, 
+                                         'Entrada' AS TipoMovimiento,
+	                                     e.Cantidad
+                                         FROM T_DetalleEntradasInventario e
+                                         INNER JOIN T_EntradasInventario ei ON ei.IdEntradasInventario = e.IdEntradasInventario
+
+                                         UNION ALL
+
+									     SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
+                                         SELECT
+	                                     s.IdProducto, 
+                                         'Salida' AS TipoMovimiento,
+	                                     s.Cantidad
+                                         FROM T_DetalleSalidasInventario s
+                                         INNER JOIN T_SalidasInventario si ON si.IdSalidasInventario = s.IdSalidasInventario
+
+	                                     UNION ALL
+
+	                                     SELECT
+	                                     dvt.IdProducto,
+	                                     'Salida por Venta' AS TipoMovimiento,
+	                                     dvt.Cantidad
+	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
+										 --WHERE vt.Estado = 'FACTURADA'
+                                         ) R
+	                                     WHERE R.IdProducto = A.IdProducto),0) Stock  
+                                  FROM T_Productos A
+								  INNER JOIN T_Categorias B ON A.IdCategoria = B.IdCategoria
+								  INNER JOIN T_Marcas C ON A.IdMarca = C.IdMarca
+								  INNER JOIN T_UnidadMedida D ON A.IdUnidadMedida = D.IdUnidadMedida
+                                  INNER JOIN T_Tributes E ON A.Idtribute = E.Idtribute ";
+
+                    string Where = "";
+
+                    if (!string.IsNullOrEmpty(Clave))
+                    {
+                        Where = $@"WHERE 
+                                    CAST(A.IdProducto AS VARCHAR) = @Clave
+                                    OR A.Sku = @Clave
+                                    OR A.CodigoBarras = @Clave; ";
+                        sql += Where;
+                    }
+
+                    dynamic resultado = await connection.QueryAsync(sql, new { Clave });
 
                     response.Flag = true;
                     response.Message = "Proceso realizado correctamente";
@@ -860,7 +968,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock,
                                          E.IdProductoPadre
@@ -1018,6 +1126,15 @@ namespace sbx.repositories.Producto
                                          UNION ALL
 
                                          SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
+                                         SELECT
 	                                     s.IdProducto, 
                                          'Salida' AS TipoMovimiento,
 	                                     s.Cantidad
@@ -1031,7 +1148,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock,
                                          E.IdProductoHijo,
@@ -1183,6 +1300,15 @@ namespace sbx.repositories.Producto
                                          UNION ALL
 
                                          SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
+                                         SELECT
 	                                     s.IdProducto, 
                                          'Salida' AS TipoMovimiento,
 	                                     s.Cantidad
@@ -1196,7 +1322,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock                                 
                                   FROM T_Productos A
@@ -1352,6 +1478,15 @@ namespace sbx.repositories.Producto
                                          UNION ALL
 
                                          SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
+                                         SELECT
 	                                     s.IdProducto, 
                                          'Salida' AS TipoMovimiento,
 	                                     s.Cantidad
@@ -1365,7 +1500,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock                                 
                                   FROM T_Productos A
@@ -1521,6 +1656,15 @@ namespace sbx.repositories.Producto
                                          UNION ALL
 
                                          SELECT
+	                                     dnc.IdProducto, 
+                                         'Entrada por Nota credito' AS TipoMovimiento,
+	                                     dnc.Cantidad
+                                         FROM T_NotaCreditoDetalle dnc
+                                         INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                         UNION ALL
+
+                                         SELECT
 	                                     s.IdProducto, 
                                          'Salida' AS TipoMovimiento,
 	                                     s.Cantidad
@@ -1534,7 +1678,7 @@ namespace sbx.repositories.Producto
 	                                     'Salida por Venta' AS TipoMovimiento,
 	                                     dvt.Cantidad
 	                                     FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-										 WHERE vt.Estado = 'FACTURADA'
+										 --WHERE vt.Estado = 'FACTURADA'
                                          ) R
 	                                     WHERE R.IdProducto = A.IdProducto),0) Stock                                 
                                   FROM T_Productos A
@@ -2014,6 +2158,15 @@ namespace sbx.repositories.Producto
 
 		                               UNION ALL
 
+                                       SELECT
+	                                   dnc.IdProducto, 
+                                       'Entrada por Nota credito' AS TipoMovimiento,
+	                                   dnc.Cantidad
+                                       FROM T_NotaCreditoDetalle dnc
+                                       INNER JOIN T_NotaCredito nc ON nc.IdNotaCredito = dnc.IdNotaCredito
+
+                                       UNION ALL
+
 		                               SELECT
 		                               s.IdProducto, 
 		                               'Salida' AS TipoMovimiento,
@@ -2028,7 +2181,7 @@ namespace sbx.repositories.Producto
 		                               'Salida por Venta' AS TipoMovimiento,
 		                               dvt.Cantidad
 		                               FROM T_Ventas vt INNER JOIN  T_DetalleVenta dvt ON vt.IdVenta = dvt.IdVenta 
-							                             WHERE vt.Estado = 'FACTURADA'
+							           --WHERE vt.Estado = 'FACTURADA'
 		                               ) R
 		                               WHERE R.IdProducto = B.IdProducto),0) Stock  
                               FROM T_Producto_grupo_detalle A
