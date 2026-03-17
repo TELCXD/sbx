@@ -469,10 +469,16 @@ namespace sbx.core.Entities.Venta
             sb.AppendLine($"Fecha apertura: {caja.FechaHoraApertura.ToString("yyyy-MM-dd")}");
             sb.AppendLine($"Hora apertura: {caja.FechaHoraApertura.ToString("HH:mm:ss")}");
             sb.AppendLine($"Fecha cierre: {caja.FechaHoraCierre.ToString("yyyy-MM-dd")}");
-            sb.AppendLine($"Hora cierre: {caja.FechaHoraCierre.ToString("HH:mm:ss")}");
+            sb.AppendLine($"Hora cierre: {caja.FechaHoraCierre.ToString("HH:mm:ss")}");            
+            sb.AppendLine($"Pagos en efectivo: {caja.PagosEnEfectivo.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos Nequi: {caja.PagosEnNequi.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos DaviPlata: {caja.PagosEnDaviPlata.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos Bancolombia QR: {caja.PagosEnBancolombiaQR.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos Transferencia: {caja.PagosEnTransferencia.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos Tarjeta Credito: {caja.PagosEnTarjetaCredito.ToString("N0", new CultureInfo("es-CO"))}");
+            sb.AppendLine($"Pagos Tarjeta Debito: {caja.PagosEnTarjetaDebito.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine($"Monto inicial: {caja.MontoInicialDeclarado.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine($"Total ventas: {caja.VentasTotales.ToString("N0", new CultureInfo("es-CO"))}");
-            sb.AppendLine($"Pagos en efectivo: {caja.PagosEnEfectivo.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine($"Monto final: {caja.MontoFinalDeclarado.ToString("N0", new CultureInfo("es-CO"))}");
             sb.AppendLine($"Diferencia: {caja.Diferencia.ToString("N0", new CultureInfo("es-CO"))}");
 

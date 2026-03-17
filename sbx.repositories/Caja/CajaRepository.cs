@@ -37,6 +37,12 @@ namespace sbx.repositories.Caja
                                   MontoFinalDeclarado = @MontoFinalDeclarado,
                                   VentasTotales = @VentasTotales,
                                   PagosEnEfectivo = @PagosEnEfectivo,
+                                  PagosEnNequi = @PagosEnNequi,
+                                  PagosEnDaviPlata = @PagosEnDaviPlata,
+                                  PagosEnBancolombiaQR = @PagosEnBancolombiaQR,
+                                  PagosEnTransferencia = @PagosEnTransferencia,
+                                  PagosEnTarjetaCredito = @PagosEnTarjetaCredito,
+                                  PagosEnTarjetaDebito = @PagosEnTarjetaDebito,
                                   Diferencia = @Diferencia,
                                   Estado = @Estado
                                   WHERE IdApertura_Cierre_caja = @IdApertura_Cierre_caja";
@@ -48,6 +54,12 @@ namespace sbx.repositories.Caja
                             cajaEntitie.MontoFinalDeclarado,
                             cajaEntitie.VentasTotales,
                             cajaEntitie.PagosEnEfectivo,
+                            cajaEntitie.PagosEnNequi,
+                            cajaEntitie.PagosEnDaviPlata,
+                            cajaEntitie.PagosEnBancolombiaQR,
+                            cajaEntitie.PagosEnTransferencia,
+                            cajaEntitie.PagosEnTarjetaCredito,
+                            cajaEntitie.PagosEnTarjetaDebito,
                             cajaEntitie.Diferencia,
                             cajaEntitie.Estado
                         };
@@ -320,6 +332,13 @@ namespace sbx.repositories.Caja
                                    ISNULL(A.MontoFinalDeclarado,0) MontoFinalDeclarado,
                                    ISNULL(A.VentasTotales,0) VentasTotales,
                                    ISNULL(A.PagosEnEfectivo,0) PagosEnEfectivo,
+                                   ISNULL(A.PagosEnEfectivo,0) PagosEnEfectivo,
+                                   ISNULL(A.PagosEnNequi,0) PagosEnNequi,
+                                   ISNULL(A.PagosEnDaviPlata,0) PagosEnDaviPlata,
+                                   ISNULL(A.PagosEnBancolombiaQR,0) PagosEnBancolombiaQR,
+                                   ISNULL(A.PagosEnTransferencia,0) PagosEnTransferencia,
+                                   ISNULL(A.PagosEnTarjetaCredito,0) PagosEnTarjetaCredito,
+                                   ISNULL(A.PagosEnTarjetaDebito,0) PagosEnTarjetaDebito,
                                    ISNULL(A.Diferencia,0) Diferencia,
                                    A.Estado
                                    FROM T_AperturaCierreCaja A
