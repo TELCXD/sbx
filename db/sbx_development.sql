@@ -1978,6 +1978,12 @@ VentasTotales DECIMAL(10,2) NULL,
 PagosEnEfectivo  DECIMAL(10,2) NULL,
 Diferencia DECIMAL(10,2) NULL,
 Estado VARCHAR(20) NOT NULL, -- ABIERTA, CERRADA
+PagosEnNequi decimal(10, 2) NULL,
+PagosEnDaviPlata decimal(10, 2) NULL,
+PagosEnBancolombiaQR decimal(10, 2) NULL,
+PagosEnTransferencia decimal(10, 2) NULL,
+PagosEnTarjetaCredito decimal(10, 2) NULL,
+PagosEnTarjetaDebito decimal(10, 2) NULL,
 FOREIGN KEY(IdUserAction) REFERENCES T_User(IdUser)
 )
 GO
