@@ -977,10 +977,10 @@
             // 
             tabPage5.Controls.Add(dtg_permisos);
             tabPage5.Controls.Add(panel4);
-            tabPage5.Location = new Point(4, 24);
+            tabPage5.Location = new Point(4, 26);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new Padding(3);
-            tabPage5.Size = new Size(1060, 488);
+            tabPage5.Size = new Size(1060, 486);
             tabPage5.TabIndex = 2;
             tabPage5.Text = "Permisos";
             tabPage5.UseVisualStyleBackColor = true;
@@ -1022,7 +1022,7 @@
             dtg_permisos.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dtg_permisos.RowHeadersWidth = 51;
             dtg_permisos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dtg_permisos.Size = new Size(1054, 427);
+            dtg_permisos.Size = new Size(1054, 425);
             dtg_permisos.TabIndex = 140;
             // 
             // cl_idUserMenu

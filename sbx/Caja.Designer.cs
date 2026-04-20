@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Caja));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Caja));
             panel1 = new Panel();
+            btn_imprimir = new Button();
             label2 = new Label();
             label1 = new Label();
             dtp_F_f = new DateTimePicker();
@@ -53,11 +54,9 @@
             cl_fecha_cierre = new DataGridViewTextBoxColumn();
             cl_montoFinal = new DataGridViewTextBoxColumn();
             cl_ventasTotales = new DataGridViewTextBoxColumn();
-            cl_pago_en_efectivo = new DataGridViewTextBoxColumn();
             cl_diferencia = new DataGridViewTextBoxColumn();
             cl_estado = new DataGridViewTextBoxColumn();
             errorProvider1 = new ErrorProvider(components);
-            btn_imprimir = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_aperturas_cierres_caja).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -83,6 +82,21 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1211, 56);
             panel1.TabIndex = 0;
+            // 
+            // btn_imprimir
+            // 
+            btn_imprimir.Enabled = false;
+            btn_imprimir.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_imprimir.FlatStyle = FlatStyle.Flat;
+            btn_imprimir.Image = (Image)resources.GetObject("btn_imprimir.Image");
+            btn_imprimir.Location = new Point(217, 4);
+            btn_imprimir.Name = "btn_imprimir";
+            btn_imprimir.Size = new Size(101, 45);
+            btn_imprimir.TabIndex = 41;
+            btn_imprimir.Text = "Imprimir";
+            btn_imprimir.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_imprimir.UseVisualStyleBackColor = true;
+            btn_imprimir.Click += btn_imprimir_Click;
             // 
             // label2
             // 
@@ -207,7 +221,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dtg_aperturas_cierres_caja.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dtg_aperturas_cierres_caja.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtg_aperturas_cierres_caja.Columns.AddRange(new DataGridViewColumn[] { cl_IdApertura_Cierre_caja, cl_IdUser, cl_usuario, cl_fecha_apertura, cl_monto_inicial, cl_fecha_cierre, cl_montoFinal, cl_ventasTotales, cl_pago_en_efectivo, cl_diferencia, cl_estado });
+            dtg_aperturas_cierres_caja.Columns.AddRange(new DataGridViewColumn[] { cl_IdApertura_Cierre_caja, cl_IdUser, cl_usuario, cl_fecha_apertura, cl_monto_inicial, cl_fecha_cierre, cl_montoFinal, cl_ventasTotales, cl_diferencia, cl_estado });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -231,6 +245,7 @@
             dtg_aperturas_cierres_caja.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_aperturas_cierres_caja.Size = new Size(1211, 443);
             dtg_aperturas_cierres_caja.TabIndex = 3;
+            dtg_aperturas_cierres_caja.DoubleClick += dtg_aperturas_cierres_caja_DoubleClick;
             // 
             // cl_IdApertura_Cierre_caja
             // 
@@ -258,42 +273,35 @@
             cl_fecha_apertura.HeaderText = "Fecha Apertura";
             cl_fecha_apertura.Name = "cl_fecha_apertura";
             cl_fecha_apertura.ReadOnly = true;
-            cl_fecha_apertura.Width = 135;
+            cl_fecha_apertura.Width = 140;
             // 
             // cl_monto_inicial
             // 
             cl_monto_inicial.HeaderText = "Monto inicial";
             cl_monto_inicial.Name = "cl_monto_inicial";
             cl_monto_inicial.ReadOnly = true;
-            cl_monto_inicial.Width = 120;
+            cl_monto_inicial.Width = 150;
             // 
             // cl_fecha_cierre
             // 
             cl_fecha_cierre.HeaderText = "Fecha cierre";
             cl_fecha_cierre.Name = "cl_fecha_cierre";
             cl_fecha_cierre.ReadOnly = true;
-            cl_fecha_cierre.Width = 135;
+            cl_fecha_cierre.Width = 140;
             // 
             // cl_montoFinal
             // 
             cl_montoFinal.HeaderText = "Monto final";
             cl_montoFinal.Name = "cl_montoFinal";
             cl_montoFinal.ReadOnly = true;
-            cl_montoFinal.Width = 130;
+            cl_montoFinal.Width = 150;
             // 
             // cl_ventasTotales
             // 
             cl_ventasTotales.HeaderText = "Total ventas";
             cl_ventasTotales.Name = "cl_ventasTotales";
             cl_ventasTotales.ReadOnly = true;
-            cl_ventasTotales.Width = 130;
-            // 
-            // cl_pago_en_efectivo
-            // 
-            cl_pago_en_efectivo.HeaderText = "Pagos en Efectivo";
-            cl_pago_en_efectivo.Name = "cl_pago_en_efectivo";
-            cl_pago_en_efectivo.ReadOnly = true;
-            cl_pago_en_efectivo.Width = 150;
+            cl_ventasTotales.Width = 150;
             // 
             // cl_diferencia
             // 
@@ -311,21 +319,6 @@
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
-            // 
-            // btn_imprimir
-            // 
-            btn_imprimir.Enabled = false;
-            btn_imprimir.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_imprimir.FlatStyle = FlatStyle.Flat;
-            btn_imprimir.Image = (Image)resources.GetObject("btn_imprimir.Image");
-            btn_imprimir.Location = new Point(217, 4);
-            btn_imprimir.Name = "btn_imprimir";
-            btn_imprimir.Size = new Size(101, 45);
-            btn_imprimir.TabIndex = 41;
-            btn_imprimir.Text = "Imprimir";
-            btn_imprimir.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_imprimir.UseVisualStyleBackColor = true;
-            btn_imprimir.Click += btn_imprimir_Click;
             // 
             // Caja
             // 
@@ -364,6 +357,7 @@
         private Label label1;
         private DataGridView dtg_aperturas_cierres_caja;
         private ErrorProvider errorProvider1;
+        private Button btn_imprimir;
         private DataGridViewTextBoxColumn cl_IdApertura_Cierre_caja;
         private DataGridViewTextBoxColumn cl_IdUser;
         private DataGridViewTextBoxColumn cl_usuario;
@@ -372,9 +366,7 @@
         private DataGridViewTextBoxColumn cl_fecha_cierre;
         private DataGridViewTextBoxColumn cl_montoFinal;
         private DataGridViewTextBoxColumn cl_ventasTotales;
-        private DataGridViewTextBoxColumn cl_pago_en_efectivo;
         private DataGridViewTextBoxColumn cl_diferencia;
         private DataGridViewTextBoxColumn cl_estado;
-        private Button btn_imprimir;
     }
 }

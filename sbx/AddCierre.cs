@@ -135,55 +135,58 @@ namespace sbx
                                 if (DataVentas.Data.Count > 0)
                                 {
                                     decimal Subtotal = 0;
-                                    decimal cantidadTotal = 0;
-                                    decimal DescuentoLinea;
                                     decimal Descuento = 0;
-                                    decimal Impuesto = 0;
-                                    decimal ImpuestoLinea;
+                                    decimal DescuentoLinea = 0;
                                     decimal SubtotalLinea;
                                     decimal Total = 0;
-                                    decimal diferencia;                                   
+                                    decimal diferencia;
+                                    decimal pagosEfectivo = 0;
+                                    decimal pagosNequi = 0;
+                                    decimal pagosDaviPlata = 0;
+                                    decimal pagosBancolombiaQR = 0;
+                                    decimal pagosTransferencia = 0;
+                                    decimal pagosTarjetaCredito = 0;
+                                    decimal pagosTarjetaDebito = 0;
 
                                     foreach (var item in DataVentas.Data)
                                     {
-                                        cantidadTotal += Convert.ToDecimal(item.Cantidad);
                                         Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                                         SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                                         Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
                                         DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                                        if (item.NombreTributo == "INC Bolsas")
+
+                                        switch (item.Nombre)
                                         {
-                                            Impuesto += Convert.ToDecimal(item.Impuesto);
-                                            ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
-                                        }
-                                        else
-                                        {
-                                            Impuesto += CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                                            ImpuestoLinea = CalcularIva(SubtotalLinea - DescuentoLinea, Convert.ToDecimal(item.Impuesto));
-                                        }       
+                                            case "Efectivo":
+                                                pagosEfectivo += (SubtotalLinea - DescuentoLinea);
+                                                break;
+                                            case "Nequi":
+                                                pagosNequi += (SubtotalLinea - DescuentoLinea);
+                                                break;
+                                            case "DaviPlata":
+                                                pagosDaviPlata += (SubtotalLinea - DescuentoLinea);
+                                                break;
+                                            case "Bancolombia QR":
+                                                pagosBancolombiaQR += (SubtotalLinea - DescuentoLinea);
+                                                break;
+                                            case "Transferencia":
+                                                pagosTransferencia += (SubtotalLinea - DescuentoLinea);
+                                                break;
+                                            case "Tarjeta Crédito":
+                                                pagosTarjetaCredito += (SubtotalLinea - DescuentoLinea);
+                                                break;
+                                            case "Tarjeta Débito":
+                                                pagosTarjetaDebito += (SubtotalLinea - DescuentoLinea);
+                                                break;
+                                            default:
+                                                break;
+                                        }                                    
                                     }
 
                                     MontoInicial = Convert.ToDecimal(estadoCaja.Data[0].MontoInicialDeclarado, new CultureInfo("es-CO"));
                                     Total += (Subtotal - Descuento);
-                                    //Total += (Subtotal - Descuento) + Impuesto;
-
-                                    decimal Valorpagos = 0;
-
-                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser), Convert.ToDateTime(estadoCaja.Data[0].FechaHoraApertura));
-                                    if (respPagosEfectivo.Data != null)
-                                    {
-                                        if (respPagosEfectivo.Data.Count > 0)
-                                        {
-                                            foreach (var pago in respPagosEfectivo.Data)
-                                            {
-                                                Valorpagos += Convert.ToDecimal(pago.ValorPago);
-                                            }                                          
-                                        }
-                                    }
 
                                     diferencia = (Total + MontoInicial) - Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO"));
-
-                                    diferencia = diferencia - Valorpagos;
 
                                     Cierre = new CajaEntitie
                                     {
@@ -191,7 +194,13 @@ namespace sbx
                                         MontoFinalDeclarado = Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")),
                                         IdUserAction = Convert.ToInt32(_Permisos?[0]?.IdUser),
                                         VentasTotales = Total,
-                                        PagosEnEfectivo = Valorpagos,
+                                        PagosEnEfectivo = pagosEfectivo,
+                                        PagosEnNequi = pagosNequi,
+                                        PagosEnDaviPlata = pagosDaviPlata,
+                                        PagosEnBancolombiaQR = pagosBancolombiaQR,
+                                        PagosEnTransferencia = pagosTransferencia,
+                                        PagosEnTarjetaCredito = pagosTarjetaCredito,
+                                        PagosEnTarjetaDebito = pagosTarjetaDebito,
                                         Diferencia = diferencia,
                                         Estado = "CERRADA"
                                     };
@@ -200,28 +209,20 @@ namespace sbx
                                 {
                                     MontoInicial = Convert.ToDecimal(estadoCaja.Data[0].MontoInicialDeclarado, new CultureInfo("es-CO"));
 
-                                    decimal Valorpagos = 0;
-
-                                    var respPagosEfectivo = await _IPagosEfectivo.List(Convert.ToInt32(_Permisos?[0]?.IdUser), Convert.ToDateTime(estadoCaja.Data[0].FechaHoraApertura));
-                                    if (respPagosEfectivo.Data != null)
-                                    {
-                                        if (respPagosEfectivo.Data.Count > 0)
-                                        {
-                                            foreach (var pago in respPagosEfectivo.Data)
-                                            {
-                                                Valorpagos += Convert.ToDecimal(pago.ValorPago);
-                                            }
-                                        }
-                                    }
-
                                     Cierre = new CajaEntitie
                                     {
                                         IdApertura_Cierre_caja = Convert.ToInt32(estadoCaja.Data[0].IdApertura_Cierre_caja),
                                         MontoFinalDeclarado = Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")),
                                         IdUserAction = Convert.ToInt32(_Permisos?[0]?.IdUser),
                                         VentasTotales = 0,
-                                        PagosEnEfectivo = Valorpagos,
-                                        Diferencia = MontoInicial - Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")) - Valorpagos,
+                                        PagosEnEfectivo = 0,
+                                        PagosEnNequi = 0,
+                                        PagosEnDaviPlata = 0,
+                                        PagosEnBancolombiaQR = 0,
+                                        PagosEnTransferencia = 0,
+                                        PagosEnTarjetaCredito = 0,
+                                        PagosEnTarjetaDebito = 0,
+                                        Diferencia = MontoInicial - Convert.ToDecimal(txt_monto_final.Text, new CultureInfo("es-CO")),
                                         Estado = "CERRADA"
                                     };
                                 }
@@ -336,7 +337,13 @@ namespace sbx
                     cajaEntitie.MontoInicialDeclarado = DataCaja.Data[0].MontoInicialDeclarado;
                     cajaEntitie.VentasTotales = DataCaja.Data[0].VentasTotales;
                     cajaEntitie.PagosEnEfectivo = DataCaja.Data[0].PagosEnEfectivo;
-                    cajaEntitie.MontoFinalDeclarado = DataCaja.Data[0].MontoFinalDeclarado;
+                    cajaEntitie.PagosEnNequi = DataCaja.Data[0].PagosEnNequi ?? 0;
+                    cajaEntitie.PagosEnDaviPlata = DataCaja.Data[0].PagosEnDaviPlata ?? 0;
+                    cajaEntitie.PagosEnBancolombiaQR = DataCaja.Data[0].PagosEnBancolombiaQR ?? 0;
+                    cajaEntitie.PagosEnTransferencia = DataCaja.Data[0].PagosEnTransferencia ?? 0;
+                    cajaEntitie.PagosEnTarjetaCredito = DataCaja.Data[0].PagosEnTarjetaCredito ?? 0;
+                    cajaEntitie.PagosEnTarjetaDebito = DataCaja.Data[0].PagosEnTarjetaDebito ?? 0;
+                    cajaEntitie.MontoFinalDeclarado = DataCaja.Data[0].MontoFinalDeclarado ?? 0;
                     cajaEntitie.Diferencia = DataCaja.Data[0].Diferencia;
                     cajaEntitie.Estado = DataCaja.Data[0].Estado;
 

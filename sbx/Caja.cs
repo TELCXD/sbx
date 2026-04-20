@@ -22,6 +22,7 @@ namespace sbx
         string BuscarPor = "";
         string ModoRedondeo = "N/A";
         string MultiploRendondeo = "50";
+        private DetalleCaja? _DetalleCaja;
         public Caja(ICaja caja, IServiceProvider serviceProvider, IParametros iParametros)
         {
             InitializeComponent();
@@ -131,7 +132,6 @@ namespace sbx
                             item.FechaHoraCierre?.ToString(),
                             (item.MontoFinalDeclarado ?? 0).ToString("N2", new CultureInfo("es-CO")),
                             (item.VentasTotales ?? 0).ToString("N2", new CultureInfo("es-CO")),
-                            (item.PagosEnEfectivo ?? 0).ToString("N2", new CultureInfo("es-CO")),
                             (item.Diferencia ?? 0).ToString("N2", new CultureInfo("es-CO")),
                             item.Estado?.ToString());
                     }
@@ -188,20 +188,27 @@ namespace sbx
 
                             if (DataCaja.Data != null)
                             {
-                                if (DataCaja.Data.Count > 0) 
+                                if (DataCaja.Data.Count > 0)
                                 {
                                     CajaEntitie cajaEntitie = new CajaEntitie();
 
                                     cajaEntitie.IdApertura_Cierre_caja = DataCaja.Data[0].IdApertura_Cierre_caja;
                                     cajaEntitie.Usuario = DataCaja.Data[0].Usuario;
-                                    cajaEntitie.FechaHoraApertura = DataCaja.Data[0].FechaHoraApertura;   
-                                    if(DataCaja.Data[0].FechaHoraCierre != null)
+                                    cajaEntitie.FechaHoraApertura = DataCaja.Data[0].FechaHoraApertura;
+                                    if (DataCaja.Data[0].FechaHoraCierre != null)
                                     {
                                         cajaEntitie.FechaHoraCierre = DataCaja.Data[0].FechaHoraCierre;
                                     }
                                     cajaEntitie.MontoInicialDeclarado = DataCaja.Data[0].MontoInicialDeclarado;
                                     cajaEntitie.VentasTotales = DataCaja.Data[0].VentasTotales;
                                     cajaEntitie.PagosEnEfectivo = DataCaja.Data[0].PagosEnEfectivo;
+                                    cajaEntitie.PagosEnEfectivo = DataCaja.Data[0].PagosEnEfectivo;
+                                    cajaEntitie.PagosEnNequi = DataCaja.Data[0].PagosEnNequi;
+                                    cajaEntitie.PagosEnDaviPlata = DataCaja.Data[0].PagosEnDaviPlata;
+                                    cajaEntitie.PagosEnBancolombiaQR = DataCaja.Data[0].PagosEnBancolombiaQR;
+                                    cajaEntitie.PagosEnTransferencia = DataCaja.Data[0].PagosEnTransferencia;
+                                    cajaEntitie.PagosEnTarjetaCredito = DataCaja.Data[0].PagosEnTarjetaCredito;
+                                    cajaEntitie.PagosEnTarjetaDebito = DataCaja.Data[0].PagosEnTarjetaDebito;
                                     cajaEntitie.MontoFinalDeclarado = DataCaja.Data[0].MontoFinalDeclarado;
                                     cajaEntitie.Diferencia = DataCaja.Data[0].Diferencia;
                                     cajaEntitie.Estado = DataCaja.Data[0].Estado;
@@ -274,6 +281,27 @@ namespace sbx
             else
             {
                 MessageBox.Show("Debe seleccinar una fila", "Sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void dtg_aperturas_cierres_caja_DoubleClick(object sender, EventArgs e)
+        {
+            if (dtg_aperturas_cierres_caja.Rows.Count > 0)
+            {
+                if (dtg_aperturas_cierres_caja.SelectedRows.Count > 0)
+                {
+                    if (_Permisos != null)
+                    {
+                        _DetalleCaja = _serviceProvider.GetRequiredService<DetalleCaja>();
+                        _DetalleCaja.Permisos = _Permisos;
+                        foreach (DataGridViewRow rows in dtg_aperturas_cierres_caja.SelectedRows)
+                        {
+                            _DetalleCaja.IdApertura_Cierre_caja = Convert.ToInt32(rows.Cells["cl_IdApertura_Cierre_caja"].Value);
+                        }
+                        _DetalleCaja.FormClosed += (s, args) => _DetalleCaja = null;
+                        _DetalleCaja.ShowDialog();
+                    }
+                }
             }
         }
     }

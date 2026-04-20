@@ -101,6 +101,15 @@ namespace sbx
                             {
                                 IdApertura_Cierre_caja = 0,
                                 MontoInicialDeclarado = Convert.ToDecimal(txt_monto_inicial.Text, new CultureInfo("es-CO")),
+                                VentasTotales = 0,
+                                PagosEnEfectivo = 0,
+                                PagosEnNequi = 0,
+                                PagosEnDaviPlata = 0,
+                                PagosEnBancolombiaQR = 0,
+                                PagosEnTransferencia = 0,
+                                PagosEnTarjetaCredito = 0,
+                                PagosEnTarjetaDebito = 0,
+                                Diferencia = 0,
                                 IdUserAction = Convert.ToInt32(_Permisos?[0]?.IdUser),
                                 Estado = "ABIERTA"
                             };
@@ -113,6 +122,15 @@ namespace sbx
                             IdApertura_Cierre_caja = 0,
                             MontoInicialDeclarado = Convert.ToDecimal(txt_monto_inicial.Text, new CultureInfo("es-CO")),
                             IdUserAction = Convert.ToInt32(_Permisos?[0]?.IdUser),
+                            VentasTotales = 0,
+                            PagosEnEfectivo = 0,
+                            PagosEnNequi = 0,
+                            PagosEnDaviPlata = 0,
+                            PagosEnBancolombiaQR = 0,
+                            PagosEnTransferencia = 0,
+                            PagosEnTarjetaCredito = 0,
+                            PagosEnTarjetaDebito = 0,
+                            Diferencia = 0,
                             Estado = "ABIERTA"
                         };
                     }

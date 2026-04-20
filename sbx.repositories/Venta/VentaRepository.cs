@@ -947,8 +947,13 @@ namespace sbx.repositories.Venta
                                     B.NombreTributo,
                                     B.Impuesto,
                                     B.CreationDate,
-                                    B.IdUserAction 
-                                    FROM T_Ventas A INNER JOIN T_DetalleVenta B ON B.IdVenta = A.IdVenta 
+                                    B.IdUserAction,
+                                    A.IdMetodoPago,
+									C.Codigo,
+									C.Nombre 
+                                    FROM T_Ventas A 
+                                    INNER JOIN T_DetalleVenta B ON B.IdVenta = A.IdVenta 
+                                    INNER JOIN T_MetodoPago C ON C.IdMetodoPago = A.IdMetodoPago 
                                     WHERE 
                                     A.IdUserAction = @IdUser 
                                     AND 
