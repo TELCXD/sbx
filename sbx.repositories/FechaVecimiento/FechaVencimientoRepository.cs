@@ -414,7 +414,7 @@ namespace sbx.repositories.FechaVecimiento
 	                                P.Nombre  
 									) AS S
 
-									WHERE S.Stock > 0
+									--WHERE S.Stock > 0
 
 									ORDER BY S.FechaVencimiento, S.IdProducto ";
 
