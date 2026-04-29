@@ -3719,6 +3719,13 @@ namespace sbx
                                             {
                                                 decimal Total = CalcularTotal(item.PrecioUnitario, 0, item.Descuento);
 
+                                                //Preguntar fecha de vencimiento si aplica
+                                                await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                                if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                                DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                                 dtg_producto.Rows.Add(
                                                      item.IdProducto,
                                                      item.Sku,
@@ -3731,7 +3738,8 @@ namespace sbx
                                                      Total.ToString("N2", new CultureInfo("es-CO")),
                                                      item.UnidadMedida,
                                                      item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
-                                                     item.NombreTributo);
+                                                     item.NombreTributo,
+                                                     FechaVSeleccionada);
                                             }
                                             else
                                             {
@@ -3757,6 +3765,13 @@ namespace sbx
                                         {
                                             decimal Total = CalcularTotal(item.PrecioUnitario, 0, item.Descuento);
 
+                                            //Preguntar fecha de vencimiento si aplica
+                                            await ValidarFechaVencimiento(Convert.ToInt32(DataProducto.Data[0].IdProducto));
+
+                                            if (FechaVSeleccionada == new DateTime(1800, 1, 1)) { return; }
+
+                                            DataProducto.Data[0].FechaVencimiento = FechaVSeleccionada;
+
                                             dtg_producto.Rows.Add(
                                                  item.IdProducto,
                                                  item.Sku,
@@ -3769,7 +3784,8 @@ namespace sbx
                                                  Total.ToString("N2", new CultureInfo("es-CO")),
                                                  item.UnidadMedida,
                                                  item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
-                                                 item.NombreTributo);
+                                                 item.NombreTributo,
+                                                 FechaVSeleccionada);
                                         }
                                         else
                                         {
