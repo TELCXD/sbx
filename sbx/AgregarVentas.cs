@@ -1172,6 +1172,16 @@ namespace sbx
                             {
                                 var DataProducto = await _IProducto.ListByIdSkuCodBar(txt_buscar_producto.Text);
 
+                                if (DataProducto.Data!.Count == 0)
+                                    DataProducto = await _IProducto.ListCodigoBarras2(txt_buscar_producto.Text);
+
+                                if (DataProducto.Data!.Count > 0)
+                                {
+                                    int Clave = DataProducto.Data[0].IdProducto;
+                                    var DataProducto2 = await _IProducto.ListByIdSkuCodBar(Clave.ToString());
+                                    DataProducto = DataProducto2;
+                                }
+
                                 if (DataProducto.Data != null)
                                 {
                                     if (DataProducto.Data.Count > 0)
