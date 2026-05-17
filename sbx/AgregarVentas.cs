@@ -1172,6 +1172,16 @@ namespace sbx
                             {
                                 var DataProducto = await _IProducto.ListByIdSkuCodBar(txt_buscar_producto.Text);
 
+                                if (DataProducto.Data!.Count == 0)
+                                    DataProducto = await _IProducto.ListCodigoBarras2(txt_buscar_producto.Text);
+
+                                if (DataProducto.Data!.Count > 0)
+                                {
+                                    int Clave = DataProducto.Data[0].IdProducto;
+                                    var DataProducto2 = await _IProducto.ListByIdSkuCodBar(Clave.ToString());
+                                    DataProducto = DataProducto2;
+                                }
+
                                 if (DataProducto.Data != null)
                                 {
                                     if (DataProducto.Data.Count > 0)
@@ -1997,11 +2007,27 @@ namespace sbx
 
         private void dtg_producto_KeyPress(object sender, KeyPressEventArgs e)
         {
+            TextBox txt = (TextBox)sender;
+
             if (char.IsControl(e.KeyChar))
                 return;
 
             if (char.IsDigit(e.KeyChar))
+            {
+                // Si ya existe un separador decimal, validar que no haya más de 2 decimales
+                int indexDecimal = txt.Text.IndexOf(decimalSeparator);
+                if (indexDecimal >= 0)
+                {
+                    string decimales = txt.Text.Substring(indexDecimal + 1);
+                    if (txt.SelectionStart > indexDecimal && decimales.Length >= 2)
+                    {
+                        e.Handled = true; // Bloquear si ya hay dos decimales
+                        return;
+                    }
+                }
                 return;
+            }
+                
 
             if (e.KeyChar == decimalSeparator && !((TextBox)sender).Text.Contains(decimalSeparator))
                 return;
