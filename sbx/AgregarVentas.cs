@@ -2007,11 +2007,27 @@ namespace sbx
 
         private void dtg_producto_KeyPress(object sender, KeyPressEventArgs e)
         {
+            TextBox txt = (TextBox)sender;
+
             if (char.IsControl(e.KeyChar))
                 return;
 
             if (char.IsDigit(e.KeyChar))
+            {
+                // Si ya existe un separador decimal, validar que no haya más de 2 decimales
+                int indexDecimal = txt.Text.IndexOf(decimalSeparator);
+                if (indexDecimal >= 0)
+                {
+                    string decimales = txt.Text.Substring(indexDecimal + 1);
+                    if (txt.SelectionStart > indexDecimal && decimales.Length >= 2)
+                    {
+                        e.Handled = true; // Bloquear si ya hay dos decimales
+                        return;
+                    }
+                }
                 return;
+            }
+                
 
             if (e.KeyChar == decimalSeparator && !((TextBox)sender).Text.Contains(decimalSeparator))
                 return;
