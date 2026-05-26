@@ -1,0 +1,969 @@
+@page "/ventas/agregar"
+@attribute [Authorize]
+@rendermode InteractiveServer
+@using System.Text.Json
+@using System.Text.Json.Serialization
+
+@inject IListaPrecios ListaPreciosService
+@inject IVendedor VendedorService
+@inject IMedioPago MedioPagoService
+@inject IBanco BancoService
+@inject IProducto ProductoService
+@inject ICliente ClienteService
+@inject IPrecioCliente PrecioClienteService
+@inject IPrecioProducto PrecioProductoService
+@inject IPromocionProducto PromocionProductoService
+@inject IRangoNumeracion RangoNumeracionService
+@inject IVenta VentaService
+@inject IParametros ParametrosService
+@inject IFechaVencimiento FechaVencimientoService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+
+<PageTitle>Nueva Venta</PageTitle>
+
+<div class="container-fluid">
+    <div class="card toolbar-card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-end g-2">
+                <div class="col-auto">
+                    <label class="form-label mb-0 small">Lista precio</label>
+                    <select class="form-select form-select-sm" @bind="selectedIdListaPrecio" disabled="@(lineItems.Count > 0)">
+                        @foreach (var lp in priceLists)
+                        {
+                            <option value="@lp.Key">@lp.Value</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label mb-0 small">Vendedor</label>
+                    <select class="form-select form-select-sm" @bind="selectedIdVendedor">
+                        @foreach (var v in sellers)
+                        {
+                            <option value="@v.Key">@v.Value</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-3">
+                        <label class="form-label mb-0 small">Buscar cliente (Numero documento)</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" @bind="clienteSearchText" @onkeydown="OnClienteKeyDown" placeholder="Digite documento del cliente" />
+                        <button class="btn btn-outline-secondary" @onclick="BuscarCliente" title="Buscar cliente">
+                            <span class="bi bi-search"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-auto d-flex align-items-end">
+                    <span class="text-muted small">
+                        <strong>@clienteNombre</strong>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card toolbar-card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-end g-2">
+                <div class="col-auto">
+                    <label class="form-label mb-0 small">Buscar por</label>
+                    <select class="form-select form-select-sm" @bind="searchMode">
+                        <option value="Id, Sku, CodBar">Id, Sku, CodBar</option>
+                        <option value="Id">Id</option>
+                        <option value="Sku">Sku</option>
+                        <option value="Codigo barras">Codigo barras</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <label class="form-label mb-0 small">Buscar producto</label>
+                    <input type="text" class="form-control form-control-sm" @bind="productoSearchText" @onkeydown="OnProductoKeyDown" placeholder="Digite codigo o nombre del producto" />
+                </div>
+                <div class="col-auto d-flex gap-1">
+                    <button class="btn btn-outline-danger btn-sm" @onclick="QuitarProductoSeleccionado" disabled="@(selectedLineIndex < 0)" title="Quitar producto seleccionado">Quitar</button>
+                    <button class="btn btn-outline-warning btn-sm" @onclick="CancelarVenta">Cancelar</button>
+                </div>
+                @if (!string.IsNullOrEmpty(productoError))
+                {
+                    <div class="col-auto">
+                        <span class="text-danger small">@productoError</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-scroll-container" style="max-height: 400px;">
+                        <table class="table table-sm table-striped mb-0">
+                            <thead class="table-dark" style="position: sticky; top: 0; z-index: 1;">
+                                <tr>
+                                    <th style="width:50px">Id</th>
+                                    <th style="width:80px">SKU</th>
+                                    <th style="width:80px">Cod. B</th>
+                                    <th>Nombre</th>
+                                    <th style="width:100px">Precio</th>
+                                    <th style="width:80px">Cant</th>
+                                    <th style="width:80px">Desc %</th>
+                                    <th style="width:80px">Impuesto</th>
+                                    <th style="width:100px">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < lineItems.Count; i++)
+                                {
+                                    var item = lineItems[i];
+                                    <tr class="@(selectedLineIndex == i ? "table-active" : "")" @onclick="() => SeleccionarLinea(i)">
+                                        <td>@item.IdProducto</td>
+                                        <td>@item.Sku</td>
+                                        <td>@item.CodigoBarras</td>
+                                        <td>@item.NombreProducto</td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm text-end" value="@item.PrecioUnitarioStr"
+                                                   @onchange='(e) => ActualizarPrecio(i, (e.Value?.ToString() ?? "0"))' />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm text-end" value="@item.CantidadStr"
+                                                   @onchange='(e) => ActualizarCantidad(i, (e.Value?.ToString() ?? "0"))' />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm text-end" value="@item.DescuentoStr"
+                                                   @onchange='(e) => ActualizarDescuento(i, (e.Value?.ToString() ?? "0"))' />
+                                        </td>
+                                        <td class="text-end">@item.Impuesto.ToString("N2")</td>
+                                        <td class="text-end fw-bold">@item.TotalLinea.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">Resumen</h6>
+                    <div class="d-flex justify-content-between">
+                        <span>Cant. productos:</span>
+                        <span class="fw-bold">@totalCantidad.ToString("N0")</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Subtotal:</span>
+                        <span class="fw-bold">@totalSubtotal.ToString("N2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Descuento:</span>
+                        <span class="fw-bold text-danger">-@totalDescuento.ToString("N2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Impuesto:</span>
+                        <span class="fw-bold">@totalImpuesto.ToString("N2")</span>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between fs-5">
+                        <span>Total:</span>
+                        <span class="fw-bold text-primary">@totalGeneral.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Pago</h6>
+                    @if (totalGeneral <= 0)
+                    {
+                        <div class="alert alert-warning py-1 small mb-2">El total es menor o igual a cero, no es posible realizar el pago</div>
+                    }
+                    <div class="mb-2">
+                        <label class="form-label small">Metodo de pago</label>
+                        <select class="form-select form-select-sm" @bind="selectedIdMetodoPago" @bind:after="CambioMetodoPago" disabled="@(totalGeneral <= 0)">
+                            <option value="0">Seleccione</option>
+                            @foreach (var mp in paymentMethods)
+                            {
+                                <option value="@mp.Key">@mp.Value</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Valor recibido</label>
+                        <input type="text" class="form-control form-control-sm text-end" value="@valorRecibido" disabled="@(pagoFijo || totalGeneral <= 0)" @oninput='(e) => { valorRecibido = e.Value?.ToString() ?? "0"; ValidarPago(); }' @onkeydown="OnValorRecibidoKeyDown" placeholder="0" />
+                    </div>
+                    @if (mostrarBanco)
+                    {
+                        <div class="mb-2">
+                            <label class="form-label small">Banco</label>
+                            <select class="form-select form-select-sm" @bind="selectedIdBanco" disabled="@(totalGeneral <= 0)">
+                                @foreach (var b in banks)
+                                {
+                                    <option value="@b.Key">@b.Value</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    @if (mostrarReferencia)
+                    {
+                        <div class="mb-2">
+                            <label class="form-label small">Referencia</label>
+                            <input type="text" class="form-control form-control-sm" @bind="referenciaPago" disabled="@(totalGeneral <= 0)" />
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(pagoError))
+                    {
+                        <div class="alert alert-danger py-1 small mb-1">@pagoError</div>
+                    }
+                    <div class="d-flex justify-content-between">
+                        <span>Cambio:</span>
+                        <span class="fw-bold @(cambio < 0 ? "text-danger" : "text-success")">@cambio.ToString("N2")</span>
+                    </div>
+                    <hr />
+                    <button class="btn btn-success w-100" @onclick="GuardarVenta" disabled="@(lineItems.Count == 0 || isLoading || totalGeneral <= 0)">
+                        @(isLoading ? "Guardando..." : "Completar Venta")
+                    </button>
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-2 py-1 small">@errorMessage</div>
+                    }
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert alert-success mt-2 py-1 small">@successMessage</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<KeyValuePair<int, string>> priceLists = new();
+    private List<KeyValuePair<int, string>> sellers = new();
+    private List<KeyValuePair<int, string>> paymentMethods = new();
+    private List<KeyValuePair<int, string>> banks = new();
+
+    private int selectedIdListaPrecio;
+    private int selectedIdVendedor;
+    private int selectedIdMetodoPago;
+    private int selectedIdBanco;
+
+    private string clienteSearchText = "222222222222";
+    private string clienteNombre = "";
+    private int clienteId;
+
+    private string searchMode = "Id, Sku, CodBar";
+    private string productoSearchText = "";
+    private string productoError = "";
+
+    private List<LineItem> lineItems = new();
+    private int selectedLineIndex = -1;
+
+    private decimal totalCantidad;
+    private decimal totalSubtotal;
+    private decimal totalDescuento;
+    private decimal totalImpuesto;
+    private decimal totalGeneral;
+
+    private string valorRecibido = "0";
+    private string referenciaPago = "";
+    private bool mostrarBanco;
+    private bool mostrarReferencia;
+    private bool pagoFijo;
+    private decimal cambio;
+
+    private bool isLoading;
+    private string errorMessage = "";
+    private string successMessage = "";
+    private string pagoError = "";
+
+    private int userId;
+    private string? metodoPagoNombre;
+    private int IdTipoCliente;
+    private decimal descuentoMaximo;
+
+    private CultureInfo cultura = new("es-CO");
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatosIniciales();
+        await BuscarCliente();
+    }
+
+    private async Task CargarDatosIniciales()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        userId = int.Parse(authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+        var listaPrecios = await ListaPreciosService.List(0);
+        if (listaPrecios?.Data != null)
+        {
+            string json = JsonSerializer.Serialize((object)listaPrecios.Data);
+            var items = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json) ?? new List<Dictionary<string, object>>();
+            priceLists = items.Select(x => new KeyValuePair<int, string>(GetInt(x, "IdListaPrecio"), GetString(x, "NombreLista"))).ToList();
+            if (priceLists.Count > 0)
+                selectedIdListaPrecio = priceLists[0].Key;
+        }
+
+        var vendedores = await VendedorService.ListActivos(0);
+        if (vendedores?.Data != null)
+        {
+            string json = JsonSerializer.Serialize((object)vendedores.Data);
+            var items = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json) ?? new List<Dictionary<string, object>>();
+            sellers = items.Select(x => new KeyValuePair<int, string>(GetInt(x, "IdVendedor"), GetString(x, "Nombre"))).ToList();
+            if (sellers.Count > 0)
+                selectedIdVendedor = sellers[0].Key;
+        }
+
+        var mediosPago = await MedioPagoService.List(0);
+        if (mediosPago?.Data != null)
+        {
+            string json = JsonSerializer.Serialize((object)mediosPago.Data);
+            var items = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json) ?? new List<Dictionary<string, object>>();
+            paymentMethods = items.Select(x => new KeyValuePair<int, string>(GetInt(x, "IdMetodoPago"), GetString(x, "Nombre"))).ToList();
+            if (paymentMethods.Count > 0)
+            {
+                selectedIdMetodoPago = paymentMethods[0].Key;
+                metodoPagoNombre = paymentMethods[0].Value;
+                mostrarBanco = metodoPagoNombre != "Efectivo";
+                mostrarReferencia = metodoPagoNombre != "Efectivo";
+            }
+        }
+
+        var bancos = await BancoService.List();
+        if (bancos?.Data != null)
+        {
+            string json = JsonSerializer.Serialize((object)bancos.Data);
+            var items = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json) ?? new List<Dictionary<string, object>>();
+            banks = items.Select(x => new KeyValuePair<int, string>(GetInt(x, "IdBanco"), GetString(x, "Nombre"))).ToList();
+            if (banks.Count > 0)
+                selectedIdBanco = banks[0].Key;
+        }
+
+        var respParams = await ParametrosService.List("DescuentoMaximo");
+        if (respParams?.Data != null)
+        {
+            string json = JsonSerializer.Serialize((object)respParams.Data);
+            var items = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json) ?? new List<Dictionary<string, object>>();
+            if (items.Count > 0)
+                decimal.TryParse(GetString(items[0], "Value"), NumberStyles.Any, cultura, out descuentoMaximo);
+        }
+    }
+
+    private async Task OnClienteKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await BuscarCliente();
+    }
+
+    private async Task BuscarCliente()
+    {
+        if (string.IsNullOrWhiteSpace(clienteSearchText))
+        {
+            clienteNombre = "";
+            clienteId = 0;
+            return;
+        }
+
+        var resp = await ClienteService.ListNumDoc(clienteSearchText.Trim());
+        if (resp?.Data != null && resp.Data.Count > 0)
+        {
+            string json = JsonSerializer.Serialize((object)resp.Data[0]);
+            var item = JsonSerializer.Deserialize<Dictionary<string, object>>(json) ?? new Dictionary<string, object>();
+            clienteId = GetInt(item, "IdCliente");
+            clienteNombre = GetString(item, "NombreRazonSocial");
+            IdTipoCliente = GetInt(item, "IdTipoCliente");
+        }
+        else
+        {
+            clienteNombre = "Cliente no encontrado";
+            clienteId = 0;
+        }
+    }
+
+    private async Task OnProductoKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await AgregarProducto();
+    }
+
+    private async Task AgregarProducto()
+    {
+        productoError = "";
+
+        if (string.IsNullOrWhiteSpace(productoSearchText))
+            return;
+
+        if (clienteId == 0)
+        {
+            productoError = "Seleccione un cliente primero";
+            return;
+        }
+
+        isLoading = true;
+
+        try
+        {
+            Response<dynamic>? respProducto = null;
+
+            if (searchMode == "Id, Sku, CodBar")
+            {
+                respProducto = await ProductoService.ListByIdSkuCodBar(productoSearchText.Trim());
+            }
+            else
+            {
+                respProducto = await ProductoService.Buscar(productoSearchText.Trim(), "", searchMode == "Codigo barras" ? "Codigo barras" : searchMode);
+            }
+
+            if (respProducto?.Data != null && respProducto.Data.Count > 0)
+            {
+                string json = JsonSerializer.Serialize((object)respProducto.Data[0]);
+                var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json) ?? new Dictionary<string, object>();
+
+                int idProducto = GetInt(data, "IdProducto");
+                string sku = GetString(data, "Sku");
+                string codigoBarras = GetString(data, "CodigoBarras");
+                string nombre = GetString(data, "Nombre");
+                string unidadMedida = GetString(data, "NombreUnidadMedida");
+                string nombreTributo = GetString(data, "NombreTributo");
+                decimal precioBase = GetDecimal(data, "PrecioBase");
+                decimal costoBase = GetDecimal(data, "CostoBase");
+                decimal impuesto = GetDecimal(data, "Impuesto");
+                decimal cantidadF = 1;
+
+                // Check expiration date
+                var respVence = await FechaVencimientoService.BuscarxIdProducto(idProducto);
+                DateTime fechaVencimiento = DateTime.MinValue;
+                if (respVence?.Data != null && respVence.Data.Count > 0)
+                {
+                    string jsonV = JsonSerializer.Serialize((object)respVence.Data[0]);
+                    var dataV = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonV) ?? new Dictionary<string, object>();
+                    string fechaStr = GetString(dataV, "FechaVencimiento");
+                    if (!string.IsNullOrEmpty(fechaStr))
+                        DateTime.TryParse(fechaStr, out fechaVencimiento);
+                }
+
+                // Identify price
+                decimal precioUnitario;
+                decimal descuentoAplicado = 0;
+
+                // 1. Client special price
+                if (clienteId > 0)
+                {
+                    var respPrecioCliente = await PrecioClienteService.PrecioClientePersonalizado(idProducto, clienteId);
+                    if (respPrecioCliente?.Data != null && respPrecioCliente.Data.Count > 0)
+                    {
+                        string jsonP = JsonSerializer.Serialize((object)respPrecioCliente.Data[0]);
+                        var dataP = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonP) ?? new Dictionary<string, object>();
+                        precioUnitario = GetDecimal(dataP, "PrecioEspecial");
+                        goto addProduct;
+                    }
+                }
+
+                // 2. Price list by client type
+                if (selectedIdListaPrecio > 1)
+                {
+                    var respPrecioLista = await PrecioProductoService.PrecioListaPreciosTipoCliente(idProducto, selectedIdListaPrecio, IdTipoCliente);
+                    if (respPrecioLista?.Data != null && respPrecioLista.Data.Count > 0)
+                    {
+                        string jsonP = JsonSerializer.Serialize((object)respPrecioLista.Data[0]);
+                        var dataP = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonP) ?? new Dictionary<string, object>();
+                        precioUnitario = GetDecimal(dataP, "Precio");
+                        goto addProduct;
+                    }
+                }
+
+                // 3. Active promotion
+                var respPromo = await PromocionProductoService.PromocionActiva(idProducto);
+                if (respPromo?.Data != null && respPromo.Data.Count > 0)
+                {
+                    string jsonP = JsonSerializer.Serialize((object)respPromo.Data[0]);
+                    var dataP = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonP) ?? new Dictionary<string, object>();
+                    decimal porcentaje = GetDecimal(dataP, "Porcentaje");
+                    precioUnitario = precioBase;
+                    descuentoAplicado = porcentaje;
+                    goto addProduct;
+                }
+
+                // 4. Default: base price
+                precioUnitario = precioBase;
+
+                addProduct:
+                var lineItem = new LineItem
+                {
+                    IdProducto = idProducto,
+                    Sku = sku,
+                    CodigoBarras = codigoBarras,
+                    NombreProducto = nombre,
+                    UnidadMedida = unidadMedida,
+                    NombreTributo = nombreTributo,
+                    PrecioUnitario = precioUnitario,
+                    CostoUnitario = costoBase,
+                    Cantidad = cantidadF,
+                    Descuento = descuentoAplicado,
+                    Impuesto = impuesto,
+                    FechaVencimiento = fechaVencimiento
+                };
+
+                lineItems.Add(lineItem);
+                productoSearchText = "";
+                CalcularTotales();
+            }
+            else
+            {
+                productoError = "Producto no encontrado";
+            }
+        }
+        catch (Exception ex)
+        {
+            productoError = "Error al buscar producto: " + ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void SeleccionarLinea(int index)
+    {
+        selectedLineIndex = selectedLineIndex == index ? -1 : index;
+    }
+
+    private void QuitarProductoSeleccionado()
+    {
+        if (selectedLineIndex >= 0 && selectedLineIndex < lineItems.Count)
+        {
+            lineItems.RemoveAt(selectedLineIndex);
+            selectedLineIndex = -1;
+            CalcularTotales();
+        }
+    }
+
+    private void CancelarVenta()
+    {
+        lineItems.Clear();
+        selectedLineIndex = -1;
+        clienteSearchText = "";
+        clienteNombre = "";
+        clienteId = 0;
+        IdTipoCliente = 0;
+        selectedIdListaPrecio = 0;
+        productoSearchText = "";
+        productoError = "";
+        valorRecibido = "0";
+        referenciaPago = "";
+        cambio = 0;
+        errorMessage = "";
+        successMessage = "";
+        CalcularTotales();
+    }
+
+    private void ActualizarPrecio(int index, string value)
+    {
+        if (index >= 0 && index < lineItems.Count)
+        {
+            if (decimal.TryParse(value, NumberStyles.Any, cultura, out var precio))
+            {
+                lineItems[index].PrecioUnitario = precio;
+                CalcularTotales();
+            }
+        }
+    }
+
+    private void ActualizarCantidad(int index, string value)
+    {
+        if (index >= 0 && index < lineItems.Count)
+        {
+            if (decimal.TryParse(value, NumberStyles.Any, cultura, out var cant) && cant > 0)
+            {
+                lineItems[index].Cantidad = cant;
+                CalcularTotales();
+            }
+        }
+    }
+
+    private void ActualizarDescuento(int index, string value)
+    {
+        if (index >= 0 && index < lineItems.Count)
+        {
+            if (decimal.TryParse(value, NumberStyles.Any, cultura, out var desc))
+            {
+                if (descuentoMaximo > 0 && desc > descuentoMaximo)
+                    desc = descuentoMaximo;
+                lineItems[index].Descuento = desc;
+                CalcularTotales();
+            }
+        }
+    }
+
+    private void CalcularTotales()
+    {
+        totalCantidad = 0;
+        totalSubtotal = 0;
+        totalDescuento = 0;
+        totalImpuesto = 0;
+
+        foreach (var item in lineItems)
+        {
+            totalCantidad += item.Cantidad;
+            totalSubtotal += item.PrecioUnitario * item.Cantidad;
+            decimal descLinea = item.PrecioUnitario * item.Cantidad * item.Descuento / 100m;
+            totalDescuento += descLinea;
+
+            if (item.NombreTributo == "INC Bolsas")
+            {
+                totalImpuesto += item.Impuesto;
+            }
+            else
+            {
+                totalImpuesto += (item.PrecioUnitario * item.Cantidad - descLinea) * item.Impuesto / 100m;
+            }
+        }
+
+        totalGeneral = totalSubtotal - totalDescuento;
+
+        if (totalGeneral <= 0)
+        {
+            selectedIdMetodoPago = 0;
+            valorRecibido = "0";
+            cambio = 0;
+            referenciaPago = "";
+            mostrarBanco = false;
+            mostrarReferencia = false;
+            pagoFijo = false;
+        }
+
+        CalcularCambio();
+    }
+
+    private void CambioMetodoPago()
+    {
+        if (selectedIdMetodoPago > 0)
+        {
+            var mp = paymentMethods.FirstOrDefault(x => x.Key == selectedIdMetodoPago);
+            metodoPagoNombre = mp.Value;
+        }
+        else
+        {
+            metodoPagoNombre = null;
+            mostrarBanco = false;
+            mostrarReferencia = false;
+            valorRecibido = "";
+            cambio = 0;
+            return;
+        }
+
+        if (metodoPagoNombre == "Transferencia" || metodoPagoNombre == "Tarjeta Cr\u00e9dito" || metodoPagoNombre == "Tarjeta D\u00e9bito")
+        {
+            mostrarBanco = true;
+            mostrarReferencia = true;
+            if (banks.Count > 1) selectedIdBanco = banks[1].Key;
+            valorRecibido = totalGeneral.ToString("N2", cultura);
+            pagoFijo = true;
+            cambio = 0;
+        }
+        else if (metodoPagoNombre == "Nequi" || metodoPagoNombre == "DaviPlata" || metodoPagoNombre == "Bancolombia QR")
+        {
+            mostrarBanco = false;
+            mostrarReferencia = true;
+            if (banks.Count > 0) selectedIdBanco = banks[0].Key;
+            valorRecibido = totalGeneral.ToString("N2", cultura);
+            pagoFijo = true;
+            cambio = 0;
+        }
+        else if (metodoPagoNombre == "Efectivo")
+        {
+            mostrarBanco = false;
+            mostrarReferencia = false;
+            referenciaPago = "";
+            if (banks.Count > 0) selectedIdBanco = banks[0].Key;
+            valorRecibido = "";
+            pagoFijo = false;
+            cambio = 0;
+        }
+        else
+        {
+            mostrarBanco = false;
+            mostrarReferencia = false;
+            valorRecibido = totalGeneral.ToString("N2", cultura);
+            pagoFijo = true;
+            cambio = 0;
+        }
+
+        CalcularCambio();
+    }
+
+    private void ValidarPago()
+    {
+        pagoError = "";
+
+        if (totalGeneral <= 0)
+            return;
+
+        if (selectedIdMetodoPago == 0)
+        {
+            pagoError = "Seleccione un m\u00e9todo de pago";
+        }
+
+        CalcularCambio();
+
+        if (!string.IsNullOrEmpty(valorRecibido) && (!decimal.TryParse(valorRecibido, NumberStyles.Any, cultura, out var vRecibido) || vRecibido <= 0))
+        {
+            pagoError = "Ingrese un valor v\u00e1lido recibido";
+        }
+
+        if (metodoPagoNombre == "Efectivo" && cambio < 0)
+        {
+            pagoError = "El valor recibido es menor al total";
+        }
+    }
+
+    private void CalcularCambio()
+    {
+        if (decimal.TryParse(valorRecibido, NumberStyles.Any, cultura, out var recibido))
+        {
+            cambio = recibido - totalGeneral;
+        }
+        else
+        {
+            cambio = 0;
+        }
+    }
+
+    private async Task OnValorRecibidoKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await GuardarVenta();
+    }
+
+    private async Task GuardarVenta()
+    {
+        errorMessage = "";
+        successMessage = "";
+
+        if (lineItems.Count == 0)
+        {
+            errorMessage = "Agregue productos a la venta";
+            return;
+        }
+
+        if (totalGeneral <= 0)
+        {
+            errorMessage = "El total es menor o igual a cero, no se puede completar la venta";
+            return;
+        }
+
+        if (!decimal.TryParse(valorRecibido, NumberStyles.Any, cultura, out var vRecibido) || vRecibido <= 0)
+        {
+            errorMessage = "Ingrese un valor valido recibido";
+            return;
+        }
+
+        if (selectedIdMetodoPago == 0)
+        {
+            errorMessage = "Seleccione un metodo de pago";
+            return;
+        }
+
+        if (metodoPagoNombre == "Efectivo" && cambio < 0)
+        {
+            errorMessage = "El valor recibido es menor al total";
+            return;
+        }
+
+        isLoading = true;
+
+        try
+        {
+            var respDoc = await RangoNumeracionService.IdentificaDocumento(21);
+            if (respDoc?.Data == null || respDoc.Data.Count == 0)
+            {
+                errorMessage = "No se encontro numeracion para factura de venta. Verifique configuracion";
+                isLoading = false;
+                return;
+            }
+
+            string jsonDoc = JsonSerializer.Serialize((object)respDoc.Data[0]);
+            var docData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonDoc) ?? new Dictionary<string, object>();
+
+            long numDesde = GetLong(docData, "NumeroDesde");
+            long numHasta = GetLong(docData, "NumeroHasta");
+            long actual = GetLong(docData, "ConsecutivoActual");
+
+            if (actual > numHasta)
+            {
+                errorMessage = "El rango de numeracion esta agotado";
+                isLoading = false;
+                return;
+            }
+
+            var venta = new VentaEntitie
+            {
+                IdCliente = clienteId,
+                IdVendedor = selectedIdVendedor,
+                IdMetodoPago = selectedIdMetodoPago,
+                Estado = "FACTURADA",
+                Id_RangoNumeracion = GetInt(docData, "Id_RangoNumeracion"),
+                IdRangoDIAN = GetInt(docData, "IdRangoDIAN"),
+                Prefijo = GetString(docData, "Prefijo"),
+                Desde = numDesde,
+                Hasta = numHasta,
+                CodigoDocumento = 21,
+                resolution_number = GetString(docData, "NumeroResolucion"),
+                technical_key = GetString(docData, "ClaveTecnica"),
+                detalleVentas = lineItems.Select(x => new DetalleVentaEntitie
+                {
+                    IdProducto = x.IdProducto,
+                    Sku = x.Sku,
+                    CodigoBarras = x.CodigoBarras,
+                    UnidadMedida = x.UnidadMedida,
+                    NombreProducto = x.NombreProducto,
+                    Cantidad = x.Cantidad,
+                    PrecioUnitario = x.PrecioUnitario,
+                    Descuento = x.Descuento,
+                    Impuesto = x.Impuesto,
+                    CostoUnitario = x.CostoUnitario,
+                    NombreTributo = x.NombreTributo,
+                    FechaVencimiento = x.FechaVencimiento
+                }).ToList(),
+                pagosVenta = new List<PagosVentaEntitie>
+                {
+                    new PagosVentaEntitie
+                    {
+                        IdMetodoPago = selectedIdMetodoPago,
+                        Recibido = vRecibido,
+                        Monto = totalGeneral,
+                        Referencia = referenciaPago,
+                        IdBanco = selectedIdBanco
+                    }
+                }
+            };
+
+            var resp = await VentaService.Create(venta, userId);
+
+            if (resp != null && resp.Flag)
+            {
+                successMessage = $"Venta creada exitosamente";
+                lineItems.Clear();
+                selectedLineIndex = -1;
+                CalcularTotales();
+                valorRecibido = "0";
+                referenciaPago = "";
+                cambio = 0;
+            }
+            else
+            {
+                errorMessage = resp?.Message ?? "Error al crear la venta";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error: " + ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    // Helper methods for dynamic deserialization
+    private static int GetInt(Dictionary<string, object> dict, string key)
+    {
+        if (dict.TryGetValue(key, out var val) && val != null)
+        {
+            if (val is JsonElement je)
+            {
+                if (je.ValueKind == System.Text.Json.JsonValueKind.Number) return je.GetInt32();
+                if (je.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    var s = je.GetString();
+                    if (int.TryParse(s, out var i)) return i;
+                }
+                return 0;
+            }
+            if (val is int iv) return iv;
+            if (int.TryParse(val.ToString(), out var ip)) return ip;
+        }
+        return 0;
+    }
+
+    private static long GetLong(Dictionary<string, object> dict, string key)
+    {
+        if (dict.TryGetValue(key, out var val) && val != null)
+        {
+            if (val is JsonElement je)
+            {
+                if (je.ValueKind == System.Text.Json.JsonValueKind.Number) return je.GetInt64();
+                if (je.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    var s = je.GetString();
+                    if (long.TryParse(s, out var i)) return i;
+                }
+                return 0;
+            }
+            if (val is long lv) return lv;
+            if (long.TryParse(val.ToString(), out var lp)) return lp;
+        }
+        return 0;
+    }
+
+    private static decimal GetDecimal(Dictionary<string, object> dict, string key)
+    {
+        if (dict.TryGetValue(key, out var val) && val != null)
+        {
+            if (val is JsonElement je)
+            {
+                if (je.ValueKind == System.Text.Json.JsonValueKind.Number) return je.GetDecimal();
+                if (je.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    var s = je.GetString()?.Replace(",", "");
+                    if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var d)) return d;
+                }
+                return 0;
+            }
+            if (val is decimal dv) return dv;
+            if (decimal.TryParse(val.ToString()?.Replace(",", ""), NumberStyles.Any, CultureInfo.InvariantCulture, out var dp)) return dp;
+        }
+        return 0;
+    }
+
+    private static string GetString(Dictionary<string, object> dict, string key)
+    {
+        if (dict.TryGetValue(key, out var val) && val != null)
+        {
+            if (val is JsonElement je) return je.GetString() ?? "";
+            return val.ToString() ?? "";
+        }
+        return "";
+    }
+
+    private class LineItem
+    {
+        public int IdProducto { get; set; }
+        public string Sku { get; set; } = "";
+        public string CodigoBarras { get; set; } = "";
+        public string NombreProducto { get; set; } = "";
+        public string UnidadMedida { get; set; } = "";
+        public string NombreTributo { get; set; } = "";
+        public decimal PrecioUnitario { get; set; }
+        public decimal CostoUnitario { get; set; }
+        public decimal Cantidad { get; set; } = 1;
+        public decimal Descuento { get; set; }
+        public decimal Impuesto { get; set; }
+        public DateTime FechaVencimiento { get; set; }
+
+        public string PrecioUnitarioStr => PrecioUnitario.ToString("N2");
+        public string CantidadStr => Cantidad.ToString("N0");
+        public string DescuentoStr => Descuento.ToString("N2");
+
+        public decimal TotalLinea
+        {
+            get
+            {
+                var subt = PrecioUnitario * Cantidad;
+                var desc = subt * Descuento / 100m;
+                return subt - desc;
+            }
+        }
+    }
+}

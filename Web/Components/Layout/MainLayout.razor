@@ -1,0 +1,47 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+
+<div class="page">
+    <AuthorizeView>
+        <Authorized>
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+        </Authorized>
+    </AuthorizeView>
+
+    <main>
+        <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="text-muted">
+                            <strong>@context.User.Identity?.Name</strong>
+                            <span class="badge bg-secondary ms-1">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                        </span>
+                        <a href="/api/auth/logout" class="btn btn-outline-secondary btn-sm">Cerrar Sesión</a>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    @{
+                        var relativeUri = Navigation.ToBaseRelativePath(Navigation.Uri);
+                    }
+                    @if (!string.Equals(relativeUri, "login", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <a href="/login" class="btn btn-primary btn-sm ms-2">Iniciar sesión</a>
+                    }
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

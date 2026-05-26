@@ -1,0 +1,955 @@
+@page "/productos/form"
+@page "/productos/form/{Id:int}"
+@attribute [Authorize]
+@rendermode InteractiveServer
+@inject ICategoria CategoriaService
+@inject IMarca MarcaService
+@inject IUnidadMedida UnidadMedidaService
+@inject IProducto ProductoService
+@inject ITribute TributeService
+@inject IEntradaInventario EntradaInventarioService
+@inject ISalidaInventario SalidaInventarioService
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@using sbx.core.Entities.EntradaInventario
+@using sbx.core.Entities.Producto
+@using sbx.core.Entities.SalidaInventario
+@using System.Text.Json
+
+<div class="producto-form-page">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <button class="btn btn-outline-secondary btn-sm" @onclick='() => Navigation.NavigateTo("/productos")'>
+            &larr; Volver
+        </button>
+        <h4 class="mb-0">@(Id > 0 ? "Editar Producto" : "Agregar Producto")</h4>
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @errorMessage
+            <button type="button" class="btn-close" @onclick='() => errorMessage = null'></button>
+        </div>
+    }
+
+    @if (isLoadingInicial)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="text-muted mt-2">Cargando...</p>
+        </div>
+    }
+    else
+    {
+        <EditForm Model="model" OnValidSubmit="HandleGuardar" FormName="producto_form">
+            <div class="form-card">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Código interno</label>
+                            <input type="text" class="form-control" @bind="model.CodigoInterno" disabled />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">SKU</label>
+                            <input type="text" class="form-control @SkuClass" @bind="model.Sku" maxlength="50" />
+                            @if (!string.IsNullOrEmpty(skuError))
+                            {
+                                <div class="text-danger small">@skuError</div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Código barras</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control @CodigoBarrasClass" @bind="model.CodigoBarras" maxlength="50" />
+                                <button class="btn btn-outline-secondary" type="button" title="Agregar códigos de barras adicionales"
+                                        disabled="@(Id <= 0)" @onclick="AbrirModalBarcode">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                            </div>
+                            @if (!string.IsNullOrEmpty(codigoBarrasError))
+                            {
+                                <div class="text-danger small">@codigoBarrasError</div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" class="form-control @NombreClass" @bind="model.Nombre" maxlength="100" />
+                            @if (!string.IsNullOrEmpty(nombreError))
+                            {
+                                <div class="text-danger small">@nombreError</div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Costo unitario *</label>
+                            <input type="text" class="form-control @CostoClass" 
+                                   value="@model.CostoBase"
+                                   @oninput="OnCostoInput" />
+                            @if (!string.IsNullOrEmpty(costoError))
+                            {
+                                <div class="text-danger small">@costoError</div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Precio unitario *</label>
+                            <input type="text" class="form-control @PrecioClass" 
+                                   value="@model.PrecioBase"
+                                   @oninput="OnPrecioInput" />
+                            @if (!string.IsNullOrEmpty(precioError))
+                            {
+                                <div class="text-danger small">@precioError</div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">% Margen</label>
+                            <input type="text" class="form-control" value="@margenCalculado" disabled />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo tributo</label>
+                            <select class="form-select" value="@model.Idtribute"
+                                    @onchange="OnTipoTributoChange">
+                                @if (tributes != null)
+                                {
+                                    @foreach (var t in tributes)
+                                    {
+                                        <option value="@t.Value">@t.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">@labelImpuesto</label>
+                            <input type="text" class="form-control @ImpuestoClass" @bind="model.Impuesto" />
+                            @if (!string.IsNullOrEmpty(impuestoError))
+                            {
+                                <div class="text-danger small">@impuestoError</div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Categoría</label>
+                            <select class="form-select" @bind="model.IdCategoria">
+                                @if (categorias != null)
+                                {
+                                    @foreach (var c in categorias)
+                                    {
+                                        <option value="@c.Value">@c.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Marca</label>
+                            <select class="form-select" @bind="model.IdMarca">
+                                @if (marcas != null)
+                                {
+                                    @foreach (var m in marcas)
+                                    {
+                                        <option value="@m.Value">@m.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Unidad medida</label>
+                            <select class="form-select" @bind="model.IdUnidadMedida">
+                                @if (unidadMedidas != null)
+                                {
+                                    @foreach (var u in unidadMedidas)
+                                    {
+                                        <option value="@u.Value">@u.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tipo producto</label>
+                            <select class="form-select" @bind="model.TipoProducto">
+                                <option value="Individual">Individual</option>
+                                <option value="Grupo">Grupo</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Es inventariable</label>
+                            <select class="form-select" @bind="model.EsInventariable" disabled>
+                                <option value="1">SI</option>
+                                <option value="0">NO</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Stock</label>
+                            <input type="text" class="form-control" value="@stockStr" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+                <h5 class="mb-3">Entrada / Salida de inventario</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo movimiento</label>
+                            <div class="d-flex gap-3 pt-1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="rbEntrada" 
+                                           checked="@(esEntrada ? "checked" : null)"
+                                           @onchange="() => esEntrada = true" />
+                                    <label class="form-check-label" for="rbEntrada">Entrada</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="rbSalida" 
+                                           checked="@(!esEntrada ? "checked" : null)"
+                                           @onchange="() => esEntrada = false" />
+                                    <label class="form-check-label" for="rbSalida">Salida</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label class="form-label">Cantidad</label>
+                            <input type="text" class="form-control" @bind="model.CantidadES" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                    @if (isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-1"></span>
+                    }
+                    Guardar
+                </button>
+                <button type="button" class="btn btn-secondary" @onclick='() => Navigation.NavigateTo("/productos")'>
+                    Cancelar
+                </button>
+            </div>
+        </EditForm>
+
+        @if (Id > 0)
+        {
+            <div class="modal fade @(mostrarModalBarcode ? "show d-block" : "")" tabindex="-1" style="@(mostrarModalBarcode ? "background-color:rgba(0,0,0,0.5)" : "display:none")">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Códigos de barras adicionales</h5>
+                            <button type="button" class="btn-close" @onclick="CerrarModalBarcode"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" @bind="nuevoCodigoBarras"
+                                       placeholder="Ingrese código de barras"
+                                       @onkeydown="OnBarcodeKeyDown" />
+                                <button class="btn btn-primary" @onclick="AgregarCodigoBarras"
+                                        disabled="@isLoadingBarcode">
+                                    @if (isLoadingBarcode)
+                                    {
+                                        <span class="spinner-border spinner-border-sm"></span>
+                                    }
+                                    Guardar
+                                </button>
+                            </div>
+                            @if (!string.IsNullOrEmpty(barcodeError))
+                            {
+                                <div class="alert alert-danger py-2 small">@barcodeError</div>
+                            }
+                            @if (!string.IsNullOrEmpty(barcodeSuccess))
+                            {
+                                <div class="alert alert-success py-2 small">@barcodeSuccess</div>
+                            }
+                            <div class="table-responsive" style="max-height:300px;overflow-y:auto">
+                                <table class="table table-striped table-sm mb-0">
+                                    <thead class="table-dark" style="position:sticky;top:0">
+                                        <tr>
+                                            <th style="width:80px">Id</th>
+                                            <th>Código barras</th>
+                                            <th style="width:60px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (barcodeList != null && barcodeList.Count > 0)
+                                        {
+                                            @foreach (var b in barcodeList)
+                                            {
+                                                <tr>
+                                                    <td>@b.IdProducto</td>
+                                                    <td>@b.CodigoBarra</td>
+                                                    <td>
+                                                        <button class="btn btn-danger btn-sm py-0" @onclick="() => QuitarBarcode(b.IdProducto, b.CodigoBarra)"
+                                                                title="Quitar" disabled="@isLoadingBarcode">
+                                                            &times;
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted py-3">
+                                                    No hay códigos de barras adicionales
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CerrarModalBarcode">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ProductoFormModel model = new();
+    private List<SelectListItem>? categorias;
+    private List<SelectListItem>? marcas;
+    private List<SelectListItem>? unidadMedidas;
+    private List<SelectListItem>? tributes;
+    private string margenCalculado = "0.00";
+    private string? errorMessage;
+    private string? skuError;
+    private string? codigoBarrasError;
+    private string? nombreError;
+    private string? costoError;
+    private string? precioError;
+    private string? impuestoError;
+    private string labelImpuesto = "Impuesto (%) *";
+    private bool esEntrada = true;
+    private bool isLoading;
+    private bool isLoadingInicial = true;
+    private string stockStr = "0";
+    private bool esInventariable = true;
+    private int userId = 1;
+
+    private string nuevoCodigoBarras = "";
+    private List<BarcodeDto> barcodeList = new();
+    private string? barcodeError;
+    private string? barcodeSuccess;
+    private bool isLoadingBarcode;
+    private bool mostrarModalBarcode;
+
+    private string SkuClass => !string.IsNullOrEmpty(skuError) ? "is-invalid" : "";
+    private string CodigoBarrasClass => !string.IsNullOrEmpty(codigoBarrasError) ? "is-invalid" : "";
+    private string NombreClass => !string.IsNullOrEmpty(nombreError) ? "is-invalid" : "";
+    private string CostoClass => !string.IsNullOrEmpty(costoError) ? "is-invalid" : "";
+    private string PrecioClass => !string.IsNullOrEmpty(precioError) ? "is-invalid" : "";
+    private string ImpuestoClass => !string.IsNullOrEmpty(impuestoError) ? "is-invalid" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var idClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (!string.IsNullOrEmpty(idClaim))
+            int.TryParse(idClaim, out userId);
+
+        await CargarDatosIniciales();
+        isLoadingInicial = false;
+    }
+
+    private async Task CargarDatosIniciales()
+    {
+        try
+        {
+            var resp = await CategoriaService.ListCategoria();
+            categorias = await ToSelectList(resp);
+            if (categorias != null && categorias.Count > 0)
+                model.IdCategoria = categorias[0].Value;
+
+            resp = await MarcaService.ListMarca();
+            marcas = await ToSelectList(resp);
+            if (marcas != null && marcas.Count > 0)
+                model.IdMarca = marcas[0].Value;
+
+            resp = await UnidadMedidaService.ListUnidadMedida();
+            unidadMedidas = await ToSelectList(resp);
+            if (unidadMedidas != null && unidadMedidas.Count > 0)
+                model.IdUnidadMedida = unidadMedidas[0].Value;
+
+            resp = await TributeService.ListTribute();
+            tributes = await ToSelectList(resp, "Nombre");
+            if (tributes != null && tributes.Count > 0)
+                model.Idtribute = tributes[0].Value;
+
+            if (Id > 0)
+            {
+                var respPrd = await ProductoService.List(Id);
+                object? data = respPrd?.Data;
+                if (data != null)
+                {
+                    var json = JsonSerializer.Serialize(data);
+                    var lista = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
+                    if (lista != null && lista.Count > 0)
+                    {
+                        var item = lista[0];
+                        model.CodigoInterno = GetString(item, "IdProducto");
+                        model.Sku = GetString(item, "Sku");
+                        model.CodigoBarras = GetString(item, "CodigoBarras");
+                        model.Nombre = GetString(item, "Nombre");
+                        model.CostoBase = GetDecimal(item, "CostoBase").ToString("N2");
+                        model.PrecioBase = GetDecimal(item, "PrecioBase").ToString("N2");
+                        model.Impuesto = GetDecimal(item, "Impuesto").ToString("N0");
+                        model.IdCategoria = GetInt(item, "IdCategoria").ToString();
+                        model.IdMarca = GetInt(item, "IdMarca").ToString();
+                        model.IdUnidadMedida = GetInt(item, "IdUnidadMedida").ToString();
+                        model.Idtribute = GetInt(item, "Idtribute").ToString();
+                        model.TipoProducto = GetString(item, "TipoProducto") == "Grupo" ? "Grupo" : "Individual";
+                        esInventariable = GetInt(item, "EsInventariable") == 1;
+                        model.EsInventariable = esInventariable ? "1" : "0";
+                        stockStr = GetDecimal(item, "Stock").ToString("N2");
+                        CalcularMargen();
+
+                        var nomTributo = GetString(item, "NombreTributo");
+                        if (nomTributo == "INC Bolsas")
+                            labelImpuesto = "Valor Impuesto bolsa *";
+                    }
+                }
+
+                await CargarBarcodeList();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error al cargar datos: " + ex.Message;
+        }
+    }
+
+    private async Task<List<SelectListItem>> ToSelectList(Response<dynamic> resp, string displayMember = "Nombre")
+    {
+        var list = new List<SelectListItem>();
+        object? data = resp?.Data;
+        if (data != null)
+        {
+            var json = JsonSerializer.Serialize(data);
+            var items = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    var value = item.ContainsKey("IdCategoria") ? GetInt(item, "IdCategoria").ToString()
+                             : item.ContainsKey("IdMarca") ? GetInt(item, "IdMarca").ToString()
+                             : item.ContainsKey("IdUnidadMedida") ? GetInt(item, "IdUnidadMedida").ToString()
+                             : item.ContainsKey("Idtribute") ? GetInt(item, "Idtribute").ToString()
+                             : "";
+                    var text = displayMember == "Nombre" ? GetString(item, "Nombre")
+                             : GetString(item, displayMember);
+                    list.Add(new SelectListItem { Value = value, Text = text });
+                }
+            }
+        }
+        return list;
+    }
+
+    private void CalcularMargen()
+    {
+        if (decimal.TryParse(model.CostoBase, out decimal costo) &&
+            decimal.TryParse(model.PrecioBase, out decimal precio) && precio > 0)
+        {
+            var margen = ((precio - costo) / precio) * 100;
+            margenCalculado = margen.ToString("N2");
+        }
+        else
+        {
+            margenCalculado = "0.00";
+        }
+    }
+
+    private void OnCostoInput(ChangeEventArgs e)
+    {
+        model.CostoBase = e.Value?.ToString() ?? "";
+        CalcularMargen();
+    }
+
+    private void OnPrecioInput(ChangeEventArgs e)
+    {
+        model.PrecioBase = e.Value?.ToString() ?? "";
+        CalcularMargen();
+    }
+
+    private void OnTipoTributoChange(ChangeEventArgs e)
+    {
+        model.Idtribute = e.Value?.ToString() ?? "";
+        if (tributes != null)
+        {
+            var selected = tributes.FirstOrDefault(t => t.Value == model.Idtribute);
+            if (selected?.Text == "INC Bolsas")
+                labelImpuesto = "Valor Impuesto bolsa *";
+            else
+                labelImpuesto = "Impuesto (%) *";
+        }
+    }
+
+    private async Task HandleGuardar()
+    {
+        isLoading = true;
+        errorMessage = null;
+        skuError = null;
+        codigoBarrasError = null;
+        nombreError = null;
+        costoError = null;
+        precioError = null;
+        impuestoError = null;
+
+        try
+        {
+            if (!decimal.TryParse(model.CostoBase, out decimal costoVal))
+            {
+                costoError = "Ingrese un valor numérico";
+                isLoading = false; return;
+            }
+            if (!decimal.TryParse(model.PrecioBase, out decimal precioVal))
+            {
+                precioError = "Ingrese un valor numérico";
+                isLoading = false; return;
+            }
+            if (!decimal.TryParse(model.Impuesto, out decimal impuestoVal))
+            {
+                impuestoError = "Ingrese un valor numérico";
+                isLoading = false; return;
+            }
+            if (precioVal <= 0)
+            {
+                precioError = "El precio debe ser mayor a cero";
+                isLoading = false; return;
+            }
+
+            bool existe = await ProductoService.ExisteSku(model.Sku, Id);
+            if (existe) { skuError = "Sku ya existe"; isLoading = false; return; }
+
+            existe = await ProductoService.ExisteCodigoBarras(model.CodigoBarras, Id);
+            if (existe) { codigoBarrasError = "Código de barras ya existe"; isLoading = false; return; }
+
+            if (!string.IsNullOrEmpty(model.CodigoBarras))
+            {
+                existe = await ProductoService.ListIdCodigoBarras(Id, model.CodigoBarras);
+                if (existe) { codigoBarrasError = "Código de barras ya existe en otro producto"; isLoading = false; return; }
+            }
+
+            existe = await ProductoService.ExisteNombre(model.Nombre, Id);
+            if (existe) { nombreError = "Nombre ya existe"; isLoading = false; return; }
+
+            if (string.IsNullOrWhiteSpace(model.Nombre))
+            {
+                nombreError = "El nombre es obligatorio";
+                isLoading = false; return;
+            }
+
+            var entity = new ProductoEntitie
+            {
+                IdProducto = Id,
+                Sku = model.Sku?.Trim() ?? "",
+                CodigoBarras = model.CodigoBarras?.Trim() ?? "",
+                Nombre = model.Nombre.Trim(),
+                CostoBase = costoVal,
+                PrecioBase = precioVal,
+                Impuesto = impuestoVal,
+                IdCategoria = int.TryParse(model.IdCategoria, out int cat) ? cat : 0,
+                IdMarca = int.TryParse(model.IdMarca, out int mar) ? mar : 0,
+                IdUnidadMedida = int.TryParse(model.IdUnidadMedida, out int uni) ? uni : 0,
+                Idtribute = int.TryParse(model.Idtribute, out int tri) ? tri : 0,
+                EsInventariable = esInventariable ? 1 : 0,
+                TipoProducto = model.TipoProducto ?? "Individual",
+            };
+
+            decimal.TryParse(model.CantidadES, out decimal cantidadES);
+
+            var resp = await ProductoService.CreateUpdate(entity, userId);
+
+            if (resp != null)
+            {
+                bool flag = resp.Flag;
+                string? msg = resp.Message;
+                object? data = resp.Data;
+
+                if (flag)
+                {
+                    int idPrd = Id > 0 ? Id : 0;
+                    if (idPrd == 0 && data != null)
+                    {
+                        var json = JsonSerializer.Serialize(data);
+                        int.TryParse(json.Trim('"'), out idPrd);
+                    }
+
+                    if (cantidadES > 0)
+                    {
+                        await entradaSalidaSencillaInventario(idPrd, cantidadES, entity.TipoProducto);
+                    }
+
+                    Navigation.NavigateTo("/productos");
+                }
+                else
+                {
+                    errorMessage = msg ?? "Error al guardar el producto";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error: " + ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task<bool> entradaSalidaSencillaInventario(int idProducto, decimal cantidad, string tipoProducto)
+    {
+        try
+        {
+            if (esEntrada)
+            {
+                var entrada = new EntradasInventarioEntitie
+                {
+                    IdTipoEntrada = 2,
+                    OrdenCompra = "",
+                    NumFactura = "",
+                    Comentario = "Entrada sencilla desde Producto",
+                    IdProveedor = 1,
+                };
+
+                entrada.detalleEntradasInventarios.Add(new DetalleEntradasInventarioEntitie
+                {
+                    IdProducto = idProducto,
+                    CodigoLote = "",
+                    FechaVencimiento = new DateTime(1900, 1, 1),
+                    Cantidad = cantidad,
+                    CostoUnitario = 0,
+                    Descuento = 0,
+                    Impuesto = 0,
+                    TipoProducto = tipoProducto,
+                });
+
+                if (tipoProducto == "Grupo")
+                {
+                    var respPrdIndv = await ProductoService.ListPrdGrp(idProducto);
+                    object? data = respPrdIndv?.Data;
+                    if (data != null)
+                    {
+                        var json = JsonSerializer.Serialize(data);
+                        var lista = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
+                        if (lista != null)
+                        {
+                            foreach (var item in lista)
+                            {
+                                entrada.detalleEntradasInventarios.Add(new DetalleEntradasInventarioEntitie
+                                {
+                                    IdProducto = GetInt(item, "IdProductoIndividual"),
+                                    CodigoLote = "",
+                                    FechaVencimiento = new DateTime(1900, 1, 1),
+                                    Cantidad = GetDecimal(item, "Cantidad") * cantidad,
+                                    CostoUnitario = GetDecimal(item, "CostoBase"),
+                                    Descuento = 0,
+                                    Impuesto = 0,
+                                    TipoProducto = GetString(item, "TipoProducto"),
+                                });
+                            }
+                        }
+                    }
+                }
+
+                var respEnt = await EntradaInventarioService.CreateUpdate(entrada, userId);
+                return respEnt?.Flag == true;
+            }
+            else
+            {
+                var salida = new SalidaInventarioEntitie
+                {
+                    IdTipoSalida = 2,
+                    OrdenCompra = "",
+                    NumFactura = "",
+                    Comentario = "Salida sencilla desde Producto",
+                    IdProveedor = 1,
+                };
+
+                salida.detalleSalidaInventarios.Add(new DetalleSalidaInventarioEntitie
+                {
+                    IdProducto = idProducto,
+                    CodigoLote = "",
+                    FechaVencimiento = new DateTime(1900, 1, 1),
+                    Cantidad = cantidad,
+                    CostoUnitario = 0,
+                    TipoProducto = tipoProducto,
+                });
+
+                if (tipoProducto == "Grupo")
+                {
+                    var respPrdIndv = await ProductoService.ListPrdGrp(idProducto);
+                    object? data = respPrdIndv?.Data;
+                    if (data != null)
+                    {
+                        var json = JsonSerializer.Serialize(data);
+                        var lista = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
+                        if (lista != null)
+                        {
+                            foreach (var item in lista)
+                            {
+                                salida.detalleSalidaInventarios.Add(new DetalleSalidaInventarioEntitie
+                                {
+                                    IdProducto = GetInt(item, "IdProductoIndividual"),
+                                    CodigoLote = "",
+                                    FechaVencimiento = new DateTime(1900, 1, 1),
+                                    Cantidad = GetDecimal(item, "Cantidad") * cantidad,
+                                    CostoUnitario = GetDecimal(item, "CostoBase"),
+                                    TipoProducto = GetString(item, "TipoProducto"),
+                                });
+                            }
+                        }
+                    }
+                }
+
+                var respSal = await SalidaInventarioService.CreateUpdate(salida, userId);
+                return respSal?.Flag == true;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task CargarBarcodeList()
+    {
+        barcodeError = null;
+        barcodeSuccess = null;
+        barcodeList = new();
+
+        if (Id <= 0) return;
+
+        try
+        {
+            var resp = await ProductoService.ListCodigoBarras(Id);
+            object? data = resp?.Data;
+            if (data != null)
+            {
+                var json = JsonSerializer.Serialize(data);
+                var items = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
+                if (items != null)
+                {
+                    barcodeList = items.Select(item => new BarcodeDto
+                    {
+                        IdProducto = GetInt(item, "IdProducto"),
+                        CodigoBarra = GetString(item, "CodigoBarra"),
+                    }).ToList();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            barcodeError = "Error al cargar: " + ex.Message;
+        }
+    }
+
+    private async Task AgregarCodigoBarras()
+    {
+        barcodeError = null;
+        barcodeSuccess = null;
+
+        if (string.IsNullOrWhiteSpace(nuevoCodigoBarras))
+        {
+            barcodeError = "Debe ingresar un código de barras";
+            return;
+        }
+
+        isLoadingBarcode = true;
+
+        try
+        {
+            bool existe = await ProductoService.ExisteCodigoBarras(nuevoCodigoBarras.Trim(), Id);
+            if (existe)
+            {
+                barcodeError = "El código de barras ya existe en otro producto";
+                isLoadingBarcode = false;
+                return;
+            }
+
+            var resp = await ProductoService.CreateCodigoBarras(nuevoCodigoBarras.Trim(), Id, userId);
+            if (resp != null)
+            {
+                bool flag = resp.Flag;
+                string? msg = resp.Message;
+                if (flag)
+                {
+                    barcodeSuccess = msg ?? "Código de barras agregado correctamente";
+                    nuevoCodigoBarras = "";
+                    await CargarBarcodeList();
+                }
+                else
+                {
+                    barcodeError = msg ?? "Error al guardar";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            barcodeError = "Error: " + ex.Message;
+        }
+        finally
+        {
+            isLoadingBarcode = false;
+        }
+    }
+
+    private async Task AbrirModalBarcode()
+    {
+        barcodeError = null;
+        barcodeSuccess = null;
+        nuevoCodigoBarras = "";
+        mostrarModalBarcode = true;
+        StateHasChanged();
+        await CargarBarcodeList();
+        StateHasChanged();
+    }
+
+    private void CerrarModalBarcode()
+    {
+        mostrarModalBarcode = false;
+        nuevoCodigoBarras = "";
+        barcodeError = null;
+        barcodeSuccess = null;
+    }
+
+    private async Task QuitarBarcode(int idProducto, string codigoBarra)
+    {
+        isLoadingBarcode = true;
+        barcodeError = null;
+        barcodeSuccess = null;
+
+        try
+        {
+            var resp = await ProductoService.EliminarCodigoBarras(codigoBarra, idProducto);
+            if (resp != null)
+            {
+                bool flag = resp.Flag;
+                string? msg = resp.Message;
+                if (flag)
+                {
+                    barcodeSuccess = msg ?? "Código de barras eliminado";
+                    await CargarBarcodeList();
+                }
+                else
+                {
+                    barcodeError = msg ?? "Error al eliminar";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            barcodeError = "Error: " + ex.Message;
+        }
+        finally
+        {
+            isLoadingBarcode = false;
+        }
+    }
+
+    private async Task OnBarcodeKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await AgregarCodigoBarras();
+        }
+    }
+
+    private class BarcodeDto
+    {
+        public int IdProducto { get; set; }
+        public string CodigoBarra { get; set; } = "";
+    }
+
+    private static int GetInt(Dictionary<string, object> dict, string key)
+    {
+        if (dict.TryGetValue(key, out var val))
+        {
+            if (val is JsonElement je)
+            {
+                if (je.ValueKind == JsonValueKind.Number) return je.GetInt32();
+                if (int.TryParse(je.GetRawText(), out var i)) return i;
+            }
+            if (val is int iv) return iv;
+            if (int.TryParse(val?.ToString(), out var ip)) return ip;
+        }
+        return 0;
+    }
+
+    private static string GetString(Dictionary<string, object> dict, string key)
+    {
+        if (dict.TryGetValue(key, out var val))
+        {
+            if (val is JsonElement je)
+            {
+                if (je.ValueKind == JsonValueKind.String) return je.GetString() ?? "";
+                return je.GetRawText();
+            }
+            return val?.ToString() ?? "";
+        }
+        return "";
+    }
+
+    private static decimal GetDecimal(Dictionary<string, object> dict, string key)
+    {
+        if (dict.TryGetValue(key, out var val))
+        {
+            if (val is JsonElement je)
+            {
+                if (je.ValueKind == JsonValueKind.Number)
+                {
+                    if (je.TryGetDecimal(out var d)) return d;
+                }
+                if (decimal.TryParse(je.GetRawText(), out var dp)) return dp;
+            }
+            if (val is decimal dv) return dv;
+            if (decimal.TryParse(val?.ToString(), out var dpr)) return dpr;
+        }
+        return 0;
+    }
+
+    private class ProductoFormModel
+    {
+        public string CodigoInterno { get; set; } = "";
+        public string Sku { get; set; } = "";
+        public string CodigoBarras { get; set; } = "";
+        public string Nombre { get; set; } = "";
+        public string CostoBase { get; set; } = "";
+        public string PrecioBase { get; set; } = "";
+        public string Impuesto { get; set; } = "0";
+        public string IdCategoria { get; set; } = "";
+        public string IdMarca { get; set; } = "";
+        public string IdUnidadMedida { get; set; } = "";
+        public string Idtribute { get; set; } = "";
+        public string TipoProducto { get; set; } = "Individual";
+        public string EsInventariable { get; set; } = "1";
+        public string CantidadES { get; set; } = "0";
+    }
+
+    private class SelectListItem
+    {
+        public string Value { get; set; } = "";
+        public string Text { get; set; } = "";
+    }
+}

@@ -1,0 +1,142 @@
+@page "/login"
+@attribute [AllowAnonymous]
+@rendermode InteractiveServer
+@inject ILogin LoginService
+@inject NavigationManager Navigation
+@inject LoginTokenStore TokenStore
+
+<div class="login-page">
+    <div class="login-card">
+        <div class="login-header">
+            <h4 class="mb-1">SBX</h4>
+            <p class="text-muted mb-0">Iniciar Sesión</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @errorMessage
+                <button type="button" class="btn-close" @onclick="() => errorMessage = null"></button>
+            </div>
+        }
+
+        <EditForm Model="model" OnValidSubmit="HandleLogin" FormName="login_form">
+            <div class="mb-3">
+                <label for="username" class="form-label">Usuario</label>
+                <InputText id="username" @bind-Value="model.Username"
+                    class="form-control" disabled="@isLoading"
+                    placeholder="Ingrese su usuario" />
+                <ValidationMessage For="@(() => model.Username)" class="text-danger" />
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <InputText id="password" type="password" @bind-Value="model.Password"
+                    class="form-control" disabled="@isLoading"
+                    placeholder="Ingrese su contraseña"
+                    @onkeydown="HandleKeyDown" />
+                <ValidationMessage For="@(() => model.Password)" class="text-danger" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <span>Validando...</span>
+                }
+                else
+                {
+                    <span>Ingresar</span>
+                }
+            </button>
+        </EditForm>
+
+        <div class="text-center mt-3">
+            <small class="text-muted">Sistema SBX © @DateTime.Now.Year</small>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginModel model = new();
+    private string? errorMessage;
+    private bool isLoading;
+
+    private async Task HandleLogin()
+    {
+        if (isLoading) return;
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            string nombreUsuario = model.Username.Trim();
+            string contrasena = model.Password.Trim();
+
+            if (string.IsNullOrWhiteSpace(nombreUsuario))
+            {
+                errorMessage = "Debe ingresar usuario";
+                isLoading = false;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(contrasena))
+            {
+                errorMessage = "Debe ingresar contraseña";
+                isLoading = false;
+                return;
+            }
+
+            var resp = await LoginService.ValidarUsuario(nombreUsuario, contrasena);
+
+            if (resp != null && resp.Flag == true && resp.Message == "Credenciales correctas")
+            {
+                var permisos = resp.Data as IEnumerable<Permisos>;
+                var first = permisos?.FirstOrDefault();
+
+                var query = new Uri(Navigation.Uri).Query;
+                var returnUrl = string.Empty;
+                if (!string.IsNullOrEmpty(query))
+                {
+                    var parsed = System.Web.HttpUtility.ParseQueryString(query);
+                    returnUrl = parsed["returnUrl"] ?? string.Empty;
+                }
+
+                var token = TokenStore.Add(new UserData(
+                    first?.IdUser ?? 0,
+                    nombreUsuario,
+                    first?.NameRole ?? "",
+                    returnUrl
+                ));
+
+                Navigation.NavigateTo($"/api/auth/signin/{token}", forceLoad: true);
+            }
+            else
+            {
+                errorMessage = resp?.Message ?? "Error al iniciar sesión";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await HandleLogin();
+        }
+    }
+
+    private class LoginModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}
