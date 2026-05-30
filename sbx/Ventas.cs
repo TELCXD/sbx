@@ -3,10 +3,12 @@ using Newtonsoft.Json;
 using sbx.core.Entities;
 using sbx.core.Entities.Auth;
 using sbx.core.Entities.FacturaEletronica;
+using sbx.core.Entities.MetodoPago;
 using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Entities.Venta;
 using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.FacturacionElectronica;
+using sbx.core.Interfaces.PagosVenta;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Producto;
 using sbx.core.Interfaces.RangoNumeracion;
@@ -32,6 +34,7 @@ namespace sbx
         private readonly IFacturas _IFacturas;
         private readonly IRangoNumeracionFE _IRangoNumeracionFE;
         private readonly IProducto _IProducto;
+        private readonly IPagosVenta _IPagosVenta;
         decimal Cantidad = 0;
         decimal Subtotal = 0;
         decimal SubtotalLinea = 0;
@@ -46,7 +49,7 @@ namespace sbx
 
         public Ventas(IVenta venta, IServiceProvider serviceProvider, ITienda tienda,
             IParametros iParametros, IAuthService iAuthService, 
-            IRangoNumeracion rangoNumeracion, IFacturas facturas, IRangoNumeracionFE iRangoNumeracionFE, IProducto iProducto)
+            IRangoNumeracion rangoNumeracion, IFacturas facturas, IRangoNumeracionFE iRangoNumeracionFE, IProducto iProducto, IPagosVenta iPagosVenta)
         {
             InitializeComponent();
             _IVenta = venta;
@@ -58,6 +61,7 @@ namespace sbx
             _IFacturas = facturas;
             _IRangoNumeracionFE = iRangoNumeracionFE;
             _IProducto = iProducto;
+            _IPagosVenta = iPagosVenta;
         }
 
         private async void Ventas_Load(object sender, EventArgs e)
@@ -506,7 +510,7 @@ namespace sbx
                                     var DataVenta = await _IVenta.List(Id_venta);
 
                                     FacturaPOSEntitie DataFactura = new FacturaPOSEntitie();
-
+                                    DataFactura.IdVenta = Id_venta;
                                     DataFactura.NumeroFactura = DataVenta.Data![0].NumberFacturaDIAN == "" ? DataVenta.Data![0].Factura : DataVenta.Data![0].NumberFacturaDIAN;
                                     DataFactura.Fecha = DataVenta.Data[0].FechaFactura;
                                     DataFactura.NombreEmpresa = DataTienda.Data[0].NombreRazonSocial;
@@ -623,6 +627,10 @@ namespace sbx
                                     }
 
                                     DataFactura.Items = ListItemFacturaEntitie;
+
+                                    var resp = await mtd_ver_medios_pago(DataFactura.IdVenta, DataFactura.FormaPago);
+
+                                    DataFactura.metodosPagos = resp;
 
                                     var DataParametros = await _IParametros.List("");
 
@@ -1116,6 +1124,135 @@ namespace sbx
 
             string ruta = Path.Combine(carpeta, $"factura_{numeroFactura}.png");
             tirillaFinal.Save(ruta, ImageFormat.Png);
+        }
+
+        public async Task<List<metodosPago>> mtd_ver_medios_pago(int IdVenta, string FormaPago)
+        {
+            decimal pagosEfectivo = 0;
+            decimal pagosNequi = 0;
+            decimal pagosDaviPlata = 0;
+            decimal pagosBancolombiaQR = 0;
+            decimal pagosTransferencia = 0;
+            decimal pagosTarjetaCredito = 0;
+            decimal pagosTarjetaDebito = 0;
+            var metodos = new List<string>();
+            var Pagos = new List<metodosPago>();
+            var respPagos = await _IPagosVenta.List(IdVenta);
+            foreach (var item2 in respPagos.Data!)
+            {
+                switch (item2.Nombre)
+                {
+                    case "Efectivo":
+                        if (FormaPago != "Varios")
+                        {
+                            pagosEfectivo += item2.Monto;
+                        }
+                        else
+                        {
+                            pagosEfectivo += item2.Recibido;
+                        }
+
+                        break;
+                    case "Nequi":
+                        pagosNequi += item2.Recibido;
+
+                        break;
+                    case "DaviPlata":
+                        pagosDaviPlata += item2.Recibido;
+
+                        break;
+                    case "Bancolombia QR":
+                        pagosBancolombiaQR += item2.Recibido;
+
+                        break;
+                    case "Transferencia":
+                        pagosTransferencia += item2.Recibido;
+
+                        break;
+                    case "Tarjeta Crédito":
+                        pagosTarjetaCredito += item2.Recibido;
+
+                        break;
+                    case "Tarjeta Débito":
+                        pagosTarjetaDebito += item2.Recibido;
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (pagosEfectivo > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Efectivo",
+                    valor = pagosEfectivo
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosNequi > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Nequi",
+                    valor = pagosNequi
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosDaviPlata > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "DaviPlata",
+                    valor = pagosDaviPlata
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosBancolombiaQR > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Bancolombia QR",
+                    valor = pagosBancolombiaQR
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosTransferencia > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Transferencia",
+                    valor = pagosTransferencia
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosTarjetaCredito > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Tarjeta Crédito",
+                    valor = pagosTarjetaCredito
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosTarjetaDebito > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Tarjeta Débito",
+                    valor = pagosTarjetaDebito
+                };
+                Pagos.Add(pago);
+            }
+
+            return Pagos;
         }
     }
 }

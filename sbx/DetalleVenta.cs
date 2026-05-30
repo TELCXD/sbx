@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using sbx.core.Entities.Venta;
 using sbx.core.Helper.Impresion;
+using sbx.core.Interfaces.PagosVenta;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Tienda;
 using sbx.core.Interfaces.Venta;
@@ -20,6 +21,7 @@ namespace sbx
         private readonly IParametros _IParametros;
         private DetalleProdDevo? _DetalleProdDevo;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IPagosVenta _IPagosVenta;
         decimal Cantidad = 0;
         decimal Subtotal = 0;
         decimal SubtotalLinea = 0;
@@ -34,13 +36,14 @@ namespace sbx
         string ModoRedondeo = "N/A";
         string MultiploRendondeo = "50";
 
-        public DetalleVenta(IVenta venta, ITienda tienda, IParametros iParametros, IServiceProvider serviceProvider)
+        public DetalleVenta(IVenta venta, ITienda tienda, IParametros iParametros, IServiceProvider serviceProvider, IPagosVenta iPagosVenta)
         {
             InitializeComponent();
             _IVenta = venta;
             _ITienda = tienda;
             _IParametros = iParametros;
             _serviceProvider = serviceProvider;
+            _IPagosVenta = iPagosVenta;
         }
 
         public dynamic? Permisos
@@ -129,7 +132,7 @@ namespace sbx
                 {
                     if (resp.Data.Count > 0)
                     {
-                        lbl_factura.Text = resp.Data[0].NumberFacturaDIAN == "" ? resp.Data[0].Factura: resp.Data[0].NumberFacturaDIAN;
+                        lbl_factura.Text = resp.Data[0].NumberFacturaDIAN == "" ? resp.Data[0].Factura : resp.Data[0].NumberFacturaDIAN;
                         lbl_cliente.Text = resp.Data[0].NumeroDocumento + " - " + resp.Data[0].NombreRazonSocial;
                         lbl_vendedor.Text = resp.Data[0].NumeroDocumentoVendedor + " - " + resp.Data[0].NombreCompletoVendedor;
                         lbl_medio_pago.Text = resp.Data[0].NombreMetodoPago;
@@ -138,11 +141,11 @@ namespace sbx
                         lbl_estado.Text = resp.Data[0].EstadoFacturaDIAN != "" ? resp.Data[0].Estado == "FACTURADA" ? resp.Data[0].EstadoFacturaDIAN : resp.Data[0].Estado : resp.Data[0].Estado;
                         lbl_usuario.Text = resp.Data[0].IdUserActionFactura + " - " + resp.Data[0].UserNameFactura;
 
-                        if (resp.Data[0].IdNotaCredito > 0) 
+                        if (resp.Data[0].IdNotaCredito > 0)
                         {
                             lbl_nota_credito.Text = resp.Data[0].NumberNotaCreditoDIAN == "0" ? resp.Data[0].NotaCredito : resp.Data[0].NumberNotaCreditoDIAN;
                             IdNotaCredito = resp.Data[0].IdNotaCredito;
-                            if (Origen != "Inventario") { btn_ver_productos.Enabled = true; }   
+                            if (Origen != "Inventario") { btn_ver_productos.Enabled = true; }
                         }
 
                         decimal Subtotal = 0;
@@ -463,7 +466,7 @@ namespace sbx
                                     DataFactura.FacturaElectronica = FacturaElectronica;
                                     DataFactura.FacturaJSON = !string.IsNullOrEmpty(DataVenta.Data![0].FacturaJSON) ? DataVenta.Data![0].FacturaJSON : "";
 
-                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA, MensajeFinalTirilla,false);
+                                    StringBuilder tirilla = GenerarTirillaPOS.GenerarTirillaFactura(DataFactura, ANCHO_TIRILLA, MensajeFinalTirilla, false);
 
                                     string carpetaFacturas = "Facturas";
                                     if (!Directory.Exists(carpetaFacturas))
@@ -599,6 +602,82 @@ namespace sbx
 
             string ruta = Path.Combine(carpeta, $"factura_{numeroFactura}.png");
             tirillaFinal.Save(ruta, ImageFormat.Png);
+        }
+
+        private async void btn_ver_medios_pagos_Click(object sender, EventArgs e)
+        {
+            decimal pagosEfectivo = 0;
+            decimal pagosNequi = 0;
+            decimal pagosDaviPlata = 0;
+            decimal pagosBancolombiaQR = 0;
+            decimal pagosTransferencia = 0;
+            decimal pagosTarjetaCredito = 0;
+            decimal pagosTarjetaDebito = 0;
+            var metodos = new List<string>();
+            var respPagos = await _IPagosVenta.List(Id_Venta);
+            foreach (var item2 in respPagos.Data!)
+            {
+                switch (item2.Nombre)
+                {
+                    case "Efectivo":
+                        if (lbl_medio_pago.Text != "Varios")
+                            pagosEfectivo += item2.Monto;
+                        else
+                            pagosEfectivo += item2.Recibido;
+                        break;
+                    case "Nequi":
+                        pagosNequi += item2.Recibido;
+                        break;
+                    case "DaviPlata":
+                        pagosDaviPlata += item2.Recibido;
+                        break;
+                    case "Bancolombia QR":
+                        pagosBancolombiaQR += item2.Recibido;
+                        break;
+                    case "Transferencia":
+                        pagosTransferencia += item2.Recibido;
+                        break;
+                    case "Tarjeta Crédito":
+                        pagosTarjetaCredito += item2.Recibido;
+                        break;
+                    case "Tarjeta Débito":
+                        pagosTarjetaDebito += item2.Recibido;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Cultura colombiana para formato moneda
+            var culturaColombia = new CultureInfo("es-CO");
+
+            // Construir el mensaje dinámicamente
+            var mensajeBuilder = new System.Text.StringBuilder();
+            mensajeBuilder.AppendLine("Métodos de pago utilizados:");
+
+            if (pagosEfectivo > 0)
+                mensajeBuilder.AppendLine($"Efectivo: {pagosEfectivo.ToString("C",culturaColombia)}");
+
+            if (pagosNequi > 0)
+                mensajeBuilder.AppendLine($"Nequi: {pagosNequi.ToString("C", culturaColombia)}");
+
+            if (pagosDaviPlata > 0)
+                mensajeBuilder.AppendLine($"DaviPlata: {pagosDaviPlata.ToString("C", culturaColombia)}");
+
+            if (pagosBancolombiaQR > 0)
+                mensajeBuilder.AppendLine($"Bancolombia QR: {pagosBancolombiaQR.ToString("C", culturaColombia)}");
+
+            if (pagosTransferencia > 0)
+                mensajeBuilder.AppendLine($"Transferencia: {pagosTransferencia.ToString("C", culturaColombia)}");
+
+            if (pagosTarjetaCredito > 0)
+                mensajeBuilder.AppendLine($"Tarjeta Crédito: {pagosTarjetaCredito.ToString("C", culturaColombia)}");
+
+            if (pagosTarjetaDebito > 0)
+                mensajeBuilder.AppendLine($"Tarjeta Débito: {pagosTarjetaDebito.ToString("C", culturaColombia)}");
+
+            // Mostrar al usuario
+            MessageBox.Show(mensajeBuilder.ToString(), "Detalle de pagos", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

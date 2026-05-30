@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarNotaCredito));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             label2 = new Label();
             txt_busca_factura = new TextBox();
             btn_busca_factura = new Button();
@@ -59,6 +59,21 @@
             lbl_cantidadProductos = new Label();
             label4 = new Label();
             dtg_ventas = new DataGridView();
+            cl_id_detalle_venta = new DataGridViewTextBoxColumn();
+            cl_seleccionado = new DataGridViewCheckBoxColumn();
+            cl_idProducto = new DataGridViewTextBoxColumn();
+            cl_sku = new DataGridViewTextBoxColumn();
+            cl_codigo_barras = new DataGridViewTextBoxColumn();
+            cl_nombre = new DataGridViewTextBoxColumn();
+            cl_unidadMedida = new DataGridViewTextBoxColumn();
+            cl_precio = new DataGridViewTextBoxColumn();
+            cl_cantidad = new DataGridViewTextBoxColumn();
+            cl_cantidad_devolver = new DataGridViewTextBoxColumn();
+            cl_descuento = new DataGridViewTextBoxColumn();
+            cl_tributo = new DataGridViewTextBoxColumn();
+            cl_impuesto = new DataGridViewTextBoxColumn();
+            cl_total = new DataGridViewTextBoxColumn();
+            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
             lbl_vendedor = new Label();
             label5 = new Label();
             lbl_medio_pago = new Label();
@@ -77,21 +92,7 @@
             panel2 = new Panel();
             lbl_cantidad_devolucion = new Label();
             label17 = new Label();
-            cl_id_detalle_venta = new DataGridViewTextBoxColumn();
-            cl_seleccionado = new DataGridViewCheckBoxColumn();
-            cl_idProducto = new DataGridViewTextBoxColumn();
-            cl_sku = new DataGridViewTextBoxColumn();
-            cl_codigo_barras = new DataGridViewTextBoxColumn();
-            cl_nombre = new DataGridViewTextBoxColumn();
-            cl_unidadMedida = new DataGridViewTextBoxColumn();
-            cl_precio = new DataGridViewTextBoxColumn();
-            cl_cantidad = new DataGridViewTextBoxColumn();
-            cl_cantidad_devolver = new DataGridViewTextBoxColumn();
-            cl_descuento = new DataGridViewTextBoxColumn();
-            cl_tributo = new DataGridViewTextBoxColumn();
-            cl_impuesto = new DataGridViewTextBoxColumn();
-            cl_total = new DataGridViewTextBoxColumn();
-            cl_fecha_vencimiento = new DataGridViewTextBoxColumn();
+            btn_ver_medios_pagos = new Button();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_ventas).BeginInit();
             panel1.SuspendLayout();
@@ -154,7 +155,7 @@
             // 
             lbl_referencia.AutoSize = true;
             lbl_referencia.Font = new Font("Segoe UI", 9.75F);
-            lbl_referencia.Location = new Point(584, 84);
+            lbl_referencia.Location = new Point(622, 84);
             lbl_referencia.Name = "lbl_referencia";
             lbl_referencia.Size = new Size(13, 17);
             lbl_referencia.TabIndex = 162;
@@ -174,7 +175,7 @@
             // 
             lbl_banco.AutoSize = true;
             lbl_banco.Font = new Font("Segoe UI", 9.75F);
-            lbl_banco.Location = new Point(584, 110);
+            lbl_banco.Location = new Point(622, 110);
             lbl_banco.Name = "lbl_banco";
             lbl_banco.Size = new Size(13, 17);
             lbl_banco.TabIndex = 160;
@@ -404,34 +405,34 @@
             dtg_ventas.AllowUserToDeleteRows = false;
             dtg_ventas.AllowUserToOrderColumns = true;
             dtg_ventas.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_ventas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_ventas.Columns.AddRange(new DataGridViewColumn[] { cl_id_detalle_venta, cl_seleccionado, cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_unidadMedida, cl_precio, cl_cantidad, cl_cantidad_devolver, cl_descuento, cl_tributo, cl_impuesto, cl_total, cl_fecha_vencimiento });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_ventas.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_ventas.Location = new Point(4, 165);
             dtg_ventas.Name = "dtg_ventas";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_ventas.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_ventas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_ventas.Size = new Size(1155, 216);
             dtg_ventas.TabIndex = 157;
@@ -439,6 +440,109 @@
             dtg_ventas.CellEndEdit += dtg_ventas_CellEndEdit;
             dtg_ventas.EditingControlShowing += dtg_ventas_EditingControlShowing;
             dtg_ventas.KeyPress += dtg_ventas_KeyPress;
+            // 
+            // cl_id_detalle_venta
+            // 
+            cl_id_detalle_venta.HeaderText = "Id Detalle venta";
+            cl_id_detalle_venta.Name = "cl_id_detalle_venta";
+            cl_id_detalle_venta.ReadOnly = true;
+            cl_id_detalle_venta.Visible = false;
+            // 
+            // cl_seleccionado
+            // 
+            cl_seleccionado.HeaderText = "";
+            cl_seleccionado.Name = "cl_seleccionado";
+            cl_seleccionado.ReadOnly = true;
+            cl_seleccionado.Resizable = DataGridViewTriState.True;
+            cl_seleccionado.SortMode = DataGridViewColumnSortMode.Automatic;
+            cl_seleccionado.Width = 50;
+            // 
+            // cl_idProducto
+            // 
+            cl_idProducto.HeaderText = "Id";
+            cl_idProducto.Name = "cl_idProducto";
+            cl_idProducto.ReadOnly = true;
+            cl_idProducto.Width = 50;
+            // 
+            // cl_sku
+            // 
+            cl_sku.HeaderText = "sku";
+            cl_sku.Name = "cl_sku";
+            cl_sku.ReadOnly = true;
+            // 
+            // cl_codigo_barras
+            // 
+            cl_codigo_barras.HeaderText = "Codigo b";
+            cl_codigo_barras.Name = "cl_codigo_barras";
+            cl_codigo_barras.ReadOnly = true;
+            cl_codigo_barras.Width = 120;
+            // 
+            // cl_nombre
+            // 
+            cl_nombre.HeaderText = "Nombre";
+            cl_nombre.Name = "cl_nombre";
+            cl_nombre.ReadOnly = true;
+            cl_nombre.Width = 150;
+            // 
+            // cl_unidadMedida
+            // 
+            cl_unidadMedida.HeaderText = "UM";
+            cl_unidadMedida.Name = "cl_unidadMedida";
+            cl_unidadMedida.ReadOnly = true;
+            cl_unidadMedida.Visible = false;
+            // 
+            // cl_precio
+            // 
+            cl_precio.HeaderText = "Precio";
+            cl_precio.Name = "cl_precio";
+            cl_precio.ReadOnly = true;
+            cl_precio.Width = 150;
+            // 
+            // cl_cantidad
+            // 
+            cl_cantidad.HeaderText = "Cantidad";
+            cl_cantidad.Name = "cl_cantidad";
+            cl_cantidad.ReadOnly = true;
+            // 
+            // cl_cantidad_devolver
+            // 
+            cl_cantidad_devolver.HeaderText = "Cant. dev";
+            cl_cantidad_devolver.Name = "cl_cantidad_devolver";
+            cl_cantidad_devolver.ReadOnly = true;
+            // 
+            // cl_descuento
+            // 
+            cl_descuento.HeaderText = "Desc %";
+            cl_descuento.Name = "cl_descuento";
+            cl_descuento.ReadOnly = true;
+            cl_descuento.Width = 80;
+            // 
+            // cl_tributo
+            // 
+            cl_tributo.HeaderText = "Tributo";
+            cl_tributo.Name = "cl_tributo";
+            cl_tributo.Width = 80;
+            // 
+            // cl_impuesto
+            // 
+            cl_impuesto.HeaderText = "Impuesto";
+            cl_impuesto.Name = "cl_impuesto";
+            cl_impuesto.ReadOnly = true;
+            cl_impuesto.Width = 67;
+            // 
+            // cl_total
+            // 
+            cl_total.HeaderText = "Total";
+            cl_total.Name = "cl_total";
+            cl_total.ReadOnly = true;
+            cl_total.Width = 142;
+            // 
+            // cl_fecha_vencimiento
+            // 
+            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
+            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
+            cl_fecha_vencimiento.Visible = false;
+            cl_fecha_vencimiento.Width = 200;
             // 
             // lbl_vendedor
             // 
@@ -464,7 +568,7 @@
             // 
             lbl_medio_pago.AutoSize = true;
             lbl_medio_pago.Font = new Font("Segoe UI", 9.75F);
-            lbl_medio_pago.Location = new Point(584, 58);
+            lbl_medio_pago.Location = new Point(622, 58);
             lbl_medio_pago.Name = "lbl_medio_pago";
             lbl_medio_pago.Size = new Size(13, 17);
             lbl_medio_pago.TabIndex = 154;
@@ -591,6 +695,7 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(btn_ver_medios_pagos);
             panel1.Controls.Add(lbl_cliente);
             panel1.Controls.Add(lbl_factura);
             panel1.Controls.Add(lbl_vendedor);
@@ -636,108 +741,19 @@
             label17.TabIndex = 171;
             label17.Text = "Cantidad devolucion: ";
             // 
-            // cl_id_detalle_venta
+            // btn_ver_medios_pagos
             // 
-            cl_id_detalle_venta.HeaderText = "Id Detalle venta";
-            cl_id_detalle_venta.Name = "cl_id_detalle_venta";
-            cl_id_detalle_venta.ReadOnly = true;
-            cl_id_detalle_venta.Visible = false;
-            // 
-            // cl_seleccionado
-            // 
-            cl_seleccionado.HeaderText = "";
-            cl_seleccionado.Name = "cl_seleccionado";
-            cl_seleccionado.ReadOnly = true;
-            cl_seleccionado.Resizable = DataGridViewTriState.True;
-            cl_seleccionado.SortMode = DataGridViewColumnSortMode.Automatic;
-            cl_seleccionado.Width = 50;
-            // 
-            // cl_idProducto
-            // 
-            cl_idProducto.HeaderText = "Id";
-            cl_idProducto.Name = "cl_idProducto";
-            cl_idProducto.ReadOnly = true;
-            cl_idProducto.Width = 50;
-            // 
-            // cl_sku
-            // 
-            cl_sku.HeaderText = "sku";
-            cl_sku.Name = "cl_sku";
-            cl_sku.ReadOnly = true;
-            // 
-            // cl_codigo_barras
-            // 
-            cl_codigo_barras.HeaderText = "Codigo b";
-            cl_codigo_barras.Name = "cl_codigo_barras";
-            cl_codigo_barras.ReadOnly = true;
-            cl_codigo_barras.Width = 120;
-            // 
-            // cl_nombre
-            // 
-            cl_nombre.HeaderText = "Nombre";
-            cl_nombre.Name = "cl_nombre";
-            cl_nombre.ReadOnly = true;
-            cl_nombre.Width = 150;
-            // 
-            // cl_unidadMedida
-            // 
-            cl_unidadMedida.HeaderText = "UM";
-            cl_unidadMedida.Name = "cl_unidadMedida";
-            cl_unidadMedida.ReadOnly = true;
-            cl_unidadMedida.Visible = false;
-            // 
-            // cl_precio
-            // 
-            cl_precio.HeaderText = "Precio";
-            cl_precio.Name = "cl_precio";
-            cl_precio.ReadOnly = true;
-            cl_precio.Width = 150;
-            // 
-            // cl_cantidad
-            // 
-            cl_cantidad.HeaderText = "Cantidad";
-            cl_cantidad.Name = "cl_cantidad";
-            cl_cantidad.ReadOnly = true;
-            // 
-            // cl_cantidad_devolver
-            // 
-            cl_cantidad_devolver.HeaderText = "Cant. dev";
-            cl_cantidad_devolver.Name = "cl_cantidad_devolver";
-            cl_cantidad_devolver.ReadOnly = true;
-            // 
-            // cl_descuento
-            // 
-            cl_descuento.HeaderText = "Desc %";
-            cl_descuento.Name = "cl_descuento";
-            cl_descuento.ReadOnly = true;
-            cl_descuento.Width = 80;
-            // 
-            // cl_tributo
-            // 
-            cl_tributo.HeaderText = "Tributo";
-            cl_tributo.Name = "cl_tributo";
-            cl_tributo.Width = 80;
-            // 
-            // cl_impuesto
-            // 
-            cl_impuesto.HeaderText = "Impuesto";
-            cl_impuesto.Name = "cl_impuesto";
-            cl_impuesto.ReadOnly = true;
-            cl_impuesto.Width = 67;
-            // 
-            // cl_total
-            // 
-            cl_total.HeaderText = "Total";
-            cl_total.Name = "cl_total";
-            cl_total.ReadOnly = true;
-            cl_total.Width = 142;
-            // 
-            // cl_fecha_vencimiento
-            // 
-            cl_fecha_vencimiento.HeaderText = "Fecha vencimiento";
-            cl_fecha_vencimiento.Name = "cl_fecha_vencimiento";
-            cl_fecha_vencimiento.Visible = false;
-            cl_fecha_vencimiento.Width = 200;
+            btn_ver_medios_pagos.FlatAppearance.BorderSize = 0;
+            btn_ver_medios_pagos.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_ver_medios_pagos.FlatStyle = FlatStyle.Flat;
+            btn_ver_medios_pagos.Image = (Image)resources.GetObject("btn_ver_medios_pagos.Image");
+            btn_ver_medios_pagos.Location = new Point(579, 3);
+            btn_ver_medios_pagos.Name = "btn_ver_medios_pagos";
+            btn_ver_medios_pagos.Size = new Size(26, 26);
+            btn_ver_medios_pagos.TabIndex = 183;
+            btn_ver_medios_pagos.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_ver_medios_pagos.UseVisualStyleBackColor = true;
+            btn_ver_medios_pagos.Click += btn_ver_medios_pagos_Click;
             // 
             // AgregarNotaCredito
             // 
@@ -846,5 +862,6 @@
         private DataGridViewTextBoxColumn cl_impuesto;
         private DataGridViewTextBoxColumn cl_total;
         private DataGridViewTextBoxColumn cl_fecha_vencimiento;
+        private Button btn_ver_medios_pagos;
     }
 }

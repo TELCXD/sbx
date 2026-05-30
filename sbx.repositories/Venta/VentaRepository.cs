@@ -524,7 +524,7 @@ namespace sbx.repositories.Venta
                 {
                     await connection.OpenAsync();
 
-                    string sql = @"SELECT 
+                    string sql = @"SELECT DISTINCT 
                                     A.IdVenta,
                                     A.Prefijo,
                                     A.Consecutivo,
@@ -582,7 +582,8 @@ namespace sbx.repositories.Venta
                                     C.Referencia,
                                     C.IdBanco,
                                     E.Nombre NombreBanco,
-                                    C.Recibido,
+                                    --C.Recibido,
+                                    (SELECT SUM(Recibido) FROM T_PagosVenta WHERE IdVenta = A.IdVenta) Recibido,
                                     C.Monto,
                                     C.CreationDate FechaPagoFactura,
                                     C.IdUserAction IdUserActionPagoFactura 
@@ -644,7 +645,7 @@ namespace sbx.repositories.Venta
                         FiltroPorUsuario = $" AND A.IdUserAction = {idUser} ";
                     }
 
-                    string sql = @"SELECT 
+                    string sql = @"SELECT DISTINCT 
                                     A.IdVenta,
                                     A.Prefijo,
                                     A.Consecutivo,

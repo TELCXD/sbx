@@ -6,6 +6,7 @@ using sbx.core.Entities.AgregaVenta;
 using sbx.core.Entities.Auth;
 using sbx.core.Entities.Cotizacion;
 using sbx.core.Entities.FacturaEletronica;
+using sbx.core.Entities.MetodoPago;
 using sbx.core.Entities.PagosVenta;
 using sbx.core.Entities.RangoNumeracion;
 using sbx.core.Entities.Venta;
@@ -19,6 +20,7 @@ using sbx.core.Interfaces.FacturacionElectronica;
 using sbx.core.Interfaces.FechaVencimiento;
 using sbx.core.Interfaces.ListaPrecios;
 using sbx.core.Interfaces.MedioPago;
+using sbx.core.Interfaces.PagosVenta;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.PrecioCliente;
 using sbx.core.Interfaces.PrecioProducto;
@@ -55,6 +57,7 @@ namespace sbx
         private readonly ITienda _ITienda;
         private readonly IParametros _IParametros;
         private readonly ICotizacion _ICotizacion;
+        private readonly IPagosVenta _IPagosVenta;
         string busqueda = "";
         AgregaVentaEntitie agregaVentaEntitie = new AgregaVentaEntitie();
         VentaEntitie venta = new VentaEntitie();
@@ -91,12 +94,16 @@ namespace sbx
         string DescuentoMaximo = "";
         DateTime FechaVSeleccionada = new DateTime(1900, 1, 1);
         private readonly IFechaVencimiento _IFechaVencimiento;
+        private AgregaVariosMetodosPago? _AgregaVariosMetodosPago;
+        bool PagoConVariosMetodosPago = false;
+        List<AgregaVariosMediosPago> ListagregaVariosMediosPagos;
+        int IdMedioPagoVarios = 0; 
 
         public AgregarVentas(IListaPrecios listaPrecios, IVendedor vendedor, IMedioPago medioPago,
             IBanco banco, IServiceProvider serviceProvider, IProducto iProducto, ICliente cliente, IPrecioCliente precioCliente,
             IPrecioProducto precioProducto, IPromocionProducto promocionProducto, IRangoNumeracion iRangoNumeracion, IVenta venta,
-            ITienda tienda, IParametros parametros, ICaja caja, ICotizacion cotizacion, 
-            ICredencialesApi credencialesApi, IAuthService authService, IFacturas facturas, IRangoNumeracionFE iRangoNumeracionFE, IFechaVencimiento fechaVencimiento)
+            ITienda tienda, IParametros parametros, ICaja caja, ICotizacion cotizacion,
+            ICredencialesApi credencialesApi, IAuthService authService, IFacturas facturas, IRangoNumeracionFE iRangoNumeracionFE, IFechaVencimiento fechaVencimiento, IPagosVenta iPagosVenta)
         {
             InitializeComponent();
             _IListaPrecios = listaPrecios;
@@ -120,6 +127,7 @@ namespace sbx
             _IFacturas = facturas;
             _IRangoNumeracionFE = iRangoNumeracionFE;
             _IFechaVencimiento = fechaVencimiento;
+            _IPagosVenta = iPagosVenta;
         }
 
         public dynamic? Permisos
@@ -167,6 +175,17 @@ namespace sbx
             cbx_medio_pago.ValueMember = "IdMetodoPago";
             cbx_medio_pago.DisplayMember = "Nombre";
             cbx_medio_pago.SelectedIndex = 0;
+
+            var lista = ((IEnumerable<dynamic>)resp.Data!);
+
+            var filtrados = lista
+                .Where(b => b.Nombre == "Varios")
+                .ToList();
+
+            if (filtrados.Any())
+            {
+                IdMedioPagoVarios = filtrados.First().IdMetodoPago;
+            }
 
             resp = await _IBanco.List();
             cbx_banco.DataSource = resp.Data;
@@ -333,7 +352,7 @@ namespace sbx
                     {
                         bool esEnteroValido = int.TryParse(txt_buscar_producto.Text, out int resultado);
 
-                        if (esEnteroValido) 
+                        if (esEnteroValido)
                         {
                             if (txt_busca_cliente.Text.Trim() != "")
                             {
@@ -1164,7 +1183,7 @@ namespace sbx
                                             {
                                                 errorProvider1.SetError(txt_buscar_producto, $"{cbx_busca_por.Text} no encontrado");
                                             }
-                                        }                                           
+                                        }
                                     }
                                 }
                             }
@@ -1663,7 +1682,7 @@ namespace sbx
                     _ConfirmaFechaVecimiento.FormClosed += (s, args) => _ConfirmaFechaVecimiento = null;
                     _ConfirmaFechaVecimiento.ShowDialog();
                 }
-                else if(resp.Data.Count == 1)
+                else if (resp.Data.Count == 1)
                 {
                     FechaVSeleccionada = Convert.ToDateTime(resp.Data[0].FechaVencimiento);
                 }
@@ -1889,7 +1908,7 @@ namespace sbx
                     SubtotalLinea = Convert.ToDecimal(fila.Cells["cl_precio"].Value, new CultureInfo("es-CO")) * Convert.ToDecimal(fila.Cells["cl_cantidad"].Value, new CultureInfo("es-CO"));
                     Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
                     DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(fila.Cells["cl_descuento"].Value, new CultureInfo("es-CO")));
-                    if (fila.Cells["cl_tributo"].Value.ToString() == "INC Bolsas") 
+                    if (fila.Cells["cl_tributo"].Value.ToString() == "INC Bolsas")
                     {
                         Impuesto += Convert.ToDecimal(fila.Cells["cl_impuesto"].Value, new CultureInfo("es-CO"));
                     }
@@ -1912,6 +1931,7 @@ namespace sbx
                 txt_busca_cliente.Enabled = false;
                 btn_busca_cliente.Enabled = false;
                 pnl_pagos.Enabled = true;
+                btn_varios_medios_pago.Enabled = true;
                 ValidarModoPagos();
             }
             else
@@ -1921,6 +1941,7 @@ namespace sbx
                 btn_busca_cliente.Enabled = true;
                 pnl_pagos.Enabled = false;
                 cbx_lista_precio.Enabled = true;
+                btn_varios_medios_pago.Enabled = false;
             }
         }
 
@@ -2027,7 +2048,7 @@ namespace sbx
                 }
                 return;
             }
-                
+
 
             if (e.KeyChar == decimalSeparator && !((TextBox)sender).Text.Contains(decimalSeparator))
                 return;
@@ -2046,7 +2067,7 @@ namespace sbx
             if (e.ColumnIndex == 5 || e.ColumnIndex == 6)
             {
                 var celda = dtg_producto[e.ColumnIndex, e.RowIndex];
-                
+
                 if (celda.Value == null || string.IsNullOrWhiteSpace(celda.Value.ToString()))
                 {
                     if (e.ColumnIndex == 5)
@@ -2404,7 +2425,7 @@ namespace sbx
 
                         bool esNumero = decimal.TryParse(DescuentoMaximo, out _);
 
-                        if (esNumero) 
+                        if (esNumero)
                         {
                             if (Convert.ToDecimal(celda.Value, new CultureInfo("es-CO")) > Convert.ToDecimal(DescuentoMaximo))
                             {
@@ -2636,9 +2657,17 @@ namespace sbx
                 bool continuar = true;
                 errorProvider1.Clear();
 
-                if (txt_valor_pago.Text.Trim() != "")
+                if (!PagoConVariosMetodosPago)
                 {
-                    if (cbx_medio_pago.Text == "Efectivo")
+                    if(txt_valor_pago.Text.Trim() == "")
+                    {
+                        errorProvider1.SetError(txt_valor_pago, "Debe ingresar el valor a pagar");
+                        return;
+                    }
+                       
+                }
+
+                    if (cbx_medio_pago.Text == "Efectivo" && PagoConVariosMetodosPago == false)
                     {
                         if (Convert.ToDecimal(lbl_cambio.Text, new CultureInfo("es-CO")) < 0)
                         {
@@ -2652,7 +2681,14 @@ namespace sbx
                         DateTime FechaVencimiento = DateTime.Now;
                         venta.IdCliente = agregaVentaEntitie.IdCliente;
                         venta.IdVendedor = Convert.ToInt32(cbx_vendedor.SelectedValue);
-                        venta.IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue);
+                        if (PagoConVariosMetodosPago)
+                        {
+                            venta.IdMetodoPago = IdMedioPagoVarios;
+                        }else
+                        {
+                            venta.IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue);
+                        }
+                        
                         venta.Estado = "FACTURADA";
 
                         var respDoc = await _IRangoNumeracion.IdentificaDocumento(21);
@@ -2674,8 +2710,8 @@ namespace sbx
                                 string Token = "";
                                 bool Continuar = true;
 
-                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) 
-                                { 
+                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1)
+                                {
                                     FacturaElectronica = true;
 
                                     AuthEntitie authEntitie = new AuthEntitie
@@ -2758,7 +2794,7 @@ namespace sbx
                                     }
                                 }
 
-                                if (Continuar) 
+                                if (Continuar)
                                 {
                                     if (Actual <= NumHasta)
                                     {
@@ -2804,15 +2840,37 @@ namespace sbx
                                             venta.detalleVentas = detalleVentas;
 
                                             List<PagosVentaEntitie> pagosVentaEntities = new List<PagosVentaEntitie>();
-                                            PagosVentaEntitie pagosVentaEntitie = new PagosVentaEntitie
+
+                                            if (PagoConVariosMetodosPago) 
                                             {
-                                                IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue),
-                                                Recibido = Convert.ToDecimal(txt_valor_pago.Text, new CultureInfo("es-CO")),
-                                                Monto = Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
-                                                Referencia = txt_referencia_pago.Text,
-                                                IdBanco = Convert.ToInt32(cbx_banco.SelectedValue)
-                                            };
-                                            pagosVentaEntities.Add(pagosVentaEntitie);
+                                                foreach (var item in ListagregaVariosMediosPagos)
+                                                {
+                                                    var pagosVe = new PagosVentaEntitie
+                                                    {
+                                                        IdMetodoPago = item.IdMetodoPago,
+                                                        Recibido = item.valor,
+                                                        Monto = Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
+                                                        Referencia = item.Referencia,
+                                                        IdBanco = item.IdBanco
+                                                    };
+
+                                                    pagosVentaEntities.Add(pagosVe);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                PagosVentaEntitie pagosVentaEntitie = new PagosVentaEntitie
+                                                {
+                                                    IdMetodoPago = Convert.ToInt32(cbx_medio_pago.SelectedValue),
+                                                    Recibido = Convert.ToDecimal(txt_valor_pago.Text, new CultureInfo("es-CO")),
+                                                    Monto = Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO")),
+                                                    Referencia = txt_referencia_pago.Text,
+                                                    IdBanco = Convert.ToInt32(cbx_banco.SelectedValue)
+                                                };
+
+                                                pagosVentaEntities.Add(pagosVentaEntitie);
+                                            }
+
                                             venta.pagosVenta = pagosVentaEntities;
 
                                             var respGuardado = await _IVenta.Create(venta, Convert.ToInt32(_Permisos?[0]?.IdUser));
@@ -2889,7 +2947,7 @@ namespace sbx
                                                                                           "21"; // 18. IVA, 21. No aplica *
                                                                     customer.municipality_id = DataFacturaRegistrada.Data[0].IdMunicipioApiDian.ToString(); //"1079"; //Cali, valle del cauca
 
-                                                                    List <WithholdingTax> Listwithholding_taxes = new List<WithholdingTax>();
+                                                                    List<WithholdingTax> Listwithholding_taxes = new List<WithholdingTax>();
                                                                     List<Item> Listitems = new List<Item>();
                                                                     foreach (var ItemsVenta in DataFacturaRegistrada.Data)
                                                                     {
@@ -2902,7 +2960,7 @@ namespace sbx
                                                                         //Listwithholding_taxes.Add(withholding_taxes);
 
                                                                         int v_is_excluded = 1;
-                                                                        if (ItemsVenta.NombreTributo.ToString() == "IVA" && Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO")) > 0) 
+                                                                        if (ItemsVenta.NombreTributo.ToString() == "IVA" && Convert.ToDecimal(ItemsVenta.Impuesto, new CultureInfo("es-CO")) > 0)
                                                                         {
                                                                             v_is_excluded = 0;
                                                                         }
@@ -3044,6 +3102,7 @@ namespace sbx
                                                             if (DataTienda.Data.Count > 0)
                                                             {
                                                                 FacturaPOSEntitie DataFactura = new FacturaPOSEntitie();
+                                                                DataFactura.IdVenta = IdVentaCreada;
                                                                 if (FacturaElectronica)
                                                                 {
                                                                     DataFactura.NumeroFactura = actualizarFacturaForFacturaElectronicaEntitie.NumberFacturaDIAN;
@@ -3171,6 +3230,10 @@ namespace sbx
                                                                 }
 
                                                                 DataFactura.Items = ListItemFacturaEntitie;
+
+                                                            var resp = await mtd_ver_medios_pago(DataFactura.IdVenta, DataFactura.FormaPago);
+
+                                                            DataFactura.metodosPagos = resp;
 
                                                                 var DataParametros = await _IParametros.List("");
 
@@ -3312,7 +3375,7 @@ namespace sbx
                                                       Por favor, solicite una nueva resolución de numeración para continuar con la emisión de facturas. No es posible crear factura electronica",
                                                           "Límite de facturación alcanzado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
-                                }                              
+                                }
                             }
                             else
                             {
@@ -3328,11 +3391,8 @@ namespace sbx
                     {
                         errorProvider1.SetError(lbl_cambio, "Valor debe ser mayor o igual a cero");
                     }
-                }
-                else
-                {
-                    errorProvider1.SetError(txt_valor_pago, "Debe ingresar el valor a pagar");
-                }
+                
+
             }
             finally
             {
@@ -3340,6 +3400,11 @@ namespace sbx
                 this.panel1.Enabled = true;
                 pnl_pagos.Enabled = true;
                 dtg_producto.Enabled = true;
+                PagoConVariosMetodosPago = false;
+                if (ListagregaVariosMediosPagos != null)
+                {
+                    ListagregaVariosMediosPagos.Clear();
+                }
             }
         }
 
@@ -4309,7 +4374,7 @@ namespace sbx
                                                      Total.ToString("N2", new CultureInfo("es-CO")),
                                                      item.UnidadMedida,
                                                      item.CostoUnitario.ToString("N2", new CultureInfo("es-CO")),
-                                                     item.NombreTributo);                                               
+                                                     item.NombreTributo);
                                             }
                                             else
                                             {
@@ -4528,6 +4593,151 @@ namespace sbx
                 return 1;
             else
                 return 11 - residuo;
+        }
+
+        private void btn_varios_medios_pago_Click(object sender, EventArgs e)
+        {
+            _AgregaVariosMetodosPago = _serviceProvider.GetRequiredService<AgregaVariosMetodosPago>();
+            _AgregaVariosMetodosPago.EnviaConfirma += _Buscador_EnviaConfirma;
+            _AgregaVariosMetodosPago.Total = Convert.ToDecimal(lbl_total.Text, new CultureInfo("es-CO"));
+            _AgregaVariosMetodosPago.FormClosed += (s, args) => _AgregaVariosMetodosPago = null;
+            _AgregaVariosMetodosPago.ShowDialog();
+        }
+
+        private async void _Buscador_EnviaConfirma(bool confirmacion, List<AgregaVariosMediosPago> agregaVariosMediosPagos)
+        {
+            PagoConVariosMetodosPago = confirmacion;
+            ListagregaVariosMediosPagos = agregaVariosMediosPagos;
+            await GuardarVenta();
+        }
+
+        public async Task<List<metodosPago>> mtd_ver_medios_pago(int IdVenta, string FormaPago)
+        {
+            decimal pagosEfectivo = 0;
+            decimal pagosNequi = 0;
+            decimal pagosDaviPlata = 0;
+            decimal pagosBancolombiaQR = 0;
+            decimal pagosTransferencia = 0;
+            decimal pagosTarjetaCredito = 0;
+            decimal pagosTarjetaDebito = 0;
+            var metodos = new List<string>();
+            var Pagos = new List<metodosPago>();
+            var respPagos = await _IPagosVenta.List(IdVenta);
+            foreach (var item2 in respPagos.Data!)
+            {
+                switch (item2.Nombre)
+                {
+                    case "Efectivo":
+                        if (FormaPago != "Varios")
+                        {
+                            pagosEfectivo += item2.Monto;
+                        }
+                        else
+                        {
+                            pagosEfectivo += item2.Recibido;
+                        }
+
+                        break;
+                    case "Nequi":
+                        pagosNequi += item2.Recibido;
+
+                        break;
+                    case "DaviPlata":
+                        pagosDaviPlata += item2.Recibido;
+
+                        break;
+                    case "Bancolombia QR":
+                        pagosBancolombiaQR += item2.Recibido;
+
+                        break;
+                    case "Transferencia":
+                        pagosTransferencia += item2.Recibido;
+
+                        break;
+                    case "Tarjeta Crédito":
+                        pagosTarjetaCredito += item2.Recibido;
+
+                        break;
+                    case "Tarjeta Débito":
+                        pagosTarjetaDebito += item2.Recibido;
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (pagosEfectivo > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Efectivo",
+                    valor = pagosEfectivo
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosNequi > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Nequi",
+                    valor = pagosNequi
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosDaviPlata > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "DaviPlata",
+                    valor = pagosDaviPlata
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosBancolombiaQR > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Bancolombia QR",
+                    valor = pagosBancolombiaQR
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosTransferencia > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Transferencia",
+                    valor = pagosTransferencia
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosTarjetaCredito > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Tarjeta Crédito",
+                    valor = pagosTarjetaCredito
+                };
+                Pagos.Add(pago);
+            }
+
+            if (pagosTarjetaDebito > 0)
+            {
+                var pago = new metodosPago
+                {
+                    nombre = "Tarjeta Débito",
+                    valor = pagosTarjetaDebito
+                };
+                Pagos.Add(pago);
+            }
+
+            return Pagos;
         }
     }
 }

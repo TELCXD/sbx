@@ -82,6 +82,7 @@
             label15 = new Label();
             lbl_estado = new Label();
             label18 = new Label();
+            btn_ver_medios_pagos = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_ventas).BeginInit();
             panel3.SuspendLayout();
@@ -142,7 +143,7 @@
             // 
             lbl_medio_pago.AutoSize = true;
             lbl_medio_pago.Font = new Font("Segoe UI", 9.75F);
-            lbl_medio_pago.Location = new Point(584, 68);
+            lbl_medio_pago.Location = new Point(620, 68);
             lbl_medio_pago.Name = "lbl_medio_pago";
             lbl_medio_pago.Size = new Size(13, 17);
             lbl_medio_pago.TabIndex = 5;
@@ -512,7 +513,7 @@
             // 
             lbl_banco.AutoSize = true;
             lbl_banco.Font = new Font("Segoe UI", 9.75F);
-            lbl_banco.Location = new Point(584, 120);
+            lbl_banco.Location = new Point(620, 120);
             lbl_banco.Name = "lbl_banco";
             lbl_banco.Size = new Size(13, 17);
             lbl_banco.TabIndex = 144;
@@ -532,7 +533,7 @@
             // 
             lbl_referencia.AutoSize = true;
             lbl_referencia.Font = new Font("Segoe UI", 9.75F);
-            lbl_referencia.Location = new Point(584, 94);
+            lbl_referencia.Location = new Point(620, 94);
             lbl_referencia.Name = "lbl_referencia";
             lbl_referencia.Size = new Size(13, 17);
             lbl_referencia.TabIndex = 146;
@@ -637,12 +638,27 @@
             label18.TabIndex = 150;
             label18.Text = "Estado:";
             // 
+            // btn_ver_medios_pagos
+            // 
+            btn_ver_medios_pagos.FlatAppearance.BorderSize = 0;
+            btn_ver_medios_pagos.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_ver_medios_pagos.FlatStyle = FlatStyle.Flat;
+            btn_ver_medios_pagos.Image = (Image)resources.GetObject("btn_ver_medios_pagos.Image");
+            btn_ver_medios_pagos.Location = new Point(584, 64);
+            btn_ver_medios_pagos.Name = "btn_ver_medios_pagos";
+            btn_ver_medios_pagos.Size = new Size(26, 26);
+            btn_ver_medios_pagos.TabIndex = 182;
+            btn_ver_medios_pagos.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_ver_medios_pagos.UseVisualStyleBackColor = true;
+            btn_ver_medios_pagos.Click += btn_ver_medios_pagos_Click;
+            // 
             // DetalleVenta
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Window;
             ClientSize = new Size(1111, 562);
+            Controls.Add(btn_ver_medios_pagos);
             Controls.Add(lbl_estado);
             Controls.Add(label18);
             Controls.Add(panel2);
@@ -733,5 +749,6 @@
         private Label label17;
         private Label lbl_iva;
         private Label label20;
+        private Button btn_ver_medios_pagos;
     }
 }

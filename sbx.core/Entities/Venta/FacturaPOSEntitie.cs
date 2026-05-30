@@ -1,8 +1,11 @@
 ﻿
+using sbx.core.Entities.MetodoPago;
+
 namespace sbx.core.Entities.Venta
 {
     public class FacturaPOSEntitie
     {
+        public int IdVenta { get; set; }
         public string NumeroFactura { get; set; } = "";
         public DateTime Fecha { get; set; } = DateTime.Now;
         public string NombreEmpresa { get; set; } = "";
@@ -31,5 +34,6 @@ namespace sbx.core.Entities.Venta
         public decimal iva { get; set; }
         public decimal inc { get; set; }
         public decimal incBolsa { get; set; }
+        public List<metodosPago> metodosPagos { get; set; }
     }
 }
