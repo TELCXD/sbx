@@ -2,7 +2,6 @@
 using sbx.core.Entities.Caja;
 using sbx.core.Entities.Cotizacion;
 using sbx.core.Entities.NotaCredito;
-using sbx.core.Interfaces.FacturacionElectronica;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
@@ -136,6 +135,7 @@ namespace sbx.core.Entities.Venta
 
                 // Forma de pago
                 sb.AppendLine($"FORMA DE PAGO: {factura.FormaPago}");
+
                 if (factura.FormaPago.ToUpper() == "EFECTIVO")
                 {
                     sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N0", new CultureInfo("es-CO"))}");
@@ -308,12 +308,22 @@ namespace sbx.core.Entities.Venta
                 sb.AppendLine($"{"TOTAL:",-20} {factura.Total.ToString("N0", new CultureInfo("es-CO"))}");
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));
 
-                // Forma de pago
                 sb.AppendLine($"FORMA DE PAGO: {factura.FormaPago}");
-                if (factura.FormaPago.ToUpper() == "EFECTIVO")
+                // Forma de pago
+                if (factura.FormaPago == "Varios")
                 {
-                    sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N0", new CultureInfo("es-CO"))}");
-                    sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N0", new CultureInfo("es-CO"))}");
+                    foreach (var item in factura.metodosPagos)
+                    {
+                        sb.AppendLine($"{item.nombre,-20} {item.valor.ToString("N0", new CultureInfo("es-CO"))}");
+                    }
+                }
+                else
+                {
+                    if (factura.FormaPago.ToUpper() == "EFECTIVO")
+                    {
+                        sb.AppendLine($"{"RECIBIDO:",-20} {factura.Recibido.ToString("N0", new CultureInfo("es-CO"))}");
+                        sb.AppendLine($"{"CAMBIO:",-20} {factura.Cambio.ToString("N0", new CultureInfo("es-CO"))}");
+                    }
                 }
 
                 sb.AppendLine(new string('=', ANCHO_TIRILLA));

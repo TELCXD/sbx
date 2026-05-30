@@ -4,6 +4,7 @@ using sbx.core.Entities.Venta;
 using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.Caja;
 using sbx.core.Interfaces.Pago;
+using sbx.core.Interfaces.PagosVenta;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Venta;
 using System.Globalization;
@@ -20,11 +21,12 @@ namespace sbx
         private readonly IVenta _IVenta;
         private readonly IPagosEfectivo _IPagosEfectivo;
         private readonly IParametros _IParametros;
+        private readonly IPagosVenta _IPagosVenta;
         string BuscarPor = "";
         string ModoRedondeo = "N/A";
         string MultiploRendondeo = "50";
 
-        public AddCierre(ICaja caja, IServiceProvider serviceProvider, IVenta venta, IPagosEfectivo pagosEfectivo, IParametros iParametros)
+        public AddCierre(ICaja caja, IServiceProvider serviceProvider, IVenta venta, IPagosEfectivo pagosEfectivo, IParametros iParametros, IPagosVenta pagosVenta)
         {
             InitializeComponent();
             _ICaja = caja;
@@ -32,6 +34,7 @@ namespace sbx
             _IVenta = venta;
             _IPagosEfectivo = pagosEfectivo;
             _IParametros = iParametros;
+            _IPagosVenta = pagosVenta;
         }
 
         public dynamic? Permisos
@@ -153,34 +156,59 @@ namespace sbx
                                         Subtotal += Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                                         SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                                         Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                                        DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
+                                        DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));                                   
+                                    }
 
-                                        switch (item.Nombre)
+                                    var lista = ((IEnumerable<dynamic>)DataVentas.Data!);
+                                    var idVentas = lista
+                                        .Select(b => new
                                         {
-                                            case "Efectivo":
-                                                pagosEfectivo += (SubtotalLinea - DescuentoLinea);
-                                                break;
-                                            case "Nequi":
-                                                pagosNequi += (SubtotalLinea - DescuentoLinea);
-                                                break;
-                                            case "DaviPlata":
-                                                pagosDaviPlata += (SubtotalLinea - DescuentoLinea);
-                                                break;
-                                            case "Bancolombia QR":
-                                                pagosBancolombiaQR += (SubtotalLinea - DescuentoLinea);
-                                                break;
-                                            case "Transferencia":
-                                                pagosTransferencia += (SubtotalLinea - DescuentoLinea);
-                                                break;
-                                            case "Tarjeta Crédito":
-                                                pagosTarjetaCredito += (SubtotalLinea - DescuentoLinea);
-                                                break;
-                                            case "Tarjeta Débito":
-                                                pagosTarjetaDebito += (SubtotalLinea - DescuentoLinea);
-                                                break;
-                                            default:
-                                                break;
-                                        }                                    
+                                            IdVenta = (int)b.IdVenta,
+                                            IdMetodoPago = (int)b.IdMetodoPago
+                                        })
+                                        .Distinct()
+                                        .ToList();
+
+                                    foreach (var id in idVentas)
+                                    {
+                                        var respPagos = await _IPagosVenta.List(id.IdVenta);
+
+                                        foreach (var item2 in respPagos.Data!)
+                                        {
+                                            switch (item2.Nombre)
+                                            {
+                                                case "Efectivo":
+                                                    if(id.IdMetodoPago != 8)
+                                                    {
+                                                        pagosEfectivo += item2.Monto;
+                                                    }
+                                                    else
+                                                    {
+                                                        pagosEfectivo += item2.Recibido;
+                                                    }
+                                                    break;
+                                                case "Nequi":
+                                                    pagosNequi += item2.Recibido;
+                                                    break;
+                                                case "DaviPlata":
+                                                    pagosDaviPlata += item2.Recibido;
+                                                    break;
+                                                case "Bancolombia QR":
+                                                    pagosBancolombiaQR += item2.Recibido;
+                                                    break;
+                                                case "Transferencia":
+                                                    pagosTransferencia += item2.Recibido;
+                                                    break;
+                                                case "Tarjeta Crédito":
+                                                    pagosTarjetaCredito += item2.Recibido;
+                                                    break;
+                                                case "Tarjeta Débito":
+                                                    pagosTarjetaDebito += item2.Recibido;
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
                                     }
 
                                     MontoInicial = Convert.ToDecimal(estadoCaja.Data[0].MontoInicialDeclarado, new CultureInfo("es-CO"));

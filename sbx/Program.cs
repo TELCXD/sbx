@@ -30,6 +30,7 @@ using sbx.core.Interfaces.MedioPago;
 using sbx.core.Interfaces.NotaCredito;
 using sbx.core.Interfaces.NotaCreditoElectronica;
 using sbx.core.Interfaces.Pago;
+using sbx.core.Interfaces.PagosVenta;
 using sbx.core.Interfaces.Pais;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.Permisos;
@@ -81,6 +82,7 @@ using sbx.repositories.Marca;
 using sbx.repositories.MedioPago;
 using sbx.repositories.NotaCredito;
 using sbx.repositories.Pagos;
+using sbx.repositories.PagosVenta;
 using sbx.repositories.Pais;
 using sbx.repositories.Parametros;
 using sbx.repositories.Permiso;
@@ -260,6 +262,8 @@ namespace sbx
 
                 services.AddTransient<DetalleCaja>();
 
+                services.AddTransient<AgregaVariosMetodosPago>();
+
                 services.AddTransient<IIdentificationType>(provider =>
                    new IdentificationTypeRepository(connectionString));
 
@@ -409,6 +413,9 @@ namespace sbx
 
                 services.AddTransient<IFechaVencimiento>(provider =>
                 new FechaVencimientoRepository(connectionString));
+
+                services.AddTransient<IPagosVenta>(provider =>
+                new PagosVentaRepository(connectionString));
 
                 services.AddTransient<IAuthService, Auth>();
 

@@ -10,6 +10,7 @@ using sbx.core.Helper.Impresion;
 using sbx.core.Interfaces.FacturacionElectronica;
 using sbx.core.Interfaces.NotaCredito;
 using sbx.core.Interfaces.NotaCreditoElectronica;
+using sbx.core.Interfaces.PagosVenta;
 using sbx.core.Interfaces.Parametros;
 using sbx.core.Interfaces.RangoNumeracion;
 using sbx.core.Interfaces.Tienda;
@@ -33,6 +34,7 @@ namespace sbx
         private readonly IRangoNumeracionFE _IRangoNumeracionFE;
         private readonly ITienda _ITienda;
         private readonly IParametros _IParametros;
+        private readonly IPagosVenta _IPagosVenta;
         private int _Id_Nota_Credito;
         private int _Id_Id_Venta;
         int IdFactura = 0;
@@ -58,9 +60,9 @@ namespace sbx
 
         NotaCreditoEntitie notaCreditoEntitie = new NotaCreditoEntitie();
 
-        public AgregarNotaCredito(IVenta venta, IServiceProvider serviceProvider, INotaCredito notaCredito, 
-            IAuthService authService, IRangoNumeracion iRangoNumeracion, INotasCreditoElectronica notasCreditoElectronica, 
-            IRangoNumeracionFE iRangoNumeracionFE, ITienda tienda, IParametros parametros)
+        public AgregarNotaCredito(IVenta venta, IServiceProvider serviceProvider, INotaCredito notaCredito,
+            IAuthService authService, IRangoNumeracion iRangoNumeracion, INotasCreditoElectronica notasCreditoElectronica,
+            IRangoNumeracionFE iRangoNumeracionFE, ITienda tienda, IParametros parametros, IPagosVenta iPagosVenta)
         {
             InitializeComponent();
             _IVenta = venta;
@@ -72,6 +74,7 @@ namespace sbx
             _IRangoNumeracionFE = iRangoNumeracionFE;
             _ITienda = tienda;
             _IParametros = parametros;
+            _IPagosVenta = iPagosVenta;
         }
 
         public dynamic? Permisos
@@ -153,7 +156,7 @@ namespace sbx
                 }
             }
 
-            if (Id_Venta > 0) 
+            if (Id_Venta > 0)
             {
                 btn_busca_factura.Enabled = false;
                 btn_devolucion.Enabled = false;
@@ -286,9 +289,9 @@ namespace sbx
             {
                 if (resp.Data.Count > 0)
                 {
-                    if (resp.Data[0].Estado == "ANULADA") 
+                    if (resp.Data[0].Estado == "ANULADA")
                     {
-                        if (resp.Data[0].IdNotaCredito > 0) 
+                        if (resp.Data[0].IdNotaCredito > 0)
                         {
                             MessageBox.Show($"Factura: {resp.Data[0].Factura} en estado ANULADA con Nota credito: NC-{resp.Data[0].IdNotaCredito} ", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
@@ -305,7 +308,7 @@ namespace sbx
                     chk_marcar_todo.Checked = false;
                     txt_busca_factura.Text = resp.Data[0].NumberFacturaDIAN == "" ? resp.Data[0].Factura : resp.Data[0].NumberFacturaDIAN;
                     lbl_factura.Text = resp.Data[0].NumberFacturaDIAN == "" ? resp.Data[0].Factura : resp.Data[0].NumberFacturaDIAN;
-                    if (resp.Data[0].NumberFacturaDIAN != "") { FacturaElectronica = true; } else {  FacturaElectronica = false; } 
+                    if (resp.Data[0].NumberFacturaDIAN != "") { FacturaElectronica = true; } else { FacturaElectronica = false; }
                     lbl_cliente.Text = resp.Data[0].NumeroDocumento + " - " + resp.Data[0].NombreRazonSocial;
                     lbl_vendedor.Text = resp.Data[0].NumeroDocumentoVendedor + " - " + resp.Data[0].NombreCompletoVendedor;
                     lbl_medio_pago.Text = resp.Data[0].NombreMetodoPago;
@@ -333,7 +336,7 @@ namespace sbx
                         SubtotalLinea = Convert.ToDecimal(item.PrecioUnitario) * Convert.ToDecimal(item.Cantidad);
                         Descuento += CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
                         DescuentoLinea = CalcularDescuento(SubtotalLinea, Convert.ToDecimal(item.Descuento));
-                        if (item.NombreTributo == "INC Bolsas") 
+                        if (item.NombreTributo == "INC Bolsas")
                         {
                             Impuesto += Convert.ToDecimal(item.Impuesto);
                             ImpuestoLinea = Convert.ToDecimal(item.Impuesto);
@@ -455,8 +458,8 @@ namespace sbx
                                 string Token = "";
                                 bool Continuar = true;
 
-                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1) 
-                                { 
+                                if (Convert.ToInt32(respDoc.Data[0].DocElectronico) == 1)
+                                {
                                     NotaCreditoElectronica = true;
 
                                     AuthEntitie authEntitie = new AuthEntitie
@@ -541,13 +544,13 @@ namespace sbx
                                     }
                                 }
 
-                                if (FacturaElectronica == true && NotaCreditoElectronica == false) 
+                                if (FacturaElectronica == true && NotaCreditoElectronica == false)
                                 {
                                     MessageBox.Show($"Dado que la factura a anular es electrónica, es obligatorio que la nota crédito también sea electrónica. El proceso ha sido cancelado y no se generará la nota crédito.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     Continuar = false;
                                 }
 
-                                if (Continuar) 
+                                if (Continuar)
                                 {
                                     if (Actual <= NumHasta)
                                     {
@@ -645,7 +648,7 @@ namespace sbx
                                                                     customer.phone = resultado.data.customer.phone;
                                                                     customer.legal_organization_id = resultado.data.customer.legal_organization.id; // 1. Juridico, 2. Natural
                                                                     customer.tribute_id = resultado.data.customer.tribute.id; // 18. IVA, 21. No aplica *
-                                                                    if (resultado.data.customer.municipality is JArray municipalityArray && municipalityArray.Count > 0) 
+                                                                    if (resultado.data.customer.municipality is JArray municipalityArray && municipalityArray.Count > 0)
                                                                     {
                                                                         customer.municipality_id = municipalityArray[0]["id"]?.ToString() ?? "";
                                                                     }
@@ -1239,7 +1242,7 @@ namespace sbx
                     }
 
                     dtg_ventas[1, e.RowIndex].Value = 1;
-                   
+
                     foreach (DataGridViewRow fila in dtg_ventas.Rows)
                     {
                         TotalCantidadDevo += Convert.ToDecimal(fila.Cells["cl_cantidad_devolver"].Value, new CultureInfo("es-CO"));
@@ -1349,6 +1352,87 @@ namespace sbx
 
             string ruta = Path.Combine(carpeta, $"nota_credito_{numeroNotaCredito}.png");
             tirillaFinal.Save(ruta, ImageFormat.Png);
+        }
+
+        private async void btn_ver_medios_pagos_Click(object sender, EventArgs e)
+        {
+            mtd_ver_medios_pago(Id_Venta == 0 ? IdFactura: Id_Venta);
+        }
+
+        public async void mtd_ver_medios_pago(int id_vent)
+        {
+            decimal pagosEfectivo = 0;
+            decimal pagosNequi = 0;
+            decimal pagosDaviPlata = 0;
+            decimal pagosBancolombiaQR = 0;
+            decimal pagosTransferencia = 0;
+            decimal pagosTarjetaCredito = 0;
+            decimal pagosTarjetaDebito = 0;
+            var metodos = new List<string>();
+            var respPagos = await _IPagosVenta.List(id_vent);
+            foreach (var item2 in respPagos.Data!)
+            {
+                switch (item2.Nombre)
+                {
+                    case "Efectivo":
+                        if (lbl_medio_pago.Text != "Varios")
+                            pagosEfectivo += item2.Monto;
+                        else
+                            pagosEfectivo += item2.Recibido;
+                        break;
+                    case "Nequi":
+                        pagosNequi += item2.Recibido;
+                        break;
+                    case "DaviPlata":
+                        pagosDaviPlata += item2.Recibido;
+                        break;
+                    case "Bancolombia QR":
+                        pagosBancolombiaQR += item2.Recibido;
+                        break;
+                    case "Transferencia":
+                        pagosTransferencia += item2.Recibido;
+                        break;
+                    case "Tarjeta Crédito":
+                        pagosTarjetaCredito += item2.Recibido;
+                        break;
+                    case "Tarjeta Débito":
+                        pagosTarjetaDebito += item2.Recibido;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Cultura colombiana para formato moneda
+            var culturaColombia = new CultureInfo("es-CO");
+
+            // Construir el mensaje dinámicamente
+            var mensajeBuilder = new System.Text.StringBuilder();
+            mensajeBuilder.AppendLine("Métodos de pago utilizados:");
+
+            if (pagosEfectivo > 0)
+                mensajeBuilder.AppendLine($"Efectivo: {pagosEfectivo.ToString("C", culturaColombia)}");
+
+            if (pagosNequi > 0)
+                mensajeBuilder.AppendLine($"Nequi: {pagosNequi.ToString("C", culturaColombia)}");
+
+            if (pagosDaviPlata > 0)
+                mensajeBuilder.AppendLine($"DaviPlata: {pagosDaviPlata.ToString("C", culturaColombia)}");
+
+            if (pagosBancolombiaQR > 0)
+                mensajeBuilder.AppendLine($"Bancolombia QR: {pagosBancolombiaQR.ToString("C", culturaColombia)}");
+
+            if (pagosTransferencia > 0)
+                mensajeBuilder.AppendLine($"Transferencia: {pagosTransferencia.ToString("C", culturaColombia)}");
+
+            if (pagosTarjetaCredito > 0)
+                mensajeBuilder.AppendLine($"Tarjeta Crédito: {pagosTarjetaCredito.ToString("C", culturaColombia)}");
+
+            if (pagosTarjetaDebito > 0)
+                mensajeBuilder.AppendLine($"Tarjeta Débito: {pagosTarjetaDebito.ToString("C", culturaColombia)}");
+
+            // Mostrar al usuario
+            MessageBox.Show(mensajeBuilder.ToString(), "Detalle de pagos", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
