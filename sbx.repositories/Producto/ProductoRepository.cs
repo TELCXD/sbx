@@ -2774,5 +2774,41 @@ namespace sbx.repositories.Producto
                 }
             }
         }
+
+        public async Task<Response<List<ProductoEntitie>>> ListProducts(string dato)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var response = new Response<List<ProductoEntitie>>();
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"SELECT TOP(5)
+                                   IdProducto
+                                  ,Sku
+                                  ,CodigoBarras
+                                  ,Nombre                               
+                                  FROM T_Productos 
+								  WHERE CAST(IdProducto AS VARCHAR(20)) LIKE @Filtro OR Sku LIKE @Filtro OR CodigoBarras LIKE @Filtro OR Nombre LIKE @Filtro ";
+
+                    string Filtro = dato + "%";
+
+                    var resultado = await connection.QueryAsync<ProductoEntitie>(sql, new { Filtro });
+
+                    response.Flag = true;
+                    response.Message = "Proceso realizado correctamente";
+                    response.Data = resultado.ToList();
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Flag = false;
+                    response.Message = "Error: " + ex.Message;
+                    return response;
+                }
+            }
+        }
     }
 }

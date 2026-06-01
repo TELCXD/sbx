@@ -30,9 +30,9 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AgregarVentas));
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
             btn_devolucion = new Button();
             btn_ver_ventas = new Button();
@@ -78,6 +78,7 @@
             lbl_cantidadProductos = new Label();
             label4 = new Label();
             pnl_pagos = new Panel();
+            btn_varios_medios_pago = new Button();
             btn_completar_venta = new Button();
             lbl_cambio = new Label();
             label18 = new Label();
@@ -97,7 +98,6 @@
             btn_cotizacion = new Button();
             btn_lista_cotizaciones = new Button();
             btn_quitar1 = new Button();
-            btn_varios_medios_pago = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtg_producto).BeginInit();
             panel3.SuspendLayout();
@@ -281,10 +281,11 @@
             // txt_buscar_producto
             // 
             txt_buscar_producto.Anchor = AnchorStyles.Top;
+            txt_buscar_producto.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             txt_buscar_producto.Enabled = false;
             txt_buscar_producto.Location = new Point(11, 96);
             txt_buscar_producto.Name = "txt_buscar_producto";
-            txt_buscar_producto.Size = new Size(321, 23);
+            txt_buscar_producto.Size = new Size(323, 23);
             txt_buscar_producto.TabIndex = 0;
             txt_buscar_producto.KeyPress += txt_buscar_producto_KeyPress;
             // 
@@ -324,34 +325,34 @@
             dtg_producto.AllowUserToDeleteRows = false;
             dtg_producto.AllowUserToOrderColumns = true;
             dtg_producto.BackgroundColor = SystemColors.Control;
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = SystemColors.Control;
-            dataGridViewCellStyle10.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle10.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle10.SelectionBackColor = SystemColors.ScrollBar;
-            dataGridViewCellStyle10.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
-            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.ScrollBar;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dtg_producto.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dtg_producto.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtg_producto.Columns.AddRange(new DataGridViewColumn[] { cl_idProducto, cl_sku, cl_codigo_barras, cl_nombre, cl_precio, cl_cantidad, cl_descuento, cl_impuesto, cl_total, cl_unidad_medida, cl_costo, cl_tributo, cl_fecha_vencimiento });
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = SystemColors.Window;
-            dataGridViewCellStyle11.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle11.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = Color.FromArgb(172, 211, 236);
-            dataGridViewCellStyle11.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
-            dtg_producto.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(172, 211, 236);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dtg_producto.DefaultCellStyle = dataGridViewCellStyle5;
             dtg_producto.Location = new Point(11, 127);
             dtg_producto.Name = "dtg_producto";
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = SystemColors.Control;
-            dataGridViewCellStyle12.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle12.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = Color.Silver;
-            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.True;
-            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Century Gothic", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.Silver;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dtg_producto.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dtg_producto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dtg_producto.Size = new Size(1107, 298);
             dtg_producto.TabIndex = 6;
@@ -633,6 +634,20 @@
             pnl_pagos.Size = new Size(619, 244);
             pnl_pagos.TabIndex = 142;
             // 
+            // btn_varios_medios_pago
+            // 
+            btn_varios_medios_pago.Enabled = false;
+            btn_varios_medios_pago.FlatAppearance.MouseDownBackColor = Color.Gray;
+            btn_varios_medios_pago.FlatStyle = FlatStyle.Flat;
+            btn_varios_medios_pago.Image = (Image)resources.GetObject("btn_varios_medios_pago.Image");
+            btn_varios_medios_pago.Location = new Point(584, 25);
+            btn_varios_medios_pago.Name = "btn_varios_medios_pago";
+            btn_varios_medios_pago.Size = new Size(30, 30);
+            btn_varios_medios_pago.TabIndex = 145;
+            btn_varios_medios_pago.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn_varios_medios_pago.UseVisualStyleBackColor = true;
+            btn_varios_medios_pago.Click += btn_varios_medios_pago_Click;
+            // 
             // btn_completar_venta
             // 
             btn_completar_venta.Enabled = false;
@@ -851,20 +866,6 @@
             btn_quitar1.TextImageRelation = TextImageRelation.ImageBeforeText;
             btn_quitar1.UseVisualStyleBackColor = true;
             btn_quitar1.Click += btn_quitar1_Click;
-            // 
-            // btn_varios_medios_pago
-            // 
-            btn_varios_medios_pago.Enabled = false;
-            btn_varios_medios_pago.FlatAppearance.MouseDownBackColor = Color.Gray;
-            btn_varios_medios_pago.FlatStyle = FlatStyle.Flat;
-            btn_varios_medios_pago.Image = (Image)resources.GetObject("btn_varios_medios_pago.Image");
-            btn_varios_medios_pago.Location = new Point(584, 25);
-            btn_varios_medios_pago.Name = "btn_varios_medios_pago";
-            btn_varios_medios_pago.Size = new Size(30, 30);
-            btn_varios_medios_pago.TabIndex = 145;
-            btn_varios_medios_pago.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btn_varios_medios_pago.UseVisualStyleBackColor = true;
-            btn_varios_medios_pago.Click += btn_varios_medios_pago_Click;
             // 
             // AgregarVentas
             // 
