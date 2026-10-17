@@ -259,7 +259,7 @@ namespace sbx
                             btn_nuevo_cliente.Enabled = item.ToCreate == 1 ? true : false;
                             txt_valor_pago.Enabled = item.ToCreate == 1 ? true : false;
                             btn_completar_venta.Enabled = item.ToCreate == 1 ? true : false;
-                            btn_pagos_en_efectivo.Enabled = item.ToCreate == 1 ? true : false;
+                            //btn_pagos_en_efectivo.Enabled = item.ToCreate == 1 ? true : false;
                             break;
                         case "notaCredito":
                             btn_devolucion.Enabled = item.ToCreate == 1 ? true : false;
