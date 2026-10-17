@@ -716,6 +716,23 @@ namespace sbx.repositories.EntradaInventario
 
                         int idMarca = await connection.ExecuteScalarAsync<int>(sql, new { NombreMarca = (item[3].ToString()?.Trim() == "" ? "N/A" : item[3].ToString()?.Trim()) }, transaction);
 
+                        sql = @" DECLARE @IdCategoria INT;
+
+                                -- Buscar si ya existe
+                                SELECT @IdCategoria = IdCategoria FROM T_Categorias WHERE Nombre = @NombreCategoria;
+
+                                -- Si no existe, insertar
+                                IF @IdCategoria IS NULL
+                                BEGIN
+                                    INSERT INTO T_Categorias (Nombre) VALUES (@NombreCategoria);
+                                    SET @IdCategoria = SCOPE_IDENTITY();
+                                END
+
+                                -- Retornar ID
+                                SELECT @IdCategoria AS IdCategoria; ";
+
+                        int idCategoria = await connection.ExecuteScalarAsync<int>(sql, new { NombreCategoria = (item[10].ToString()?.Trim() == "" ? "N/A" : item[10].ToString()?.Trim()) }, transaction);
+
                         sql = @$" INSERT INTO T_Productos (Sku,CodigoBarras,Nombre,
                                   CostoBase,PrecioBase,EsInventariable,Impuesto,TipoProducto,IdCategoria,IdMarca,IdUnidadMedida,Idtribute,CreationDate, IdUserAction)
                                   VALUES(NULLIF(@Sku,''),NULLIF(@CodigoBarras, ''),@Nombre,
@@ -732,7 +749,7 @@ namespace sbx.repositories.EntradaInventario
                             EsInventariable = 1,
                             Impuesto = Convert.ToDecimal(item[7], new CultureInfo("es-CO")),
                             TipoProducto = "Individual",
-                            IdCategoria = 1,
+                            IdCategoria = idCategoria,
                             IdMarca = idMarca,
                             IdUnidadMedida = 1,
                             Idtribute = item[8].ToString()?.Trim() == "IVA" ? 1 : item[8].ToString()?.Trim() == "INC" ? 2 : 1,

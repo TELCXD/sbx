@@ -516,9 +516,9 @@ namespace sbx
             int startRow = 2;
             int endRow = Math.Min(worksheet.LastRowUsed()?.RowNumber() ?? 100, 5000);
             int startColumn = 1; // Columna A
-            int endColumn = 10;   // Columna J
+            int endColumn = 11;   // Columna K
 
-            // Crear columnas (A-J)
+            // Crear columnas (A-K)
             for (int col = startColumn; col <= endColumn; col++)
             {
                 dt.Columns.Add("Col" + col);
@@ -561,6 +561,9 @@ namespace sbx
                     case 10:
                         if (cellValue != "FechaVencimiento") { Error++; }
                         break;
+                    case 11:
+                        if (cellValue != "Categoria") { Error++; }
+                        break;
                     default:
                         break;
                 }
@@ -585,7 +588,7 @@ namespace sbx
             {
                 MessageBox.Show(@"El archivo no cuenta con los campos necesarios para realizar el proceso, 
                                   debe tener los siguientes campos: Sku, Codigo barras,Nombre *, Marca, Costo unnitario *,
-                                  Precio venta Unitario *, Stock *, Impuesto % *, Tributo (IVA, INC), FechaVencimiento Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                  Precio venta Unitario *, Stock *, Impuesto % *, Tributo (IVA, INC), FechaVencimiento, Categoria Por favor revise", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return dt;

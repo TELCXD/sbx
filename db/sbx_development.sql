@@ -1882,7 +1882,8 @@ VALUES
 	('BN','Bancolombia QR',1,0,1,0,1),
 	('TR','Transferencia',1,0,0,0,1),
 	('TC','Tarjeta Crédito',1,0,1,0,1),
-	('TD','Tarjeta Débito',1,0,1,0,1)
+	('TD','Tarjeta Débito',1,0,1,0,1),
+	('VR','Varios',0,0,0,0,1)
 GO
 CREATE TABLE T_Ventas(
 IdVenta INT IDENTITY(1,1) PRIMARY KEY,
